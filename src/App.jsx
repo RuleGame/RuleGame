@@ -15,8 +15,8 @@ type BoardObjectType = {
   buckets: ('TL' | 'TR' | 'BL' | 'BR')[],
 };
 
-const rows = 6;
-const cols = 6;
+const rows = 8;
+const cols = 8;
 
 // NOTE: x and y start at 1
 const boardObjects: BoardObjectType[] = [
@@ -51,8 +51,8 @@ const boardObjects: BoardObjectType[] = [
   {
     shape: 'star',
     color: 'blue',
-    x: 6,
-    y: 7,
+    x: 5,
+    y: 6,
     buckets: ['TL', 'BL'],
   },
 ];
@@ -68,8 +68,8 @@ const StyledBoard = styled.div`
 `;
 
 const StyledBoardObject = styled(BoardObject)`
-  grid-column: ${(boardObject) => boardObject.x};
-  grid-row: ${(boardObject) => boardObject.y};
+  grid-column: ${(boardObject) => boardObject.x + 1};
+  grid-row: ${(boardObject) => boardObject.y + 1};
   background-color: ${(boardObject) => boardObject.color};
 `;
 
