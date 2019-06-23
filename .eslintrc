@@ -3,8 +3,11 @@
     "browser": true,
     "es6": true
   },
+  "parser": "babel-eslint",
   "extends": ["airbnb", "prettier"],
+  "plugins": ["react", "flowtype", "import"],
   "rules": {
-    "no-unused-vars": "warn"
+    "no-unused-vars": "warn",
+    "react/require-default-props": "off"
   }
 }

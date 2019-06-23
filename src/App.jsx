@@ -1,28 +1,99 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DndProvider } from 'react-dnd';
+import styled from 'styled-components';
 
-function App() {
+import './App.css';
+import BoardObject from './components/BoardObject';
+import Bucket from './components/Bucket';
+
+type BoardObjectType = {
+  color: string,
+  shape: 'square' | 'triangle' | 'circle' | 'triangle' | 'star',
+  x: number,
+  y: number,
+  buckets: ('TL' | 'TR' | 'BL' | 'BR')[],
+};
+
+const rows = 6;
+const cols = 6;
+
+// NOTE: x and y start at 1
+const boardObjects: BoardObjectType[] = [
+  {
+    shape: 'square',
+    color: 'blue',
+    x: 2,
+    y: 2,
+    buckets: ['TL', 'BL'],
+  },
+  {
+    shape: 'triangle',
+    color: 'black',
+    x: 5,
+    y: 2,
+    buckets: [],
+  },
+  {
+    shape: 'circle',
+    color: 'red',
+    x: 5,
+    y: 4,
+    buckets: [],
+  },
+  {
+    shape: 'triangle',
+    color: 'yellow',
+    x: 2,
+    y: 6,
+    buckets: [],
+  },
+  {
+    shape: 'star',
+    color: 'blue',
+    x: 6,
+    y: 7,
+    buckets: ['TL', 'BL'],
+  },
+];
+
+const bucketCoords = [{ x: 1, y: 1 }, { x: 1, y: rows }, { x: cols, y: 1 }, { x: cols, y: rows }];
+
+const StyledBoard = styled.div`
+  display: grid;
+  grid-template-rows: repeat(${rows}, 1fr);
+  grid-template-columns: repeat(${cols}, 1fr);
+  width: 100vw;
+  height: 100vh;
+`;
+
+const StyledBoardObject = styled(BoardObject)`
+  grid-column: ${(boardObject) => boardObject.x};
+  grid-row: ${(boardObject) => boardObject.y};
+  background-color: ${(boardObject) => boardObject.color};
+`;
+
+const StyledBucket = styled(Bucket)`
+  grid-column: ${(bucketCoord) => bucketCoord.x};
+  grid-row: ${(bucketCoord) => bucketCoord.y};
+  background-color: red;
+`;
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit
-          <code>src/App.js</code>
-          and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <DndProvider backend={HTML5Backend}>
+      <div className="App">
+        <StyledBoard>
+          {boardObjects.map((boardObject) => (
+            <StyledBoardObject {...boardObject} />
+          ))}
+          {bucketCoords.map((bucketCoord) => (
+            <StyledBucket {...bucketCoord} />
+          ))}
+        </StyledBoard>
+      </div>
+    </DndProvider>
   );
-}
+};
 
 export default App;
