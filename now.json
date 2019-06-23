@@ -1,6 +1,7 @@
 {
   "version": 2,
   "name": "rule-game",
+  "alias": "rule-game",
   "builds": [
     { "src": "package.json", "use": "@now/static-build", "config": { "distDir": "build" } }
   ],
