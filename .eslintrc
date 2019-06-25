@@ -3,11 +3,27 @@
     "browser": true,
     "es6": true
   },
-  "parser": "babel-eslint",
-  "extends": ["airbnb", "prettier"],
-  "plugins": ["react", "flowtype", "import"],
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "airbnb-typescript",
+    "prettier",
+    "prettier/@typescript-eslint",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/typescript"
+  ],
+  "plugins": ["react", "flowtype", "import", "@typescript-eslint/eslint-plugin"],
   "rules": {
     "no-unused-vars": "warn",
-    "react/require-default-props": "off"
+    "react/jsx-filename-extension": "off",
+    "react/require-default-props": "off",
+    "@typescript-eslint/prefer-interface": "off"
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".ts", ".jsx", ".tsx", ".d.ts"]
+      }
+    },
+    "import/extensions": [".js", ".ts", ".jsx", ".tsx", ".d.ts"]
   }
 }

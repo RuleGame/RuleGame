@@ -1,11 +1,9 @@
 /* eslint-disable no-param-reassign */
 // const StylelintPlugin = require('stylelint-webpack-plugin');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { addBabelPlugin } = require('customize-cra');
 
 module.exports = function override(config, env) {
-  config = addBabelPlugin(['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true }])(
-    config,
-  );
   config = addBabelPlugin('babel-plugin-styled-components')(config);
 
   if (env === 'development') {
