@@ -29,10 +29,16 @@ const StyledBucket = styled(Bucket)<BucketType>`
 const Board = () => {
   const [droppedObjectId, setDroppedObjectId] = useState(-1);
   const [boardObjects, setBoardObjects] = useState(initialBoardObjects);
-  let smileyTimeout = -1;
   useEffect(() => {
-    return () => clearTimeout(smileyTimeout);
-  }, [smileyTimeout]);
+    if (droppedObjectId !== -1) {
+      const smileyTimeout = setTimeout(() => {
+        setBoardObjects((bO) => bO.filter((boardObject) => boardObject.id !== droppedObjectId));
+        setDroppedObjectId(-1);
+      }, afterDragTimeout);
+      return () => clearTimeout(smileyTimeout);
+    }
+    return undefined;
+  }, [droppedObjectId]);
 
   return (
     <StyledBoard>
@@ -57,13 +63,6 @@ const Board = () => {
               ),
             );
             setDroppedObjectId(item.id);
-
-            smileyTimeout = setTimeout(() => {
-              setBoardObjects(
-                boardObjects.filter((boardObject) => boardObject.id !== droppedObjectId),
-              );
-              setDroppedObjectId(-1);
-            }, afterDragTimeout);
           }}
           // Don't allow dropping when an object has been dropped for this table.
           canDrop={(item): boolean => droppedObjectId === -1 && item.buckets.has(bucketCoord.pos)}
