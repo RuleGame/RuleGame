@@ -11,13 +11,15 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:import/typescript"
   ],
-  "plugins": ["react", "flowtype", "import", "@typescript-eslint/eslint-plugin"],
+  "plugins": ["react", "react-hooks", "flowtype", "import", "@typescript-eslint/eslint-plugin"],
   "rules": {
     "no-unused-vars": "warn",
     "react/jsx-filename-extension": "off",
     "react/require-default-props": "off",
     "@typescript-eslint/prefer-interface": "off",
-    "@typescript-eslint/explicit-function-return-type": "off"
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   },
   "settings": {
     "import/resolver": {
