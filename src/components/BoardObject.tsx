@@ -1,12 +1,11 @@
 import React from 'react';
-import { useDrag, DragObjectWithType } from 'react-dnd';
+import { useDrag } from 'react-dnd';
 import logo from '../logo.svg';
+import { Item } from '../@types';
 
 export type BoardObjectProps = {
   className?: string;
-  // TODO: Use Item type instead.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  item: { [key: string]: any } & DragObjectWithType;
+  item: Item;
 };
 
 const BoardObject = ({ className, item }: BoardObjectProps): JSX.Element => {
