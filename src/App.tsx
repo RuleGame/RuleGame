@@ -1,18 +1,32 @@
-import React from 'react';
-import { DndProvider } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import Board from './components/Board';
 
 import './App.css';
+import { Log } from './@types/index';
+import { initialBoardObjectsList } from './constants';
 
 const App = (): JSX.Element => {
+  const [historyLog, setHistoryLog] = useState([] as Log[]);
+  const [initialBoardObjectsIndex, setInitialBoardObjectsIndex] = useState(0);
+
+  useEffect(() => {
+    console.log(historyLog);
+  }, [historyLog]);
+
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div className="App">
-        <Board />
-      </div>
-    </DndProvider>
+    <Board
+      onComplete={useCallback(
+        (log) => {
+          setHistoryLog([...historyLog, log]);
+          setInitialBoardObjectsIndex(
+            (initialBoardObjectsIndex + 1) % initialBoardObjectsList.length,
+          );
+        },
+        [historyLog, initialBoardObjectsIndex],
+      )}
+      initialBoardObjects={initialBoardObjectsList[initialBoardObjectsIndex]}
+    />
   );
 };
 

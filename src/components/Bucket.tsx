@@ -1,12 +1,12 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
 import logo from '../logo.svg';
-import { Item } from '../@types';
+import { BoardObjectItem } from '../@types';
 
 export type BucketProps = {
   className?: string;
-  onDrop: (item: Item) => undefined;
-  canDrop: (item: Item) => boolean;
+  onDrop: (item: BoardObjectItem) => undefined;
+  canDrop: (item: BoardObjectItem) => boolean;
 };
 
 const Bucket = ({ className, onDrop, canDrop }: BucketProps): JSX.Element => {
