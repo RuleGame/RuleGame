@@ -12,12 +12,14 @@ import { afterDragTimeout, bucketCoords, cols, rows } from '../constants';
 import BoardObject from './BoardObject';
 import Bucket from './Bucket';
 
-const StyledBoard = styled('div')`
+const StyledBoard = styled.div`
   display: grid;
   grid-template-rows: repeat(${rows}, 1fr);
   grid-template-columns: repeat(${cols}, 1fr);
-  width: 100vw;
-  height: 100vh;
+  width: 100vh;
+  max-width: 100vw;
+  height: 100vw;
+  max-height: 100vh;
 `;
 
 const StyledBoardObject = styled(BoardObject)<BoardObjectType>`
