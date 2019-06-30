@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 import Board from './components/Board';
 
-import './App.css';
 import { Log } from './@types/index';
 import { initialBoardObjectsList } from './constants';
 
