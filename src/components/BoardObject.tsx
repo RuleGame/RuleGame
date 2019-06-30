@@ -1,13 +1,63 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
+import { FiCircle, FiSquare, FiStar, FiTriangle } from 'react-icons/fi';
+import styled from 'styled-components';
+import { BoardObjectItem, Shape } from '../@types';
+import HappyFace from '../assets/smiley-face.png';
 import logo from '../logo.svg';
-import { BoardObjectItem } from '../@types';
 
 export type BoardObjectProps = {
   className?: string;
   item: BoardObjectItem;
-  onClick: Function;
+  onClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 };
+
+export type ShapeProps = {
+  ref: React.Ref<HTMLDivElement>;
+  shape: Shape;
+} & BoardObjectProps;
+
+const ShapeObject = React.forwardRef<HTMLDivElement, ShapeProps>(({ shape, ...props }, ref) => {
+  switch (shape) {
+    case 'star':
+      return (
+        <div {...props} ref={ref}>
+          <FiStar size="100%" />
+        </div>
+      );
+    case 'circle':
+      return (
+        <div {...props} ref={ref}>
+          <FiCircle size="100%" />
+        </div>
+      );
+    case 'square':
+      return (
+        <div {...props} ref={ref}>
+          <FiSquare size="100%" />
+        </div>
+      );
+    case 'triangle':
+      return (
+        <div {...props} ref={ref}>
+          <FiTriangle size="100%" />
+        </div>
+      );
+    case 'happy':
+      return (
+        <div {...props} ref={ref}>
+          <img src={HappyFace} alt="happy-face" width="100%" height="100%" />
+        </div>
+      );
+    default:
+      return null;
+  }
+});
+
+const StyledShapeObject = styled(ShapeObject)<{}>`
+  width: 100%;
+  height: 100%;
+`;
 
 const BoardObject = ({ className, item, onClick }: BoardObjectProps): JSX.Element => {
   const [, ref] = useDrag({
@@ -15,7 +65,7 @@ const BoardObject = ({ className, item, onClick }: BoardObjectProps): JSX.Elemen
   });
   return (
     // @ts-ignore
-    <div ref={ref} src={logo} className={className} onClick={onClick} />
+    <StyledShapeObject {...item} src={logo} className={className} onClick={onClick} ref={ref} />
   );
 };
 
