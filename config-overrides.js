@@ -1,10 +1,11 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-param-reassign */
 // const StylelintPlugin = require('stylelint-webpack-plugin');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { addBabelPlugin } = require('customize-cra');
+const { useBabelRc } = require('customize-cra');
 
 module.exports = function override(config, env) {
-  config = addBabelPlugin('babel-plugin-styled-components')(config);
+  config = useBabelRc()(config);
 
   if (env === 'development') {
     config.plugins
