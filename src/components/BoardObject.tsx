@@ -54,18 +54,27 @@ const ShapeObject = React.forwardRef<HTMLDivElement, ShapeProps>(({ shape, ...pr
   }
 });
 
-const StyledShapeObject = styled(ShapeObject)<{}>`
+const StyledShapeObject = styled(ShapeObject)<{ canDrag: boolean }>`
   width: 100%;
   height: 100%;
 `;
 
 const BoardObject = ({ className, item, onClick }: BoardObjectProps): JSX.Element => {
+  const canDrag = item.buckets.size > 0;
   const [, ref] = useDrag({
     item,
+    canDrag,
   });
   return (
     // @ts-ignore
-    <StyledShapeObject {...item} src={logo} className={className} onClick={onClick} ref={ref} />
+    <StyledShapeObject
+      {...item}
+      src={logo}
+      className={className}
+      onClick={onClick}
+      ref={ref}
+      canDrag={canDrag}
+    />
   );
 };
 
