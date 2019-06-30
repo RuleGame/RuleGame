@@ -16,10 +16,6 @@ const StyledBoard = styled.div<{}>`
   display: grid;
   grid-template-rows: repeat(${rows}, 1fr);
   grid-template-columns: repeat(${cols}, 1fr);
-  width: 100vh;
-  max-width: 100vw;
-  height: 100vw;
-  max-height: 100vh;
 `;
 
 const StyledBoardObject = styled(BoardObject)<BoardObjectType>`
@@ -37,9 +33,10 @@ const StyledBucket = styled(Bucket)<BucketType>`
 type BoardProps = {
   onComplete: (log: Log) => void;
   initialBoardObjects: BoardObjectType[];
+  className?: string;
 };
 
-const Board = ({ onComplete, initialBoardObjects }: BoardProps): JSX.Element => {
+const Board = ({ onComplete, initialBoardObjects, className }: BoardProps): JSX.Element => {
   const [droppedObjectId, setDroppedObjectId] = useState(-1);
   const [boardObjects, setBoardObjects] = useState(initialBoardObjects);
   const [touchedObjects, setTouchedObjects] = useState([] as BoardObjectId[]);
@@ -61,7 +58,7 @@ const Board = ({ onComplete, initialBoardObjects }: BoardProps): JSX.Element => 
   }, [initialBoardObjects]);
 
   return (
-    <StyledBoard>
+    <StyledBoard className={className}>
       {boardObjects.map((boardObject) => (
         <StyledBoardObject
           {...boardObject}
