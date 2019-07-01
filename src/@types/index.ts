@@ -4,7 +4,15 @@ export type BucketPosition = 'TL' | 'TR' | 'BL' | 'BR';
 
 export type BoardObjectItem = { buckets: Set<BucketPosition>; id: BoardObjectId; type: 'object' };
 
-export type Shape = 'square' | 'triangle' | 'circle' | 'triangle' | 'star' | 'happy';
+export type Shape =
+  | 'nothing'
+  | 'bucket'
+  | 'square'
+  | 'triangle'
+  | 'circle'
+  | 'triangle'
+  | 'star'
+  | 'happy';
 
 export type BoardObjectType = {
   id: BoardObjectId; // -1 denotes an undefined value

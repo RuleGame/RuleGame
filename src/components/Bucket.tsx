@@ -3,6 +3,7 @@ import { useDrop } from 'react-dnd';
 import styled from 'styled-components';
 import { BoardObjectItem } from '../@types';
 import logo from '../logo.svg';
+import ShapeObject from './ShapeObject';
 
 export type BucketProps = {
   className?: string;
@@ -10,7 +11,7 @@ export type BucketProps = {
   canDrop: (item: BoardObjectItem) => boolean;
 };
 
-const StyledBucket = styled.div<{ isOver: boolean }>`
+const StyledBucket = styled(ShapeObject)<{ isOver: boolean }>`
   filter: grayscale(${(props) => (props.isOver ? 0.5 : 0)});
 `;
 
@@ -24,7 +25,7 @@ const Bucket = ({ className, onDrop, canDrop }: BucketProps): JSX.Element => {
     }),
   });
   // @ts-ignore
-  return <StyledBucket ref={ref} src={logo} className={className} isOver={isOver} />;
+  return <StyledBucket ref={ref} src={logo} className={className} isOver={isOver} shape={} />;
 };
 
 export default Bucket;
