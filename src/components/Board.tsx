@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useReducer, Reducer } from 'react';
 import styled from 'styled-components';
 import {
   BoardObjectId,
@@ -27,8 +27,36 @@ const StyledBoardObject = styled(BoardObject)<BoardObjectType>`
 const StyledBucket = styled(Bucket)<BucketType>`
   grid-column: ${(bucketCoord) => bucketCoord.x + 1};
   grid-row: ${(bucketCoord) => rows - bucketCoord.y};
-  background-color: red;
+  color: red;
 `;
+
+type State = {
+  droppedObjectId: number;
+  boardObjects: BoardObjectType[];
+  touchedObjects: BoardObjectId[];
+  dropAttempts: DropAttempt[];
+};
+
+type Action =
+  | { type: 'SET_BOARD_OBJECTS'; boardObjects: BoardObjectType[] }
+  | { type: 'SET_DROPPED_OBJECT_ID'; droppedObjectId: number };
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case 'SET_BOARD_OBJECTS':
+      return {
+        ...state,
+        boardObjects: action.boardObjects,
+      };
+    case 'SET_DROPPED_OBJECT_ID':
+      return {
+        ...state,
+        droppedObjectId: action.droppedObjectId,
+      };
+    default:
+      return state;
+  }
+};
 
 type BoardProps = {
   onComplete: (log: Log) => void;
@@ -41,6 +69,13 @@ const Board = ({ onComplete, initialBoardObjects, className }: BoardProps): JSX.
   const [boardObjects, setBoardObjects] = useState(initialBoardObjects);
   const [touchedObjects, setTouchedObjects] = useState([] as BoardObjectId[]);
   const [dropAttempts, setDropAttempts] = useState([] as DropAttempt[]);
+
+  const [state, dispatch] = useReducer(reducer, {
+    droppedObjectId: -1,
+    boardObjects: initialBoardObjects,
+    touchedObjects: [],
+    dropAttempts: [],
+  });
 
   useEffect(() => {
     if (droppedObjectId !== -1) {
@@ -83,11 +118,10 @@ const Board = ({ onComplete, initialBoardObjects, className }: BoardProps): JSX.
             // Don't put in canDrop because we want to bait the user to dropping items.
             // (The cursor will change to the drop cursor.)
             if (droppedItem.buckets.has(bucketCoord.pos)) {
-              // Turn the object to a happy face.
               setBoardObjects(
                 boardObjects.map((boardObject) =>
                   boardObject.id === droppedItem.id
-                    ? { ...boardObject, shape: 'happy' }
+                    ? { ...boardObject, shape: 'nothing' }
                     : boardObject,
                 ),
               );
