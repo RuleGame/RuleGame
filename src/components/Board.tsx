@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useReducer, Reducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import styled from 'styled-components';
 import {
   BoardObjectId,
   BoardObjectItem,
   BoardObjectType,
   BucketType,
-  Log,
   DropAttempt,
+  Log,
 } from '../@types';
 import { afterDragTimeout, bucketCoords, cols, rows } from '../constants';
 import BoardObject from './BoardObject';
@@ -39,19 +39,37 @@ type State = {
 
 type Action =
   | { type: 'SET_BOARD_OBJECTS'; boardObjects: BoardObjectType[] }
-  | { type: 'SET_DROPPED_OBJECT_ID'; droppedObjectId: number };
+  | { type: 'SET_DROPPED_OBJECT_ID'; id: number }
+  | { type: 'ADD_TOUCHED_OBJECT'; id: BoardObjectId }
+  | { type: 'ADD_DROP_ATTEMPT'; dropAttempt: DropAttempt }
+  | { type: 'REMOVE_OBJECT'; id: BoardObjectId };
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'SET_BOARD_OBJECTS':
       return {
         ...state,
-        boardObjects: action.boardObjects,
+        boardObjects: [...action.boardObjects],
       };
     case 'SET_DROPPED_OBJECT_ID':
       return {
         ...state,
-        droppedObjectId: action.droppedObjectId,
+        droppedObjectId: action.id,
+      };
+    case 'ADD_TOUCHED_OBJECT':
+      return {
+        ...state,
+        touchedObjects: [...state.touchedObjects, action.id],
+      };
+    case 'ADD_DROP_ATTEMPT':
+      return {
+        ...state,
+        dropAttempts: [...state.dropAttempts, action.dropAttempt],
+      };
+    case 'REMOVE_OBJECT':
+      return {
+        ...state,
+        boardObjects: state.boardObjects.filter((boardObject) => boardObject.id !== action.id),
       };
     default:
       return state;
@@ -65,17 +83,14 @@ type BoardProps = {
 };
 
 const Board = ({ onComplete, initialBoardObjects, className }: BoardProps): JSX.Element => {
-  const [droppedObjectId, setDroppedObjectId] = useState(-1);
-  const [boardObjects, setBoardObjects] = useState(initialBoardObjects);
-  const [touchedObjects, setTouchedObjects] = useState([] as BoardObjectId[]);
-  const [dropAttempts, setDropAttempts] = useState([] as DropAttempt[]);
-
   const [state, dispatch] = useReducer(reducer, {
     droppedObjectId: -1,
     boardObjects: initialBoardObjects,
     touchedObjects: [],
     dropAttempts: [],
   });
+
+  const { droppedObjectId, dropAttempts, touchedObjects, boardObjects } = state;
 
   useEffect(() => {
     if (droppedObjectId !== -1) {
@@ -88,8 +103,8 @@ const Board = ({ onComplete, initialBoardObjects, className }: BoardProps): JSX.
   }, [droppedObjectId, touchedObjects, dropAttempts, onComplete]);
 
   useEffect(() => {
-    setBoardObjects(initialBoardObjects);
-    setDroppedObjectId(-1);
+    dispatch({ type: 'SET_BOARD_OBJECTS', boardObjects: initialBoardObjects });
+    dispatch({ type: 'SET_DROPPED_OBJECT_ID', id: -1 });
   }, [initialBoardObjects]);
 
   return (
@@ -99,7 +114,7 @@ const Board = ({ onComplete, initialBoardObjects, className }: BoardProps): JSX.
           {...boardObject}
           key={`${boardObject.x}-${boardObject.y}`}
           item={{ ...boardObject, type: 'object' }}
-          onClick={() => setTouchedObjects([...touchedObjects, boardObject.id])}
+          onClick={() => dispatch({ type: 'ADD_TOUCHED_OBJECT', id: boardObject.id })}
         />
       ))}
       {bucketCoords.map((bucketCoord) => (
@@ -110,22 +125,16 @@ const Board = ({ onComplete, initialBoardObjects, className }: BoardProps): JSX.
             droppedItem: BoardObjectItem,
             // @ts-ignore (Should really be void but the defined return type is undefined.)
           ): undefined => {
-            setDropAttempts([
-              ...dropAttempts,
-              { dragged: droppedItem.id, dropped: bucketCoord.pos },
-            ]);
+            dispatch({
+              type: 'ADD_DROP_ATTEMPT',
+              dropAttempt: { dragged: droppedItem.id, dropped: bucketCoord.pos },
+            });
 
             // Don't put in canDrop because we want to bait the user to dropping items.
             // (The cursor will change to the drop cursor.)
             if (droppedItem.buckets.has(bucketCoord.pos)) {
-              setBoardObjects(
-                boardObjects.map((boardObject) =>
-                  boardObject.id === droppedItem.id
-                    ? { ...boardObject, shape: 'nothing' }
-                    : boardObject,
-                ),
-              );
-              setDroppedObjectId(droppedItem.id);
+              dispatch({ type: 'REMOVE_OBJECT', id: droppedItem.id });
+              dispatch({ type: 'SET_DROPPED_OBJECT_ID', id: droppedItem.id });
             }
           }}
           // Don't allow dropping when an object has been dropped for this table.
