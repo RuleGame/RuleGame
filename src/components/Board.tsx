@@ -7,6 +7,7 @@ import {
   BucketType,
   DropAttempt,
   Log,
+  BucketPosition,
 } from '../@types';
 import { afterDragTimeout, bucketCoords, cols, rows } from '../constants';
 import BoardObject from './BoardObject';
@@ -35,22 +36,27 @@ type State = {
   boardObjects: BoardObjectType[];
   touchedObjects: BoardObjectId[];
   dropAttempts: DropAttempt[];
+  droppedBucket: undefined | BucketPosition;
 };
 
 type Action =
-  | { type: 'SET_BOARD_OBJECTS'; boardObjects: BoardObjectType[] }
+  | { type: 'RESET'; boardObjects: BoardObjectType[] }
   | { type: 'SET_DROPPED_OBJECT_ID'; id: number }
   | { type: 'ADD_TOUCHED_OBJECT'; id: BoardObjectId }
   | { type: 'ADD_DROP_ATTEMPT'; dropAttempt: DropAttempt }
-  | { type: 'REMOVE_OBJECT'; id: BoardObjectId };
+  | { type: 'REMOVE_OBJECT'; id: BoardObjectId }
+  | { type: 'SET_DROPPED_BUCKET'; pos: BucketPosition }
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case 'SET_BOARD_OBJECTS':
+    case 'RESET':
       return {
-        ...state,
+        droppedObjectId: -1,
         boardObjects: [...action.boardObjects],
-      };
+        touchedObjects: [],
+        dropAttempts: [],
+        droppedBucket: undefined,
+      }
     case 'SET_DROPPED_OBJECT_ID':
       return {
         ...state,
@@ -71,6 +77,11 @@ const reducer = (state: State, action: Action): State => {
         ...state,
         boardObjects: state.boardObjects.filter((boardObject) => boardObject.id !== action.id),
       };
+    case 'SET_DROPPED_BUCKET':
+      return {
+        ...state,
+        droppedBucket: action.pos,
+      }
     default:
       return state;
   }
@@ -88,6 +99,7 @@ const Board = ({ onComplete, initialBoardObjects, className }: BoardProps): JSX.
     boardObjects: initialBoardObjects,
     touchedObjects: [],
     dropAttempts: [],
+    droppedBucket: undefined,
   });
 
   const { droppedObjectId, dropAttempts, touchedObjects, boardObjects } = state;
@@ -103,7 +115,7 @@ const Board = ({ onComplete, initialBoardObjects, className }: BoardProps): JSX.
   }, [droppedObjectId, touchedObjects, dropAttempts, onComplete]);
 
   useEffect(() => {
-    dispatch({ type: 'SET_BOARD_OBJECTS', boardObjects: initialBoardObjects });
+    dispatch({ type: 'RESET', boardObjects: initialBoardObjects });
     dispatch({ type: 'SET_DROPPED_OBJECT_ID', id: -1 });
   }, [initialBoardObjects]);
 
@@ -135,10 +147,12 @@ const Board = ({ onComplete, initialBoardObjects, className }: BoardProps): JSX.
             if (droppedItem.buckets.has(bucketCoord.pos)) {
               dispatch({ type: 'REMOVE_OBJECT', id: droppedItem.id });
               dispatch({ type: 'SET_DROPPED_OBJECT_ID', id: droppedItem.id });
+              dispatch({ type: 'SET_DROPPED_BUCKET', pos: bucketCoord.pos})
             }
           }}
           // Don't allow dropping when an object has been dropped for this table.
           canDrop={(): boolean => droppedObjectId === -1}
+          dropped={state.droppedBucket === bucketCoord.pos}
         />
       ))}
     </StyledBoard>

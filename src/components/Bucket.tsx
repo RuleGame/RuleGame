@@ -9,13 +9,14 @@ export type BucketProps = {
   className?: string;
   onDrop: (item: BoardObjectItem) => undefined;
   canDrop: (item: BoardObjectItem) => boolean;
+  dropped: boolean;
 };
 
 const StyledBucket = styled(ShapeObject)<{ isOver: boolean }>`
   filter: grayscale(${(props) => (props.isOver ? 0.5 : 0)});
 `;
 
-const Bucket = ({ className, onDrop, canDrop }: BucketProps): JSX.Element => {
+const Bucket = ({ className, onDrop, canDrop, dropped }: BucketProps): JSX.Element => {
   const [{ isOver }, ref] = useDrop({
     canDrop,
     drop: onDrop,
@@ -25,7 +26,7 @@ const Bucket = ({ className, onDrop, canDrop }: BucketProps): JSX.Element => {
     }),
   });
   // @ts-ignore
-  return <StyledBucket ref={ref} src={logo} className={className} isOver={isOver} shape={} />;
+  return <StyledBucket ref={ref} src={logo} className={className} isOver={isOver} shape={dropped ? 'happy': 'bucket'} />;
 };
 
 export default Bucket;
