@@ -10,7 +10,7 @@ const StyledApp = styled.div<{}>`
   align-items: center;
   justify-content: center;
   width: 100vw;
-  height: 100vh;
+  height: 90vh;
 `;
 
 const StyledBoard = styled(Board)<{}>`
@@ -18,7 +18,7 @@ const StyledBoard = styled(Board)<{}>`
   width: 100vh;
   max-width: 100vw;
   height: 100vw;
-  max-height: 100vh;
+  max-height: 90vh;
   padding: 1em;
   box-sizing: border-box;
 `;
@@ -30,10 +30,6 @@ const App = (): JSX.Element => {
   const [initialBoardObjectsState, setInitialBoardObjects] = useState([] as BoardObjectType[]);
   const [rule, setRule] = useState('clockwise' as Rule);
   const [currClockwiseIndex, setCurrClockwiseIndex] = useState<undefined | number>(undefined);
-
-  useEffect(() => {
-    console.log(historyLog);
-  }, [historyLog]);
 
   useEffect(() => {
     if (rule === 'clockwise') {
@@ -69,31 +65,37 @@ const App = (): JSX.Element => {
   }, [currClockwiseIndex]);
 
   return (
-    <StyledApp>
-      <label htmlFor="clockwise">
-        <input
-          type="radio"
-          id="clockwise"
-          checked
-          name="rule"
-          onChange={useCallback(() => setRule('clockwise'), [])}
+    <>
+      <StyledApp>
+        <label htmlFor="clockwise">
+          <input
+            type="radio"
+            id="clockwise"
+            checked
+            name="rule"
+            onChange={useCallback(() => setRule('clockwise'), [])}
+          />
+          clockwise
+        </label>
+        <StyledBoard
+          onComplete={useCallback((log) => {
+            setHistoryLog((state) => [...state, log]);
+            setInitialBoardObjects((state) => [...state]);
+            setCurrClockwiseIndex(
+              (state) =>
+                ((state !== undefined ? state : bucketOrdering.indexOf(log.dropSuccess.dropped)) +
+                  1) %
+                bucketOrdering.length,
+            );
+          }, [])}
+          initialBoardObjects={initialBoardObjectsState}
         />
-        clockwise
-      </label>
-      <StyledBoard
-        onComplete={useCallback((log) => {
-          setHistoryLog((state) => [...state, log]);
-          setInitialBoardObjects((state) => [...state]);
-          setCurrClockwiseIndex(
-            (state) =>
-              ((state !== undefined ? state : bucketOrdering.indexOf(log.dropSuccess.dropped)) +
-                1) %
-              bucketOrdering.length,
-          );
-        }, [])}
-        initialBoardObjects={initialBoardObjectsState}
-      />
-    </StyledApp>
+      </StyledApp>
+      <div>History Log (Testing Only):</div>
+      {historyLog.map((log) => (
+        <div>{JSON.stringify(log)}</div>
+      ))}
+    </>
   );
 };
 
