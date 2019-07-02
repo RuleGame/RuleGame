@@ -14,14 +14,17 @@ export type Shape =
   | 'star'
   | 'happy';
 
-export type BoardObjectType = {
+export type MinimalBoardObjectType = {
   id: BoardObjectId; // -1 denotes an undefined value
   color: string;
   shape: Shape;
   x: number;
   y: number;
-  buckets: Set<BucketPosition>;
 };
+
+export type BoardObjectType = {
+  buckets: Set<BucketPosition>;
+} & MinimalBoardObjectType;
 
 export type BucketType = { pos: BucketPosition; x: number; y: number };
 
@@ -30,4 +33,7 @@ export type DropAttempt = { dragged: BoardObjectId; dropped: BucketPosition };
 export type Log = {
   touchedObjects: BoardObjectId[];
   dropAttempts: DropAttempt[];
+  dropSuccess: DropAttempt;
 };
+
+export type Rule = 'closest' | 'clockwise';

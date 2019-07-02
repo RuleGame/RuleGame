@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Log } from './@types/index';
+import { BoardObjectType, BucketPosition, Log, Rule } from './@types/index';
 import Board from './components/Board';
-import { initialBoardObjectsList } from './constants';
+import { initialBoardObjects } from './constants';
 
 const StyledApp = styled.div<{}>`
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100vw;
@@ -22,27 +23,75 @@ const StyledBoard = styled(Board)<{}>`
   box-sizing: border-box;
 `;
 
+const bucketOrdering: BucketPosition[] = ['TL', 'TR', 'BR', 'BL'];
+
 const App = (): JSX.Element => {
   const [historyLog, setHistoryLog] = useState([] as Log[]);
-  const [initialBoardObjectsIndex, setInitialBoardObjectsIndex] = useState(0);
+  const [initialBoardObjectsState, setInitialBoardObjects] = useState([] as BoardObjectType[]);
+  const [rule, setRule] = useState('clockwise' as Rule);
+  const [currClockwiseIndex, setCurrClockwiseIndex] = useState<undefined | number>(undefined);
 
   useEffect(() => {
     console.log(historyLog);
   }, [historyLog]);
 
+  useEffect(() => {
+    if (rule === 'clockwise') {
+      // TODO: Set buckets
+      setInitialBoardObjects(
+        initialBoardObjects.map((boardObject) => ({
+          ...boardObject,
+          buckets: new Set<BucketPosition>(['TL', 'TR', 'BL', 'BR']),
+        })),
+      );
+      setCurrClockwiseIndex(undefined);
+    } else if (rule === 'closest') {
+      // TODO: Set buckets
+      setInitialBoardObjects(
+        initialBoardObjects.map((boardObject) => ({
+          ...boardObject,
+          buckets: new Set<BucketPosition>(['TL', 'TR', 'BL', 'BR']),
+        })),
+      );
+    }
+  }, [rule]);
+
+  useEffect(() => {
+    // TODO: Set buckets
+    if (currClockwiseIndex !== undefined) {
+      setInitialBoardObjects(
+        initialBoardObjects.map((boardObject) => ({
+          ...boardObject,
+          buckets: new Set<BucketPosition>([bucketOrdering[currClockwiseIndex]]),
+        })),
+      );
+    }
+  }, [currClockwiseIndex]);
+
   return (
     <StyledApp>
+      <label htmlFor="clockwise">
+        <input
+          type="radio"
+          id="clockwise"
+          checked
+          name="rule"
+          onChange={useCallback(() => setRule('clockwise'), [])}
+        />
+        clockwise
+      </label>
       <StyledBoard
-        onComplete={useCallback(
-          (log) => {
-            setHistoryLog([...historyLog, log]);
-            setInitialBoardObjectsIndex(
-              (initialBoardObjectsIndex + 1) % initialBoardObjectsList.length,
-            );
-          },
-          [historyLog, initialBoardObjectsIndex],
-        )}
-        initialBoardObjects={initialBoardObjectsList[initialBoardObjectsIndex]}
+        onComplete={useCallback((log) => {
+          setHistoryLog((state) => [...state, log]);
+          setInitialBoardObjects((state) => [...state]);
+          setCurrClockwiseIndex(
+            (state) =>
+              ((state !== undefined ? state : bucketOrdering.indexOf(log.dropSuccess.dropped)) +
+                1) %
+              bucketOrdering.length,
+          );
+        }, [])}
+        initialBoardObjects={initialBoardObjectsState}
       />
     </StyledApp>
   );

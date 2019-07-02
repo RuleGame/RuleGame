@@ -106,7 +106,11 @@ const Board = ({ onComplete, initialBoardObjects, className }: BoardProps): JSX.
   useEffect(() => {
     if (droppedObjectId !== -1) {
       const smileyTimeout = setTimeout(() => {
-        onComplete({ dropAttempts, touchedObjects });
+        onComplete({
+          dropAttempts,
+          touchedObjects,
+          dropSuccess: dropAttempts[dropAttempts.length - 1],
+        });
       }, afterDragTimeout);
       return () => clearTimeout(smileyTimeout);
     }
