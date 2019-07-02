@@ -28,7 +28,6 @@ const StyledBoardObject = styled(BoardObject)<BoardObjectType>`
 const StyledBucket = styled(Bucket)<BucketType>`
   grid-column: ${(bucketCoord) => bucketCoord.x + 1};
   grid-row: ${(bucketCoord) => rows - bucketCoord.y};
-  color: red;
 `;
 
 type State = {
@@ -45,7 +44,7 @@ type Action =
   | { type: 'ADD_TOUCHED_OBJECT'; id: BoardObjectId }
   | { type: 'ADD_DROP_ATTEMPT'; dropAttempt: DropAttempt }
   | { type: 'REMOVE_OBJECT'; id: BoardObjectId }
-  | { type: 'SET_DROPPED_BUCKET'; pos: BucketPosition }
+  | { type: 'SET_DROPPED_BUCKET'; pos: BucketPosition };
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -56,7 +55,7 @@ const reducer = (state: State, action: Action): State => {
         touchedObjects: [],
         dropAttempts: [],
         droppedBucket: undefined,
-      }
+      };
     case 'SET_DROPPED_OBJECT_ID':
       return {
         ...state,
@@ -81,7 +80,7 @@ const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         droppedBucket: action.pos,
-      }
+      };
     default:
       return state;
   }
@@ -147,7 +146,7 @@ const Board = ({ onComplete, initialBoardObjects, className }: BoardProps): JSX.
             if (droppedItem.buckets.has(bucketCoord.pos)) {
               dispatch({ type: 'REMOVE_OBJECT', id: droppedItem.id });
               dispatch({ type: 'SET_DROPPED_OBJECT_ID', id: droppedItem.id });
-              dispatch({ type: 'SET_DROPPED_BUCKET', pos: bucketCoord.pos})
+              dispatch({ type: 'SET_DROPPED_BUCKET', pos: bucketCoord.pos });
             }
           }}
           // Don't allow dropping when an object has been dropped for this table.
