@@ -7,6 +7,7 @@ import bucketSvg from '../assets/bucket.svg';
 export type ShapeProps = {
   ref: React.Ref<HTMLDivElement>;
   shape: Shape;
+  className?: string;
 };
 
 const shapesMapping: { [shape in Shape]: JSX.Element | null } = {
@@ -19,9 +20,9 @@ const shapesMapping: { [shape in Shape]: JSX.Element | null } = {
   nothing: null,
 };
 
-const ShapeObject = React.forwardRef<HTMLDivElement, ShapeProps>(({ shape, ...props }, ref) => {
+const ShapeObject = React.forwardRef<HTMLDivElement, ShapeProps>(({ shape, className }, ref) => {
   return (
-    <div {...props} ref={ref}>
+    <div className={className} ref={ref}>
       {shapesMapping[shape]}
     </div>
   );
