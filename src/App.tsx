@@ -91,9 +91,12 @@ const App = (): JSX.Element => {
           initialBoardObjects={initialBoardObjectsState}
         />
       </StyledApp>
-      <div>History Log (Testing Only):</div>
+      <h2>History Log (Testing Only):</h2>
       {historyLog.map((log) => (
-        <div>{JSON.stringify(log)}</div>
+        <>
+          <div>{JSON.stringify(log)}</div>
+          <br />
+        </>
       ))}
     </>
   );
