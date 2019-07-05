@@ -31,9 +31,14 @@ export type BucketType = { pos: BucketPosition; x: number; y: number };
 export type DropAttempt = { dragged: BoardObjectId; dropped: BucketPosition };
 
 export type Log = {
-  touchedObjects: BoardObjectId[];
+  id: number;
+  touchAttempts: BoardObjectId[];
   dropAttempts: DropAttempt[];
   dropSuccess: DropAttempt;
 };
 
 export type Rule = 'closest' | 'clockwise';
+
+export type BucketPositionsMapper = (
+  boardObject: BoardObjectType | MinimalBoardObjectType,
+) => BoardObjectType;

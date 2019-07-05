@@ -1,4 +1,4 @@
-import { BucketType, MinimalBoardObjectType } from '../@types';
+import { BucketType, MinimalBoardObjectType, BucketPosition } from '../@types';
 
 export const afterDragTimeout = 1000; // In miliseconds.
 
@@ -42,6 +42,8 @@ export const initialBoardObjects: MinimalBoardObjectType[] = [
     y: 6,
   },
 ];
+
+export const bucketOrder: BucketPosition[] = ['TL', 'TR', 'BR', 'BL'];
 
 export const bucketCoords: BucketType[] = [
   { pos: 'BL', x: 0, y: 0 },
