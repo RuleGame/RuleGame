@@ -16,7 +16,7 @@ const reducer = (state: State, action: Action): State => {
     case 'SET_BOARD_OBJECTS':
       return {
         ...state,
-        boardObjects: initialBoardObjects.map(action.mapper),
+        boardObjects: state.boardObjects.map(action.mapper),
         gameId: state.gameId + 1,
       };
     default:
