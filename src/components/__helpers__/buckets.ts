@@ -1,7 +1,7 @@
 import { BucketPosition, BucketPositionsMapper } from '../../@types';
 import { cols, rows } from '../../constants';
 
-export const setAllBucketsMapper = (buckets: BucketPosition[]): BucketPositionsMapper => (
+export const setAllBucketsMapperCreator = (buckets: BucketPosition[]): BucketPositionsMapper => (
   boardObject,
 ) => ({
   ...boardObject,

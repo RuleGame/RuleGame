@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import {
   BoardObjectId,
@@ -30,32 +30,6 @@ const StyledBucket = styled(Bucket)<BucketType>`
   grid-row: ${(bucketCoord) => rows - bucketCoord.y};
 `;
 
-type State = {
-  droppedObjectId: number;
-  boardObjects: BoardObjectType[];
-};
-
-type Action =
-  | { type: 'RESET'; boardObjects: BoardObjectType[] }
-  | { type: 'REMOVE_OBJECT'; id: BoardObjectId };
-
-const reducer = (state: State, action: Action): State => {
-  switch (action.type) {
-    case 'RESET':
-      return {
-        droppedObjectId: -1,
-        boardObjects: [...action.boardObjects],
-      };
-    case 'REMOVE_OBJECT':
-      return {
-        ...state,
-        boardObjects: state.boardObjects.filter((boardObject) => boardObject.id !== action.id),
-      };
-    default:
-      return state;
-  }
-};
-
 type BoardProps = {
   onComplete: (log: Log) => void;
   initialBoardObjects: BoardObjectType[];
@@ -66,25 +40,32 @@ type BoardProps = {
 const Board = ({ onComplete, initialBoardObjects, className, id }: BoardProps): JSX.Element => {
   const ref = useRef<{
     touchAttempts: BoardObjectId[];
-    droppedBucket: BucketPosition | undefined;
     dropAttempts: DropAttempt[];
   }>({
-    droppedBucket: undefined,
     dropAttempts: [],
     touchAttempts: [],
   });
 
-  const [state, dispatch] = useReducer(reducer, {
+  const [state, setState] = useState<{
+    droppedObjectId: number;
+    boardObjects: BoardObjectType[];
+    droppedBucket: undefined | BucketPosition;
+  }>({
     droppedObjectId: -1,
     boardObjects: initialBoardObjects,
+    droppedBucket: undefined,
   });
 
   const { droppedObjectId, boardObjects } = state;
 
   useEffect(() => {
-    dispatch({ type: 'RESET', boardObjects: initialBoardObjects });
-    ref.current = {
+    setState((prevState) => ({
+      ...prevState,
+      droppedObjectId: -1,
+      boardObjects: initialBoardObjects,
       droppedBucket: undefined,
+    }));
+    ref.current = {
       dropAttempts: [],
       touchAttempts: [],
     };
@@ -97,9 +78,7 @@ const Board = ({ onComplete, initialBoardObjects, className, id }: BoardProps): 
           {...boardObject}
           key={`${boardObject.x}-${boardObject.y}`}
           item={{ ...boardObject, type: 'object' }}
-          onClick={() =>
-            !ref.current.droppedBucket && ref.current.touchAttempts.push(boardObject.id)
-          }
+          onClick={() => !state.droppedBucket && ref.current.touchAttempts.push(boardObject.id)}
         />
       ))}
       {/* TODO: useCallback cannot be used in a callback (abstract the map return JSX) */}
@@ -111,7 +90,7 @@ const Board = ({ onComplete, initialBoardObjects, className, id }: BoardProps): 
             droppedItem: BoardObjectItem,
             // @ts-ignore (Should really be void but the defined return type is undefined.)
           ): undefined => {
-            if (ref.current.droppedBucket) {
+            if (state.droppedBucket) {
               return;
             }
             const { current } = ref;
@@ -120,8 +99,13 @@ const Board = ({ onComplete, initialBoardObjects, className, id }: BoardProps): 
             // Don't put in canDrop because we want to bait the user to dropping items.
             // (The cursor will change to the drop cursor.)
             if (droppedItem.buckets.has(bucketCoord.pos)) {
-              dispatch({ type: 'REMOVE_OBJECT', id: droppedItem.id });
-              current.droppedBucket = bucketCoord.pos;
+              setState((prevState) => ({
+                ...prevState,
+                droppedBucket: bucketCoord.pos,
+                boardObjects: prevState.boardObjects.filter(
+                  (boardObject) => boardObject.id !== droppedItem.id,
+                ),
+              }));
 
               onComplete({
                 id,
@@ -133,7 +117,7 @@ const Board = ({ onComplete, initialBoardObjects, className, id }: BoardProps): 
           }}
           // Don't allow dropping when an object has been dropped for this table.
           canDrop={(): boolean => droppedObjectId === -1}
-          dropped={ref.current.droppedBucket === bucketCoord.pos}
+          dropped={state.droppedBucket === bucketCoord.pos}
         />
       ))}
     </StyledBoard>
