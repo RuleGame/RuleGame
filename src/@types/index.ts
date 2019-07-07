@@ -12,7 +12,8 @@ export type Shape =
   | 'circle'
   | 'triangle'
   | 'star'
-  | 'happy';
+  | 'happy'
+  | 'check';
 
 export type MinimalBoardObjectType = {
   id: BoardObjectId; // -1 denotes an undefined value
@@ -24,6 +25,7 @@ export type MinimalBoardObjectType = {
 
 export type BoardObjectType = {
   buckets: Set<BucketPosition>;
+  draggable: boolean;
 } & MinimalBoardObjectType;
 
 export type BucketType = { pos: BucketPosition; x: number; y: number };
@@ -39,6 +41,4 @@ export type Log = {
 
 export type Rule = 'closest' | 'clockwise';
 
-export type BucketPositionsMapper = (
-  boardObject: BoardObjectType | MinimalBoardObjectType,
-) => BoardObjectType;
+export type boardObjectsMapper = (boardObject: BoardObjectType) => BoardObjectType;

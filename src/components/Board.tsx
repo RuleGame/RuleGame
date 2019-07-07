@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import {
   BoardObjectId,
@@ -32,12 +32,21 @@ const StyledBucket = styled(Bucket)<BucketType>`
 
 type BoardProps = {
   onComplete: (log: Log) => void;
-  initialBoardObjects: BoardObjectType[];
+  boardObjects: BoardObjectType[];
   className?: string;
   id: number;
+  pause: boolean;
+  droppedBucket: BucketPosition | undefined;
 };
 
-const Board = ({ onComplete, initialBoardObjects, className, id }: BoardProps): JSX.Element => {
+const Board = ({
+  onComplete,
+  boardObjects,
+  className,
+  id,
+  pause,
+  droppedBucket,
+}: BoardProps): JSX.Element => {
   const ref = useRef<{
     touchAttempts: BoardObjectId[];
     dropAttempts: DropAttempt[];
@@ -46,30 +55,12 @@ const Board = ({ onComplete, initialBoardObjects, className, id }: BoardProps): 
     touchAttempts: [],
   });
 
-  const [state, setState] = useState<{
-    droppedObjectId: number;
-    boardObjects: BoardObjectType[];
-    droppedBucket: undefined | BucketPosition;
-  }>({
-    droppedObjectId: -1,
-    boardObjects: initialBoardObjects,
-    droppedBucket: undefined,
-  });
-
-  const { droppedObjectId, boardObjects } = state;
-
   useEffect(() => {
-    setState((prevState) => ({
-      ...prevState,
-      droppedObjectId: -1,
-      boardObjects: initialBoardObjects,
-      droppedBucket: undefined,
-    }));
     ref.current = {
       dropAttempts: [],
       touchAttempts: [],
     };
-  }, [initialBoardObjects]);
+  }, []);
 
   return (
     <StyledBoard className={className}>
@@ -78,7 +69,8 @@ const Board = ({ onComplete, initialBoardObjects, className, id }: BoardProps): 
           {...boardObject}
           key={`${boardObject.x}-${boardObject.y}`}
           item={{ ...boardObject, type: 'object' }}
-          onClick={() => !state.droppedBucket && ref.current.touchAttempts.push(boardObject.id)}
+          onClick={() => !droppedBucket && ref.current.touchAttempts.push(boardObject.id)}
+          canDrag={boardObject.draggable}
         />
       ))}
       {/* TODO: useCallback cannot be used in a callback (abstract the map return JSX) */}
@@ -90,7 +82,7 @@ const Board = ({ onComplete, initialBoardObjects, className, id }: BoardProps): 
             droppedItem: BoardObjectItem,
             // @ts-ignore (Should really be void but the defined return type is undefined.)
           ): undefined => {
-            if (state.droppedBucket) {
+            if (droppedBucket) {
               return;
             }
             const { current } = ref;
@@ -99,14 +91,6 @@ const Board = ({ onComplete, initialBoardObjects, className, id }: BoardProps): 
             // Don't put in canDrop because we want to bait the user to dropping items.
             // (The cursor will change to the drop cursor.)
             if (droppedItem.buckets.has(bucketCoord.pos)) {
-              setState((prevState) => ({
-                ...prevState,
-                droppedBucket: bucketCoord.pos,
-                boardObjects: prevState.boardObjects.filter(
-                  (boardObject) => boardObject.id !== droppedItem.id,
-                ),
-              }));
-
               onComplete({
                 id,
                 dropAttempts: current.dropAttempts,
@@ -115,9 +99,8 @@ const Board = ({ onComplete, initialBoardObjects, className, id }: BoardProps): 
               });
             }
           }}
-          // Don't allow dropping when an object has been dropped for this table.
-          canDrop={(): boolean => droppedObjectId === -1}
-          dropped={state.droppedBucket === bucketCoord.pos}
+          canDrop={() => !pause}
+          dropped={droppedBucket === bucketCoord.pos}
         />
       ))}
     </StyledBoard>

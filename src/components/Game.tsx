@@ -1,15 +1,19 @@
-import React, { useCallback, useEffect, useReducer, useRef } from 'react';
-import { BoardObjectType, BucketPositionsMapper, Log, Rule } from '../@types/index';
+import React, { useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import { boardObjectsMapper, BoardObjectType, BucketPosition, Log, Rule } from '../@types/index';
 import { afterDragTimeout, bucketOrder, initialBoardObjects } from '../constants';
 import Board from './Board';
-import { closestBucketsMapper, setAllBucketsMapperCreator } from './__helpers__/buckets';
+import {
+  checkObjectMapperCreator,
+  closestBucketsMapper,
+  setAllBucketsMapperCreator,
+} from './__helpers__/buckets';
 
 type State = {
   boardObjects: BoardObjectType[];
   gameId: number;
 };
 
-type Action = { type: 'SET_BOARD_OBJECTS'; mapper: BucketPositionsMapper };
+type Action = { type: 'SET_BOARD_OBJECTS'; mapper: boardObjectsMapper };
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -32,12 +36,18 @@ type GameProps = {
 
 const Game = ({ rule, addLog, className }: GameProps): JSX.Element => {
   const [{ gameId, boardObjects }, dispatch] = useReducer(reducer, {
-    boardObjects: initialBoardObjects.map(setAllBucketsMapperCreator(['TL', 'TR', 'BR', 'BL'])),
+    boardObjects: initialBoardObjects.map((boardObject) => ({
+      ...boardObject,
+      draggable: true,
+      buckets: new Set<BucketPosition>(),
+    })),
     gameId: 0,
   });
 
-  const setMapper = (mapper: BucketPositionsMapper) =>
-    dispatch({ type: 'SET_BOARD_OBJECTS', mapper });
+  const [pause, setPause] = useState<boolean>(false);
+  const [droppedBucket, setDroppedBucket] = useState<BucketPosition | undefined>(undefined);
+
+  const setMapper = (mapper: boardObjectsMapper) => dispatch({ type: 'SET_BOARD_OBJECTS', mapper });
 
   // Won't cause an update.
   const ref = useRef<{ index: undefined | number }>({
@@ -46,7 +56,6 @@ const Game = ({ rule, addLog, className }: GameProps): JSX.Element => {
 
   useEffect(() => {
     if (rule === 'clockwise') {
-      // SET_BOARD_OBJECTS_BUCKETS
       setMapper(setAllBucketsMapperCreator(['TL', 'TR', 'BR', 'BL']));
       ref.current.index = undefined;
     } else if (rule === 'closest') {
@@ -62,8 +71,12 @@ const Game = ({ rule, addLog, className }: GameProps): JSX.Element => {
         (log) => {
           const { current } = ref;
           addLog(log);
-
+          setMapper(checkObjectMapperCreator(log.dropSuccess.dragged));
+          setPause(true);
+          setDroppedBucket(log.dropSuccess.dropped);
           setTimeout(() => {
+            setPause(false);
+            setDroppedBucket(undefined);
             if (rule === 'clockwise') {
               current.index =
                 ((current.index !== undefined
@@ -79,7 +92,9 @@ const Game = ({ rule, addLog, className }: GameProps): JSX.Element => {
         },
         [rule, addLog],
       )}
-      initialBoardObjects={boardObjects}
+      boardObjects={boardObjects}
+      pause={pause}
+      droppedBucket={droppedBucket}
     />
   );
 };

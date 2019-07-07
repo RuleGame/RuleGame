@@ -25,8 +25,16 @@ const Bucket = ({ className, onDrop, canDrop, dropped }: BucketProps): JSX.Eleme
       isOver: !!monitor.isOver(),
     }),
   });
-  // @ts-ignore
-  return <StyledBucket ref={ref} src={logo} className={className} isOver={isOver} shape={dropped ? 'happy': 'bucket'} />;
+  return (
+    // @ts-ignore
+    <StyledBucket
+      ref={ref}
+      src={logo}
+      className={className}
+      isOver={isOver}
+      shape={dropped ? 'happy' : 'bucket'}
+    />
+  );
 };
 
 export default Bucket;
