@@ -17,15 +17,3 @@ export const closestBucketsMapper: boardObjectsMapper = (boardObject) => ({
     ...(boardObject.x <= cols / 2 && boardObject.y >= rows / 2 ? ['TL' as BucketPosition] : []),
   ]),
 });
-
-export const checkObjectMapperCreator = (droppedBoardObjectId: number): boardObjectsMapper => (
-  boardObject,
-) => ({
-  ...boardObject,
-  ...(boardObject.id === droppedBoardObjectId
-    ? {
-        shape: 'check',
-        draggable: false,
-      }
-    : {}),
-});

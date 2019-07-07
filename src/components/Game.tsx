@@ -1,27 +1,44 @@
-import React, { useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { boardObjectsMapper, BoardObjectType, BucketPosition, Log, Rule } from '../@types/index';
 import { afterDragTimeout, bucketOrder, initialBoardObjects } from '../constants';
 import Board from './Board';
-import {
-  checkObjectMapperCreator,
-  closestBucketsMapper,
-  setAllBucketsMapperCreator,
-} from './__helpers__/buckets';
+import { closestBucketsMapper, setAllBucketsMapperCreator } from './__helpers__/buckets';
 
 type State = {
-  boardObjects: BoardObjectType[];
+  boardObjectsById: { [id: number]: BoardObjectType };
   gameId: number;
 };
 
-type Action = { type: 'SET_BOARD_OBJECTS'; mapper: boardObjectsMapper };
+type Action =
+  | { type: 'SET_BOARD_OBJECTS_USING_MAPPER'; mapper: boardObjectsMapper }
+  | { type: 'UPDATE_BOARD_OBJECT'; id: number; boardObject: Partial<BoardObjectType> };
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case 'SET_BOARD_OBJECTS':
+    case 'SET_BOARD_OBJECTS_USING_MAPPER':
       return {
         ...state,
-        boardObjects: state.boardObjects.map(action.mapper),
+        boardObjectsById: Object.values(state.boardObjectsById)
+          .map(action.mapper)
+          .reduce(
+            (acc, curr) => ({
+              ...acc,
+              [curr.id]: curr,
+            }),
+            {},
+          ),
         gameId: state.gameId + 1,
+      };
+    case 'UPDATE_BOARD_OBJECT':
+      return {
+        ...state,
+        boardObjectsById: {
+          ...state.boardObjectsById,
+          [action.id]: {
+            ...state.boardObjectsById[action.id],
+            ...action.boardObject,
+          },
+        },
       };
     default:
       return state;
@@ -35,19 +52,28 @@ type GameProps = {
 };
 
 const Game = ({ rule, addLog, className }: GameProps): JSX.Element => {
-  const [{ gameId, boardObjects }, dispatch] = useReducer(reducer, {
-    boardObjects: initialBoardObjects.map((boardObject) => ({
-      ...boardObject,
-      draggable: true,
-      buckets: new Set<BucketPosition>(),
-    })),
+  const [{ gameId, boardObjectsById }, dispatch] = useReducer(reducer, {
+    boardObjectsById: initialBoardObjects.reduce(
+      (acc, curr) => ({
+        ...acc,
+        [curr.id]: {
+          ...curr,
+          draggable: true,
+          buckets: new Set<BucketPosition>(),
+        },
+      }),
+      {},
+    ),
     gameId: 0,
   });
 
   const [pause, setPause] = useState<boolean>(false);
   const [droppedBucket, setDroppedBucket] = useState<BucketPosition | undefined>(undefined);
 
-  const setMapper = (mapper: boardObjectsMapper) => dispatch({ type: 'SET_BOARD_OBJECTS', mapper });
+  const setMapper = (mapper: boardObjectsMapper) =>
+    dispatch({ type: 'SET_BOARD_OBJECTS_USING_MAPPER', mapper });
+  const updateBoardObject = (id: number, boardObject: Partial<BoardObjectType>) =>
+    dispatch({ type: 'UPDATE_BOARD_OBJECT', id, boardObject });
 
   // Won't cause an update.
   const ref = useRef<{ index: undefined | number }>({
@@ -71,7 +97,10 @@ const Game = ({ rule, addLog, className }: GameProps): JSX.Element => {
         (log) => {
           const { current } = ref;
           addLog(log);
-          setMapper(checkObjectMapperCreator(log.dropSuccess.dragged));
+          updateBoardObject(log.dropSuccess.dragged, {
+            shape: 'check',
+            draggable: false,
+          });
           setPause(true);
           setDroppedBucket(log.dropSuccess.dropped);
           setTimeout(() => {
@@ -92,7 +121,7 @@ const Game = ({ rule, addLog, className }: GameProps): JSX.Element => {
         },
         [rule, addLog],
       )}
-      boardObjects={boardObjects}
+      boardObjects={useMemo(() => Object.values(boardObjectsById), [boardObjectsById])}
       pause={pause}
       droppedBucket={droppedBucket}
     />
