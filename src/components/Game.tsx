@@ -1,12 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { boardObjectsMapper, BoardObjectType, BucketPosition, Log, Rule, BoardObjectId, DropAttempt, BucketType } from '../@types/index';
+import React, { useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { BoardObjectId, boardObjectsMapper, BoardObjectType, BucketPosition, BucketType, DropAttempt, Log, Rule } from '../@types/index';
 import { afterDragTimeout, bucketOrder, initialBoardObjects } from '../constants';
 import Board from './Board';
-import {
-  closestBucketsMapper,
-  setAllBucketsMapperCreator,
-  initialBucketsMapper,
-} from './__helpers__/buckets';
+import { closestBucketsMapper, initialBucketsMapper, setAllBucketsMapperCreator } from './__helpers__/buckets';
 
 type Options = {
   incrementMoveNum: boolean;
@@ -155,34 +151,7 @@ const Game = ({ rule, addLog, className }: GameProps): JSX.Element => {
   return (
     <Board
       className={className}
-      onSuccessfulMove={useCallback(
-        (logData) => {
-          const { current } = ref;
-          addLog({ id: ref.current.logId, data: { ...logData } });
-          updateBoardObject(logData.dropSuccess.dragged, {
-            shape: 'check',
-            draggable: false,
-          });
-          setPause(true);
-          setDroppedBucket(logData.dropSuccess.dropped);
-          setTimeout(() => {
-            setPause(false);
-            setDroppedBucket(undefined);
-            if (rule === 'clockwise') {
-              current.index =
-                ((current.index !== undefined
-                  ? current.index
-                  : bucketOrder.indexOf(logData.dropSuccess.dropped)) +
-                  1) %
-                bucketOrder.length;
-              setMapper(setAllBucketsMapperCreator([bucketOrder[current.index]]));
-            } else if (rule === 'closest') {
-              // setMapper(closestBucketsMapper, { incrementMoveNum: true });
-            }
-          }, afterDragTimeout);
-        },
-        [rule, addLog],
-      )}
+      onBoardObjectClick={(boardObject) =>  ref.current.touchAttempts.push(boardObject.id)}
       boardObjects={useMemo(() => Object.values(boardObjectsById), [boardObjectsById])}
       pause={pause}
       disabledBucket={disabledBucket}

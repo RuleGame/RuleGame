@@ -1,14 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import {
-  BoardObjectId,
-  BoardObjectItem,
-  BoardObjectType,
-  BucketPosition,
-  BucketType,
-  DropAttempt,
-  Log,
-} from '../@types';
+import { BoardObjectItem, BoardObjectType, BucketPosition, BucketType } from '../@types';
 import { bucketCoords, cols, rows } from '../constants';
 import BoardObject from './BoardObject';
 import Bucket from './Bucket';
@@ -36,6 +28,7 @@ type BoardProps = {
   className?: string;
   pause: boolean;
   disabledBucket: BucketPosition | undefined;
+  onBoardObjectClick: (boardObject: BoardObjectType) => void;
 };
 
 const Board = ({
@@ -43,6 +36,7 @@ const Board = ({
   boardObjects,
   className,
   pause,
+  onBoardObjectClick,
   disabledBucket,
 }: BoardProps): JSX.Element => {
 
@@ -53,7 +47,7 @@ const Board = ({
           {...boardObject}
           key={`${boardObject.x}-${boardObject.y}`}
           item={{ ...boardObject, type: 'object' }}
-          onClick={() => !disabledBucket && ref.current.touchAttempts.push(boardObject.id)}
+          onClick={() => !disabledBucket && onBoardObjectClick(boardObject)}
           canDrag={boardObject.draggable}
         />
       ))}

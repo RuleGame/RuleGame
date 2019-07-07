@@ -7,7 +7,7 @@ import ShapeObject from './ShapeObject';
 
 export type BucketProps = {
   className?: string;
-  onDrop: (item: BoardObjectItem) => undefined;
+  onDrop: (item: BoardObjectItem) => void;
   canDrop: (item: BoardObjectItem) => boolean;
   dropped: boolean;
 };
