@@ -68,7 +68,7 @@ const Game = ({ rule, addLog, className }: GameProps): JSX.Element => {
   });
 
   const [pause, setPause] = useState<boolean>(false);
-  const [droppedBucket, setDroppedBucket] = useState<BucketPosition | undefined>(undefined);
+  const [disabledBucket, setDroppedBucket] = useState<BucketPosition | undefined>(undefined);
 
   const setMapper = (mapper: boardObjectsMapper) =>
     dispatch({ type: 'SET_BOARD_OBJECTS_USING_MAPPER', mapper });
@@ -123,7 +123,7 @@ const Game = ({ rule, addLog, className }: GameProps): JSX.Element => {
       )}
       boardObjects={useMemo(() => Object.values(boardObjectsById), [boardObjectsById])}
       pause={pause}
-      droppedBucket={droppedBucket}
+      disabledBucket={disabledBucket}
     />
   );
 };

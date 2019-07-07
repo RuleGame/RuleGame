@@ -36,7 +36,7 @@ type BoardProps = {
   className?: string;
   id: number;
   pause: boolean;
-  droppedBucket: BucketPosition | undefined;
+  disabledBucket: BucketPosition | undefined;
 };
 
 const Board = ({
@@ -45,7 +45,7 @@ const Board = ({
   className,
   id,
   pause,
-  droppedBucket,
+  disabledBucket,
 }: BoardProps): JSX.Element => {
   const ref = useRef<{
     touchAttempts: BoardObjectId[];
@@ -69,7 +69,7 @@ const Board = ({
           {...boardObject}
           key={`${boardObject.x}-${boardObject.y}`}
           item={{ ...boardObject, type: 'object' }}
-          onClick={() => !droppedBucket && ref.current.touchAttempts.push(boardObject.id)}
+          onClick={() => !disabledBucket && ref.current.touchAttempts.push(boardObject.id)}
           canDrag={boardObject.draggable}
         />
       ))}
@@ -82,7 +82,7 @@ const Board = ({
             droppedItem: BoardObjectItem,
             // @ts-ignore (Should really be void but the defined return type is undefined.)
           ): undefined => {
-            if (droppedBucket) {
+            if (disabledBucket) {
               return;
             }
             const { current } = ref;
@@ -100,7 +100,7 @@ const Board = ({
             }
           }}
           canDrop={() => !pause}
-          dropped={droppedBucket === bucketCoord.pos}
+          dropped={disabledBucket === bucketCoord.pos}
         />
       ))}
     </StyledBoard>
