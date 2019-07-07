@@ -5,12 +5,12 @@ export const setAllBucketsMapperCreator = (buckets: BucketPosition[]): boardObje
   boardObject,
 ) => ({
   ...boardObject,
-  buckets: new Set<BucketPosition>(buckets),
+  buckets: new Set(buckets),
 });
 
 export const closestBucketsMapper: boardObjectsMapper = (boardObject) => ({
   ...boardObject,
-  buckets: new Set<BucketPosition>([
+  buckets: new Set([
     ...(boardObject.x <= cols / 2 && boardObject.y <= rows / 2 ? ['BL' as BucketPosition] : []),
     ...(boardObject.x >= cols / 2 && boardObject.y <= rows / 2 ? ['BR' as BucketPosition] : []),
     ...(boardObject.x >= cols / 2 && boardObject.y >= rows / 2 ? ['TR' as BucketPosition] : []),

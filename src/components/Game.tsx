@@ -59,7 +59,7 @@ const Game = ({ rule, addLog, className }: GameProps): JSX.Element => {
         [curr.id]: {
           ...curr,
           draggable: true,
-          buckets: new Set<BucketPosition>(),
+          buckets: new Set(),
         },
       }),
       {},
