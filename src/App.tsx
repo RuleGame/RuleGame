@@ -1,7 +1,28 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useReducer } from 'react';
 import styled from 'styled-components';
 import { Log, Rule } from './@types/index';
 import Game from './components/Game';
+
+type State = {
+  rule: Rule;
+};
+
+type Action = {
+  type: 'UPDATE_RULE';
+  rule: Rule;
+};
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case 'UPDATE_RULE':
+      return {
+        ...state,
+        rule: action.rule,
+      };
+    default:
+      return state;
+  }
+};
 
 const StyledApp = styled.div<{}>`
   display: flex;
@@ -21,8 +42,13 @@ const StyledGame = styled(Game)<{}>`
 `;
 
 const App = (): JSX.Element => {
-  const [rule, setRule] = useState<Rule>('closest');
   const [logs, setLogs] = useState<Log[]>([]);
+
+  const [{ rule }, dispatch] = useReducer(reducer, {
+    rule: 'closest',
+  });
+
+  const setRule = (rule: Rule) => dispatch({ type: 'UPDATE_RULE', rule });
 
   return (
     <>

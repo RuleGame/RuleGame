@@ -34,9 +34,13 @@ export type DropAttempt = { dragged: BoardObjectId; dropped: BucketPosition };
 
 export type Log = {
   id: number;
-  touchAttempts: BoardObjectId[];
-  dropAttempts: DropAttempt[];
-  dropSuccess: DropAttempt;
+  data: {
+    boardId: number;
+    moveNum: number;
+    touchAttempts: BoardObjectId[];
+    dropAttempts: DropAttempt[];
+    dropSuccess: DropAttempt;
+  };
 };
 
 export type Rule = 'closest' | 'clockwise';

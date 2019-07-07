@@ -31,36 +31,20 @@ const StyledBucket = styled(Bucket)<BucketType>`
 `;
 
 type BoardProps = {
-  onComplete: (log: Log) => void;
+  onDrop: (bucketCoord: BucketType) => (droppedItem: BoardObjectItem) => void;
   boardObjects: BoardObjectType[];
   className?: string;
-  id: number;
   pause: boolean;
   disabledBucket: BucketPosition | undefined;
 };
 
 const Board = ({
-  onComplete,
+  onDrop,
   boardObjects,
   className,
-  id,
   pause,
   disabledBucket,
 }: BoardProps): JSX.Element => {
-  const ref = useRef<{
-    touchAttempts: BoardObjectId[];
-    dropAttempts: DropAttempt[];
-  }>({
-    dropAttempts: [],
-    touchAttempts: [],
-  });
-
-  useEffect(() => {
-    ref.current = {
-      dropAttempts: [],
-      touchAttempts: [],
-    };
-  }, []);
 
   return (
     <StyledBoard className={className}>
@@ -78,27 +62,7 @@ const Board = ({
         <StyledBucket
           {...bucketCoord}
           key={`${bucketCoord.x}-${bucketCoord.y}`}
-          onDrop={(
-            droppedItem: BoardObjectItem,
-            // @ts-ignore (Should really be void but the defined return type is undefined.)
-          ): undefined => {
-            if (disabledBucket) {
-              return;
-            }
-            const { current } = ref;
-            current.dropAttempts.push({ dragged: droppedItem.id, dropped: bucketCoord.pos });
-
-            // Don't put in canDrop because we want to bait the user to dropping items.
-            // (The cursor will change to the drop cursor.)
-            if (droppedItem.buckets.has(bucketCoord.pos)) {
-              onComplete({
-                id,
-                dropAttempts: current.dropAttempts,
-                touchAttempts: current.touchAttempts,
-                dropSuccess: current.dropAttempts[current.dropAttempts.length - 1],
-              });
-            }
-          }}
+          onDrop={onDrop(bucketCoord)}
           canDrop={() => !pause}
           dropped={disabledBucket === bucketCoord.pos}
         />
