@@ -17,3 +17,10 @@ export const closestBucketsMapper: boardObjectsMapper = (boardObject) => ({
     ...(boardObject.x <= cols / 2 && boardObject.y >= rows / 2 ? ['TL' as BucketPosition] : []),
   ]),
 });
+
+export const initialBucketsMapper: boardObjectsMapper = (boardObject) => ({
+  ...boardObject,
+  buckets: new Set(
+    boardObject.color === 'blue' ? (['TL', 'TR', 'BL', 'BR'] as BucketPosition[]) : [],
+  ),
+});
