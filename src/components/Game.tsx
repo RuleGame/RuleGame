@@ -17,8 +17,8 @@ type State = {
 
 type Action =
   | {
-      type: 'SET_BOARD_OBJECTS_USING_MAPPER';
-      mapper: boardObjectsMapper;
+      type: 'SET_BOARD_OBJECTS_BY_RULE';
+      rule: Rule,
       options?: Partial<Options>;
     }
   | {
@@ -48,11 +48,17 @@ const reducer = (state: State, action: Action): State => {
         moveNum: 1,
         boardId: state.boardId + 1,
       };
-    case 'SET_BOARD_OBJECTS_USING_MAPPER':
+    case 'SET_BOARD_OBJECTS_BY_RULE':  {
+      let mapper = (boardObject: BoardObjectType) => boardObject;
+      switch(action.rule) {
+        case 'clockwise':
+        case 'closest':
+          mapper = closestBucketsMapper;
+      }
       return {
         ...state,
         boardObjectsById: Object.values(state.boardObjectsById)
-          .map(action.mapper)
+          .map(mapper)
           .reduce(
             (acc, curr) => ({
               ...acc,
@@ -62,6 +68,7 @@ const reducer = (state: State, action: Action): State => {
           ),
         moveNum: state.moveNum + 1,
       };
+    }
     case 'UPDATE_BOARD_OBJECT':
       return {
         ...state,
@@ -106,7 +113,7 @@ const Game = ({ rule, addLog, className }: GameProps): JSX.Element => {
   const [disabledBucket, setDroppedBucket] = useState<BucketPosition | undefined>(undefined);
 
   const setMapper = (mapper: boardObjectsMapper) =>
-    dispatch({ type: 'SET_BOARD_OBJECTS_USING_MAPPER', mapper });
+    dispatch({ type: 'SET_BOARD_OBJECTS_BY_RULE', mapper });
   const updateBoardObject = (id: number, boardObject: Partial<BoardObjectType>) =>
     dispatch({ type: 'UPDATE_BOARD_OBJECT', id, boardObject });
   const initBoard = () =>
@@ -157,8 +164,7 @@ const Game = ({ rule, addLog, className }: GameProps): JSX.Element => {
       disabledBucket={disabledBucket}
       onDrop={(bucket: BucketType) => (
         droppedItem
-        // @ts-ignore (Should really be void but the defined return type is undefined.)
-      ): undefined => {
+      ): void => {
         if (disabledBucket) {
           return;
         }
@@ -168,7 +174,6 @@ const Game = ({ rule, addLog, className }: GameProps): JSX.Element => {
         // Don't put in canDrop because we want to bait the user to dropping items.
         // (The cursor will change to the drop cursor.)
         if (droppedItem.buckets.has(bucket.pos)) {
-
           const { current } = ref;
           const dropSuccess = current.dropAttempts[current.dropAttempts.length - 1];
           addLog({ id: ref.current.logId, data: { boardId, moveNum,  dropAttempts: current.dropAttempts,
@@ -192,17 +197,8 @@ const Game = ({ rule, addLog, className }: GameProps): JSX.Element => {
                   1) %
                 bucketOrder.length;
               setMapper(setAllBucketsMapperCreator([bucketOrder[current.index]]));
-            } else if (rule === 'closest') {
-              // setMapper(closestBucketsMapper, { incrementMoveNum: true });
             }
           }, afterDragTimeout);
-
-          // onSuccessfulMove({
-          //   boardId,
-          //   dropAttempts: current.dropAttempts,
-          //   touchAttempts: current.touchAttempts,
-          //   dropSuccess: current.dropAttempts[current.dropAttempts.length - 1],
-          // });
         }
       }}
     />
