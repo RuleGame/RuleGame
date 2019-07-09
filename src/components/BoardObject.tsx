@@ -10,16 +10,23 @@ export type BoardObjectProps = {
   item: BoardObjectItem;
   onClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   shape: Shape;
+  canDrag?: boolean;
 };
 
 const StyledShapeObject = styled(ShapeObject)<{ canDrag: boolean; mouseDown: boolean }>`
   width: 100%;
   height: 100%;
-  cursor: grab;
+  cursor: ${({ canDrag }) => (canDrag ? 'grab' : 'unset')};
 `;
 
-const BoardObject = ({ className, item, onClick, shape }: BoardObjectProps): JSX.Element => {
-  const canDrag = item.buckets.size > 0;
+const BoardObject = ({
+  className,
+  item,
+  onClick,
+  shape,
+  canDrag: canDragProp = true,
+}: BoardObjectProps): JSX.Element => {
+  const canDrag = canDragProp && item.buckets.size > 0;
   const [, ref] = useDrag({
     item,
     canDrag,

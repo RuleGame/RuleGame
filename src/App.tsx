@@ -1,7 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useReducer } from 'react';
 import styled from 'styled-components';
-import { Log, Rule } from './@types/index';
+import { BucketPosition, Rule } from './@types/index';
 import Game from './components/Game';
+import { initialBucketsMapper } from './components/__helpers__/buckets';
+import { initialBoardObjects } from './constants/index';
+import { GameDispatch, gameReducer } from './contexts/game';
 
 const StyledApp = styled.div<{}>`
   display: flex;
@@ -21,11 +24,31 @@ const StyledGame = styled(Game)<{}>`
 `;
 
 const App = (): JSX.Element => {
-  const [rule, setRule] = useState<Rule>('closest');
-  const [logs, setLogs] = useState<Log[]>([]);
+  const [{ boardObjectsById, rule, logs }, dispatch] = useReducer(gameReducer, {
+    boardObjectsById: initialBoardObjects
+      .map((mininmalBoardObjectType) => ({
+        ...mininmalBoardObjectType,
+        buckets: new Set<BucketPosition>(),
+        draggable: true,
+      }))
+      .map(initialBucketsMapper)
+      .reduce(
+        (acc, curr) => ({
+          ...acc,
+          [curr.id]: curr,
+        }),
+        {},
+      ),
+    boardId: 0,
+    moveNum: 1,
+    logs: [],
+    rule: 'clockwise',
+  });
+
+  const setRule = (rule: Rule) => dispatch({ type: 'INIT_BOARD', rule });
 
   return (
-    <>
+    <GameDispatch.Provider value={dispatch}>
       <StyledApp>
         <label htmlFor="closest">
           <input
@@ -47,10 +70,7 @@ const App = (): JSX.Element => {
           />
           clockwise
         </label>
-        <StyledGame
-          rule={rule}
-          addLog={useCallback((log) => setLogs((state) => [...state, log]), [])}
-        />
+        <StyledGame boardObjectsById={boardObjectsById} />
       </StyledApp>
       <div>
         <h2>History Log (Testing Only):</h2>
@@ -61,7 +81,7 @@ const App = (): JSX.Element => {
           </React.Fragment>
         ))}
       </div>
-    </>
+    </GameDispatch.Provider>
   );
 };
 

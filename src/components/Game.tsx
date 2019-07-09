@@ -1,85 +1,77 @@
-import React, { useCallback, useEffect, useReducer, useRef } from 'react';
-import { BoardObjectType, BucketPositionsMapper, Log, Rule } from '../@types/index';
-import { afterDragTimeout, bucketOrder, initialBoardObjects } from '../constants';
+import React, { useContext, useMemo, useRef, useState } from 'react';
+import {
+  BoardObjectId,
+  BoardObjectType,
+  BucketPosition,
+  BucketType,
+  DropAttempt,
+} from '../@types/index';
+import { afterDragTimeout } from '../constants';
 import Board from './Board';
-import { closestBucketsMapper, setAllBucketsMapperCreator } from './__helpers__/buckets';
-
-type State = {
-  boardObjects: BoardObjectType[];
-  gameId: number;
-};
-
-type Action = { type: 'SET_BOARD_OBJECTS'; mapper: BucketPositionsMapper };
-
-const reducer = (state: State, action: Action): State => {
-  switch (action.type) {
-    case 'SET_BOARD_OBJECTS':
-      return {
-        ...state,
-        boardObjects: state.boardObjects.map(action.mapper),
-        gameId: state.gameId + 1,
-      };
-    default:
-      return state;
-  }
-};
+import { GameDispatch } from '../contexts/game';
 
 type GameProps = {
-  rule: Rule;
-  addLog: (log: Log) => void;
   className?: string;
+  boardObjectsById: { [id: number]: BoardObjectType };
 };
 
-const Game = ({ rule, addLog, className }: GameProps): JSX.Element => {
-  const [{ gameId, boardObjects }, dispatch] = useReducer(reducer, {
-    boardObjects: initialBoardObjects.map(setAllBucketsMapperCreator(['TL', 'TR', 'BR', 'BL'])),
-    gameId: 0,
-  });
-
-  const setMapper = (mapper: BucketPositionsMapper) =>
-    dispatch({ type: 'SET_BOARD_OBJECTS', mapper });
-
+const Game = ({ className, boardObjectsById }: GameProps): JSX.Element => {
   // Won't cause an update.
-  const ref = useRef<{ index: undefined | number }>({
-    index: undefined,
+  const ref = useRef<{
+    touchAttempts: BoardObjectId[];
+    dropAttempts: DropAttempt[];
+  }>({
+    dropAttempts: [],
+    touchAttempts: [],
   });
 
-  useEffect(() => {
-    if (rule === 'clockwise') {
-      // SET_BOARD_OBJECTS_BUCKETS
-      setMapper(setAllBucketsMapperCreator(['TL', 'TR', 'BR', 'BL']));
-      ref.current.index = undefined;
-    } else if (rule === 'closest') {
-      setMapper(closestBucketsMapper);
-    }
-  }, [rule]);
+  const dispatch = useContext(GameDispatch);
+
+  const [pause, setPause] = useState<boolean>(false);
+  const [disabledBucket, setDroppedBucket] = useState<BucketPosition | undefined>(undefined);
+
+  const makeMove = (
+    touchAttempts: BoardObjectId[],
+    dropAttempts: DropAttempt[],
+    dropSuccess: DropAttempt,
+  ) => dispatch({ type: 'MOVE', touchAttempts, dropAttempts, dropSuccess });
+  const updateBoardObject = (id: number, boardObject: Partial<BoardObjectType>) =>
+    dispatch({ type: 'UPDATE_BOARD_OBJECT', id, boardObject });
 
   return (
     <Board
-      id={gameId}
       className={className}
-      onComplete={useCallback(
-        (log) => {
-          const { current } = ref;
-          addLog(log);
+      onBoardObjectClick={(boardObject) => ref.current.touchAttempts.push(boardObject.id)}
+      boardObjects={useMemo(() => Object.values(boardObjectsById), [boardObjectsById])}
+      pause={pause}
+      disabledBucket={disabledBucket}
+      onDrop={(bucket: BucketType) => (droppedItem): void => {
+        if (disabledBucket) {
+          return;
+        }
+        const { current } = ref;
+        current.dropAttempts.push({ dragged: droppedItem.id, dropped: bucket.pos });
 
+        // Don't put in canDrop because we want to bait the user to dropping items.
+        // (The cursor will change to the drop cursor.)
+        if (droppedItem.buckets.has(bucket.pos)) {
+          const { current } = ref;
+          const dropSuccess = current.dropAttempts[current.dropAttempts.length - 1];
+          updateBoardObject(dropSuccess.dragged, {
+            shape: 'check',
+            draggable: false,
+          });
+          setPause(true);
+          setDroppedBucket(dropSuccess.dropped);
           setTimeout(() => {
-            if (rule === 'clockwise') {
-              current.index =
-                ((current.index !== undefined
-                  ? current.index
-                  : bucketOrder.indexOf(log.dropSuccess.dropped)) +
-                  1) %
-                bucketOrder.length;
-              setMapper(setAllBucketsMapperCreator([bucketOrder[current.index]]));
-            } else if (rule === 'closest') {
-              setMapper(closestBucketsMapper);
-            }
+            setPause(false);
+            setDroppedBucket(undefined);
+            makeMove(ref.current.touchAttempts, ref.current.dropAttempts, dropSuccess);
+            ref.current.touchAttempts = [];
+            ref.current.dropAttempts = [];
           }, afterDragTimeout);
-        },
-        [rule, addLog],
-      )}
-      initialBoardObjects={boardObjects}
+        }
+      }}
     />
   );
 };
