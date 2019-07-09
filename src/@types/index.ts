@@ -45,4 +45,4 @@ export type Log = {
 
 export type Rule = 'closest' | 'clockwise';
 
-export type boardObjectsMapper = (boardObject: BoardObjectType) => BoardObjectType;
+export type BoardObjectsMapper = (boardObject: BoardObjectType) => BoardObjectType;
