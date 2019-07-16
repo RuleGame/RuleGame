@@ -59,28 +59,6 @@ const reducer: Reducer<State, Action> = (state = initialState, action) => {
         rule: action.payload.rule,
         logs: [],
       };
-    case getType(resetBoard):
-      return {
-        ...state,
-        boardObjectsById: initialBoardObjects
-          .map((mininmalBoardObjectType) => ({
-            ...mininmalBoardObjectType,
-            buckets: new Set<BucketPosition>(),
-            draggable: true,
-          }))
-          .map(blueSquareOnlyAnyBucket)
-          .reduce(
-            (acc, curr) => ({
-              ...acc,
-              [curr.id]: curr,
-            }),
-            {},
-          ),
-        boardId: 0,
-        moveNum: 1,
-        logs: [],
-        rule: 'clockwise',
-      };
     case getType(move): {
       let mapper;
       switch (state.rule) {
