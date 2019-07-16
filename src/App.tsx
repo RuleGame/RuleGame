@@ -1,10 +1,12 @@
-import React, { useCallback, useReducer } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { BucketPosition, Rule } from './@types/index';
+import _ from 'lodash';
 import Game from './components/Game';
-import { initialBucketsMapper } from './components/__helpers__/buckets';
-import { initialBoardObjects } from './constants/index';
-import { GameDispatch, gameReducer } from './contexts/game';
+import { initBoard } from './store/actions/game';
+import { RootState } from './store/reducers/index';
+import { blueSquareAnyBucket, setAllBucketsTo } from './components/__helpers__/rule-set-mappers';
+import { setPositions } from './components/__helpers__/positions';
 
 const StyledApp = styled.div<{}>`
   display: flex;
@@ -24,31 +26,42 @@ const StyledGame = styled(Game)<{}>`
 `;
 
 const App = (): JSX.Element => {
-  const [{ boardObjectsById, rule, logs }, dispatch] = useReducer(gameReducer, {
-    boardObjectsById: initialBoardObjects
-      .map((mininmalBoardObjectType) => ({
-        ...mininmalBoardObjectType,
-        buckets: new Set<BucketPosition>(),
-        draggable: true,
-      }))
-      .map(initialBucketsMapper)
-      .reduce(
-        (acc, curr) => ({
-          ...acc,
-          [curr.id]: curr,
-        }),
-        {},
-      ),
-    boardId: 0,
-    moveNum: 1,
-    logs: [],
-    rule: 'clockwise',
-  });
+  const dispatch = useDispatch();
+  const rule = useSelector((state: RootState) => state.game.rule);
+  const boardObjectsById = useSelector((state: RootState) => state.game.boardObjectsById);
+  const numBoardObjects = Object.keys(boardObjectsById).length;
+  const logs = useSelector((state: RootState) => state.game.logs);
 
-  const setRule = (rule: Rule) => dispatch({ type: 'INIT_BOARD', rule });
+  const allChecked = useMemo(
+    () => Object.values(boardObjectsById).every((boardObject) => boardObject.shape === 'check'),
+    [boardObjectsById],
+  );
+
+  // TODO: Move to constants file
+  const minX = 1;
+  const minY = 1;
+
+  if (allChecked) {
+    dispatch(
+      initBoard(
+        rule,
+        // TODO: Don't use hardcoded conditional checking
+        rule === 'clockwise' ? blueSquareAnyBucket : setAllBucketsTo(['BL', 'BR', 'TL', 'TR']),
+        setPositions(
+          (_.zip(
+            _.shuffle(_.range(numBoardObjects + 1)),
+            _.shuffle(_.range(numBoardObjects + 1)),
+          ) as [number, number][]).reduce<{ x: number; y: number }[]>(
+            (acc, curr) => [...acc, { x: curr[0] + minX, y: curr[1] + minY }],
+            [],
+          ),
+        ),
+      ),
+    );
+  }
 
   return (
-    <GameDispatch.Provider value={dispatch}>
+    <>
       <StyledApp>
         <label htmlFor="closest">
           <input
@@ -56,7 +69,25 @@ const App = (): JSX.Element => {
             id="closest"
             name="rule"
             checked={rule === 'closest'}
-            onChange={useCallback(() => setRule('closest'), [])}
+            onChange={useCallback(
+              () =>
+                dispatch(
+                  initBoard(
+                    'closest',
+                    setAllBucketsTo(['BL', 'BR', 'TL', 'TR']),
+                    setPositions(
+                      (_.zip(
+                        _.shuffle(_.range(numBoardObjects + 1)),
+                        _.shuffle(_.range(numBoardObjects + 1)),
+                      ) as [number, number][]).reduce<{ x: number; y: number }[]>(
+                        (acc, curr) => [...acc, { x: curr[0] + minX, y: curr[1] + minY }],
+                        [],
+                      ),
+                    ),
+                  ),
+                ),
+              [dispatch, numBoardObjects],
+            )}
           />
           closest
         </label>
@@ -66,7 +97,25 @@ const App = (): JSX.Element => {
             id="clockwise"
             name="rule"
             checked={rule === 'clockwise'}
-            onChange={useCallback(() => setRule('clockwise'), [])}
+            onChange={useCallback(
+              () =>
+                dispatch(
+                  initBoard(
+                    'clockwise',
+                    blueSquareAnyBucket,
+                    setPositions(
+                      (_.zip(
+                        _.shuffle(_.range(numBoardObjects + 1)),
+                        _.shuffle(_.range(numBoardObjects + 1)),
+                      ) as [number, number][]).reduce<{ x: number; y: number }[]>(
+                        (acc, curr) => [...acc, { x: curr[0] + minX, y: curr[1] + minY }],
+                        [],
+                      ),
+                    ),
+                  ),
+                ),
+              [dispatch, numBoardObjects],
+            )}
           />
           clockwise
         </label>
@@ -81,7 +130,7 @@ const App = (): JSX.Element => {
           </React.Fragment>
         ))}
       </div>
-    </GameDispatch.Provider>
+    </>
   );
 };
 

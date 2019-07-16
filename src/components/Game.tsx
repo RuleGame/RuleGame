@@ -1,4 +1,5 @@
-import React, { useContext, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   BoardObjectId,
   BoardObjectType,
@@ -7,8 +8,8 @@ import {
   DropAttempt,
 } from '../@types/index';
 import { afterDragTimeout } from '../constants';
+import { move, updateBoardObject } from '../store/actions/game';
 import Board from './Board';
-import { GameDispatch } from '../contexts/game';
 
 type GameProps = {
   className?: string;
@@ -16,6 +17,7 @@ type GameProps = {
 };
 
 const Game = ({ className, boardObjectsById }: GameProps): JSX.Element => {
+  const dispatch = useDispatch();
   // Won't cause an update.
   const ref = useRef<{
     touchAttempts: BoardObjectId[];
@@ -25,18 +27,8 @@ const Game = ({ className, boardObjectsById }: GameProps): JSX.Element => {
     touchAttempts: [],
   });
 
-  const dispatch = useContext(GameDispatch);
-
   const [pause, setPause] = useState<boolean>(false);
   const [disabledBucket, setDroppedBucket] = useState<BucketPosition | undefined>(undefined);
-
-  const makeMove = (
-    touchAttempts: BoardObjectId[],
-    dropAttempts: DropAttempt[],
-    dropSuccess: DropAttempt,
-  ) => dispatch({ type: 'MOVE', touchAttempts, dropAttempts, dropSuccess });
-  const updateBoardObject = (id: number, boardObject: Partial<BoardObjectType>) =>
-    dispatch({ type: 'UPDATE_BOARD_OBJECT', id, boardObject });
 
   return (
     <Board
@@ -57,16 +49,18 @@ const Game = ({ className, boardObjectsById }: GameProps): JSX.Element => {
         if (droppedItem.buckets.has(bucket.pos)) {
           const { current } = ref;
           const dropSuccess = current.dropAttempts[current.dropAttempts.length - 1];
-          updateBoardObject(dropSuccess.dragged, {
-            shape: 'check',
-            draggable: false,
-          });
+          dispatch(
+            updateBoardObject(dropSuccess.dragged, {
+              shape: 'check',
+              draggable: false,
+            }),
+          );
           setPause(true);
           setDroppedBucket(dropSuccess.dropped);
           setTimeout(() => {
             setPause(false);
             setDroppedBucket(undefined);
-            makeMove(ref.current.touchAttempts, ref.current.dropAttempts, dropSuccess);
+            dispatch(move(ref.current.touchAttempts, ref.current.dropAttempts, dropSuccess));
             ref.current.touchAttempts = [];
             ref.current.dropAttempts = [];
           }, afterDragTimeout);
