@@ -1,5 +1,11 @@
 import { createAction } from 'typesafe-actions';
-import { BoardObjectId, DropAttempt, BoardObjectType, Rule } from '../../@types/index';
+import {
+  BoardObjectId,
+  DropAttempt,
+  BoardObjectType,
+  Rule,
+  BoardObjectsMapper,
+} from '../../@types/index';
 
 export const move = createAction(
   'game/MOVE',
@@ -15,8 +21,10 @@ export const updateBoardObject = createAction(
   (action) => (id: number, boardObject: Partial<BoardObjectType>) => action({ id, boardObject }),
 );
 
-export const initBoard = createAction('game/INIT_BOARD', (action) => (rule: Rule) =>
-  action({ rule }),
+export const initBoard = createAction(
+  'game/INIT_BOARD',
+  (action) => (rule: Rule, firstMoveMapper: BoardObjectsMapper) =>
+    action({ rule, firstMoveMapper }),
 );
 
 export const resetBoard = createAction('game/RESET_BOARD');

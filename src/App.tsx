@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Game from './components/Game';
 import { initBoard } from './store/actions/game';
 import { RootState } from './store/reducers/index';
+import { blueSquareAnyBucket, setAllBucketsMapperCreator } from './components/__helpers__/buckets';
 
 const StyledApp = styled.div<{}>`
   display: flex;
@@ -37,7 +38,13 @@ const App = (): JSX.Element => {
             id="closest"
             name="rule"
             checked={rule === 'closest'}
-            onChange={useCallback(() => dispatch(initBoard('closest')), [dispatch])}
+            onChange={useCallback(
+              () =>
+                dispatch(
+                  initBoard('closest', setAllBucketsMapperCreator(['BL', 'BR', 'TL', 'TR'])),
+                ),
+              [dispatch],
+            )}
           />
           closest
         </label>
@@ -47,7 +54,9 @@ const App = (): JSX.Element => {
             id="clockwise"
             name="rule"
             checked={rule === 'clockwise'}
-            onChange={useCallback(() => dispatch(initBoard('clockwise')), [dispatch])}
+            onChange={useCallback(() => dispatch(initBoard('clockwise', blueSquareAnyBucket)), [
+              dispatch,
+            ])}
           />
           clockwise
         </label>
