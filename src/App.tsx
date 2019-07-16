@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Game from './components/Game';
 import { initBoard } from './store/actions/game';
 import { RootState } from './store/reducers/index';
-import { blueSquareAnyBucket, setAllBucketsMapperCreator } from './components/__helpers__/buckets';
+import { blueSquareAnyBucket, setAllBucketsMapperCreator } from './components/__helpers__/rule-set-mappers';
 
 const StyledApp = styled.div<{}>`
   display: flex;

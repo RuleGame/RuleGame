@@ -4,7 +4,7 @@ import {
   blueSquareAnyBucket as blueSquareOnlyAnyBucket,
   setAllBucketsMapperCreator,
   closestBucketsMapper,
-} from '../../components/__helpers__/buckets';
+} from '../../components/__helpers__/rule-set-mappers';
 import { initialBoardObjects, bucketOrder } from '../../constants/index';
 import { BucketPosition, BoardObjectType, Rule, Log } from '../../@types/index';
 
