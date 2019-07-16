@@ -1,14 +1,14 @@
 import { BoardObjectsMapper, BucketPosition } from '../../@types';
 import { cols, rows } from '../../constants';
 
-export const setAllBucketsMapperCreator = (buckets: BucketPosition[]): BoardObjectsMapper => (
+export const setAllBucketsTo = (buckets: BucketPosition[]): BoardObjectsMapper => (
   boardObject,
 ) => ({
   ...boardObject,
   buckets: new Set(buckets),
 });
 
-export const closestBucketsMapper: BoardObjectsMapper = (boardObject) => ({
+export const closestBucket: BoardObjectsMapper = (boardObject) => ({
   ...boardObject,
   buckets: new Set([
     ...(boardObject.x <= cols / 2 && boardObject.y <= rows / 2 ? (['BL'] as const) : []),

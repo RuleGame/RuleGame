@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Game from './components/Game';
 import { initBoard } from './store/actions/game';
 import { RootState } from './store/reducers/index';
-import { blueSquareAnyBucket, setAllBucketsMapperCreator } from './components/__helpers__/rule-set-mappers';
+import { blueSquareAnyBucket, setAllBucketsTo } from './components/__helpers__/rule-set-mappers';
 
 const StyledApp = styled.div<{}>`
   display: flex;
@@ -39,10 +39,7 @@ const App = (): JSX.Element => {
             name="rule"
             checked={rule === 'closest'}
             onChange={useCallback(
-              () =>
-                dispatch(
-                  initBoard('closest', setAllBucketsMapperCreator(['BL', 'BR', 'TL', 'TR'])),
-                ),
+              () => dispatch(initBoard('closest', setAllBucketsTo(['BL', 'BR', 'TL', 'TR']))),
               [dispatch],
             )}
           />

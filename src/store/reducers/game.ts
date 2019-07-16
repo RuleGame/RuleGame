@@ -2,8 +2,8 @@ import { createReducer, ActionType } from 'typesafe-actions';
 import { initBoard, resetBoard, move, updateBoardObject } from '../actions/game';
 import {
   blueSquareAnyBucket as blueSquareOnlyAnyBucket,
-  setAllBucketsMapperCreator,
-  closestBucketsMapper,
+  setAllBucketsTo,
+  closestBucket,
 } from '../../components/__helpers__/rule-set-mappers';
 import { initialBoardObjects, bucketOrder } from '../../constants/index';
 import { BucketPosition, BoardObjectType, Rule, Log } from '../../@types/index';
@@ -81,11 +81,11 @@ export default createReducer<State, Action>({
       case 'clockwise': {
         const newIndex =
           (bucketOrder.indexOf(action.payload.dropSuccess.dropped) + 1) % bucketOrder.length;
-        mapper = setAllBucketsMapperCreator([bucketOrder[newIndex]]);
+        mapper = setAllBucketsTo([bucketOrder[newIndex]]);
         break;
       }
       case 'closest':
-        mapper = closestBucketsMapper;
+        mapper = closestBucket;
         break;
       default:
         mapper = (boardObject: BoardObjectType) => boardObject;
