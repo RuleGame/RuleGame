@@ -7,7 +7,7 @@ import {
   setAllBucketsTo,
 } from '../../components/__helpers__/rule-set-mappers';
 import { bucketOrder, initialBoardObjects } from '../../constants/index';
-import { initBoard, move, resetBoard, updateBoardObject } from '../actions/game';
+import { initBoard, move, updateBoardObject } from '../actions/game';
 
 export type Action = ActionType<typeof import('../actions/game')>;
 
