@@ -23,8 +23,11 @@ export const updateBoardObject = createAction(
 
 export const initBoard = createAction(
   'game/INIT_BOARD',
-  (action) => (rule: Rule, firstMoveMapper: BoardObjectsMapper) =>
-    action({ rule, firstMoveMapper }),
+  (action) => (
+    rule: Rule,
+    firstMoveMapper: BoardObjectsMapper,
+    positionsMapper: BoardObjectsMapper,
+  ) => action({ rule, firstMoveMapper, positionsMapper }),
 );
 
 export const resetBoard = createAction('game/RESET_BOARD');

@@ -45,7 +45,13 @@ const reducer: Reducer<State, Action> = (state = initialState, action) => {
     case getType(initBoard):
       return {
         ...state,
-        boardObjectsById: Object.values(state.boardObjectsById)
+        boardObjectsById: initialBoardObjects
+          .map((mininmalBoardObjectType) => ({
+            ...mininmalBoardObjectType,
+            buckets: new Set<BucketPosition>(),
+            draggable: true,
+          }))
+          .map(action.payload.positionsMapper)
           .map(action.payload.firstMoveMapper)
           .reduce(
             (acc, curr) => ({

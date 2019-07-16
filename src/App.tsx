@@ -1,10 +1,12 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import _ from 'lodash';
 import Game from './components/Game';
 import { initBoard } from './store/actions/game';
 import { RootState } from './store/reducers/index';
 import { blueSquareAnyBucket, setAllBucketsTo } from './components/__helpers__/rule-set-mappers';
+import { setPositions } from './components/__helpers__/positions';
 
 const StyledApp = styled.div<{}>`
   display: flex;
@@ -27,7 +29,36 @@ const App = (): JSX.Element => {
   const dispatch = useDispatch();
   const rule = useSelector((state: RootState) => state.game.rule);
   const boardObjectsById = useSelector((state: RootState) => state.game.boardObjectsById);
+  const numBoardObjects = Object.keys(boardObjectsById).length;
   const logs = useSelector((state: RootState) => state.game.logs);
+
+  const allChecked = useMemo(
+    () => Object.values(boardObjectsById).every((boardObject) => boardObject.shape === 'check'),
+    [boardObjectsById],
+  );
+
+  // TODO: Move to constants file
+  const minX = 1;
+  const minY = 1;
+
+  if (allChecked) {
+    dispatch(
+      initBoard(
+        rule,
+        // TODO: Don't use hardcoded conditional checking
+        rule === 'clockwise' ? blueSquareAnyBucket : setAllBucketsTo(['BL', 'BR', 'TL', 'TR']),
+        setPositions(
+          (_.zip(
+            _.shuffle(_.range(numBoardObjects + 1)),
+            _.shuffle(_.range(numBoardObjects + 1)),
+          ) as [number, number][]).reduce<{ x: number; y: number }[]>(
+            (acc, curr) => [...acc, { x: curr[0] + minX, y: curr[1] + minY }],
+            [],
+          ),
+        ),
+      ),
+    );
+  }
 
   return (
     <>
@@ -39,8 +70,23 @@ const App = (): JSX.Element => {
             name="rule"
             checked={rule === 'closest'}
             onChange={useCallback(
-              () => dispatch(initBoard('closest', setAllBucketsTo(['BL', 'BR', 'TL', 'TR']))),
-              [dispatch],
+              () =>
+                dispatch(
+                  initBoard(
+                    'closest',
+                    setAllBucketsTo(['BL', 'BR', 'TL', 'TR']),
+                    setPositions(
+                      (_.zip(
+                        _.shuffle(_.range(numBoardObjects + 1)),
+                        _.shuffle(_.range(numBoardObjects + 1)),
+                      ) as [number, number][]).reduce<{ x: number; y: number }[]>(
+                        (acc, curr) => [...acc, { x: curr[0] + minX, y: curr[1] + minY }],
+                        [],
+                      ),
+                    ),
+                  ),
+                ),
+              [dispatch, numBoardObjects],
             )}
           />
           closest
@@ -51,9 +97,25 @@ const App = (): JSX.Element => {
             id="clockwise"
             name="rule"
             checked={rule === 'clockwise'}
-            onChange={useCallback(() => dispatch(initBoard('clockwise', blueSquareAnyBucket)), [
-              dispatch,
-            ])}
+            onChange={useCallback(
+              () =>
+                dispatch(
+                  initBoard(
+                    'clockwise',
+                    blueSquareAnyBucket,
+                    setPositions(
+                      (_.zip(
+                        _.shuffle(_.range(numBoardObjects + 1)),
+                        _.shuffle(_.range(numBoardObjects + 1)),
+                      ) as [number, number][]).reduce<{ x: number; y: number }[]>(
+                        (acc, curr) => [...acc, { x: curr[0] + minX, y: curr[1] + minY }],
+                        [],
+                      ),
+                    ),
+                  ),
+                ),
+              [dispatch, numBoardObjects],
+            )}
           />
           clockwise
         </label>
