@@ -18,7 +18,7 @@ export const closestBucketsMapper: BoardObjectsMapper = (boardObject) => ({
   ]),
 });
 
-export const initialBucketsMapper: BoardObjectsMapper = (boardObject) => ({
+export const firstMoveBucketsMapper: BoardObjectsMapper = (boardObject) => ({
   ...boardObject,
   buckets: new Set(
     boardObject.color === 'blue' && boardObject.shape === 'square'

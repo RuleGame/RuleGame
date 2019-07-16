@@ -1,7 +1,7 @@
 import { createReducer, ActionType } from 'typesafe-actions';
 import { initBoard, resetBoard, move, updateBoardObject } from '../actions/game';
 import {
-  initialBucketsMapper,
+  firstMoveBucketsMapper,
   setAllBucketsMapperCreator,
   closestBucketsMapper,
 } from '../../components/__helpers__/buckets';
@@ -25,7 +25,7 @@ export default createReducer<State, Action>({
       buckets: new Set<BucketPosition>(),
       draggable: true,
     }))
-    .map(initialBucketsMapper)
+    .map(firstMoveBucketsMapper)
     .reduce(
       (acc, curr) => ({
         ...acc,
@@ -41,7 +41,7 @@ export default createReducer<State, Action>({
   .handleAction(initBoard, (state, action) => ({
     ...state,
     boardObjectsById: Object.values(state.boardObjectsById)
-      .map(initialBucketsMapper)
+      .map(firstMoveBucketsMapper)
       .reduce(
         (acc, curr) => ({
           ...acc,
@@ -62,7 +62,7 @@ export default createReducer<State, Action>({
         buckets: new Set<BucketPosition>(),
         draggable: true,
       }))
-      .map(initialBucketsMapper)
+      .map(firstMoveBucketsMapper)
       .reduce(
         (acc, curr) => ({
           ...acc,
