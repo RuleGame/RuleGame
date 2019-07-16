@@ -26,7 +26,10 @@
     "import/prefer-default-export": "off",
     "no-nested-ternary": "off",
     "no-plusplus": "off",
-    "no-shadow": "off"
+    "no-shadow": "off",
+    "import/no-named-as-default": "off",
+    "@typescript-eslint/interface-name-prefix": ["error", "always"],
+    "no-underscore-dangle": "off"
   },
   "settings": {
     "import/resolver": {

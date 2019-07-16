@@ -1,10 +1,9 @@
-import React, { useCallback, useReducer } from 'react';
+import React, { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { BucketPosition, Rule } from './@types/index';
 import Game from './components/Game';
-import { initialBucketsMapper } from './components/__helpers__/buckets';
-import { initialBoardObjects } from './constants/index';
-import { GameDispatch, gameReducer } from './contexts/game';
+import { initBoard } from './store/actions/game';
+import { RootState } from './store/reducers/index';
 
 const StyledApp = styled.div<{}>`
   display: flex;
@@ -24,31 +23,13 @@ const StyledGame = styled(Game)<{}>`
 `;
 
 const App = (): JSX.Element => {
-  const [{ boardObjectsById, rule, logs }, dispatch] = useReducer(gameReducer, {
-    boardObjectsById: initialBoardObjects
-      .map((mininmalBoardObjectType) => ({
-        ...mininmalBoardObjectType,
-        buckets: new Set<BucketPosition>(),
-        draggable: true,
-      }))
-      .map(initialBucketsMapper)
-      .reduce(
-        (acc, curr) => ({
-          ...acc,
-          [curr.id]: curr,
-        }),
-        {},
-      ),
-    boardId: 0,
-    moveNum: 1,
-    logs: [],
-    rule: 'clockwise',
-  });
-
-  const setRule = (rule: Rule) => dispatch({ type: 'INIT_BOARD', rule });
+  const dispatch = useDispatch();
+  const rule = useSelector((state: RootState) => state.game.rule);
+  const boardObjectsById = useSelector((state: RootState) => state.game.boardObjectsById);
+  const logs = useSelector((state: RootState) => state.game.logs);
 
   return (
-    <GameDispatch.Provider value={dispatch}>
+    <>
       <StyledApp>
         <label htmlFor="closest">
           <input
@@ -56,7 +37,7 @@ const App = (): JSX.Element => {
             id="closest"
             name="rule"
             checked={rule === 'closest'}
-            onChange={useCallback(() => setRule('closest'), [])}
+            onChange={useCallback(() => dispatch(initBoard('closest')), [dispatch])}
           />
           closest
         </label>
@@ -66,7 +47,7 @@ const App = (): JSX.Element => {
             id="clockwise"
             name="rule"
             checked={rule === 'clockwise'}
-            onChange={useCallback(() => setRule('clockwise'), [])}
+            onChange={useCallback(() => dispatch(initBoard('clockwise')), [dispatch])}
           />
           clockwise
         </label>
@@ -81,7 +62,7 @@ const App = (): JSX.Element => {
           </React.Fragment>
         ))}
       </div>
-    </GameDispatch.Provider>
+    </>
   );
 };
 
