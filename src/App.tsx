@@ -78,7 +78,7 @@ const App = (): JSX.Element => {
                 dispatch(
                   initBoard(
                     'closest',
-                    setAllBucketsTo(['BL', 'BR', 'TL', 'TR']),
+                    closestBucket,
                     setPositions(
                       (zip(
                         shuffle(range(numBoardObjects + 1)),
