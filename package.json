@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "react-app-rewired build",
+    "cypress:open": "cypress open",
     "eject": "react-scripts eject",
     "lint:css": "stylelint ./**/*.tsx",
     "now-build": "react-app-rewired build",
@@ -50,7 +51,7 @@
     "@types/react-dom": "16.8.4",
     "customize-cra": "0.2.13",
     "history": "4.9.0",
-    "lodash": "4.17.14",
+    "lodash": "4.17.15",
     "react": "16.8.6",
     "react-dnd": "8.0.0",
     "react-dnd-html5-backend": "8.0.0",
@@ -67,6 +68,9 @@
     "typescript": "3.5.2"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "7.3.3",
+    "@cypress/webpack-preprocessor": "4.1.0",
+    "@types/cypress-cucumber-preprocessor": "1.12.0",
     "@types/history": "4.7.2",
     "@types/react-redux": "7.1.1",
     "@types/redux-logger": "3.0.7",
@@ -74,15 +78,21 @@
     "@typescript-eslint/eslint-plugin": "1.11.0",
     "@typescript-eslint/parser": "1.11.0",
     "babel-plugin-styled-components": "1.10.1",
+    "cross-env": "5.2.0",
+    "cypress": "3.4.0",
+    "cypress-cucumber-preprocessor": "1.12.0",
     "eslint": "5.16.0",
     "eslint-config-airbnb": "17.1.0",
     "eslint-config-airbnb-typescript": "4.0.0",
     "eslint-config-prettier": "5.0.0",
+    "eslint-plugin-chai-friendly": "0.4.1",
+    "eslint-plugin-cypress": "2.6.0",
     "eslint-plugin-flowtype": "3.10.3",
     "eslint-plugin-import": "2.17.3",
     "eslint-plugin-jsx-a11y": "6.1.1",
     "eslint-plugin-react": "7.11.0",
     "eslint-plugin-react-hooks": "1.6.1",
+    "fs-extra": "8.1.0",
     "install": "0.13.0",
     "npm": "6.10.1",
     "prettier": "1.18.2",
@@ -91,6 +101,10 @@
     "stylelint-config-recommended": "2.2.0",
     "stylelint-config-styled-components": "0.1.1",
     "stylelint-custom-processor-loader": "0.6.0",
-    "stylelint-processor-styled-components": "1.8.0"
+    "stylelint-processor-styled-components": "1.8.0",
+    "ts-loader": "6.0.4"
+  },
+  "cypress-cucumber-preprocessor": {
+    "nonGlobalStepDefinitions": true
   }
 }

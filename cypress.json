@@ -1,0 +1,9 @@
+{
+  "baseUrl": "https://www.google.com",
+  "ignoreTestFiles": ["*.js", "*.ts", "*.md"],
+  "reporter": "junit",
+  "reporterOptions": {
+    "mochaFile": "test-results/test-output-[hash].xml"
+  },
+  "chromeWebSecurity": false
+}

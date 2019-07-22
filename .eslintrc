@@ -1,7 +1,8 @@
 {
   "env": {
     "browser": true,
-    "es6": true
+    "es6": true,
+    "cypress/globals": true
   },
   "parser": "@typescript-eslint/parser",
   "extends": [
@@ -9,9 +10,18 @@
     "prettier",
     "prettier/@typescript-eslint",
     "plugin:@typescript-eslint/recommended",
-    "plugin:import/typescript"
+    "plugin:import/typescript",
+    "plugin:cypress/recommended"
   ],
-  "plugins": ["react", "react-hooks", "flowtype", "import", "@typescript-eslint/eslint-plugin"],
+  "plugins": [
+    "cypress",
+    "react",
+    "react-hooks",
+    "flowtype",
+    "import",
+    "@typescript-eslint/eslint-plugin",
+    "chai-friendly"
+  ],
   "rules": {
     "no-unused-vars": "warn",
     "react/jsx-filename-extension": "off",
@@ -29,7 +39,15 @@
     "no-shadow": "off",
     "import/no-named-as-default": "off",
     "@typescript-eslint/interface-name-prefix": ["error", "always"],
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "no-unused-expressions": 0,
+    "chai-friendly/no-unused-expressions": 2,
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": ["**/*.test.js", "**/*.spec.js", "cypress/**/*"]
+      }
+    ]
   },
   "settings": {
     "import/resolver": {
