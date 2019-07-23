@@ -4,11 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Game from './components/Game';
 import { setPositions } from './components/__helpers__/positions';
-import {
-  blueSquareAnyBucket,
-  closestBucket,
-  setAllBucketsTo,
-} from './components/__helpers__/rule-set-mappers';
+import { blueSquareAnyBucket, closestBucket } from './components/__helpers__/rule-set-mappers';
 import { initBoard } from './store/actions/game';
 import { RootState } from './store/reducers/index';
 

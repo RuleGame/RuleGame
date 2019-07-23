@@ -1,5 +1,5 @@
 {
-  "baseUrl": "https://www.google.com",
+  "baseUrl": "http://localhost:3000",
   "ignoreTestFiles": ["*.js", "*.ts", "*.md"],
   "reporter": "junit",
   "reporterOptions": {
