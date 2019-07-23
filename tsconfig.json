@@ -14,7 +14,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    "sourceMap": true
+    "sourceMap": true,
+    "types": ["cypress"]
   },
-  "include": ["src"]
+  "include": ["src", "cypress"]
 }

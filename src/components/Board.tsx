@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BoardObjectItem, BoardObjectType, BucketPosition, BucketType } from '../@types';
-import { bucketCoords, cols, rows } from '../constants';
+import { buckets, cols, rows } from '../constants';
 import BoardObject from './BoardObject';
 import Bucket from './Bucket';
 
@@ -39,7 +39,6 @@ const Board = ({
   onBoardObjectClick,
   disabledBucket,
 }: BoardProps): JSX.Element => {
-
   return (
     <StyledBoard className={className}>
       {boardObjects.map((boardObject) => (
@@ -52,13 +51,14 @@ const Board = ({
         />
       ))}
       {/* TODO: useCallback cannot be used in a callback (abstract the map return JSX) */}
-      {bucketCoords.map((bucketCoord) => (
+      {buckets.map((bucket) => (
         <StyledBucket
-          {...bucketCoord}
-          key={`${bucketCoord.x}-${bucketCoord.y}`}
-          onDrop={onDrop(bucketCoord)}
+          {...bucket}
+          key={`${bucket.x}-${bucket.y}`}
+          onDrop={onDrop(bucket)}
           canDrop={() => !pause}
-          dropped={disabledBucket === bucketCoord.pos}
+          dropped={disabledBucket === bucket.pos}
+          bucket={bucket}
         />
       ))}
     </StyledBoard>

@@ -1,12 +1,12 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import { range, shuffle, zip } from 'lodash';
+import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import _ from 'lodash';
 import Game from './components/Game';
+import { setPositions } from './components/__helpers__/positions';
+import { blueSquareAnyBucket, closestBucket } from './components/__helpers__/rule-set-mappers';
 import { initBoard } from './store/actions/game';
 import { RootState } from './store/reducers/index';
-import { blueSquareAnyBucket, setAllBucketsTo } from './components/__helpers__/rule-set-mappers';
-import { setPositions } from './components/__helpers__/positions';
 
 const StyledApp = styled.div<{}>`
   display: flex;
@@ -46,12 +46,12 @@ const App = (): JSX.Element => {
       initBoard(
         rule,
         // TODO: Don't use hardcoded conditional checking
-        rule === 'clockwise' ? blueSquareAnyBucket : setAllBucketsTo(['BL', 'BR', 'TL', 'TR']),
+        rule === 'clockwise' ? blueSquareAnyBucket : closestBucket,
         setPositions(
-          (_.zip(
-            _.shuffle(_.range(numBoardObjects + 1)),
-            _.shuffle(_.range(numBoardObjects + 1)),
-          ) as [number, number][]).reduce<{ x: number; y: number }[]>(
+          (zip(shuffle(range(numBoardObjects + 1)), shuffle(range(numBoardObjects + 1))) as [
+            number,
+            number,
+          ][]).reduce<{ x: number; y: number }[]>(
             (acc, curr) => [...acc, { x: curr[0] + minX, y: curr[1] + minY }],
             [],
           ),
@@ -74,11 +74,11 @@ const App = (): JSX.Element => {
                 dispatch(
                   initBoard(
                     'closest',
-                    setAllBucketsTo(['BL', 'BR', 'TL', 'TR']),
+                    closestBucket,
                     setPositions(
-                      (_.zip(
-                        _.shuffle(_.range(numBoardObjects + 1)),
-                        _.shuffle(_.range(numBoardObjects + 1)),
+                      (zip(
+                        shuffle(range(numBoardObjects + 1)),
+                        shuffle(range(numBoardObjects + 1)),
                       ) as [number, number][]).reduce<{ x: number; y: number }[]>(
                         (acc, curr) => [...acc, { x: curr[0] + minX, y: curr[1] + minY }],
                         [],
@@ -104,9 +104,9 @@ const App = (): JSX.Element => {
                     'clockwise',
                     blueSquareAnyBucket,
                     setPositions(
-                      (_.zip(
-                        _.shuffle(_.range(numBoardObjects + 1)),
-                        _.shuffle(_.range(numBoardObjects + 1)),
+                      (zip(
+                        shuffle(range(numBoardObjects + 1)),
+                        shuffle(range(numBoardObjects + 1)),
                       ) as [number, number][]).reduce<{ x: number; y: number }[]>(
                         (acc, curr) => [...acc, { x: curr[0] + minX, y: curr[1] + minY }],
                         [],

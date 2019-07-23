@@ -28,7 +28,7 @@ export type BoardObjectType = {
   draggable: boolean;
 } & MinimalBoardObjectType;
 
-export type BucketType = { pos: BucketPosition; x: number; y: number };
+export type BucketType = { pos: BucketPosition; x: number; y: number; id: number };
 
 export type DropAttempt = { dragged: BoardObjectId; dropped: BucketPosition };
 

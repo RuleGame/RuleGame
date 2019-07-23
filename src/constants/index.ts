@@ -45,9 +45,9 @@ export const initialBoardObjects: MinimalBoardObjectType[] = [
 
 export const bucketOrder: BucketPosition[] = ['TL', 'TR', 'BR', 'BL'];
 
-export const bucketCoords: BucketType[] = [
-  { pos: 'BL', x: 0, y: 0 },
-  { pos: 'TL', x: 0, y: rows - 1 },
-  { pos: 'BR', x: cols - 1, y: 0 },
-  { pos: 'TR', x: cols - 1, y: rows - 1 },
+export const buckets: BucketType[] = [
+  { pos: 'BL', x: 0, y: 0, id: 0 },
+  { pos: 'TL', x: 0, y: rows - 1, id: 1 },
+  { pos: 'BR', x: cols - 1, y: 0, id: 2 },
+  { pos: 'TR', x: cols - 1, y: rows - 1, id: 3 },
 ];
