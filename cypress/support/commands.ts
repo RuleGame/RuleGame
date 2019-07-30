@@ -24,31 +24,31 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
-export const dragNDrop = (
-  drag: Cypress.Chainable<JQuery<HTMLElement>>,
-  drop: Cypress.Chainable<JQuery<HTMLElement>>,
-) => {
-  drop.then(($dropEl) =>
-    drag
-      .trigger('mousedown', { which: 1 })
-      .trigger('mousemove', {
-        clientX: $dropEl[0].getBoundingClientRect().left,
-        clientY: $dropEl[0].getBoundingClientRect().top,
-      })
-      .trigger('mouseup', { force: true }),
-  );
-}; // False positive, TS will check for undefined errors here. // @ts-ignore
+export const reactDnd = (sourceSelector: string, targetSelector: string) => {
+  /* eslint-disable cypress/no-unnecessary-waiting */
+  cy.wait(500);
+  cy.get(sourceSelector).trigger('dragstart', { force: true });
+  // may be possible that the targetselector is <img /> because can't drop
+  // on undroppable div
+  cy.get(targetSelector).trigger('drop', { force: true });
+  cy.wait(500);
+  cy.get(targetSelector).trigger('dragend', { force: true });
+  /* eslint-enable cypress/no-unnecessary-waiting */
+};
 
+// False positive, TS will check for undefined errors here.
 // add new command to the existing Cypress interface
-/* eslint-disable no-undef */ declare global {
+/* eslint-disable no-undef */
+// @ts-ignore
+declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     // eslint-disable-next-line @typescript-eslint/interface-name-prefix
     interface Chainable {
-      dragNDrop: typeof dragNDrop;
+      reactDnd: typeof reactDnd;
     }
   }
 }
 /* eslint-disable no-undef */
 
-Cypress.Commands.add('dragNDrop', dragNDrop);
+Cypress.Commands.add('reactDnd', reactDnd);

@@ -7,31 +7,26 @@ const createDataCySelector = (dataCyValue: string) => `[data-cy=${dataCyValue}]`
 
 class RuleGamePage {
   public static get blueSquare() {
-    return cy.get(
-      createDataCySelector(
-        shapeObjectCy(
-          (initialBoardObjects.find(
-            (b) => b.color === 'blue' && b.shape === 'square',
-          ) as BoardObjectType).id,
-          'square',
-        ),
+    return createDataCySelector(
+      shapeObjectCy(
+        (initialBoardObjects.find(
+          (b) => b.color === 'blue' && b.shape === 'square',
+        ) as BoardObjectType).id,
+        'square',
       ),
     );
   }
 
   public static get bucket() {
-    return cy.get(createDataCySelector(shapeObjectCy(buckets[0].id, 'bucket')));
+    return createDataCySelector(shapeObjectCy(buckets[0].id, 'bucket'));
   }
 
   public static visit() {
     cy.visit('/');
   }
 
-  public static dragNDropObject(
-    dragObject: Cypress.Chainable<JQuery<HTMLElement>>,
-    dropObject: Cypress.Chainable<JQuery<HTMLElement>>,
-  ) {
-    cy.dragNDrop(dragObject, dropObject);
+  public static dragNDropObject(dragObject: string, dropObject: string) {
+    cy.reactDnd(dragObject, dropObject);
   }
 }
 
