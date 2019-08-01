@@ -1,5 +1,5 @@
 import { range, shuffle, zip } from 'lodash';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Game from './components/Game';
@@ -32,33 +32,9 @@ const App = (): JSX.Element => {
   const numBoardObjects = Object.keys(boardObjectsById).length;
   const logs = useSelector((state: RootState) => state.game.logs);
 
-  const allChecked = useMemo(
-    () => Object.values(boardObjectsById).every((boardObject) => boardObject.shape === 'check'),
-    [boardObjectsById],
-  );
-
   // TODO: Move to constants file
   const minX = 1;
   const minY = 1;
-
-  if (allChecked) {
-    dispatch(
-      initBoard(
-        rule,
-        // TODO: Don't use hardcoded conditional checking
-        rule === 'clockwise' ? blueSquareAnyBucket : closestBucket,
-        setPositions(
-          (zip(shuffle(range(numBoardObjects + 1)), shuffle(range(numBoardObjects + 1))) as [
-            number,
-            number,
-          ][]).reduce<{ x: number; y: number }[]>(
-            (acc, curr) => [...acc, { x: curr[0] + minX, y: curr[1] + minY }],
-            [],
-          ),
-        ),
-      ),
-    );
-  }
 
   return (
     <>
