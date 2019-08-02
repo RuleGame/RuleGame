@@ -3,7 +3,7 @@ import { ActionType, getType } from 'typesafe-actions';
 import { BoardObjectType, BucketPosition, Log, Rule } from '../../@types/index';
 import {
   blueSquareAnyBucket as blueSquareOnlyAnyBucket,
-  closestBucket,
+  nearestBucket,
   setAllBucketsTo,
 } from '../../components/__helpers__/rule-set-mappers';
 import { bucketOrder, initialBoardObjects } from '../../constants/index';
@@ -78,8 +78,8 @@ const reducer: Reducer<State, Action> = (state = initialState, action) => {
           mapper = setAllBucketsTo([bucketOrder[newIndex]]);
           break;
         }
-        case 'closest':
-          mapper = closestBucket;
+        case 'nearest':
+          mapper = nearestBucket;
           break;
         default:
           mapper = (boardObject: BoardObjectType) => boardObject;

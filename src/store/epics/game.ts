@@ -3,7 +3,7 @@ import { Epic, combineEpics } from 'redux-observable';
 import { filter, map, withLatestFrom } from 'rxjs/operators';
 import { isActionOf } from 'typesafe-actions';
 import { setPositions } from '../../components/__helpers__/positions';
-import { blueSquareAnyBucket, closestBucket } from '../../components/__helpers__/rule-set-mappers';
+import { blueSquareAnyBucket, nearestBucket } from '../../components/__helpers__/rule-set-mappers';
 import { RootAction } from '../actions';
 import { initBoard, move, setRule } from '../actions/game';
 import { RootState } from '../reducers';
@@ -24,7 +24,7 @@ const initBoardEpic: Epic<RootAction, RootAction, RootState> = (action$, state$)
 
       return initBoard(
         // TODO: Don't use hardcoded conditional checking
-        rule === 'clockwise' ? blueSquareAnyBucket : closestBucket,
+        rule === 'clockwise' ? blueSquareAnyBucket : nearestBucket,
         setPositions(
           (zip(shuffle(range(numBoardObjects + 1)), shuffle(range(numBoardObjects + 1))) as [
             number,
@@ -51,7 +51,7 @@ const setRuleEpic: Epic<RootAction, RootAction, RootState> = (action$, state$) =
       switch (action.payload.rule) {
         case 'clockwise':
           return initBoard(
-            closestBucket,
+            nearestBucket,
             setPositions(
               (zip(shuffle(range(numBoardObjects + 1)), shuffle(range(numBoardObjects + 1))) as [
                 number,
@@ -62,7 +62,7 @@ const setRuleEpic: Epic<RootAction, RootAction, RootState> = (action$, state$) =
               ),
             ),
           );
-        case 'closest':
+        case 'nearest':
           return initBoard(
             blueSquareAnyBucket,
             setPositions(

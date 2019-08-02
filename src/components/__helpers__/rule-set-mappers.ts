@@ -8,7 +8,7 @@ export const setAllBucketsTo = (buckets: BucketPosition[]): BoardObjectsMapper =
   buckets: new Set(buckets),
 });
 
-export const closestBucket: BoardObjectsMapper = (boardObject) => ({
+export const nearestBucket: BoardObjectsMapper = (boardObject) => ({
   ...boardObject,
   buckets: new Set([
     ...(boardObject.x <= cols / 2 && boardObject.y <= rows / 2 ? (['BL'] as const) : []),

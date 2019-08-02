@@ -31,19 +31,19 @@ const App = (): JSX.Element => {
   return (
     <>
       <StyledApp>
-        <label htmlFor="closest">
+        <label htmlFor="nearest">
           <input
             type="radio"
-            id="closest"
+            id="nearest"
             name="rule"
-            checked={rule === 'closest'}
+            checked={rule === 'nearest'}
             onChange={useCallback(
               (event: React.ChangeEvent<HTMLInputElement>) =>
-                event.target.value && dispatch(setRule('closest')),
+                event.target.value && dispatch(setRule('nearest')),
               [dispatch],
             )}
           />
-          closest
+          nearest
         </label>
         <label htmlFor="clockwise">
           <input
