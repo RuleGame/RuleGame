@@ -21,5 +21,8 @@
       "dest": "/service-worker.js"
     },
     { "src": "/(.*)", "headers": { "cache-control": "s-maxage=0" }, "dest": "/index.html" }
-  ]
+  ],
+  "github": {
+    "silent": true
+  }
 }
