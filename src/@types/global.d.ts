@@ -36,6 +36,7 @@ declare module '*.pcss' {
   export = resource;
 }
 declare module '*.json' {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const resource: any;
   export = resource;
 }
