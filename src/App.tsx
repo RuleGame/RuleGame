@@ -1,11 +1,8 @@
-import { range, shuffle, zip } from 'lodash';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Game from './components/Game';
-import { setPositions } from './components/__helpers__/positions';
-import { blueSquareAnyBucket, closestBucket } from './components/__helpers__/rule-set-mappers';
-import { initBoard } from './store/actions/game';
+import { setRule } from './store/actions/game';
 import { RootState } from './store/reducers/index';
 
 const StyledApp = styled.div<{}>`
@@ -29,12 +26,7 @@ const App = (): JSX.Element => {
   const dispatch = useDispatch();
   const rule = useSelector((state: RootState) => state.game.rule);
   const boardObjectsById = useSelector((state: RootState) => state.game.boardObjectsById);
-  const numBoardObjects = Object.keys(boardObjectsById).length;
   const logs = useSelector((state: RootState) => state.game.logs);
-
-  // TODO: Move to constants file
-  const minX = 1;
-  const minY = 1;
 
   return (
     <>
@@ -46,23 +38,9 @@ const App = (): JSX.Element => {
             name="rule"
             checked={rule === 'closest'}
             onChange={useCallback(
-              () =>
-                dispatch(
-                  initBoard(
-                    'closest',
-                    closestBucket,
-                    setPositions(
-                      (zip(
-                        shuffle(range(numBoardObjects + 1)),
-                        shuffle(range(numBoardObjects + 1)),
-                      ) as [number, number][]).reduce<{ x: number; y: number }[]>(
-                        (acc, curr) => [...acc, { x: curr[0] + minX, y: curr[1] + minY }],
-                        [],
-                      ),
-                    ),
-                  ),
-                ),
-              [dispatch, numBoardObjects],
+              (event: React.ChangeEvent<HTMLInputElement>) =>
+                event.target.value && dispatch(setRule('closest')),
+              [dispatch],
             )}
           />
           closest
@@ -74,23 +52,9 @@ const App = (): JSX.Element => {
             name="rule"
             checked={rule === 'clockwise'}
             onChange={useCallback(
-              () =>
-                dispatch(
-                  initBoard(
-                    'clockwise',
-                    blueSquareAnyBucket,
-                    setPositions(
-                      (zip(
-                        shuffle(range(numBoardObjects + 1)),
-                        shuffle(range(numBoardObjects + 1)),
-                      ) as [number, number][]).reduce<{ x: number; y: number }[]>(
-                        (acc, curr) => [...acc, { x: curr[0] + minX, y: curr[1] + minY }],
-                        [],
-                      ),
-                    ),
-                  ),
-                ),
-              [dispatch, numBoardObjects],
+              (event: React.ChangeEvent<HTMLInputElement>) =>
+                event.target.value && dispatch(setRule('clockwise')),
+              [dispatch],
             )}
           />
           clockwise

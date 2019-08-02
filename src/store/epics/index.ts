@@ -1,4 +1,4 @@
 import { combineEpics } from 'redux-observable';
-import { gameEpic } from './game';
+import game from './game';
 
-export const rootEpic = combineEpics(gameEpic);
+export const rootEpic = combineEpics(game);

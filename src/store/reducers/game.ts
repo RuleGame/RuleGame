@@ -7,7 +7,7 @@ import {
   setAllBucketsTo,
 } from '../../components/__helpers__/rule-set-mappers';
 import { bucketOrder, initialBoardObjects } from '../../constants/index';
-import { initBoard, move, updateBoardObject } from '../actions/game';
+import { initBoard, move, updateBoardObject, setRule } from '../actions/game';
 
 export type Action = ActionType<typeof import('../actions/game')>;
 
@@ -42,6 +42,11 @@ const initialState: State = {
 
 const reducer: Reducer<State, Action> = (state = initialState, action) => {
   switch (action.type) {
+    case getType(setRule):
+      return {
+        ...state,
+        rule: action.payload.rule,
+      };
     case getType(initBoard):
       return {
         ...state,
@@ -62,7 +67,6 @@ const reducer: Reducer<State, Action> = (state = initialState, action) => {
           ),
         moveNum: 1,
         boardId: state.boardId + 1,
-        rule: action.payload.rule,
         logs: [],
       };
     case getType(move): {
