@@ -47,7 +47,8 @@
       {
         "devDependencies": ["**/*.test.js", "**/*.spec.js", "cypress/**/*"]
       }
-    ]
+    ],
+    "consistent-return": "off"
   },
   "settings": {
     "import/resolver": {

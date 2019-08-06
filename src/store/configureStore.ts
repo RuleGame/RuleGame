@@ -1,12 +1,16 @@
-import { AnyAction, applyMiddleware, compose, createStore } from 'redux';
+import { AnyAction, applyMiddleware, compose, createStore, Middleware } from 'redux';
 import { createLogger } from 'redux-logger';
+import { createEpicMiddleware } from 'redux-observable';
 import { persistStore } from 'redux-persist';
-
+import { RootAction } from './actions';
+import { rootEpic } from './epics/index';
 import createRootReducer, { RootState } from './reducers';
 
 const DEV = process.env.NODE_ENV !== 'production';
 
-const middleware = [];
+const epicMiddleware = createEpicMiddleware<RootAction, RootAction, RootState>();
+
+const middleware: Middleware[] = [epicMiddleware];
 
 if (!DEV) {
   if (window.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
@@ -36,5 +40,6 @@ const store = createStore<RootState, AnyAction, {}, undefined>(
 
 const persistor = persistStore(store);
 export default () => {
+  epicMiddleware.run(rootEpic);
   return { store, persistor };
 };

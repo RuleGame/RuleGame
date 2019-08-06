@@ -5,6 +5,7 @@ export const afterDragTimeout = 1000; // In miliseconds.
 export const rows = 8;
 export const cols = 8;
 
+// TODO: Generate a variable amount of objects randomly
 export const initialBoardObjects: MinimalBoardObjectType[] = [
   {
     id: 0,

@@ -43,6 +43,6 @@ export type Log = {
   };
 };
 
-export type Rule = 'closest' | 'clockwise';
+export type Rule = 'nearest' | 'clockwise';
 
 export type BoardObjectsMapper = (boardObject: BoardObjectType, index: number) => BoardObjectType;
