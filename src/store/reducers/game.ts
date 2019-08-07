@@ -1,5 +1,4 @@
-import { Reducer } from 'redux';
-import { ActionType, getType } from 'typesafe-actions';
+import { getType } from 'typesafe-actions';
 import { BoardObjectType, BucketPosition, Log, Rule } from '../../@types/index';
 import {
   blueSquareAnyBucket as blueSquareOnlyAnyBucket,
@@ -7,9 +6,8 @@ import {
   setAllBucketsTo,
 } from '../../components/__helpers__/rule-set-mappers';
 import { bucketOrder, initialBoardObjects } from '../../constants/index';
-import { initBoard, move, updateBoardObject, setRule } from '../actions/game';
-
-export type Action = ActionType<typeof import('../actions/game')>;
+import { RootAction } from '../actions';
+import { initBoard, move, setRule, updateBoardObject } from '../actions/game';
 
 type State = {
   boardObjectsById: { [id: number]: BoardObjectType };
@@ -40,7 +38,7 @@ const initialState: State = {
   rule: 'clockwise', // Note: Remember to update initial mapper based on initial rule!
 };
 
-const reducer: Reducer<State, Action> = (state = initialState, action) => {
+const reducer = (state: State = initialState, action: RootAction): State => {
   switch (action.type) {
     case getType(setRule):
       return {
