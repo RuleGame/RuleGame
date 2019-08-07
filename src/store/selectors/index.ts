@@ -19,3 +19,7 @@ export const numBoardObjectsSelector = createSelector(
 );
 
 export const ruleSelector = (state: RootState) => state.game.rule;
+
+export const pageSelector = (state: RootState) => state.page.page;
+
+export const logsSelector = (state: RootState) => state.game.logs;
