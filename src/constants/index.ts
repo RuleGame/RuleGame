@@ -1,4 +1,4 @@
-import { BucketType, MinimalBoardObjectType, BucketPosition } from '../@types';
+import { BucketType, MinimalBoardObjectType, BucketPosition, Rule, Game } from '../@types';
 
 export const afterDragTimeout = 1000; // In miliseconds.
 
@@ -52,3 +52,9 @@ export const buckets: BucketType[] = [
   { pos: 'BR', x: cols - 1, y: 0, id: 2 },
   { pos: 'TR', x: cols - 1, y: rows - 1, id: 3 },
 ];
+
+// Types are not abstracted because they are not used elsewhere.
+export const gameToRule: { [game in Game]: Rule } = {
+  game1: 'nearest',
+  game2: 'clockwise',
+};

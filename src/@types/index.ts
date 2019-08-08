@@ -48,3 +48,5 @@ export type Rule = 'nearest' | 'clockwise';
 export type BoardObjectsMapper = (boardObject: BoardObjectType, index: number) => BoardObjectType;
 
 export type Page = 'RuleGame' | 'Entrance';
+
+export type Game = 'game1' | 'game2';

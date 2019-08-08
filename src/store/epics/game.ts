@@ -13,7 +13,7 @@ const initBoardEpic: Epic<RootAction, RootAction, RootState> = (action$, state$)
   action$.pipe(
     filter(isActionOf(move)),
     withLatestFrom(state$),
-    filter(([,state]) => allCheckedSelector(state)),
+    filter(([, state]) => allCheckedSelector(state)),
     map(([, state]) => {
       const rule = ruleSelector(state);
       const numBoardObjects = numBoardObjectsSelector(state);
@@ -51,7 +51,7 @@ const setRuleEpic: Epic<RootAction, RootAction, RootState> = (action$, state$) =
       switch (action.payload.rule) {
         case 'clockwise':
           return initBoard(
-            nearestBucket,
+            blueSquareAnyBucket,
             setPositions(
               (zip(shuffle(range(numBoardObjects + 1)), shuffle(range(numBoardObjects + 1))) as [
                 number,
@@ -64,7 +64,7 @@ const setRuleEpic: Epic<RootAction, RootAction, RootState> = (action$, state$) =
           );
         case 'nearest':
           return initBoard(
-            blueSquareAnyBucket,
+            nearestBucket,
             setPositions(
               (zip(shuffle(range(numBoardObjects + 1)), shuffle(range(numBoardObjects + 1))) as [
                 number,

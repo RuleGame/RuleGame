@@ -36,13 +36,13 @@ const EntrancePage = () => {
           className="btn"
           icon={<GiPlayButton />}
           label="Game 1"
-          onClick={useCallback(() => dispatch(goToPage('RuleGame')), [dispatch])}
+          onClick={useCallback(() => dispatch(goToPage('RuleGame', 'game1')), [dispatch])}
         />
         <Button
           className="btn"
           icon={<GiPlayButton />}
           label="Game 2"
-          onClick={useCallback(() => dispatch(goToPage('RuleGame')), [dispatch])}
+          onClick={useCallback(() => dispatch(goToPage('RuleGame', 'game2')), [dispatch])}
         />
       </StyledGameList>
     </StyledEntrancePage>
