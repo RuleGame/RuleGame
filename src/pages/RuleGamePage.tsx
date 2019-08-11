@@ -1,10 +1,9 @@
-import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Game from '../components/Game';
 import HistoryLog from '../components/HistoryLog';
-import { setRule } from '../store/actions/game';
-import { boardObjectsByIdSelector, logsSelector, ruleSelector } from '../store/selectors/index';
+import { boardObjectsByIdSelector, logsSelector } from '../store/selectors';
 
 const StyledRuleGamePage = styled.div<{}>`
   display: flex;
@@ -24,41 +23,11 @@ const StyledGame = styled(Game)<{}>`
 `;
 
 const RuleGamePage = () => {
-  const dispatch = useDispatch();
-  const rule = useSelector(ruleSelector);
   const boardObjectsById = useSelector(boardObjectsByIdSelector);
   const logs = useSelector(logsSelector);
 
   return (
     <StyledRuleGamePage>
-      <label htmlFor="nearest">
-        <input
-          type="radio"
-          id="nearest"
-          name="rule"
-          checked={rule === 'nearest'}
-          onChange={useCallback(
-            (event: React.ChangeEvent<HTMLInputElement>) =>
-              event.target.value && dispatch(setRule('nearest')),
-            [dispatch],
-          )}
-        />
-        nearest
-      </label>
-      <label htmlFor="clockwise">
-        <input
-          type="radio"
-          id="clockwise"
-          name="rule"
-          checked={rule === 'clockwise'}
-          onChange={useCallback(
-            (event: React.ChangeEvent<HTMLInputElement>) =>
-              event.target.value && dispatch(setRule('clockwise')),
-            [dispatch],
-          )}
-        />
-        clockwise
-      </label>
       <StyledGame boardObjectsById={boardObjectsById} />
       <HistoryLog logs={logs} />
     </StyledRuleGamePage>

@@ -5,7 +5,7 @@ import {
   BoardObjectType,
   Rule,
   BoardObjectsMapper,
-} from '../../@types/index';
+} from '../../@types';
 
 export const move = createAction(
   'game/MOVE',
