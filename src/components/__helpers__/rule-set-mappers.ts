@@ -11,10 +11,18 @@ export const setAllBucketsTo = (buckets: BucketPosition[]): BoardObjectsMapper =
 export const nearestBucket: BoardObjectsMapper = (boardObject) => ({
   ...boardObject,
   buckets: new Set([
-    ...(boardObject.x <= cols / 2 && boardObject.y <= rows / 2 ? (['BL'] as const) : []),
-    ...(boardObject.x >= cols / 2 && boardObject.y <= rows / 2 ? (['BR'] as const) : []),
-    ...(boardObject.x >= cols / 2 && boardObject.y >= rows / 2 ? (['TR'] as const) : []),
-    ...(boardObject.x <= cols / 2 && boardObject.y >= rows / 2 ? (['TL'] as const) : []),
+    ...(boardObject.x <= (cols - 1) / 2 && boardObject.y <= (rows - 1) / 2
+      ? (['BL'] as const)
+      : []),
+    ...(boardObject.x >= (cols - 1) / 2 && boardObject.y <= (rows - 1) / 2
+      ? (['BR'] as const)
+      : []),
+    ...(boardObject.x >= (cols - 1) / 2 && boardObject.y >= (rows - 1) / 2
+      ? (['TR'] as const)
+      : []),
+    ...(boardObject.x <= (cols - 1) / 2 && boardObject.y >= (rows - 1) / 2
+      ? (['TL'] as const)
+      : []),
   ]),
 });
 
