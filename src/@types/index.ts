@@ -4,20 +4,9 @@ export type BucketPosition = 'TL' | 'TR' | 'BL' | 'BR';
 
 export type BoardObjectItem = { buckets: Set<BucketPosition>; id: BoardObjectId; type: 'object' };
 
-export type Shape =
-  | 'nothing'
-  | 'bucket'
-  | 'square'
-  | 'triangle'
-  | 'circle'
-  | 'triangle'
-  | 'star'
-  | 'happy'
-  | 'check';
-
 export type MinimalBoardObjectType = {
   id: BoardObjectId; // -1 denotes an undefined value
-  color: string;
+  color: Color;
   shape: Shape;
   x: number;
   y: number;
@@ -50,3 +39,21 @@ export type BoardObjectsMapper = (boardObject: BoardObjectType, index: number) =
 export type Page = 'RuleGame' | 'Entrance';
 
 export type Game = 'game1' | 'game2';
+
+export enum Color {
+  RED = 'red',
+  BLUE = 'blue',
+  BLACK = 'black',
+  YELLOW = 'yellow',
+}
+
+export enum Shape {
+  SQUARE = 'square',
+  TRIANGLE = 'triangle',
+  STAR = 'star',
+  CIRCLE = 'circle',
+  NOTHING = 'nothing',
+  BUCKET = 'bucket',
+  HAPPY = 'happy',
+  CHECK = 'check',
+}

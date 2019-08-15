@@ -1,48 +1,9 @@
-import { BucketType, MinimalBoardObjectType, BucketPosition, Rule, Game } from '../@types';
+import { BucketType, BucketPosition, Rule, Game, Color, Shape } from '../@types';
 
 export const afterDragTimeout = 1000; // In miliseconds.
 
 export const rows = 8;
 export const cols = 8;
-
-// TODO: Generate a variable amount of objects randomly
-export const initialBoardObjects: MinimalBoardObjectType[] = [
-  {
-    id: 0,
-    shape: 'square',
-    color: 'blue',
-    x: 2,
-    y: 2,
-  },
-  {
-    id: 1,
-    shape: 'triangle',
-    color: 'black',
-    x: 5,
-    y: 2,
-  },
-  {
-    id: 2,
-    shape: 'circle',
-    color: 'red',
-    x: 5,
-    y: 4,
-  },
-  {
-    id: 3,
-    shape: 'triangle',
-    color: 'yellow',
-    x: 2,
-    y: 6,
-  },
-  {
-    id: 4,
-    shape: 'star',
-    color: 'blue',
-    x: 5,
-    y: 6,
-  },
-];
 
 export const bucketOrder: BucketPosition[] = ['TL', 'TR', 'BR', 'BL'];
 
@@ -58,3 +19,9 @@ export const gameToRule: { [game in Game]: Rule } = {
   game1: 'nearest',
   game2: 'clockwise',
 };
+export const colors: Color[] = [Color.RED, Color.BLUE, Color.BLACK, Color.YELLOW];
+
+export const shapes: Shape[] = [Shape.SQUARE, Shape.TRIANGLE, Shape.STAR, Shape.CIRCLE];
+
+export const borderWidth = 1;
+export const borderHeight = 1;

@@ -6,7 +6,8 @@ import {
   BucketPosition,
   BucketType,
   DropAttempt,
-} from '../@types/index';
+  Shape,
+} from '../@types';
 import { afterDragTimeout } from '../constants';
 import { move, updateBoardObject } from '../store/actions/game';
 import Board from './Board';
@@ -51,7 +52,7 @@ const Game = ({ className, boardObjectsById }: GameProps): JSX.Element => {
           const dropSuccess = current.dropAttempts[current.dropAttempts.length - 1];
           dispatch(
             updateBoardObject(dropSuccess.dragged, {
-              shape: 'check',
+              shape: Shape.CHECK,
               draggable: false,
             }),
           );
