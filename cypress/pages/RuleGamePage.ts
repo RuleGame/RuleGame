@@ -1,20 +1,21 @@
 import { shapeObjectCy } from '../../src/constants/data-cy-builders';
-import { initialBoardObjects, buckets } from '../../src/constants/index';
-import { BoardObjectType } from '../../src/@types/index';
+import { buckets } from '../../src/constants';
+// import { BoardObjectType } from '../../src/@types';
 
 // TODO: Extract this fn to a util:
 const createDataCySelector = (dataCyValue: string) => `[data-cy=${dataCyValue}]`;
 
 class RuleGamePage {
   public static get blueSquare() {
-    return createDataCySelector(
-      shapeObjectCy(
-        (initialBoardObjects.find(
-          (b) => b.color === 'blue' && b.shape === 'square',
-        ) as BoardObjectType).id,
-        'square',
-      ),
-    );
+    // return createDataCySelector(
+    //   shapeObjectCy(
+    //     (initialBoardObjects.find(
+    //       (b) => b.color === 'blue' && b.shape === 'square',
+    //     ) as BoardObjectType).id,
+    //     'square',
+    //   ),
+    // );
+    return 'unimplemented';
   }
 
   public static get bucket() {
