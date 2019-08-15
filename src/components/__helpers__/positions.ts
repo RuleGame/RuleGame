@@ -1,4 +1,4 @@
-import { BoardObjectsMapper } from '../../@types/index';
+import { BoardObjectsMapper } from '../../@types';
 
 export const setPositions = (positions: { x: number; y: number }[]): BoardObjectsMapper => (
   boardObject,
