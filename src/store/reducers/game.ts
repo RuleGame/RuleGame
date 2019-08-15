@@ -1,13 +1,15 @@
 import { getType } from 'typesafe-actions';
-import { BoardObjectType, BucketPosition, Log, Rule } from '../../@types/index';
+import random from 'lodash/random';
+import { BoardObjectType, BucketPosition, Color, Log, Rule, Shape } from '../../@types';
 import {
   blueSquareAnyBucket as blueSquareOnlyAnyBucket,
   nearestBucket,
   setAllBucketsTo,
 } from '../../components/__helpers__/rule-set-mappers';
-import { bucketOrder, initialBoardObjects } from '../../constants/index';
+import { borderHeight, borderWidth, bucketOrder, cols, rows } from '../../constants';
 import { RootAction } from '../actions';
 import { initBoard, move, setRule, updateBoardObject } from '../actions/game';
+import randomObjectsCreator from '../epics/__helpers__/objects-creator';
 
 type State = {
   boardObjectsById: { [id: number]: BoardObjectType };
@@ -18,7 +20,15 @@ type State = {
 };
 
 const initialState: State = {
-  boardObjectsById: initialBoardObjects
+  boardObjectsById: randomObjectsCreator(5, [
+    {
+      id: 0,
+      color: Color.BLUE,
+      shape: Shape.SQUARE,
+      x: random(borderWidth, cols - borderWidth),
+      y: random(borderHeight, rows - borderHeight),
+    },
+  ])
     .map((mininmalBoardObjectType) => ({
       ...mininmalBoardObjectType,
       buckets: new Set<BucketPosition>(),
@@ -48,13 +58,20 @@ const reducer = (state: State = initialState, action: RootAction): State => {
     case getType(initBoard):
       return {
         ...state,
-        boardObjectsById: initialBoardObjects
+        boardObjectsById: randomObjectsCreator(5, [
+          {
+            id: 0,
+            color: Color.BLUE,
+            shape: Shape.SQUARE,
+            x: random(borderWidth, cols - borderWidth),
+            y: random(borderHeight, rows - borderHeight),
+          },
+        ])
           .map((mininmalBoardObjectType) => ({
             ...mininmalBoardObjectType,
             buckets: new Set<BucketPosition>(),
             draggable: true,
           }))
-          .map(action.payload.positionsMapper)
           .map(action.payload.firstMoveMapper)
           .reduce(
             (acc, curr) => ({

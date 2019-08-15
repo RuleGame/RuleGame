@@ -1,9 +1,9 @@
 import React from 'react';
 import { FiCircle, FiSquare, FiStar, FiTriangle, FiCheck } from 'react-icons/fi';
-import { Shape } from '../@types';
 import HappyFace from '../assets/smiley-face.png';
 import bucketSvg from '../assets/bucket.svg';
 import { shapeObjectCy } from '../constants/data-cy-builders';
+import { Shape } from '../@types';
 
 export type ShapeProps = {
   ref: React.Ref<HTMLDivElement>;
