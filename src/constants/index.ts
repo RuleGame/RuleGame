@@ -16,8 +16,8 @@ export const buckets: BucketType[] = [
 
 // Types are not abstracted because they are not used elsewhere.
 export const gameToRule: { [game in Game]: Rule } = {
-  game1: 'nearest',
-  game2: 'clockwise',
+  [Game.GAME1]: 'nearest',
+  [Game.GAME2]: 'clockwise',
 };
 export const colors: Color[] = [Color.RED, Color.BLUE, Color.BLACK, Color.YELLOW];
 

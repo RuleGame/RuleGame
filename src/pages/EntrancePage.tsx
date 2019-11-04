@@ -4,6 +4,8 @@ import { GiPlayButton } from 'react-icons/gi';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { goToPage } from '../store/actions/page';
+import { entranceButtonCy } from '../constants/data-cy-builders';
+import { Game } from '../@types';
 
 const StyledEntrancePage = styled.div<{}>`
   display: flex;
@@ -36,13 +38,15 @@ const EntrancePage = () => {
           className="btn"
           icon={<GiPlayButton />}
           label="Game 1"
-          onClick={useCallback(() => dispatch(goToPage('RuleGame', 'game1')), [dispatch])}
+          onClick={useCallback(() => dispatch(goToPage('RuleGame', Game.GAME1)), [dispatch])}
+          data-cy={entranceButtonCy(Game.GAME1)}
         />
         <Button
           className="btn"
           icon={<GiPlayButton />}
           label="Game 2"
-          onClick={useCallback(() => dispatch(goToPage('RuleGame', 'game2')), [dispatch])}
+          onClick={useCallback(() => dispatch(goToPage('RuleGame', Game.GAME2)), [dispatch])}
+          data-cy={entranceButtonCy(Game.GAME2)}
         />
       </StyledGameList>
     </StyledEntrancePage>

@@ -13,7 +13,7 @@ export type MinimalBoardObjectType = {
 };
 
 export type BoardObjectType = {
-  buckets: Set<BucketPosition>;
+  buckets: Set<BucketPosition>; // DressedDisplay
   draggable: boolean;
 } & MinimalBoardObjectType;
 
@@ -38,7 +38,10 @@ export type BoardObjectsMapper = (boardObject: BoardObjectType, index: number) =
 
 export type Page = 'RuleGame' | 'Entrance';
 
-export type Game = 'game1' | 'game2';
+export enum Game {
+  GAME1,
+  GAME2,
+}
 
 export enum Color {
   RED = 'red',
