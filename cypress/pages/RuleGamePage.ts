@@ -1,7 +1,6 @@
 import { entranceButtonCy, shapeObjectCy } from '../../src/constants/data-cy-builders';
 import { buckets } from '../../src/constants';
 import { Game, Shape } from '../../src/@types';
-// import { BoardObjectType } from '../../src/@types';
 
 // TODO: Extract this fn to a util:
 const createDataCySelector = (dataCyValue: string) => `[data-cy=${dataCyValue}]`;
