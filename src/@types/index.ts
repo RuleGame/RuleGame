@@ -1,6 +1,11 @@
 export type BoardObjectId = number;
 
-export type BucketPosition = 'TL' | 'TR' | 'BL' | 'BR';
+export enum BucketPosition {
+  TL = 0,
+  TR = 1,
+  BL = 2,
+  BR = 3,
+}
 
 export type BoardObjectItem = { buckets: Set<BucketPosition>; id: BoardObjectId; type: 'object' };
 
@@ -44,13 +49,16 @@ export enum Game {
 }
 
 export enum Color {
+  ANY = '*',
   RED = 'red',
   BLUE = 'blue',
   BLACK = 'black',
   YELLOW = 'yellow',
+  GREEN = 'green',
 }
 
 export enum Shape {
+  ANY = '*',
   SQUARE = 'square',
   TRIANGLE = 'triangle',
   STAR = 'star',
@@ -60,3 +68,17 @@ export enum Shape {
   HAPPY = 'happy',
   CHECK = 'check',
 }
+
+export type AtomFn = (
+  boardObjectId: BoardObjectId,
+  totalMoveHistory: DropAttempt[],
+  boardObjects: { [id: number]: BoardObjectType },
+) => BucketPosition;
+
+export type Atom = {
+  counter: number;
+  shape: Shape;
+  color: Color;
+  position: number;
+  fns: AtomFn[];
+};
