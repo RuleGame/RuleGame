@@ -3,6 +3,7 @@ import { concatMap, delay, filter, map, mergeMap, switchMap } from 'rxjs/operato
 import { isActionOf } from 'typesafe-actions';
 import { RootAction } from '../actions';
 import {
+  completeGame,
   endRuleArray,
   endRuleRow,
   move,
@@ -83,7 +84,7 @@ const setRuleArrayEpic: RootEpic = (action$, state$) =>
 const endRuleArrayEpic: RootEpic = (action$) =>
   action$.pipe(
     filter(isActionOf(endRuleArray)),
-    map(() => goToPage('Entrance')),
+    map(() => completeGame()),
   );
 
 const endRuleRowEpic: RootEpic = (action$, state$) =>

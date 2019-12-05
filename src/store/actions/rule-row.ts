@@ -50,3 +50,5 @@ export const enableDebugMode = createAction('rule-row/ENABLE_DEBUG_MODE', (actio
 export const disableDebugMode = createAction('rule-row/DISABLE_DEBUG_MODE', (action) => () =>
   action(),
 );
+
+export const completeGame = createAction('rule-row/COMPLETE_GAME', (action) => () => action());

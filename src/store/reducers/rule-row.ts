@@ -21,6 +21,7 @@ import {
   resumeGame,
   enableDebugMode,
   disableDebugMode,
+  completeGame,
 } from '../actions/rule-row';
 import atomMatch from '../../utils/atom-match';
 
@@ -47,6 +48,7 @@ export type State = {
   paused: boolean;
   debugMode: boolean;
   rawAtoms: string[];
+  gameCompleted: boolean;
 };
 
 export const initialState: State = {
@@ -64,6 +66,7 @@ export const initialState: State = {
   paused: false,
   debugMode: false,
   rawAtoms: [],
+  gameCompleted: false,
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -94,6 +97,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         lastMoveSuccessful: false,
         paused: false,
         rawAtoms: action.payload.rawAtoms,
+        gameCompleted: false,
       };
     }
     case getType(setRuleRowIndex): {
@@ -163,6 +167,8 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         };
       }
 
+      const newTotalMoveHistory = [...state.totalMoveHistory, action.payload.dropAttempt];
+
       return {
         ...state,
         atomCounts: matchedAtoms.reduce(
@@ -180,7 +186,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
           },
         },
         dropAttempts: [...state.dropAttempts, action.payload.dropAttempt],
-        totalMoveHistory: [...state.totalMoveHistory, action.payload.dropAttempt],
+        totalMoveHistory: newTotalMoveHistory,
         lastMoveSuccessful: true,
         paused: true,
         boardObjectsToBucketsToAtoms: Object.values(state.boardObjectsById)
@@ -195,10 +201,10 @@ const reducer = (state: State = initialState, action: RootAction): State => {
                     (acc, atom) => {
                       atom.fns
                         .map((fn) =>
-                          fn(boardObject.id, state.totalMoveHistory, state.initialBoardObjectsById),
+                          fn(boardObject.id, newTotalMoveHistory, state.initialBoardObjectsById),
                         )
                         .forEach((bucket) => {
-                          if (Number.isNaN(bucket) && state.totalMoveHistory.length === 0) {
+                          if (Number.isNaN(bucket) && newTotalMoveHistory.length === 0) {
                             acc[BucketPosition.TR].add(atom.id);
                             acc[BucketPosition.TL].add(atom.id);
                             acc[BucketPosition.BR].add(atom.id);
@@ -249,6 +255,11 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       return {
         ...state,
         debugMode: false,
+      };
+    case getType(completeGame):
+      return {
+        ...state,
+        gameCompleted: true,
       };
 
     default:

@@ -155,3 +155,5 @@ export const historyDebugInfoSelector = createSelector(
 );
 
 export const rawAtomsSelector = (state: RootState) => state.ruleRow.rawAtoms;
+
+export const gameCompletedSelector = (state: RootState) => state.ruleRow.gameCompleted;

@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { CheckBox } from 'grommet';
+import { CheckBox, Button } from 'grommet';
 import { BoardObjectItem, BucketPosition, BucketType } from '../@types';
 import { disableDebugMode, enableDebugMode, move, touch } from '../store/actions/rule-row';
 import Board from './Board';
@@ -10,6 +10,7 @@ import {
   boardObjectToBucketsSelector,
   debugModeSelector,
   disabledBucketSelector,
+  gameCompletedSelector,
   gameStartedSelector,
   historyDebugInfoSelector,
   pausedSelector,
@@ -20,6 +21,7 @@ import { RootAction } from '../store/actions';
 import { Dispatch } from 'redux';
 import styled from 'styled-components';
 import ReactTooltip from 'react-tooltip';
+import { goToPage } from '../store/actions/page';
 
 const StyledGame = styled('div')<{}>`
   display: flex;
@@ -81,6 +83,8 @@ const Game = ({ className }: GameProps): JSX.Element => {
   const historyDebugInfo = useSelector(historyDebugInfoSelector);
   const ruleRowIndex = useSelector(ruleRowIndexSelector);
   const rawAtoms = useSelector(rawAtomsSelector);
+  const gameCompleted = useSelector(gameCompletedSelector);
+  const handleFinishedClick = useCallback(() => dispatch(goToPage('Entrance')), [dispatch]);
 
   return gameStarted ? (
     <>
@@ -116,6 +120,13 @@ const Game = ({ className }: GameProps): JSX.Element => {
           </StyledLog>
         )}
       </StyledGame>
+      {gameCompleted && (
+        <div>
+          No more moves left!
+          <br />
+          <Button label="Finish" onClick={handleFinishedClick} />
+        </div>
+      )}
     </>
   ) : (
     <div>Loading...</div>
