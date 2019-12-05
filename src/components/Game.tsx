@@ -1,72 +1,135 @@
-import React, { useMemo, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import {
-  BoardObjectId,
-  BoardObjectType,
-  BucketPosition,
-  BucketType,
-  DropAttempt,
-} from '../@types/index';
-import { afterDragTimeout } from '../constants';
-import { move, updateBoardObject } from '../store/actions/game';
+import React, { useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { CheckBox, Button } from 'grommet';
+import { BoardObjectItem, BucketPosition, BucketType } from '../@types';
+import { disableDebugMode, enableDebugMode, move, touch } from '../store/actions/rule-row';
 import Board from './Board';
+import {
+  boardObjectsSelector,
+  boardObjectsToDebugInfoSelector,
+  boardObjectToBucketsSelector,
+  debugModeSelector,
+  disabledBucketSelector,
+  gameCompletedSelector,
+  gameStartedSelector,
+  historyDebugInfoSelector,
+  pausedSelector,
+  rawAtomsSelector,
+  ruleRowIndexSelector,
+} from '../store/selectors';
+import { RootAction } from '../store/actions';
+import { Dispatch } from 'redux';
+import styled from 'styled-components';
+import ReactTooltip from 'react-tooltip';
+import { goToPage } from '../store/actions/page';
+
+const StyledGame = styled('div')<{}>`
+  display: flex;
+`;
+
+const StyledLog = styled('div')<{}>`
+  display: flex;
+  flex-direction: column;
+  font-size: 0.75em;
+  height: 80vh;
+  overflow: auto;
+`;
+
+const StyledRawAtoms = styled('div')<{}>`
+  display: flex;
+  flex-direction: column;
+  font-size: 0.75em;
+  height: 80vh;
+  overflow: auto;
+`;
+
+const StyledRawAtom = styled('div')<{ highlighted: boolean }>`
+  background-color: ${({ highlighted }) => (highlighted ? 'yellow' : 'none')};
+`;
 
 type GameProps = {
   className?: string;
-  boardObjectsById: { [id: number]: BoardObjectType };
 };
 
-const Game = ({ className, boardObjectsById }: GameProps): JSX.Element => {
-  const dispatch = useDispatch();
-  // Won't cause an update.
-  const ref = useRef<{
-    touchAttempts: BoardObjectId[];
-    dropAttempts: DropAttempt[];
-  }>({
-    dropAttempts: [],
-    touchAttempts: [],
-  });
+const Game = ({ className }: GameProps): JSX.Element => {
+  const dispatch: Dispatch<RootAction> = useDispatch();
 
-  const [pause, setPause] = useState<boolean>(false);
-  const [disabledBucket, setDroppedBucket] = useState<BucketPosition | undefined>(undefined);
+  const disabledBucket = useSelector(disabledBucketSelector);
+  const boardObjects = useSelector(boardObjectsSelector);
+  const boardObjectsToBuckets = useSelector(boardObjectToBucketsSelector);
+  const gameStarted = useSelector(gameStartedSelector);
+  const paused = useSelector(pausedSelector);
+  const handleBoardObjectClick = useCallback((boardObject) => dispatch(touch(boardObject.id)), [
+    dispatch,
+  ]);
+  const boardObjectsToDebugInfo = useSelector(boardObjectsToDebugInfoSelector);
+  const debugModeEnabled = useSelector(debugModeSelector);
+  const handleDebugModeChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.checked) {
+        dispatch(enableDebugMode());
+      } else {
+        dispatch(disableDebugMode());
+      }
+    },
+    [dispatch],
+  );
+  const handleDrop = useCallback(
+    (bucket: BucketType) => (droppedItem: BoardObjectItem): void => {
+      dispatch(move({ dragged: droppedItem.id, dropped: bucket.pos }));
+    },
+    [dispatch],
+  );
+  const historyDebugInfo = useSelector(historyDebugInfoSelector);
+  const ruleRowIndex = useSelector(ruleRowIndexSelector);
+  const rawAtoms = useSelector(rawAtomsSelector);
+  const gameCompleted = useSelector(gameCompletedSelector);
+  const handleFinishedClick = useCallback(() => dispatch(goToPage('Entrance')), [dispatch]);
 
-  return (
-    <Board
-      className={className}
-      onBoardObjectClick={(boardObject) => ref.current.touchAttempts.push(boardObject.id)}
-      boardObjects={useMemo(() => Object.values(boardObjectsById), [boardObjectsById])}
-      pause={pause}
-      disabledBucket={disabledBucket}
-      onDrop={(bucket: BucketType) => (droppedItem): void => {
-        if (disabledBucket) {
-          return;
-        }
-        const { current } = ref;
-        current.dropAttempts.push({ dragged: droppedItem.id, dropped: bucket.pos });
-
-        // Don't put in canDrop because we want to bait the user to dropping items.
-        // (The cursor will change to the drop cursor.)
-        if (droppedItem.buckets.has(bucket.pos)) {
-          const { current } = ref;
-          const dropSuccess = current.dropAttempts[current.dropAttempts.length - 1];
-          dispatch(
-            updateBoardObject(dropSuccess.dragged, {
-              shape: 'check',
-              draggable: false,
-            }),
-          );
-          setPause(true);
-          setDroppedBucket(dropSuccess.dropped);
-          setTimeout(() => {
-            setPause(false);
-            setDroppedBucket(undefined);
-            dispatch(move(ref.current.touchAttempts, ref.current.dropAttempts, dropSuccess));
-            ref.current.touchAttempts = [];
-            ref.current.dropAttempts = [];
-          }, afterDragTimeout);
-        }
-      }}
-    />
+  return gameStarted ? (
+    <>
+      <CheckBox checked={debugModeEnabled} label="Debug Mode" onChange={handleDebugModeChange} />
+      <StyledGame>
+        {debugModeEnabled && (
+          <StyledRawAtoms>
+            {rawAtoms.map((rawAtom, i) => (
+              <StyledRawAtom key={i} highlighted={ruleRowIndex === i}>
+                {rawAtom}
+              </StyledRawAtom>
+            ))}
+          </StyledRawAtoms>
+        )}
+        <Board
+          className={className}
+          onBoardObjectClick={handleBoardObjectClick}
+          boardObjects={boardObjects}
+          boardObjectsToBuckets={boardObjectsToBuckets}
+          boardObjectsToDebugInfo={boardObjectsToDebugInfo}
+          paused={paused}
+          disabledBucket={disabledBucket}
+          onDrop={handleDrop}
+        />
+        {historyDebugInfo && (
+          <StyledLog>
+            History Log:
+            {historyDebugInfo.map((dropAttemptString) =>
+              dropAttemptString.split('\n').map((item, i) => {
+                return <div key={i}>{item}</div>;
+              }),
+            )}
+          </StyledLog>
+        )}
+      </StyledGame>
+      {gameCompleted && (
+        <div>
+          No more moves left!
+          <br />
+          <Button label="Finish" onClick={handleFinishedClick} />
+        </div>
+      )}
+    </>
+  ) : (
+    <div>Loading...</div>
   );
 };
 

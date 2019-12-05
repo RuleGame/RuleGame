@@ -11,10 +11,18 @@ export const setAllBucketsTo = (buckets: BucketPosition[]): BoardObjectsMapper =
 export const nearestBucket: BoardObjectsMapper = (boardObject) => ({
   ...boardObject,
   buckets: new Set([
-    ...(boardObject.x <= cols / 2 && boardObject.y <= rows / 2 ? (['BL'] as const) : []),
-    ...(boardObject.x >= cols / 2 && boardObject.y <= rows / 2 ? (['BR'] as const) : []),
-    ...(boardObject.x >= cols / 2 && boardObject.y >= rows / 2 ? (['TR'] as const) : []),
-    ...(boardObject.x <= cols / 2 && boardObject.y >= rows / 2 ? (['TL'] as const) : []),
+    ...(boardObject.x <= (cols - 1) / 2 && boardObject.y <= (rows - 1) / 2
+      ? [BucketPosition.BL]
+      : []),
+    ...(boardObject.x >= (cols - 1) / 2 && boardObject.y <= (rows - 1) / 2
+      ? [BucketPosition.BR]
+      : []),
+    ...(boardObject.x >= (cols - 1) / 2 && boardObject.y >= (rows - 1) / 2
+      ? [BucketPosition.TR]
+      : []),
+    ...(boardObject.x <= (cols - 1) / 2 && boardObject.y >= (rows - 1) / 2
+      ? [BucketPosition.TL]
+      : []),
   ]),
 });
 
@@ -22,7 +30,7 @@ export const blueSquareAnyBucket: BoardObjectsMapper = (boardObject) => ({
   ...boardObject,
   buckets: new Set(
     boardObject.color === 'blue' && boardObject.shape === 'square'
-      ? (['TL', 'TR', 'BL', 'BR'] as const)
+      ? [BucketPosition.TL, BucketPosition.TR, BucketPosition.BL, BucketPosition.BR]
       : [],
   ),
 });

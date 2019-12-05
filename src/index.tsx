@@ -7,7 +7,7 @@ import App from './App';
 import './index.css';
 import configureStore from './store/configureStore';
 
-export const { persistor, store } = configureStore();
+export const { store } = configureStore();
 
 // eslint-disable-next-line react/jsx-filename-extension
 ReactDOM.render(

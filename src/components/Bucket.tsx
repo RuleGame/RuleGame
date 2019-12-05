@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
 import styled from 'styled-components';
-import { BoardObjectItem, BucketType } from '../@types';
+import { BoardObjectItem, BucketType, Shape } from '../@types';
 import ShapeObject from './ShapeObject';
 
 export type BucketProps = {
@@ -22,7 +22,7 @@ const Bucket = ({ className, onDrop, canDrop, dropped, bucket }: BucketProps): J
     drop: onDrop,
     accept: 'object',
     collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
+      isOver: monitor.isOver(),
     }),
   });
   return (
@@ -30,7 +30,7 @@ const Bucket = ({ className, onDrop, canDrop, dropped, bucket }: BucketProps): J
       ref={ref}
       className={className}
       isOver={isOver}
-      shape={dropped ? 'happy' : 'bucket'}
+      shape={dropped ? Shape.HAPPY : Shape.BUCKET}
       shapeObjectId={bucket.id}
     />
   );

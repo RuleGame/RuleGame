@@ -3,7 +3,7 @@ import { createLogger } from 'redux-logger';
 import { createEpicMiddleware } from 'redux-observable';
 import { persistStore } from 'redux-persist';
 import { RootAction } from './actions';
-import { rootEpic } from './epics/index';
+import { rootEpic } from './epics';
 import createRootReducer, { RootState } from './reducers';
 
 const DEV = process.env.NODE_ENV !== 'production';

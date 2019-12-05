@@ -4,6 +4,10 @@ import { GiPlayButton } from 'react-icons/gi';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { goToPage } from '../store/actions/page';
+import { entranceButtonCy } from '../constants/data-cy-builders';
+import { Game } from '../@types';
+import { RootAction } from '../store/actions';
+import { Dispatch } from 'redux';
 
 const StyledEntrancePage = styled.div<{}>`
   display: flex;
@@ -26,7 +30,7 @@ const StyledGameList = styled.div<{}>`
 `;
 
 const EntrancePage = () => {
-  const dispatch = useDispatch();
+  const dispatch: Dispatch<RootAction> = useDispatch();
 
   return (
     <StyledEntrancePage>
@@ -36,13 +40,8 @@ const EntrancePage = () => {
           className="btn"
           icon={<GiPlayButton />}
           label="Game 1"
-          onClick={useCallback(() => dispatch(goToPage('RuleGame')), [dispatch])}
-        />
-        <Button
-          className="btn"
-          icon={<GiPlayButton />}
-          label="Game 2"
-          onClick={useCallback(() => dispatch(goToPage('RuleGame')), [dispatch])}
+          onClick={useCallback(() => dispatch(goToPage('RuleGame', 'rule-array.txt')), [dispatch])}
+          data-cy={entranceButtonCy(Game.GAME1)}
         />
       </StyledGameList>
     </StyledEntrancePage>

@@ -25,19 +25,25 @@ const StyledBucket = styled(Bucket)<BucketType>`
 type BoardProps = {
   onDrop: (bucketCoord: BucketType) => (droppedItem: BoardObjectItem) => void;
   boardObjects: BoardObjectType[];
+  boardObjectsToBuckets: {
+    [boardObjectId: string]: Set<BucketPosition>;
+  };
   className?: string;
-  pause: boolean;
+  paused: boolean;
   disabledBucket: BucketPosition | undefined;
   onBoardObjectClick: (boardObject: BoardObjectType) => void;
+  boardObjectsToDebugInfo?: { [boardObjectId: string]: string };
 };
 
 const Board = ({
   onDrop,
   boardObjects,
+  boardObjectsToBuckets,
   className,
-  pause,
+  paused,
   onBoardObjectClick,
   disabledBucket,
+  boardObjectsToDebugInfo,
 }: BoardProps): JSX.Element => {
   return (
     <StyledBoard className={className}>
@@ -45,9 +51,13 @@ const Board = ({
         <StyledBoardObject
           {...boardObject}
           key={`${boardObject.x}-${boardObject.y}`}
-          item={{ ...boardObject, type: 'object' }}
+          item={{
+            ...boardObject,
+            type: 'object',
+            buckets: boardObjectsToBuckets[boardObject.id],
+            debugInfo: boardObjectsToDebugInfo && boardObjectsToDebugInfo[boardObject.id],
+          }}
           onClick={() => !disabledBucket && onBoardObjectClick(boardObject)}
-          canDrag={boardObject.draggable}
         />
       ))}
       {/* TODO: useCallback cannot be used in a callback (abstract the map return JSX) */}
@@ -56,7 +66,7 @@ const Board = ({
           {...bucket}
           key={`${bucket.x}-${bucket.y}`}
           onDrop={onDrop(bucket)}
-          canDrop={() => !pause}
+          canDrop={() => !paused}
           dropped={disabledBucket === bucket.pos}
           bucket={bucket}
         />
