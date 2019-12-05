@@ -5,6 +5,7 @@ import { move, touch } from '../store/actions/rule-row';
 import Board from './Board';
 import {
   boardObjectsSelector,
+  boardObjectsToDebugInfoSelector,
   boardObjectToBucketsSelector,
   disabledBucketSelector,
   gameStartedSelector,
@@ -28,6 +29,7 @@ const Game = ({ className }: GameProps): JSX.Element => {
   const handleBoardObjectClick = useCallback((boardObject) => dispatch(touch(boardObject.id)), [
     dispatch,
   ]);
+  const boardObjectsToDebugInfo = useSelector(boardObjectsToDebugInfoSelector);
 
   return gameStarted ? (
     <Board
@@ -35,6 +37,7 @@ const Game = ({ className }: GameProps): JSX.Element => {
       onBoardObjectClick={handleBoardObjectClick}
       boardObjects={boardObjects}
       boardObjectsToBuckets={boardObjectsToBuckets}
+      boardObjectsToDebugInfo={boardObjectsToDebugInfo}
       paused={paused}
       disabledBucket={disabledBucket}
       onDrop={(bucket: BucketType) => (droppedItem): void => {

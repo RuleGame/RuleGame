@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactTooltip from 'react-tooltip';
 import { FiCircle, FiSquare, FiStar, FiTriangle, FiCheck } from 'react-icons/fi';
 import HappyFace from '../assets/smiley-face.png';
 import bucketSvg from '../assets/bucket.svg';
@@ -11,6 +12,7 @@ export type ShapeProps = {
   className?: string;
   shapeObjectId: string;
   onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  debugInfo?: string;
 };
 
 const shapesMapping: { [shape in Shape]: JSX.Element | null } = {
@@ -26,16 +28,29 @@ const shapesMapping: { [shape in Shape]: JSX.Element | null } = {
 };
 
 const ShapeObject = React.forwardRef<HTMLDivElement, ShapeProps>(
-  ({ shape, className, shapeObjectId, onClick }, ref) => {
+  ({ shape, className, shapeObjectId, onClick, debugInfo }, ref) => {
     return (
-      <div
-        className={className}
-        ref={ref}
-        data-cy={shapeObjectCy(shapeObjectId, shape)}
-        onClick={onClick}
-      >
-        {shapesMapping[shape]}
-      </div>
+      <>
+        <div
+          data-tip
+          data-for={shapeObjectId}
+          className={className}
+          ref={ref}
+          data-cy={shapeObjectCy(shapeObjectId, shape)}
+          onClick={onClick}
+        >
+          {shapesMapping[shape]}
+        </div>
+        {debugInfo && (
+          <ReactTooltip id={shapeObjectId} type="error">
+            <div>
+              {debugInfo.split('\n').map((item, i) => {
+                return <div key={i}>{item}</div>;
+              })}
+            </div>
+          </ReactTooltip>
+        )}
+      </>
     );
   },
 );

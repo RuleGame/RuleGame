@@ -109,3 +109,18 @@ export const disabledBucketSelector = (state: RootState) =>
   state.ruleRow.paused && state.ruleRow.totalMoveHistory.length > 0
     ? state.ruleRow.totalMoveHistory[state.ruleRow.totalMoveHistory.length - 1].dropped
     : undefined;
+
+export const boardObjectsToDebugInfoSelector = createSelector(
+  [boardObjectsSelector],
+  (boardObjects) =>
+    boardObjects.reduce(
+      (acc1, boardObject) => ({
+        ...acc1,
+        [boardObject.id]: Object.entries(boardObject).reduce(
+          (acc2, [key, value]) => `${acc2}${key}: ${value}\n`,
+          '',
+        ),
+      }),
+      {},
+    ),
+);

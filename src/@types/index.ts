@@ -7,7 +7,12 @@ export enum BucketPosition {
   BR = 3,
 }
 
-export type BoardObjectItem = { buckets: Set<BucketPosition>; id: BoardObjectId; type: 'object' };
+export type BoardObjectItem = {
+  debugInfo?: string;
+  buckets: Set<BucketPosition>;
+  id: BoardObjectId;
+  type: 'object';
+};
 
 export type BoardObjectType = {
   id: string; // -1 denotes an undefined value

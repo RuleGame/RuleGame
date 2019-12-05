@@ -1,4 +1,4 @@
-import uuidv1 from 'uuid/v1';
+import shortid from 'shortid';
 import { Atom, AtomFn, BucketPosition, Color, DropAttempt, Shape } from '../@types';
 
 type RawAtomFn = (
@@ -92,7 +92,7 @@ const parseAtomString = (atom: string): Atom => {
   }
 
   return {
-    id: uuidv1(),
+    id: shortid.generate(),
     counter,
     shape: shape as Shape,
     position,

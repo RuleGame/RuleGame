@@ -38,6 +38,7 @@ const BoardObject = ({
       ref={ref}
       canDrag={canDrag}
       shapeObjectId={item.id}
+      debugInfo={item.debugInfo}
     />
   );
 };

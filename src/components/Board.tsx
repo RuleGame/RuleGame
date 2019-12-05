@@ -32,6 +32,7 @@ type BoardProps = {
   paused: boolean;
   disabledBucket: BucketPosition | undefined;
   onBoardObjectClick: (boardObject: BoardObjectType) => void;
+  boardObjectsToDebugInfo?: { [boardObjectId: string]: string };
 };
 
 const Board = ({
@@ -42,6 +43,7 @@ const Board = ({
   paused,
   onBoardObjectClick,
   disabledBucket,
+  boardObjectsToDebugInfo,
 }: BoardProps): JSX.Element => {
   return (
     <StyledBoard className={className}>
@@ -49,7 +51,12 @@ const Board = ({
         <StyledBoardObject
           {...boardObject}
           key={`${boardObject.x}-${boardObject.y}`}
-          item={{ ...boardObject, type: 'object', buckets: boardObjectsToBuckets[boardObject.id] }}
+          item={{
+            ...boardObject,
+            type: 'object',
+            buckets: boardObjectsToBuckets[boardObject.id],
+            debugInfo: boardObjectsToDebugInfo && boardObjectsToDebugInfo[boardObject.id],
+          }}
           onClick={() => !disabledBucket && onBoardObjectClick(boardObject)}
         />
       ))}

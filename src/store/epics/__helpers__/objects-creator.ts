@@ -1,4 +1,4 @@
-import uuidv1 from 'uuid/v1';
+import shortid from 'shortid';
 import range from 'lodash/range';
 import shuffle from 'lodash/shuffle';
 import sample from 'lodash/sample';
@@ -33,7 +33,7 @@ const randomObjectsCreator = (
 
     return range(numAdditionalObjects)
       .map((i) => ({
-        id: uuidv1(),
+        id: shortid(),
         color: availableColors[i],
         shape: availableShapes[i],
         x: availableX[i],
@@ -48,7 +48,7 @@ const randomObjectsCreator = (
   const availableShapes = range(numObjects).map(() => sample(shapes) as Shape);
 
   return range(numObjects).map((i) => ({
-    id: uuidv1(),
+    id: shortid(),
     color: availableColors[i],
     shape: availableShapes[i],
     x: availableX[i],
