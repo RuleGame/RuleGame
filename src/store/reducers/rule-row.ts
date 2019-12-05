@@ -104,41 +104,43 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       return {
         ...state,
         ruleRowIndex: action.payload.index,
-        boardObjectsToBucketsToAtoms: Object.values(state.boardObjectsById).reduce(
-          (acc, boardObject) => ({
-            ...acc,
-            [boardObject.id]: {
-              ...Object.values(state.atomsByRowIndex[action.payload.index])
-                .filter(atomMatch(boardObject, state.atomCounts))
-                .reduce<{ [bucket: number]: Set<string> }>(
-                  (acc, atom) => {
-                    atom.fns
-                      .map((fn) =>
-                        fn(boardObject.id, state.totalMoveHistory, state.initialBoardObjectsById),
-                      )
-                      .forEach((bucket) => {
-                        if (Number.isNaN(bucket) && state.totalMoveHistory.length === 0) {
-                          acc[BucketPosition.TR].add(atom.id);
-                          acc[BucketPosition.TL].add(atom.id);
-                          acc[BucketPosition.BR].add(atom.id);
-                          acc[BucketPosition.BL].add(atom.id);
-                        } else if (!Number.isNaN(bucket)) {
-                          acc[bucket].add(atom.id);
-                        }
-                      });
-                    return acc;
-                  },
-                  {
-                    [BucketPosition.TR]: new Set<string>(),
-                    [BucketPosition.TL]: new Set<string>(),
-                    [BucketPosition.BR]: new Set<string>(),
-                    [BucketPosition.BL]: new Set<string>(),
-                  },
-                ),
-            },
-          }),
-          {},
-        ),
+        boardObjectsToBucketsToAtoms: Object.values(state.boardObjectsById)
+          .filter((boardObject) => boardObject.shape !== Shape.CHECK)
+          .reduce(
+            (acc, boardObject) => ({
+              ...acc,
+              [boardObject.id]: {
+                ...Object.values(state.atomsByRowIndex[action.payload.index])
+                  .filter(atomMatch(boardObject, state.atomCounts))
+                  .reduce<{ [bucket: number]: Set<string> }>(
+                    (acc, atom) => {
+                      atom.fns
+                        .map((fn) =>
+                          fn(boardObject.id, state.totalMoveHistory, state.initialBoardObjectsById),
+                        )
+                        .forEach((bucket) => {
+                          if (Number.isNaN(bucket) && state.totalMoveHistory.length === 0) {
+                            acc[BucketPosition.TR].add(atom.id);
+                            acc[BucketPosition.TL].add(atom.id);
+                            acc[BucketPosition.BR].add(atom.id);
+                            acc[BucketPosition.BL].add(atom.id);
+                          } else if (!Number.isNaN(bucket)) {
+                            acc[bucket].add(atom.id);
+                          }
+                        });
+                      return acc;
+                    },
+                    {
+                      [BucketPosition.TR]: new Set<string>(),
+                      [BucketPosition.TL]: new Set<string>(),
+                      [BucketPosition.BR]: new Set<string>(),
+                      [BucketPosition.BL]: new Set<string>(),
+                    },
+                  ),
+              },
+            }),
+            {},
+          ),
       };
     }
 
@@ -181,6 +183,43 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         totalMoveHistory: [...state.totalMoveHistory, action.payload.dropAttempt],
         lastMoveSuccessful: true,
         paused: true,
+        boardObjectsToBucketsToAtoms: Object.values(state.boardObjectsById)
+          .filter((boardObject) => boardObject.shape !== Shape.CHECK)
+          .reduce(
+            (acc, boardObject) => ({
+              ...acc,
+              [boardObject.id]: {
+                ...Object.values(state.atomsByRowIndex[state.ruleRowIndex])
+                  .filter(atomMatch(boardObject, state.atomCounts))
+                  .reduce<{ [bucket: number]: Set<string> }>(
+                    (acc, atom) => {
+                      atom.fns
+                        .map((fn) =>
+                          fn(boardObject.id, state.totalMoveHistory, state.initialBoardObjectsById),
+                        )
+                        .forEach((bucket) => {
+                          if (Number.isNaN(bucket) && state.totalMoveHistory.length === 0) {
+                            acc[BucketPosition.TR].add(atom.id);
+                            acc[BucketPosition.TL].add(atom.id);
+                            acc[BucketPosition.BR].add(atom.id);
+                            acc[BucketPosition.BL].add(atom.id);
+                          } else if (!Number.isNaN(bucket)) {
+                            acc[bucket].add(atom.id);
+                          }
+                        });
+                      return acc;
+                    },
+                    {
+                      [BucketPosition.TR]: new Set<string>(),
+                      [BucketPosition.TL]: new Set<string>(),
+                      [BucketPosition.BR]: new Set<string>(),
+                      [BucketPosition.BL]: new Set<string>(),
+                    },
+                  ),
+              },
+            }),
+            {},
+          ),
       };
     }
 
