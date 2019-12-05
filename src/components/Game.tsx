@@ -11,10 +11,25 @@ import {
   debugModeSelector,
   disabledBucketSelector,
   gameStartedSelector,
+  historyDebugInfoSelector,
   pausedSelector,
 } from '../store/selectors';
 import { RootAction } from '../store/actions';
 import { Dispatch } from 'redux';
+import styled from 'styled-components';
+import ReactTooltip from 'react-tooltip';
+
+const StyledGame = styled('div')<{}>`
+  display: flex;
+`;
+
+const StyledLog = styled('div')<{}>`
+  display: flex;
+  flex-direction: column;
+  font-size: 0.75em;
+  height: 80vh;
+  overflow: auto;
+`;
 
 type GameProps = {
   className?: string;
@@ -49,21 +64,34 @@ const Game = ({ className }: GameProps): JSX.Element => {
     },
     [dispatch],
   );
+  const historyDebugInfo = useSelector(historyDebugInfoSelector);
 
   return gameStarted ? (
-    <div>
-      <Board
-        className={className}
-        onBoardObjectClick={handleBoardObjectClick}
-        boardObjects={boardObjects}
-        boardObjectsToBuckets={boardObjectsToBuckets}
-        boardObjectsToDebugInfo={boardObjectsToDebugInfo}
-        paused={paused}
-        disabledBucket={disabledBucket}
-        onDrop={handleDrop}
-      />
+    <>
       <CheckBox checked={debugModeEnabled} label="Debug Mode" onChange={handleDebugModeChange} />
-    </div>
+      <StyledGame>
+        <Board
+          className={className}
+          onBoardObjectClick={handleBoardObjectClick}
+          boardObjects={boardObjects}
+          boardObjectsToBuckets={boardObjectsToBuckets}
+          boardObjectsToDebugInfo={boardObjectsToDebugInfo}
+          paused={paused}
+          disabledBucket={disabledBucket}
+          onDrop={handleDrop}
+        />
+        {historyDebugInfo && (
+          <StyledLog>
+            History Log:
+            {historyDebugInfo.map((dropAttemptString) =>
+              dropAttemptString.split('\n').map((item, i) => {
+                return <div key={i}>{item}</div>;
+              }),
+            )}
+          </StyledLog>
+        )}
+      </StyledGame>
+    </>
   ) : (
     <div>Loading...</div>
   );

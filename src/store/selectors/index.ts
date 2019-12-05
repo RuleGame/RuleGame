@@ -105,6 +105,8 @@ export const visibleBoardObjectsSelector = createSelector(
 
 export const pausedSelector = (state: RootState) => state.ruleRow.paused;
 
+export const totalHistorySelector = (state: RootState) => state.ruleRow.totalMoveHistory;
+
 export const disabledBucketSelector = (state: RootState) =>
   state.ruleRow.paused && state.ruleRow.totalMoveHistory.length > 0
     ? state.ruleRow.totalMoveHistory[state.ruleRow.totalMoveHistory.length - 1].dropped
@@ -129,6 +131,25 @@ export const boardObjectsToDebugInfoSelector = createSelector(
             }]\n`,
           }),
           {},
+        )
+      : undefined,
+);
+
+export const initialBoardObjectsByIdSelector = (state: RootState) =>
+  state.ruleRow.initialBoardObjectsById;
+
+export const historyDebugInfoSelector = createSelector(
+  [totalHistorySelector, initialBoardObjectsByIdSelector, debugModeSelector],
+  (totalHistory, initialBoardObjectsById, debugMode) =>
+    debugMode
+      ? totalHistory.map(
+          ({ dragged, dropped }, index) =>
+            `----------------\n${index}\nBoardObject:\n${Object.entries(
+              initialBoardObjectsById[dragged],
+            ).reduce(
+              (acc2, [key, value]) => `${acc2}${key}: ${value}\n`,
+              '',
+            )}\nBucket Dropped: ${dropped}`,
         )
       : undefined,
 );
