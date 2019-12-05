@@ -111,15 +111,15 @@ export const disabledBucketSelector = (state: RootState) =>
     : undefined;
 
 export const boardObjectsToDebugInfoSelector = createSelector(
-  [boardObjectsSelector],
-  (boardObjects) =>
+  [boardObjectsSelector, boardObjectToBucketsSelector],
+  (boardObjects, boardObjectToBuckets) =>
     boardObjects.reduce(
       (acc1, boardObject) => ({
         ...acc1,
-        [boardObject.id]: Object.entries(boardObject).reduce(
+        [boardObject.id]: `${Object.entries(boardObject).reduce(
           (acc2, [key, value]) => `${acc2}${key}: ${value}\n`,
           '',
-        ),
+        )}buckets: [${Array.from(boardObjectToBuckets[boardObject.id]).toString()}]\n`,
       }),
       {},
     ),
