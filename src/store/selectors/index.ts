@@ -110,17 +110,25 @@ export const disabledBucketSelector = (state: RootState) =>
     ? state.ruleRow.totalMoveHistory[state.ruleRow.totalMoveHistory.length - 1].dropped
     : undefined;
 
+export const debugModeSelector = (state: RootState) => state.ruleRow.debugMode;
+
 export const boardObjectsToDebugInfoSelector = createSelector(
-  [boardObjectsSelector, boardObjectToBucketsSelector],
-  (boardObjects, boardObjectToBuckets) =>
-    boardObjects.reduce(
-      (acc1, boardObject) => ({
-        ...acc1,
-        [boardObject.id]: `${Object.entries(boardObject).reduce(
-          (acc2, [key, value]) => `${acc2}${key}: ${value}\n`,
-          '',
-        )}buckets: [${Array.from(boardObjectToBuckets[boardObject.id]).toString()}]\n`,
-      }),
-      {},
-    ),
+  [debugModeSelector, boardObjectsSelector, boardObjectToBucketsSelector],
+  (debugMode, boardObjects, boardObjectToBuckets) =>
+    debugMode
+      ? boardObjects.reduce(
+          (acc1, boardObject) => ({
+            ...acc1,
+            [boardObject.id]: `${Object.entries(boardObject).reduce(
+              (acc2, [key, value]) => `${acc2}${key}: ${value}\n`,
+              '',
+            )}buckets: [${
+              boardObject.id in boardObjectToBuckets
+                ? Array.from(boardObjectToBuckets[boardObject.id]).toString()
+                : ''
+            }]\n`,
+          }),
+          {},
+        )
+      : undefined,
 );

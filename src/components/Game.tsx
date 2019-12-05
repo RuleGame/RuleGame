@@ -1,12 +1,14 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BucketPosition, BucketType } from '../@types';
-import { move, touch } from '../store/actions/rule-row';
+import { CheckBox } from 'grommet';
+import { BoardObjectItem, BucketPosition, BucketType } from '../@types';
+import { disableDebugMode, enableDebugMode, move, touch } from '../store/actions/rule-row';
 import Board from './Board';
 import {
   boardObjectsSelector,
   boardObjectsToDebugInfoSelector,
   boardObjectToBucketsSelector,
+  debugModeSelector,
   disabledBucketSelector,
   gameStartedSelector,
   pausedSelector,
@@ -30,20 +32,38 @@ const Game = ({ className }: GameProps): JSX.Element => {
     dispatch,
   ]);
   const boardObjectsToDebugInfo = useSelector(boardObjectsToDebugInfoSelector);
+  const debugModeEnabled = useSelector(debugModeSelector);
+  const handleDebugModeChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.checked) {
+        dispatch(enableDebugMode());
+      } else {
+        dispatch(disableDebugMode());
+      }
+    },
+    [dispatch],
+  );
+  const handleDrop = useCallback(
+    (bucket: BucketType) => (droppedItem: BoardObjectItem): void => {
+      dispatch(move({ dragged: droppedItem.id, dropped: bucket.pos }));
+    },
+    [dispatch],
+  );
 
   return gameStarted ? (
-    <Board
-      className={className}
-      onBoardObjectClick={handleBoardObjectClick}
-      boardObjects={boardObjects}
-      boardObjectsToBuckets={boardObjectsToBuckets}
-      boardObjectsToDebugInfo={boardObjectsToDebugInfo}
-      paused={paused}
-      disabledBucket={disabledBucket}
-      onDrop={(bucket: BucketType) => (droppedItem): void => {
-        dispatch(move({ dragged: droppedItem.id, dropped: bucket.pos }));
-      }}
-    />
+    <div>
+      <Board
+        className={className}
+        onBoardObjectClick={handleBoardObjectClick}
+        boardObjects={boardObjects}
+        boardObjectsToBuckets={boardObjectsToBuckets}
+        boardObjectsToDebugInfo={boardObjectsToDebugInfo}
+        paused={paused}
+        disabledBucket={disabledBucket}
+        onDrop={handleDrop}
+      />
+      <CheckBox checked={debugModeEnabled} label="Debug Mode" onChange={handleDebugModeChange} />
+    </div>
   ) : (
     <div>Loading...</div>
   );

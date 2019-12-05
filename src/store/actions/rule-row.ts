@@ -42,3 +42,11 @@ export const endRuleRow = createAction('rule-row/END_RULE_ROW', (action) => () =
 export const pauseGame = createAction('rule-row/PAUSE_GAME', (action) => () => action());
 
 export const resumeGame = createAction('rule-row/RESUME_GAME', (action) => () => action());
+
+export const enableDebugMode = createAction('rule-row/ENABLE_DEBUG_MODE', (action) => () =>
+  action(),
+);
+
+export const disableDebugMode = createAction('rule-row/DISABLE_DEBUG_MODE', (action) => () =>
+  action(),
+);

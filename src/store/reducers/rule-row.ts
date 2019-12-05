@@ -19,6 +19,8 @@ import {
   setRuleArray,
   setRuleRowIndex,
   resumeGame,
+  enableDebugMode,
+  disableDebugMode,
 } from '../actions/rule-row';
 import atomMatch from '../../utils/atom-match';
 
@@ -43,6 +45,7 @@ export type State = {
   numRuleRows: number;
   lastMoveSuccessful: boolean;
   paused: boolean;
+  debugMode: boolean;
 };
 
 export const initialState: State = {
@@ -58,6 +61,7 @@ export const initialState: State = {
   numRuleRows: 0,
   lastMoveSuccessful: false,
   paused: false,
+  debugMode: false,
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -192,6 +196,17 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       return {
         ...state,
         paused: false,
+      };
+
+    case getType(enableDebugMode):
+      return {
+        ...state,
+        debugMode: true,
+      };
+    case getType(disableDebugMode):
+      return {
+        ...state,
+        debugMode: false,
       };
 
     default:
