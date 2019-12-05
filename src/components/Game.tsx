@@ -6,6 +6,7 @@ import Board from './Board';
 import {
   boardObjectsSelector,
   boardObjectToBucketsSelector,
+  disabledBucketSelector,
   gameStartedSelector,
   pausedSelector,
 } from '../store/selectors';
@@ -19,7 +20,7 @@ type GameProps = {
 const Game = ({ className }: GameProps): JSX.Element => {
   const dispatch: Dispatch<RootAction> = useDispatch();
 
-  const [disabledBucket] = useState<BucketPosition | undefined>(undefined);
+  const disabledBucket = useSelector(disabledBucketSelector);
   const boardObjects = useSelector(boardObjectsSelector);
   const boardObjectsToBuckets = useSelector(boardObjectToBucketsSelector);
   const gameStarted = useSelector(gameStartedSelector);

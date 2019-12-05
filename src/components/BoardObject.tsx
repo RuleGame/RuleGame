@@ -25,7 +25,7 @@ const BoardObject = ({
   shape,
   canDrag: canDragProp = true,
 }: BoardObjectProps): JSX.Element => {
-  const canDrag = canDragProp && item.buckets.size > 0;
+  const canDrag = canDragProp && item.buckets !== undefined && item.buckets.size > 0;
   const [, ref] = useDrag({
     item,
     canDrag,

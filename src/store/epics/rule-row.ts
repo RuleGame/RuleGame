@@ -29,76 +29,34 @@ const moveEpic: RootEpic = (action$, state$) =>
   action$.pipe(
     filter(isActionOf(move)),
     filter(() => state$.value.ruleRow.lastMoveSuccessful),
+    // map(() => pauseGame()),
     delay(1000),
-    switchMap(() => {
-      const actions: RootAction[] = [
-        removeBoardObject(
-          state$.value.ruleRow.totalMoveHistory[state$.value.ruleRow.totalMoveHistory.length - 1]
-            .dragged,
-        ),
-        resumeGame(),
-      ];
-      if (
-        allAtomCountersZeroSelector(state$.value) &&
-        state$.value.ruleRow.ruleRowIndex === state$.value.ruleRow.numRuleRows - 1
-      ) {
-        actions.push(endRuleArray());
-      } else if (allAtomCountersZeroSelector(state$.value)) {
-        actions.push(endRuleRow());
-      }
-
-      return actions;
-    }),
+    switchMap(() => [
+      removeBoardObject(
+        state$.value.ruleRow.totalMoveHistory[state$.value.ruleRow.totalMoveHistory.length - 1]
+          .dragged,
+      ),
+      resumeGame(),
+    ]),
   );
-
-// const pauseEpic: RootEpic = (action$, state$) =>
-//   action$.pipe(
-//     filter(isActionOf(pauseGame)),
-//     delay(1000),
-//     switchMap(() => {
-//       const actions: RootAction[] = [
-//         removeBoardObject(
-//           state$.value.ruleRow.totalMoveHistory[state$.value.ruleRow.totalMoveHistory.length - 1]
-//             .dragged,
-//         ),
-//       ];
-//       if (
-//         allAtomCountersZeroSelector(state$.value) &&
-//         state$.value.ruleRow.ruleRowIndex === state$.value.ruleRow.numRuleRows - 1
-//       ) {
-//         actions.push(endRuleArray());
-//       } else if (allAtomCountersZeroSelector(state$.value)) {
-//         actions.push(endRuleRow());
-//       }
 //
-//       return actions;
-//     }),
-//   );
-
-// const removeBoardObjectEpic: RootEpic = (action$, state$) =>
+// const noMoreMovesEpic: RootEpic = (action$, state$) =>
 //   action$.pipe(
-//     filter(isActionOf(removeBoardObject)),
-//     filter(() => noMoreMovesSelector(state$.value)),
+//     filter(isActionOf([setRuleRowIndex, removeBoardObject])),
+//     filter(() =>  noMoreMovesSelector(state$.value)),
 //     map(() => {
 //       if (state$.value.ruleRow.ruleRowIndex === state$.value.ruleRow.numRuleRows - 1) {
 //         return endRuleArray();
 //       }
-//       return setRuleRowIndex(state$.value.ruleRow.ruleRowIndex);
+//       return setRuleRowIndex(state$.value.ruleRow.ruleRowIndex + 1);
 //     }),
 //   );
 
 const noMoreMovesEpic: RootEpic = (action$, state$) =>
   action$.pipe(
     filter(isActionOf([setRuleRowIndex, removeBoardObject])),
-    filter(() => {
-      return noMoreMovesSelector(state$.value);
-    }),
-    map(() => {
-      if (state$.value.ruleRow.ruleRowIndex === state$.value.ruleRow.numRuleRows - 1) {
-        return endRuleArray();
-      }
-      return setRuleRowIndex(state$.value.ruleRow.ruleRowIndex + 1);
-    }),
+    filter(() => noMoreMovesSelector(state$.value)),
+    map(() => endRuleRow()),
   );
 
 const readRuleArrayEpic: RootEpic = (action$) =>
@@ -127,12 +85,20 @@ const endRuleArrayEpic: RootEpic = (action$) =>
     map(() => goToPage('Entrance')),
   );
 
-const ruleRowEpic: RootEpic = (action$) => action$.pipe(filter(isActionOf(endRuleRow)));
+const endRuleRowEpic: RootEpic = (action$, state$) =>
+  action$.pipe(
+    filter(isActionOf(endRuleRow)),
+    map(() =>
+      state$.value.ruleRow.ruleRowIndex === state$.value.ruleRow.numRuleRows - 1
+        ? endRuleArray()
+        : setRuleRowIndex(state$.value.ruleRow.ruleRowIndex + 1),
+    ),
+  );
 
 export default combineEpics(
   moveEpic,
   readRuleArrayEpic,
-  ruleRowEpic,
+  endRuleRowEpic,
   endRuleArrayEpic,
   setRuleArrayEpic,
   noMoreMovesEpic,

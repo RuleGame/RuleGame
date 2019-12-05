@@ -42,8 +42,8 @@ const randomObjectsCreator = (
       .concat(initialObjectsList);
   }
 
-  const availableX = shuffle(range(cols));
-  const availableY = shuffle(range(rows));
+  const availableX = shuffle(range(1, cols - 1));
+  const availableY = shuffle(range(1, rows - 1));
   const availableColors = range(numObjects).map(() => sample(colors) as Color);
   const availableShapes = range(numObjects).map(() => sample(shapes) as Shape);
 

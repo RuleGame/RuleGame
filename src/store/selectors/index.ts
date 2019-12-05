@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import pickBy from 'lodash/pickBy';
 import { RootState } from '../reducers';
-import { BucketPosition } from '../../@types';
+import { BucketPosition, Shape } from '../../@types';
 
 // export const boardObjectsByIdSelector = (state: RootState) => state.game.boardObjectsById;
 
@@ -85,11 +85,16 @@ export const boardObjectToBucketsSelector = createSelector(
 
 export const gameStartedSelector = (state: RootState) => !Number.isNaN(state.ruleRow.ruleRowIndex);
 
+export const allChecksSelector = createSelector(
+  [boardObjectsSelector],
+  (boardObjects) => boardObjects.every((boardObject) => boardObject.shape === Shape.CHECK),
+);
 export const noMoreMovesSelector = createSelector(
-  [allAtomCountersZeroSelector, boardObjectToBucketsSelector],
-  (allAtomCountersZero, boardObjectToBuckets) =>
+  [allAtomCountersZeroSelector, boardObjectToBucketsSelector, allChecksSelector],
+  (allAtomCountersZero, boardObjectToBuckets, allChecks) =>
     allAtomCountersZero ||
-    Object.values(boardObjectToBuckets).every((bucketsSet) => bucketsSet.size === 0),
+    Object.values(boardObjectToBuckets).every((bucketsSet) => bucketsSet.size === 0) ||
+    allChecks,
 );
 
 export const visibleBoardObjectsSelector = createSelector(
@@ -99,3 +104,8 @@ export const visibleBoardObjectsSelector = createSelector(
 );
 
 export const pausedSelector = (state: RootState) => state.ruleRow.paused;
+
+export const disabledBucketSelector = (state: RootState) =>
+  state.ruleRow.paused && state.ruleRow.totalMoveHistory.length > 0
+    ? state.ruleRow.totalMoveHistory[state.ruleRow.totalMoveHistory.length - 1].dropped
+    : undefined;

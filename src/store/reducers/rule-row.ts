@@ -167,7 +167,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
           ...state.boardObjectsById,
           [dragged]: {
             ...state.boardObjectsById[dragged],
-            shape: Shape.HAPPY,
+            shape: Shape.CHECK,
           },
         },
         dropAttempts: [...state.dropAttempts, action.payload.dropAttempt],
@@ -179,14 +179,12 @@ const reducer = (state: State = initialState, action: RootAction): State => {
 
     case getType(removeBoardObject): {
       // FIXME: Removing is bad because it loses the references for the total history
-      const { [action.payload.boardObjectId]: _1, ...newBoardObjectsById } = state.boardObjectsById;
       const {
         [action.payload.boardObjectId]: _2,
         ...newBoardObjectsToBucketsToAtoms
       } = state.boardObjectsToBucketsToAtoms;
       return {
         ...state,
-        boardObjectsById: newBoardObjectsById,
         boardObjectsToBucketsToAtoms: newBoardObjectsToBucketsToAtoms,
       };
     }
