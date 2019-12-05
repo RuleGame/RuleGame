@@ -1,4 +1,4 @@
-export type BoardObjectId = number;
+export type BoardObjectId = string;
 
 export enum BucketPosition {
   TL = 0,
@@ -9,22 +9,22 @@ export enum BucketPosition {
 
 export type BoardObjectItem = { buckets: Set<BucketPosition>; id: BoardObjectId; type: 'object' };
 
-export type MinimalBoardObjectType = {
-  id: BoardObjectId; // -1 denotes an undefined value
+export type BoardObjectType = {
+  id: string; // -1 denotes an undefined value
   color: Color;
   shape: Shape;
   x: number;
   y: number;
 };
 
-export type BoardObjectType = {
-  buckets: Set<BucketPosition>; // DressedDisplay
-  draggable: boolean;
-} & MinimalBoardObjectType;
+// export type BoardObjectType = {
+//   buckets: BucketPosition[]; // DressedDisplay
+//   draggable: boolean;
+// } & MinimalBoardObjectType;
 
-export type BucketType = { pos: BucketPosition; x: number; y: number; id: number };
+export type BucketType = { pos: BucketPosition; x: number; y: number; id: string };
 
-export type DropAttempt = { dragged: BoardObjectId; dropped: BucketPosition };
+export type DropAttempt = { dragged: string; dropped: BucketPosition };
 
 export type Log = {
   id: number;
@@ -72,10 +72,11 @@ export enum Shape {
 export type AtomFn = (
   boardObjectId: BoardObjectId,
   totalMoveHistory: DropAttempt[],
-  boardObjects: { [id: number]: BoardObjectType },
+  boardObjects: { [id: string]: BoardObjectType },
 ) => BucketPosition;
 
 export type Atom = {
+  id: string;
   counter: number;
   shape: Shape;
   color: Color;

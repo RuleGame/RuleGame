@@ -2,9 +2,12 @@ import atomParser from '../atom-parser';
 import { BoardObjectType, BucketPosition, Color, DropAttempt, Shape } from '../../@types';
 
 it('can parse all atom values', () => {
-  const atoms = atomParser('(10,square,*,*,[1,2]) (10,*,green,10,[2,3])');
+  const atoms = atomParser('(10,square,*,*,[1,2]) (*,*,green,10,[2,3])');
   expect(atoms).toHaveLength(2);
   const [firstAtom, secondAtom] = atoms;
+
+  expect(firstAtom.counter).toEqual(10);
+  expect(secondAtom.counter).toEqual(Infinity);
 
   expect(firstAtom.shape).toEqual(Shape.SQUARE);
   expect(secondAtom.shape).toEqual(Shape.ANY);
@@ -19,20 +22,18 @@ it('can parse all atom values', () => {
   const boardObjects: { [id: number]: BoardObjectType } = {
     1: {
       color: Color.RED,
-      buckets: new Set(),
-      draggable: true,
-      id: 1,
+      id: '1',
       shape: Shape.SQUARE,
       x: 0,
       y: 2,
     },
   };
 
-  expect(firstAtom.fns.map((fn) => fn(1, totalMoveHistory, boardObjects))).toEqual([
+  expect(firstAtom.fns.map((fn) => fn('1', totalMoveHistory, boardObjects))).toEqual([
     BucketPosition.TR,
     BucketPosition.BL,
   ]);
-  expect(secondAtom.fns.map((fn) => fn(1, totalMoveHistory, boardObjects))).toEqual([
+  expect(secondAtom.fns.map((fn) => fn('1', totalMoveHistory, boardObjects))).toEqual([
     BucketPosition.BL,
     BucketPosition.BR,
   ]);
@@ -45,12 +46,10 @@ it('can parse * function', () => {
 
   expect(
     atom.fns.map((fn) =>
-      fn(1, [], {
+      fn('1', [], {
         1: {
           color: Color.RED,
-          buckets: new Set(),
-          draggable: true,
-          id: 1,
+          id: '1',
           shape: Shape.SQUARE,
           x: 0,
           y: 2,
@@ -70,24 +69,22 @@ it('can parse p, ps, pc, and pcs', () => {
   expect(atoms).toHaveLength(1);
   const atom = atoms[0];
 
-  const boardObjectId = 5;
+  const boardObjectId = '5';
   const totalMoveHistory: DropAttempt[] = [
     // pcs
-    { dragged: 1, dropped: BucketPosition.BL },
+    { dragged: '1', dropped: BucketPosition.BL },
     // pc
-    { dragged: 2, dropped: BucketPosition.BR },
+    { dragged: '2', dropped: BucketPosition.BR },
     // ps
-    { dragged: 3, dropped: BucketPosition.TR },
+    { dragged: '3', dropped: BucketPosition.TR },
     // p
-    { dragged: 4, dropped: BucketPosition.TL },
+    { dragged: '4', dropped: BucketPosition.TL },
   ];
   const boardObjects: { [id: number]: BoardObjectType } = {
     // pcs
     1: {
       color: Color.RED,
-      buckets: new Set(),
-      draggable: true,
-      id: 1,
+      id: '1',
       shape: Shape.SQUARE,
       x: 0,
       y: 2,
@@ -95,9 +92,7 @@ it('can parse p, ps, pc, and pcs', () => {
     // pc
     2: {
       color: Color.RED,
-      buckets: new Set(),
-      draggable: true,
-      id: 2,
+      id: '2',
       shape: Shape.CIRCLE,
       x: 0,
       y: 2,
@@ -105,9 +100,7 @@ it('can parse p, ps, pc, and pcs', () => {
     // ps
     3: {
       color: Color.GREEN,
-      buckets: new Set(),
-      draggable: true,
-      id: 3,
+      id: '3',
       shape: Shape.SQUARE,
       x: 0,
       y: 2,
@@ -115,9 +108,7 @@ it('can parse p, ps, pc, and pcs', () => {
     // p
     4: {
       color: Color.GREEN,
-      buckets: new Set(),
-      draggable: true,
-      id: 4,
+      id: '4',
       shape: Shape.STAR,
       x: 0,
       y: 2,
@@ -125,9 +116,7 @@ it('can parse p, ps, pc, and pcs', () => {
     // test object
     5: {
       color: Color.RED,
-      buckets: new Set(),
-      draggable: true,
-      id: 5,
+      id: '5',
       shape: Shape.SQUARE,
       x: 1,
       y: 2,
@@ -147,24 +136,22 @@ it('can parse modulo functions', () => {
   expect(atoms).toHaveLength(1);
   const atom = atoms[0];
 
-  const boardObjectId = 5;
+  const boardObjectId = '5';
   const totalMoveHistory: DropAttempt[] = [
     // pcs
-    { dragged: 1, dropped: BucketPosition.BL },
+    { dragged: '1', dropped: BucketPosition.BL },
     // pc
-    { dragged: 2, dropped: BucketPosition.BR },
+    { dragged: '2', dropped: BucketPosition.BR },
     // ps
-    { dragged: 3, dropped: BucketPosition.TR },
+    { dragged: '3', dropped: BucketPosition.TR },
     // p
-    { dragged: 4, dropped: BucketPosition.TL },
+    { dragged: '4', dropped: BucketPosition.TL },
   ];
   const boardObjects: { [id: number]: BoardObjectType } = {
     // pcs
     1: {
       color: Color.RED,
-      buckets: new Set(),
-      draggable: true,
-      id: 1,
+      id: '1',
       shape: Shape.SQUARE,
       x: 0,
       y: 2,
@@ -172,9 +159,7 @@ it('can parse modulo functions', () => {
     // pc
     2: {
       color: Color.RED,
-      buckets: new Set(),
-      draggable: true,
-      id: 2,
+      id: '2',
       shape: Shape.CIRCLE,
       x: 0,
       y: 2,
@@ -182,9 +167,7 @@ it('can parse modulo functions', () => {
     // ps
     3: {
       color: Color.GREEN,
-      buckets: new Set(),
-      draggable: true,
-      id: 3,
+      id: '3',
       shape: Shape.SQUARE,
       x: 0,
       y: 2,
@@ -192,9 +175,7 @@ it('can parse modulo functions', () => {
     // p
     4: {
       color: Color.GREEN,
-      buckets: new Set(),
-      draggable: true,
-      id: 4,
+      id: '4',
       shape: Shape.STAR,
       x: 0,
       y: 2,
@@ -202,9 +183,7 @@ it('can parse modulo functions', () => {
     // test object
     5: {
       color: Color.RED,
-      buckets: new Set(),
-      draggable: true,
-      id: 5,
+      id: '5',
       shape: Shape.SQUARE,
       x: 1,
       y: 2,
@@ -213,5 +192,31 @@ it('can parse modulo functions', () => {
 
   expect(atom.fns.map((fn) => fn(boardObjectId, totalMoveHistory, boardObjects))).toEqual([
     BucketPosition.TL,
+  ]);
+});
+
+it('returns NaNs if history is empty', () => {
+  const atoms = atomParser('(*,*,*,*,[(pc+1)%4,p,ps,pcs])');
+  expect(atoms).toHaveLength(1);
+  const atom = atoms[0];
+
+  const boardObjectId = '1';
+  const totalMoveHistory: DropAttempt[] = [];
+
+  const boardObjects: { [id: number]: BoardObjectType } = {
+    1: {
+      color: Color.RED,
+      id: '1',
+      shape: Shape.SQUARE,
+      x: 0,
+      y: 2,
+    },
+  };
+
+  expect(atom.fns.map((fn) => fn(boardObjectId, totalMoveHistory, boardObjects))).toEqual([
+    NaN,
+    NaN,
+    NaN,
+    NaN,
   ]);
 });

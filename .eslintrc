@@ -48,7 +48,8 @@
         "devDependencies": ["**/*.test.js", "**/*.spec.js", "cypress/**/*"]
       }
     ],
-    "consistent-return": "off"
+    "consistent-return": "off",
+    "@typescript-eslint/no-object-literal-type-assertion": ["error", { "allowAsParameter": true }]
   },
   "settings": {
     "import/resolver": {

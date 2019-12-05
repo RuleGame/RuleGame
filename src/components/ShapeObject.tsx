@@ -9,7 +9,7 @@ export type ShapeProps = {
   ref: React.Ref<HTMLDivElement>;
   shape: Shape;
   className?: string;
-  shapeObjectId: number;
+  shapeObjectId: string;
   onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 };
 
@@ -22,6 +22,7 @@ const shapesMapping: { [shape in Shape]: JSX.Element | null } = {
   bucket: <img src={bucketSvg} alt="bucket" width="100%" height="100%" />,
   check: <FiCheck color="green" size="100%" />,
   nothing: null,
+  '*': <div>*</div>,
 };
 
 const ShapeObject = React.forwardRef<HTMLDivElement, ShapeProps>(

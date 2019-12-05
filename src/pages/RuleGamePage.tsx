@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Game from '../components/Game';
 import HistoryLog from '../components/HistoryLog';
-import { boardObjectsByIdSelector, logsSelector } from '../store/selectors';
+// import { boardObjectsByIdSelector, logsSelector } from '../store/selectors';
 
 const StyledRuleGamePage = styled.div<{}>`
   display: flex;
@@ -23,13 +23,12 @@ const StyledGame = styled(Game)<{}>`
 `;
 
 const RuleGamePage = () => {
-  const boardObjectsById = useSelector(boardObjectsByIdSelector);
-  const logs = useSelector(logsSelector);
+  // const logs = useSelector(logsSelector);
 
   return (
     <StyledRuleGamePage>
-      <StyledGame boardObjectsById={boardObjectsById} />
-      <HistoryLog logs={logs} />
+      <StyledGame />
+      {/* <HistoryLog logs={logs} /> */}
     </StyledRuleGamePage>
   );
 };

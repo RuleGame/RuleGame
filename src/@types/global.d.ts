@@ -1,4 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
+
 interface Window {
   /* eslint-disable @typescript-eslint/no-explicit-any */
   __REDUX_DEVTOOLS_EXTENSION__: any;
@@ -38,5 +39,10 @@ declare module '*.pcss' {
 declare module '*.json' {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const resource: any;
+  export = resource;
+}
+
+declare module '*.txt' {
+  const resource: string;
   export = resource;
 }

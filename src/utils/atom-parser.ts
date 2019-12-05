@@ -1,3 +1,4 @@
+import uuidv1 from 'uuid/v1';
 import { Atom, AtomFn, BucketPosition, Color, DropAttempt, Shape } from '../@types';
 
 type RawAtomFn = (
@@ -69,7 +70,7 @@ const parseAtomString = (atom: string): Atom => {
   }
   const [, matchedCounter, matchedShape, matchedColor, matchedPosition, matchedFn] = matches;
 
-  const counter = Number(matchedCounter);
+  const counter = matchedCounter === '*' ? Infinity : Number(matchedCounter);
 
   // Allow * to be represented as NaN
   const position = Number(matchedPosition);
@@ -91,7 +92,8 @@ const parseAtomString = (atom: string): Atom => {
   }
 
   return {
-    counter: Number(counter),
+    id: uuidv1(),
+    counter,
     shape: shape as Shape,
     position,
     color: color as Color,
