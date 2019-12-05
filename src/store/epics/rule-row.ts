@@ -69,6 +69,7 @@ const readRuleArrayEpic: RootEpic = (action$) =>
           .split('\n')
           .filter((line) => line.trim().length > 0)
           .map((ruleRow) => ruleParser(ruleRow)),
+        fileMapping[action.payload.fileName].split('\n'),
       ),
     ),
   );

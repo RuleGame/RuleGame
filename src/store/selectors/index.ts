@@ -153,3 +153,5 @@ export const historyDebugInfoSelector = createSelector(
         )
       : undefined,
 );
+
+export const rawAtomsSelector = (state: RootState) => state.ruleRow.rawAtoms;

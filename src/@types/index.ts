@@ -3,8 +3,8 @@ export type BoardObjectId = string;
 export enum BucketPosition {
   TL = 0,
   TR = 1,
-  BL = 2,
-  BR = 3,
+  BR = 2,
+  BL = 3,
 }
 
 export type BoardObjectItem = {

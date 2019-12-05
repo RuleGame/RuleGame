@@ -26,8 +26,8 @@ export const readRuleArray = createAction(
 
 export const setRuleArray = createAction(
   'rule-row/SET_RULE_ARRAY',
-  (action) => (boardObjects: BoardObjectType[], atoms: Atom[][]) =>
-    action({ boardObjects, atomsByRowIndex: atoms }),
+  (action) => (boardObjects: BoardObjectType[], atoms: Atom[][], rawAtoms: string[]) =>
+    action({ boardObjects, atomsByRowIndex: atoms, rawAtoms }),
 );
 
 export const setRuleRowIndex = createAction(

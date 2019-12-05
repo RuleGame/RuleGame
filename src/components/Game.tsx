@@ -13,6 +13,8 @@ import {
   gameStartedSelector,
   historyDebugInfoSelector,
   pausedSelector,
+  rawAtomsSelector,
+  ruleRowIndexSelector,
 } from '../store/selectors';
 import { RootAction } from '../store/actions';
 import { Dispatch } from 'redux';
@@ -29,6 +31,18 @@ const StyledLog = styled('div')<{}>`
   font-size: 0.75em;
   height: 80vh;
   overflow: auto;
+`;
+
+const StyledRawAtoms = styled('div')<{}>`
+  display: flex;
+  flex-direction: column;
+  font-size: 0.75em;
+  height: 80vh;
+  overflow: auto;
+`;
+
+const StyledRawAtom = styled('div')<{ highlighted: boolean }>`
+  background-color: ${({ highlighted }) => (highlighted ? 'yellow' : 'none')};
 `;
 
 type GameProps = {
@@ -65,11 +79,22 @@ const Game = ({ className }: GameProps): JSX.Element => {
     [dispatch],
   );
   const historyDebugInfo = useSelector(historyDebugInfoSelector);
+  const ruleRowIndex = useSelector(ruleRowIndexSelector);
+  const rawAtoms = useSelector(rawAtomsSelector);
 
   return gameStarted ? (
     <>
       <CheckBox checked={debugModeEnabled} label="Debug Mode" onChange={handleDebugModeChange} />
       <StyledGame>
+        {debugModeEnabled && (
+          <StyledRawAtoms>
+            {rawAtoms.map((rawAtom, i) => (
+              <StyledRawAtom key={i} highlighted={ruleRowIndex === i}>
+                {rawAtom}
+              </StyledRawAtom>
+            ))}
+          </StyledRawAtoms>
+        )}
         <Board
           className={className}
           onBoardObjectClick={handleBoardObjectClick}

@@ -46,6 +46,7 @@ export type State = {
   lastMoveSuccessful: boolean;
   paused: boolean;
   debugMode: boolean;
+  rawAtoms: string[];
 };
 
 export const initialState: State = {
@@ -62,6 +63,7 @@ export const initialState: State = {
   lastMoveSuccessful: false,
   paused: false,
   debugMode: false,
+  rawAtoms: [],
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -91,6 +93,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         touchAttempts: [],
         lastMoveSuccessful: false,
         paused: false,
+        rawAtoms: action.payload.rawAtoms,
       };
     }
     case getType(setRuleRowIndex): {
