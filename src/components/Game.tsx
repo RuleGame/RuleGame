@@ -86,7 +86,7 @@ const Game = ({ className }: GameProps): JSX.Element => {
   const gameCompleted = useSelector(gameCompletedSelector);
   const handleFinishedClick = useCallback(() => dispatch(goToPage('Entrance')), [dispatch]);
 
-  return gameStarted ? (
+  return (
     <>
       <CheckBox checked={debugModeEnabled} label="Debug Mode" onChange={handleDebugModeChange} />
       <StyledGame>
@@ -128,8 +128,6 @@ const Game = ({ className }: GameProps): JSX.Element => {
         </div>
       )}
     </>
-  ) : (
-    <div>Loading...</div>
   );
 };
 

@@ -60,25 +60,25 @@ const noMoreMovesEpic: RootEpic = (action$, state$) =>
     map(() => endRuleRow()),
   );
 
-const readRuleArrayEpic: RootEpic = (action$) =>
-  action$.pipe(
-    filter(isActionOf(readRuleArray)),
-    map((action) =>
-      setRuleArray(
-        randomObjectsCreator(5),
-        fileMapping[action.payload.fileName]
-          .split('\n')
-          .filter((line) => line.trim().length > 0)
-          .map((ruleRow) => ruleParser(ruleRow)),
-        fileMapping[action.payload.fileName].split('\n'),
-      ),
-    ),
-  );
+// const readRuleArrayEpic: RootEpic = (action$) =>
+//   action$.pipe(
+//     filter(isActionOf(readRuleArray)),
+//     map((action) =>
+//       setRuleArray(
+//         randomObjectsCreator(5),
+//         fileMapping[action.payload.fileName]
+//           .split('\n')
+//           .filter((line) => line.trim().length > 0)
+//           .map((ruleRow) => ruleParser(ruleRow)),
+//         fileMapping[action.payload.fileName].split('\n'),
+//       ),
+//     ),
+//   );
 
 const setRuleArrayEpic: RootEpic = (action$, state$) =>
   action$.pipe(
     filter(isActionOf(setRuleArray)),
-    map(() => (state$.value.ruleRow.numRuleRows > 0 ? setRuleRowIndex(0) : endRuleArray())),
+    map(() => goToPage('RuleGame')),
   );
 
 const endRuleArrayEpic: RootEpic = (action$) =>
@@ -99,7 +99,7 @@ const endRuleRowEpic: RootEpic = (action$, state$) =>
 
 export default combineEpics(
   moveEpic,
-  readRuleArrayEpic,
+  // readRuleArrayEpic,
   endRuleRowEpic,
   endRuleArrayEpic,
   setRuleArrayEpic,
