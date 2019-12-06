@@ -102,6 +102,15 @@ const parseAtomString = (atom: string): Atom => {
     );
   }
 
+  // const fnWhitelist = /[pcs,*[\]+\-%]/;
+  // if (!fnWhitelist.test(matchedFn)) {
+  //   errors.push(
+  //     `"${matchedFn}" contains invalid characters.\n\nSupported colors: ${Object.values(Color).join(
+  //       ', ',
+  //     )}\nSynatx: (counter,shape,color,[bucketFunction1,...])`,
+  //   );
+  // }
+
   const fn = matchedFn;
 
   if (errors.length > 0) {
