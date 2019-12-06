@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-param-reassign */
 // const StylelintPlugin = require('stylelint-webpack-plugin');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { useBabelRc } = require('customize-cra');
+// eslint-disable-next-line @typescript-eslint/no-var-requires,import/no-extraneous-dependencies
+const { useBabelRc, addWebpackModuleRule } = require('customize-cra');
 
 module.exports = function override(config, env) {
   config = useBabelRc()(config);
@@ -16,5 +16,6 @@ module.exports = function override(config, env) {
       // }),
       ();
   }
+  config = addWebpackModuleRule({ test: /\.txt$/, use: 'raw-loader' })(config);
   return config;
 };
