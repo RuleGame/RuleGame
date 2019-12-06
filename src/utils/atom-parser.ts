@@ -66,7 +66,9 @@ const parseAtomString = (atom: string): Atom => {
   const regex = /\((\d+|\*),(.+),(.+),([\d*]+),(.+)\)/;
   const matches = regex.exec(atom);
   if (matches === null) {
-    throw Error(`Invalid atom syntax: ${atom}`);
+    throw Error(
+      `Invalid atom syntax: ${atom}\n\nFYI:\nCorrect synatx: (counter,shape,color,[bucketFunction1,...])\nCorrect example: (10,*,green,10,[2,(pc+1)%4])\n\nRemember, spaces are only used for separating multiple atoms in the same row.\nExample:\n(10,square,*,*,[1,2]) (10,*,green,10,[2,3])`,
+    );
   }
   const [, matchedCounter, matchedShape, matchedColor, matchedPosition, matchedFn] = matches;
 
@@ -77,18 +79,33 @@ const parseAtomString = (atom: string): Atom => {
 
   const errors = [];
   const shape = matchedShape;
-  if (!Object.values(Shape).includes(shape)) {
-    errors.push(`shape is not supported: ${matchedShape}`);
+  const validShapes = Object.values(Shape).filter(
+    (shape) =>
+      shape !== Shape.HAPPY &&
+      shape !== Shape.CHECK &&
+      shape !== Shape.BUCKET &&
+      shape !== Shape.NOTHING,
+  );
+  if (!validShapes.includes(shape)) {
+    errors.push(
+      `"${matchedShape}" is not a valid shape.\n\nSupported shapes: ${validShapes.join(
+        ', ',
+      )}\nSynatx: (counter,shape,color,[bucketFunction1,...])`,
+    );
   }
   const color = matchedColor;
   if (!Object.values(Color).includes(color)) {
-    errors.push(`color is not supported: ${matchedColor}`);
+    errors.push(
+      `"${matchedColor}" is not a valid color.\n\nSupported colors: ${Object.values(Color).join(
+        ', ',
+      )}\nSynatx: (counter,shape,color,[bucketFunction1,...])`,
+    );
   }
 
   const fn = matchedFn;
 
   if (errors.length > 0) {
-    throw Error(`Bad atom values: ${errors.join('\n')}`);
+    throw Error(`Invalid atom: ${atom}\n\nDetails:\n ${errors.join('\n\n')}`);
   }
 
   return {
