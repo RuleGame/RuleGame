@@ -67,7 +67,7 @@ const parseAtomString = (atom: string): Atom => {
   const matches = regex.exec(atom);
   if (matches === null) {
     throw Error(
-      `Invalid atom syntax: ${atom}\n\nFYI:\nCorrect synatx: (counter,shape,color,[bucketFunction1,...])\nCorrect example: (10,*,green,10,[2,(pc+1)%4])\n\nRemember, spaces are only used for separating multiple atoms in the same row.\nExample:\n(10,square,*,*,[1,2]) (10,*,green,10,[2,3])`,
+      `Invalid atom syntax: ${atom}\n\nFYI:\nCorrect synatx: (counter,shape,color,position,[bucketFunction1,...])\nCorrect example: (10,*,green,10,[2,(pc+1)%4])\n\nRemember, spaces are only used for separating multiple atoms in the same row.\nExample:\n(10,square,*,*,[1,2]) (10,*,green,10,[2,3])`,
     );
   }
   const [, matchedCounter, matchedShape, matchedColor, matchedPosition, matchedFn] = matches;
