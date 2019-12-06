@@ -52,3 +52,8 @@ export const disableDebugMode = createAction('rule-row/DISABLE_DEBUG_MODE', (act
 );
 
 export const completeGame = createAction('rule-row/COMPLETE_GAME', (action) => () => action());
+
+export const ruleArrayParseFailure = createAction(
+  'rule-row/RULE_ARRAY_PARSE_FAILURE',
+  (action) => (e: Error) => action(e),
+);
