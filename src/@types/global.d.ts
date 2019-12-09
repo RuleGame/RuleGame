@@ -1,5 +1,4 @@
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
-
 interface Window {
   /* eslint-disable @typescript-eslint/no-explicit-any */
   __REDUX_DEVTOOLS_EXTENSION__: any;

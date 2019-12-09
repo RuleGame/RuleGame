@@ -1,25 +1,11 @@
-import { combineEpics, Epic } from 'redux-observable';
-import { catchError, filter, map } from 'rxjs/operators';
+import { combineEpics } from 'redux-observable';
+import { filter, map } from 'rxjs/operators';
 import { isActionOf } from 'typesafe-actions';
-import { gameToRule } from '../../constants';
-import { RootAction } from '../actions';
-// import { setRule } from '../actions/game';
 import { goToPage } from '../actions/page';
-import { RootState } from '../reducers';
-import { Game } from '../../@types';
-import ruleArray from '../../assets/rule-array.txt';
-import {
-  endRuleArray,
-  readRuleArray,
-  ruleArrayParseFailure,
-  setRuleArray,
-  setRuleRowIndex,
-} from '../actions/rule-row';
-import randomObjectsCreator from './__helpers__/objects-creator';
-import ruleParser from '../../utils/atom-parser';
-import { of } from 'rxjs';
+import { endRuleArray, setRuleRowIndex } from '../actions/rule-row';
+import { RootEpic } from '../../@types/epic';
 
-const goToPageEpic: Epic<RootAction, RootAction, RootState> = (action$, state$) =>
+const goToPageEpic: RootEpic = (action$, state$) =>
   action$.pipe(
     filter(isActionOf(goToPage)),
     filter((action) => action.payload.page === 'RuleGame'),

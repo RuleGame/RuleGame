@@ -1,13 +1,12 @@
 import React, { useCallback, useState } from 'react';
-import { Button, Heading, Form, TextArea, FormField } from 'grommet';
+import { Button, Form, Heading, TextArea } from 'grommet';
 import { GiPlayButton } from 'react-icons/gi';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
-import { goToPage } from '../store/actions/page';
+import { Dispatch } from 'redux';
 import { entranceButtonCy } from '../constants/data-cy-builders';
 import { BoardObjectType, Game } from '../@types';
 import { RootAction } from '../store/actions';
-import { Dispatch } from 'redux';
 import ruleArray from '../assets/rule-array.txt';
 import { setRuleArray } from '../store/actions/rule-row';
 import randomObjectsCreator from '../store/epics/__helpers__/objects-creator';
@@ -78,7 +77,7 @@ const EntrancePage = () => {
               // eslint-disable-next-line no-alert
               alert(`Problem parsing the board objects:\n${boardObjects}`);
             }
-          }, [dispatchSetRuleArray])}
+          }, [dispatchSetRuleArray, boardObjects])}
           data-cy={entranceButtonCy(Game.GAME1)}
         />
       </StyledGameList>
@@ -103,7 +102,7 @@ const EntrancePage = () => {
           value={boardObjects}
           onChange={useCallback(
             (e: React.ChangeEvent<HTMLTextAreaElement>) => setBoardObjects(e.target.value),
-            [setEnteredAtomArray],
+            [],
           )}
           rows={20}
           placeholder={`Custom BoardObjects:

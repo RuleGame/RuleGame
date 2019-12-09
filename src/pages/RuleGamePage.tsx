@@ -1,9 +1,6 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Game from '../components/Game';
-import HistoryLog from '../components/HistoryLog';
-// import { boardObjectsByIdSelector, logsSelector } from '../store/selectors';
 
 const StyledRuleGamePage = styled.div<{}>`
   display: flex;
@@ -22,15 +19,10 @@ const StyledGame = styled(Game)<{}>`
   box-sizing: border-box;
 `;
 
-const RuleGamePage = () => {
-  // const logs = useSelector(logsSelector);
-
-  return (
-    <StyledRuleGamePage>
-      <StyledGame />
-      {/* <HistoryLog logs={logs} /> */}
-    </StyledRuleGamePage>
-  );
-};
+const RuleGamePage = () => (
+  <StyledRuleGamePage>
+    <StyledGame />
+  </StyledRuleGamePage>
+);
 
 export default RuleGamePage;

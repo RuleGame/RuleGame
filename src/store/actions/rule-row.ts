@@ -1,11 +1,6 @@
 import { createAction } from 'typesafe-actions';
 import { Atom, BoardObjectType, DropAttempt } from '../../@types';
 
-export const setNewRuleRow = createAction(
-  'rule-row/SET_NEW_RULE_ROW',
-  (action) => (atoms: Atom[]) => action({ atomsByRowIndex: atoms }),
-);
-
 export const move = createAction('rule-row/MOVE', (action) => (dropAttempt: DropAttempt) =>
   action({ dropAttempt }),
 );
@@ -17,11 +12,6 @@ export const touch = createAction('rule-row/TOUCH', (action) => (boardObjectId: 
 export const removeBoardObject = createAction(
   'rule-row/REMOVE_BOARD_OBJECT',
   (action) => (boardObjectId: string) => action({ boardObjectId }),
-);
-
-export const readRuleArray = createAction(
-  'rule-row/START_RULE_ARRAY',
-  (action) => (fileName: string) => action({ fileName }),
 );
 
 export const setRuleArray = createAction(
@@ -39,8 +29,6 @@ export const endRuleArray = createAction('rule-row/END_RULE_ARRAY', (action) => 
 
 export const endRuleRow = createAction('rule-row/END_RULE_ROW', (action) => () => action());
 
-export const pauseGame = createAction('rule-row/PAUSE_GAME', (action) => () => action());
-
 export const resumeGame = createAction('rule-row/RESUME_GAME', (action) => () => action());
 
 export const enableDebugMode = createAction('rule-row/ENABLE_DEBUG_MODE', (action) => () =>
@@ -52,8 +40,3 @@ export const disableDebugMode = createAction('rule-row/DISABLE_DEBUG_MODE', (act
 );
 
 export const completeGame = createAction('rule-row/COMPLETE_GAME', (action) => () => action());
-
-export const ruleArrayParseFailure = createAction(
-  'rule-row/RULE_ARRAY_PARSE_FAILURE',
-  (action) => (e: Error) => action(e),
-);

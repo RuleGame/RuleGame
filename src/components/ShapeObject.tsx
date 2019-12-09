@@ -29,6 +29,7 @@ const shapesMapping: { [shape in Shape]: JSX.Element | null } = {
 
 const ShapeObject = React.forwardRef<HTMLDivElement, ShapeProps>(
   ({ shape, className, shapeObjectId, onClick, debugInfo }, ref) => {
+    // noinspection HtmlUnknownBooleanAttribute
     return (
       <>
         <div
@@ -44,8 +45,8 @@ const ShapeObject = React.forwardRef<HTMLDivElement, ShapeProps>(
         {debugInfo && (
           <ReactTooltip id={shapeObjectId} type="error">
             <div>
-              {debugInfo.split('\n').map((item, i) => {
-                return <div key={i}>{item}</div>;
+              {debugInfo.split('\n').map((item) => {
+                return <div key={item}>{item}</div>;
               })}
             </div>
           </ReactTooltip>

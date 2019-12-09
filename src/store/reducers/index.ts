@@ -1,6 +1,5 @@
 import { combineReducers, Reducer } from 'redux';
 import { History } from 'history';
-import game from './game';
 import page from './page';
 import ruleRow from './rule-row';
 

@@ -1,7 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { CheckBox, Button } from 'grommet';
-import { BoardObjectItem, BucketPosition, BucketType } from '../@types';
+import { Button, CheckBox } from 'grommet';
+import styled from 'styled-components';
+import { Dispatch } from 'redux';
+import { BoardObjectItem, BucketType } from '../@types';
 import { disableDebugMode, enableDebugMode, move, touch } from '../store/actions/rule-row';
 import Board from './Board';
 import {
@@ -11,16 +13,12 @@ import {
   debugModeSelector,
   disabledBucketSelector,
   gameCompletedSelector,
-  gameStartedSelector,
   historyDebugInfoSelector,
   pausedSelector,
   rawAtomsSelector,
   ruleRowIndexSelector,
 } from '../store/selectors';
 import { RootAction } from '../store/actions';
-import { Dispatch } from 'redux';
-import styled from 'styled-components';
-import ReactTooltip from 'react-tooltip';
 import { goToPage } from '../store/actions/page';
 
 const StyledGame = styled('div')<{}>`
@@ -57,7 +55,6 @@ const Game = ({ className }: GameProps): JSX.Element => {
   const disabledBucket = useSelector(disabledBucketSelector);
   const boardObjects = useSelector(boardObjectsSelector);
   const boardObjectsToBuckets = useSelector(boardObjectToBucketsSelector);
-  const gameStarted = useSelector(gameStartedSelector);
   const paused = useSelector(pausedSelector);
   const handleBoardObjectClick = useCallback((boardObject) => dispatch(touch(boardObject.id)), [
     dispatch,
@@ -93,7 +90,7 @@ const Game = ({ className }: GameProps): JSX.Element => {
         {debugModeEnabled && (
           <StyledRawAtoms>
             {rawAtoms.map((rawAtom, i) => (
-              <StyledRawAtom key={i} highlighted={ruleRowIndex === i}>
+              <StyledRawAtom key={rawAtom} highlighted={ruleRowIndex === i}>
                 {rawAtom}
               </StyledRawAtom>
             ))}
@@ -113,8 +110,8 @@ const Game = ({ className }: GameProps): JSX.Element => {
           <StyledLog>
             History Log:
             {historyDebugInfo.map((dropAttemptString) =>
-              dropAttemptString.split('\n').map((item, i) => {
-                return <div key={i}>{item}</div>;
+              dropAttemptString.split('\n').map((item) => {
+                return <div key={item}>{item}</div>;
               }),
             )}
           </StyledLog>

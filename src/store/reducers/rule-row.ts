@@ -1,4 +1,3 @@
-import isEqual from 'lodash/isEqual';
 import keyBy from 'lodash/keyBy';
 import { getType } from 'typesafe-actions';
 import {
@@ -9,24 +8,21 @@ import {
   DropAttempt,
   Shape,
 } from '../../@types';
-import { cols, rows } from '../../constants';
 import { RootAction } from '../actions';
 import {
+  completeGame,
+  disableDebugMode,
+  enableDebugMode,
   move,
   removeBoardObject,
-  readRuleArray,
-  touch,
+  resumeGame,
   setRuleArray,
   setRuleRowIndex,
-  resumeGame,
-  enableDebugMode,
-  disableDebugMode,
-  completeGame,
+  touch,
 } from '../actions/rule-row';
 import atomMatch from '../../utils/atom-match';
 
 export type State = {
-  // TODO: Extract the atom counters and bucketToAtomIds to top level to avoid redundant object spreading.
   atomCounts: { [atomId: string]: number };
   // Indexed by rule array index
   atomsByRowIndex: { [atomId: string]: Atom }[];
@@ -103,7 +99,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
     case getType(setRuleRowIndex): {
       // Why we need to compute all possible moves:
       // 1. If no possible moves, advance to next rule row or end game.
-      // (TODO: An epic must detect this and continue to the next rule row then)
+      // (An epic must detect this and continue to the next rule row then)
       // 2. Hover thingy if possible to drop.
       return {
         ...state,
