@@ -53,7 +53,7 @@ const EntrancePage = () => {
             try {
               if (boardObjects.trim().length > 0) {
                 // eslint-disable-next-line no-eval
-                dispatchSetRuleArray(ruleArray, eval(boardObjects));
+                dispatchSetRuleArray(ruleArray, JSON.parse(boardObjects));
               } else {
                 dispatchSetRuleArray(ruleArray);
               }
@@ -70,7 +70,7 @@ const EntrancePage = () => {
           try {
             if (boardObjects.trim().length > 0) {
               // eslint-disable-next-line no-eval
-              dispatchSetRuleArray(enteredAtomArray, eval(boardObjects));
+              dispatchSetRuleArray(enteredAtomArray, JSON.parse(boardObjects));
             } else {
               dispatchSetRuleArray(enteredAtomArray);
             }
@@ -92,29 +92,29 @@ const EntrancePage = () => {
           placeholder={`Custom BoardObjects:
 Type:
 {
-  id: string;
-  color: Color;
-  shape: Shape;
-  x: number;
-  y: number;
+  "id": string;
+  "color": Color;
+  "shape": Shape;
+  "x": number;
+  "y": number;
 }
 
 Example:
 [
   {
-    color: 'red',
-    id: '1',
-    shape: 'square',
-    x: 1,
-    y: 2,
+    "color": "red",
+    "id": "1",
+    "shape": "square",
+    "x": 1,
+    "y": 2
   },
   {
-    color: 'blue',
-    id: '2',
-    shape: 'circle',
-    x: 2,
-    y: 3,
-  },
+    "color": "blue",
+    "id": "2",
+    "shape": "circle",
+    "x": 2,
+    "y": 3
+  }
 ]
 `}
         />
