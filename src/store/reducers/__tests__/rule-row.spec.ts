@@ -1,16 +1,16 @@
-import { setRuleArray, setRuleRowIndex } from '../../actions/rule-row';
+import { loadRuleArraySuccess, setRuleRowIndex } from '../../actions/rule-row';
 import reducer, { initialState, State } from '../rule-row';
 import { BucketPosition, Color, Shape } from '../../../@types';
 
-describe(`setRuleArray`, () => {
+describe(`loadRuleArraySuccess`, () => {
   it('returns empty fields on empty action', () => {
-    const action = setRuleArray([], []);
+    const action = loadRuleArraySuccess([], []);
     expect(reducer(undefined, action)).toEqual({
       ...initialState,
       atomCounts: {},
       atomsByRowIndex: [],
       boardObjectsById: {},
-      ruleRowIndex: 0,
+      ruleRowIndex: NaN,
       numRuleRows: 0,
     } as State);
   });
@@ -18,7 +18,7 @@ describe(`setRuleArray`, () => {
   it('sets fields correctly', () => {
     const atomFns1 = [() => BucketPosition.BR, () => BucketPosition.TR];
     const atomFns2 = [() => BucketPosition.TL];
-    const action = setRuleArray(
+    const action = loadRuleArraySuccess(
       [
         {
           color: Color.RED,
@@ -179,7 +179,44 @@ describe(`setRuleArray`, () => {
           y: 2,
         },
       },
-      ruleRowIndex: 0,
+      initialBoardObjectsById: {
+        '1': {
+          color: 'red',
+          id: '1',
+          shape: 'square',
+          x: 0,
+          y: 2,
+        },
+        '2': {
+          color: 'red',
+          id: '2',
+          shape: 'circle',
+          x: 0,
+          y: 2,
+        },
+        '3': {
+          color: 'green',
+          id: '3',
+          shape: 'square',
+          x: 0,
+          y: 2,
+        },
+        '4': {
+          color: 'green',
+          id: '4',
+          shape: 'star',
+          x: 0,
+          y: 2,
+        },
+        '5': {
+          color: 'red',
+          id: '5',
+          shape: 'square',
+          x: 1,
+          y: 2,
+        },
+      },
+      ruleRowIndex: NaN,
       numRuleRows: 2,
     } as State);
   });

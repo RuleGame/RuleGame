@@ -1,6 +1,7 @@
 import { combineEpics } from 'redux-observable';
-import { delay, filter, map, switchMap } from 'rxjs/operators';
+import { delay, filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { isActionOf } from 'typesafe-actions';
+import shortid from 'shortid';
 import {
   completeGame,
   endRuleArray,
@@ -8,12 +9,16 @@ import {
   move,
   removeBoardObject,
   resumeGame,
-  setRuleArray,
+  loadRuleArrayRequest,
   setRuleRowIndex,
+  loadRuleArraySuccess,
+  loadRuleArrayFailure,
 } from '../actions/rule-row';
 import { noMoreMovesSelector } from '../selectors';
 import { RootEpic } from '../../@types/epic';
 import { goToPage } from '../actions/page';
+import parseRow from '../../utils/atom-parser';
+import { addLayer, removeLayer } from '../actions/layers';
 
 const moveEpic: RootEpic = (action$, state$) =>
   action$.pipe(
@@ -38,7 +43,7 @@ const noMoreMovesEpic: RootEpic = (action$, state$) =>
 
 const setRuleArrayEpic: RootEpic = (action$) =>
   action$.pipe(
-    filter(isActionOf(setRuleArray)),
+    filter(isActionOf(loadRuleArraySuccess)),
     map(() => goToPage('RuleGame')),
   );
 
@@ -58,10 +63,42 @@ const endRuleRowEpic: RootEpic = (action$, state$) =>
     ),
   );
 
+const loadRuleArrayEpic: RootEpic = (action$) =>
+  action$.pipe(
+    filter(isActionOf(loadRuleArrayRequest)),
+    mergeMap((action) => {
+      try {
+        return [
+          loadRuleArraySuccess(
+            action.payload.boardObjects,
+            action.payload.rawRuleArrayString
+              .split('\n')
+              .filter((line) => line.trim().length > 0)
+              .map((ruleRow) => parseRow(ruleRow)),
+            action.payload.rawRuleArrayString,
+          ),
+        ];
+      } catch (e) {
+        const layerId = shortid();
+
+        return [
+          addLayer(
+            'Error Parsing Rule Array:',
+            e.message,
+            [{ key: 'close', label: 'Close', action: removeLayer(layerId) }],
+            layerId,
+          ),
+          loadRuleArrayFailure(e),
+        ];
+      }
+    }),
+  );
+
 export default combineEpics(
   moveEpic,
   endRuleRowEpic,
   endRuleArrayEpic,
   setRuleArrayEpic,
   noMoreMovesEpic,
+  loadRuleArrayEpic,
 );

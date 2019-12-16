@@ -1,4 +1,5 @@
 import { createAction } from 'typesafe-actions';
+// eslint-disable-next-line import/no-cycle
 import { Atom, BoardObjectType, DropAttempt } from '../../@types';
 
 export const move = createAction('rule-row/MOVE', (action) => (dropAttempt: DropAttempt) =>
@@ -14,10 +15,21 @@ export const removeBoardObject = createAction(
   (action) => (boardObjectId: string) => action({ boardObjectId }),
 );
 
-export const setRuleArray = createAction(
-  'rule-row/SET_RULE_ARRAY',
-  (action) => (boardObjects: BoardObjectType[], atoms: Atom[][], rawAtoms: string[]) =>
-    action({ boardObjects, atomsByRowIndex: atoms, rawAtoms }),
+export const loadRuleArrayRequest = createAction(
+  'rule-row/LOAD_RULE_ARRAY_REQUEST',
+  (action) => (boardObjects: BoardObjectType[], rawRuleArrayString: string) =>
+    action({ boardObjects, rawRuleArrayString }),
+);
+
+export const loadRuleArraySuccess = createAction(
+  'rule-row/LOAD_RULE_ARRAY_SUCCESS',
+  (action) => (boardObjects: BoardObjectType[], ruleArray: Atom[][], rawRuleArrayString?: string) =>
+    action({ boardObjects, ruleArray, rawRuleArrayString }),
+);
+
+export const loadRuleArrayFailure = createAction(
+  'rule-row/LOAD_RULE_ARRAY_FAILURE',
+  (action) => (error: Error) => action({ error }),
 );
 
 export const setRuleRowIndex = createAction(

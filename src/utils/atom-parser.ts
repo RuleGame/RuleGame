@@ -86,7 +86,7 @@ const parseAtomString = (atom: string): Atom => {
       shape !== Shape.BUCKET &&
       shape !== Shape.NOTHING,
   );
-  if (!validShapes.includes(shape)) {
+  if (!validShapes.includes(shape as Shape)) {
     errors.push(
       `"${matchedShape}" is not a valid shape.\n\nSupported shapes: ${validShapes.join(
         ', ',
@@ -94,7 +94,7 @@ const parseAtomString = (atom: string): Atom => {
     );
   }
   const color = matchedColor;
-  if (!Object.values(Color).includes(color)) {
+  if (!Object.values(Color).includes(color as Color)) {
     errors.push(
       `"${matchedColor}" is not a valid color.\n\nSupported colors: ${Object.values(Color).join(
         ', ',

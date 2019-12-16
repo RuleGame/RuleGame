@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-cycle
+import { RootAction } from '../store/actions';
+
 export type BoardObjectId = string;
 
 export enum BucketPosition {
@@ -66,4 +69,10 @@ export type Atom = {
   color: Color;
   position: number;
   fns: AtomFn[];
+};
+
+export type ActionButton = {
+  key: string;
+  label: string;
+  action: RootAction;
 };

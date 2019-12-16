@@ -2,12 +2,13 @@ import { combineReducers, Reducer } from 'redux';
 import { History } from 'history';
 import page from './page';
 import ruleRow from './rule-row';
+import layers from './layers';
 
 export const createRootReducer = () =>
   combineReducers({
-    // game,
     page,
     ruleRow,
+    layers,
   });
 
 export default createRootReducer;

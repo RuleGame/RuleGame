@@ -112,6 +112,15 @@ export const historyDebugInfoSelector = createSelector(
       : undefined,
 );
 
-export const rawAtomsSelector = (state: RootState) => state.ruleRow.rawAtoms;
+export const rawAtomsSelector = (state: RootState) => state.ruleRow.rawRuleArrayString;
 
 export const gameCompletedSelector = (state: RootState) => state.ruleRow.gameCompleted;
+
+export const layerIdsSelector = (state: RootState) => state.layers.layerIds;
+
+export const layersByIdSelector = (state: RootState) => state.layers.layersById;
+
+export const layersSelector = createSelector(
+  [layerIdsSelector, layersByIdSelector],
+  (layerIds, layersById) => layerIds.map((layerId) => layersById[layerId]),
+);

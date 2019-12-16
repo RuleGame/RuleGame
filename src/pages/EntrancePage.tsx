@@ -8,9 +8,8 @@ import { entranceButtonCy } from '../constants/data-cy-builders';
 import { BoardObjectType, Game } from '../@types';
 import { RootAction } from '../store/actions';
 import ruleArray from '../assets/rule-array.txt';
-import { setRuleArray } from '../store/actions/rule-row';
+import { loadRuleArrayRequest } from '../store/actions/rule-row';
 import randomObjectsCreator from '../store/epics/__helpers__/objects-creator';
-import ruleParser from '../utils/atom-parser';
 
 const StyledEntrancePage = styled.div<{}>`
   display: flex;
@@ -36,23 +35,8 @@ const EntrancePage = () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
   const [enteredAtomArray, setEnteredAtomArray] = useState('');
   const dispatchSetRuleArray = useCallback(
-    (ruleArray: string, boardObjects: BoardObjectType[] = randomObjectsCreator(5)) => {
-      try {
-        dispatch(
-          setRuleArray(
-            boardObjects,
-            ruleArray
-              .split('\n')
-              .filter((line) => line.trim().length > 0)
-              .map((ruleRow) => ruleParser(ruleRow)),
-            ruleArray.split('\n').filter((line) => line.trim().length > 0),
-          ),
-        );
-      } catch (e) {
-        // eslint-disable-next-line no-alert
-        alert(`Error parsing rule array or board objects:\n${e.message}`);
-      }
-    },
+    (ruleArray: string, boardObjects: BoardObjectType[] = randomObjectsCreator(5)) =>
+      dispatch(loadRuleArrayRequest(boardObjects, ruleArray)),
     [dispatch],
   );
   const [boardObjects, setBoardObjects] = useState('');

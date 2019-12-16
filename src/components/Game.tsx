@@ -87,9 +87,9 @@ const Game = ({ className }: GameProps): JSX.Element => {
     <>
       <CheckBox checked={debugModeEnabled} label="Debug Mode" onChange={handleDebugModeChange} />
       <StyledGame>
-        {debugModeEnabled && (
+        {debugModeEnabled && rawAtoms && (
           <StyledRawAtoms>
-            {rawAtoms.map((rawAtom, i) => (
+            {rawAtoms.split('\n').map((rawAtom, i) => (
               <StyledRawAtom key={rawAtom} highlighted={ruleRowIndex === i}>
                 {rawAtom}
               </StyledRawAtom>

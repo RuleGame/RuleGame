@@ -11,7 +11,7 @@ class RuleGamePage {
   }
 
   public static get blueSquareSelector() {
-    return createDataCySelector(shapeObjectCy(0, Shape.SQUARE));
+    return createDataCySelector(shapeObjectCy('0', Shape.SQUARE));
   }
 
   public static get bucketSelector() {

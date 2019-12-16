@@ -13,10 +13,12 @@ import {
   completeGame,
   disableDebugMode,
   enableDebugMode,
+  loadRuleArrayFailure,
+  loadRuleArrayRequest,
+  loadRuleArraySuccess,
   move,
   removeBoardObject,
   resumeGame,
-  setRuleArray,
   setRuleRowIndex,
   touch,
 } from '../actions/rule-row';
@@ -43,8 +45,10 @@ export type State = {
   lastMoveSuccessful: boolean;
   paused: boolean;
   debugMode: boolean;
-  rawAtoms: string[];
+  rawRuleArrayString?: string;
   gameCompleted: boolean;
+  parsingRuleArray: boolean;
+  error?: Error;
 };
 
 export const initialState: State = {
@@ -61,18 +65,27 @@ export const initialState: State = {
   lastMoveSuccessful: false,
   paused: false,
   debugMode: false,
-  rawAtoms: [],
+  rawRuleArrayString: undefined,
   gameCompleted: false,
+  parsingRuleArray: false,
+  error: undefined,
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
   switch (action.type) {
-    case getType(setRuleArray): {
+    case getType(loadRuleArrayRequest): {
+      return {
+        ...state,
+        parsingRuleArray: true,
+      };
+    }
+
+    case getType(loadRuleArraySuccess): {
       const boardObjectsById = keyBy(action.payload.boardObjects, (boardObject) => boardObject.id);
 
       return {
         ...state,
-        atomCounts: action.payload.atomsByRowIndex.flat().reduce(
+        atomCounts: action.payload.ruleArray.flat().reduce(
           (acc, atom) => ({
             ...acc,
             [atom.id]: atom.counter,
@@ -80,22 +93,29 @@ const reducer = (state: State = initialState, action: RootAction): State => {
           {},
         ),
         boardObjectsToBucketsToAtoms: {},
-        atomsByRowIndex: action.payload.atomsByRowIndex.map((atoms) =>
-          keyBy(atoms, (atom) => atom.id),
-        ),
+        atomsByRowIndex: action.payload.ruleArray.map((atoms) => keyBy(atoms, (atom) => atom.id)),
         initialBoardObjectsById: boardObjectsById,
         boardObjectsById,
         ruleRowIndex: NaN,
-        numRuleRows: action.payload.atomsByRowIndex.length,
+        numRuleRows: action.payload.ruleArray.length,
         totalMoveHistory: [],
         dropAttempts: [],
         touchAttempts: [],
         lastMoveSuccessful: false,
         paused: false,
-        rawAtoms: action.payload.rawAtoms,
         gameCompleted: false,
+        parsingRuleArray: false,
+        rawRuleArrayString: action.payload.rawRuleArrayString,
       };
     }
+
+    case getType(loadRuleArrayFailure):
+      return {
+        ...state,
+        parsingRuleArray: true,
+        error: action.payload.error,
+      };
+
     case getType(setRuleRowIndex): {
       // Why we need to compute all possible moves:
       // 1. If no possible moves, advance to next rule row or end game.
