@@ -76,3 +76,7 @@ export type ActionButton = {
   label: string;
   action: RootAction;
 };
+
+export type RuleRow = Atom[];
+
+export type RuleArray = RuleRow[];

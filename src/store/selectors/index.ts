@@ -124,3 +124,12 @@ export const layersSelector = createSelector(
   [layerIdsSelector, layersByIdSelector],
   (layerIds, layersById) => layerIds.map((layerId) => layersById[layerId]),
 );
+
+export const ruleArraysByIdSelector = (state: RootState) => state.ruleArrays.byId;
+
+export const ruleArraysIdsSelector = (state: RootState) => state.ruleArrays.allIds;
+
+export const ruleArraysSelector = createSelector(
+  [ruleArraysByIdSelector, ruleArraysIdsSelector],
+  (ruleArraysById, ruleArraysIds) => ruleArraysIds.map((id) => ruleArraysById[id]),
+);

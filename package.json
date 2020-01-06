@@ -79,6 +79,7 @@
     "stylelint-webpack-plugin": "0.10.5",
     "typesafe-actions": "5.1.0",
     "typescript": "3.7.3",
+    "utility-types": "3.10.0",
     "uuid": "3.3.3"
   },
   "devDependencies": {

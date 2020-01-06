@@ -3,12 +3,14 @@ import { History } from 'history';
 import page from './page';
 import ruleRow from './rule-row';
 import layers from './layers';
+import ruleArrays from './rule-arrays';
 
 export const createRootReducer = () =>
   combineReducers({
     page,
     ruleRow,
     layers,
+    ruleArrays,
   });
 
 export default createRootReducer;

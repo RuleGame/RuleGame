@@ -15,6 +15,7 @@ export const removeBoardObject = createAction(
   (boardObjectId: string) => ({ boardObjectId }),
 )();
 
+// TODO: Combine request, success, and failure into single variable using typesafe-actions
 export const loadRuleArrayRequest = createAction(
   'rule-row/LOAD_RULE_ARRAY_REQUEST',
   (boardObjects: BoardObjectType[], rawRuleArrayString: string) => ({

@@ -2,14 +2,15 @@ import React, { useCallback, useState } from 'react';
 import { Button, Form, Heading, TextArea } from 'grommet';
 import { GiPlayButton } from 'react-icons/gi';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { entranceButtonCy } from '../constants/data-cy-builders';
-import { BoardObjectType, Game } from '../@types';
+import { BoardObjectType, Game, RuleArray } from '../@types';
 import { RootAction } from '../store/actions';
-import ruleArray from '../assets/rule-array.txt';
-import { loadRuleArrayRequest } from '../store/actions/rule-row';
+import { loadRuleArraySuccess } from '../store/actions/rule-row';
 import randomObjectsCreator from '../store/epics/__helpers__/objects-creator';
+import { ruleArraysSelector } from '../store/selectors';
+import { addRuleArray } from '../store/actions/rule-arrays';
 
 const StyledEntrancePage = styled.div<{}>`
   display: flex;
@@ -35,50 +36,43 @@ const EntrancePage = () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
   const [enteredAtomArray, setEnteredAtomArray] = useState('');
   const dispatchSetRuleArray = useCallback(
-    (ruleArray: string, boardObjects: BoardObjectType[] = randomObjectsCreator(5)) =>
-      dispatch(loadRuleArrayRequest(boardObjects, ruleArray)),
+    (ruleArray: RuleArray, boardObjects: BoardObjectType[] = randomObjectsCreator(5)) =>
+      dispatch(loadRuleArraySuccess(boardObjects, ruleArray)),
     [dispatch],
   );
   const [boardObjects, setBoardObjects] = useState('');
+  const ruleArrays = useSelector(ruleArraysSelector);
 
   return (
     <StyledEntrancePage>
       <StyledHeading>Entrance Page</StyledHeading>
       <StyledGameList>
-        <Button
-          className="btn"
-          icon={<GiPlayButton />}
-          label="Game 1"
-          onClick={useCallback(() => {
-            try {
-              if (boardObjects.trim().length > 0) {
-                // eslint-disable-next-line no-eval
-                dispatchSetRuleArray(ruleArray, JSON.parse(boardObjects));
-              } else {
-                dispatchSetRuleArray(ruleArray);
+        {ruleArrays.map((ruleArray) => (
+          <Button
+            className="btn"
+            icon={<GiPlayButton />}
+            label="Game 1"
+            onClick={() => {
+              try {
+                if (boardObjects.trim().length > 0) {
+                  // eslint-disable-next-line no-eval
+                  dispatchSetRuleArray(ruleArray.value, JSON.parse(boardObjects));
+                } else {
+                  dispatchSetRuleArray(ruleArray.value);
+                }
+              } catch (e) {
+                // eslint-disable-next-line no-alert
+                alert(`Problem parsing the board objects:\n${boardObjects}`);
               }
-            } catch (e) {
-              // eslint-disable-next-line no-alert
-              alert(`Problem parsing the board objects:\n${boardObjects}`);
-            }
-          }, [dispatchSetRuleArray, boardObjects])}
-          data-cy={entranceButtonCy(Game.GAME1)}
-        />
+            }}
+            data-cy={entranceButtonCy(Game.GAME1)}
+          />
+        ))}
       </StyledGameList>
       <Form
         onSubmit={useCallback(() => {
-          try {
-            if (boardObjects.trim().length > 0) {
-              // eslint-disable-next-line no-eval
-              dispatchSetRuleArray(enteredAtomArray, JSON.parse(boardObjects));
-            } else {
-              dispatchSetRuleArray(enteredAtomArray);
-            }
-          } catch (e) {
-            // eslint-disable-next-line no-alert
-            alert(`Problem parsing the board objects:\n${boardObjects}`);
-          }
-        }, [enteredAtomArray, dispatchSetRuleArray, boardObjects])}
+          dispatch(addRuleArray.request(enteredAtomArray));
+        }, [dispatch, enteredAtomArray])}
       >
         Custom BoardObjects
         <TextArea

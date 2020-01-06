@@ -131,4 +131,6 @@ const parseRow = (row: string): Atom[] => {
   return row.split(' ').map(parseAtomString);
 };
 
+export const parseRuleArray = (rawRuleArray: string) => rawRuleArray.split('\n').map(parseRow);
+
 export default parseRow;
