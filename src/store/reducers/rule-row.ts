@@ -13,9 +13,7 @@ import {
   completeGame,
   disableDebugMode,
   enableDebugMode,
-  loadRuleArrayFailure,
-  loadRuleArrayRequest,
-  loadRuleArraySuccess,
+  loadRuleArray,
   move,
   removeBoardObject,
   resumeGame,
@@ -73,14 +71,7 @@ export const initialState: State = {
 
 const reducer = (state: State = initialState, action: RootAction): State => {
   switch (action.type) {
-    case getType(loadRuleArrayRequest): {
-      return {
-        ...state,
-        parsingRuleArray: true,
-      };
-    }
-
-    case getType(loadRuleArraySuccess): {
+    case getType(loadRuleArray): {
       const boardObjectsById = keyBy(action.payload.boardObjects, (boardObject) => boardObject.id);
 
       return {
@@ -108,13 +99,6 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         rawRuleArrayString: action.payload.rawRuleArrayString,
       };
     }
-
-    case getType(loadRuleArrayFailure):
-      return {
-        ...state,
-        parsingRuleArray: true,
-        error: action.payload.error,
-      };
 
     case getType(setRuleRowIndex): {
       // Why we need to compute all possible moves:

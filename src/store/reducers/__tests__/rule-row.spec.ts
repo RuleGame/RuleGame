@@ -1,10 +1,10 @@
-import { loadRuleArraySuccess, setRuleRowIndex } from '../../actions/rule-row';
+import { loadRuleArray, setRuleRowIndex } from '../../actions/rule-row';
 import reducer, { initialState, State } from '../rule-row';
 import { BucketPosition, Color, Shape } from '../../../@types';
 
 describe(`loadRuleArraySuccess`, () => {
   it('returns empty fields on empty action', () => {
-    const action = loadRuleArraySuccess([], []);
+    const action = loadRuleArray([], []);
     expect(reducer(undefined, action)).toEqual({
       ...initialState,
       atomCounts: {},
@@ -18,7 +18,7 @@ describe(`loadRuleArraySuccess`, () => {
   it('sets fields correctly', () => {
     const atomFns1 = [() => BucketPosition.BR, () => BucketPosition.TR];
     const atomFns2 = [() => BucketPosition.TL];
-    const action = loadRuleArraySuccess(
+    const action = loadRuleArray(
       [
         {
           color: Color.RED,

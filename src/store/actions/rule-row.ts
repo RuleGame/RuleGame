@@ -15,27 +15,13 @@ export const removeBoardObject = createAction(
   (boardObjectId: string) => ({ boardObjectId }),
 )();
 
-// TODO: Combine request, success, and failure into single variable using typesafe-actions
-export const loadRuleArrayRequest = createAction(
-  'rule-row/LOAD_RULE_ARRAY_REQUEST',
-  (boardObjects: BoardObjectType[], rawRuleArrayString: string) => ({
-    boardObjects,
-    rawRuleArrayString,
-  }),
-)();
-
-export const loadRuleArraySuccess = createAction(
-  'rule-row/LOAD_RULE_ARRAY_SUCCESS',
+export const loadRuleArray = createAction(
+  'rule-row/LOAD_RULE_ARRAY',
   (boardObjects: BoardObjectType[], ruleArray: Atom[][], rawRuleArrayString?: string) => ({
     boardObjects,
     ruleArray,
     rawRuleArrayString,
   }),
-)();
-
-export const loadRuleArrayFailure = createAction(
-  'rule-row/LOAD_RULE_ARRAY_FAILURE',
-  (error: Error) => ({ error }),
 )();
 
 export const setRuleRowIndex = createAction('rule-row/SET_RULE_ROW_INDEX', (index: number) => ({

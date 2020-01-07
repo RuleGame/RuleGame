@@ -7,10 +7,10 @@ import { Dispatch } from 'redux';
 import { entranceButtonCy } from '../constants/data-cy-builders';
 import { BoardObjectType, Game, RuleArray } from '../@types';
 import { RootAction } from '../store/actions';
-import { loadRuleArraySuccess } from '../store/actions/rule-row';
 import randomObjectsCreator from '../store/epics/__helpers__/objects-creator';
 import { ruleArraysSelector } from '../store/selectors';
 import { addRuleArray } from '../store/actions/rule-arrays';
+import { loadRuleArray } from '../store/actions/rule-row';
 
 const StyledEntrancePage = styled.div<{}>`
   display: flex;
@@ -37,7 +37,7 @@ const EntrancePage = () => {
   const [enteredAtomArray, setEnteredAtomArray] = useState('');
   const dispatchSetRuleArray = useCallback(
     (ruleArray: RuleArray, boardObjects: BoardObjectType[] = randomObjectsCreator(5)) =>
-      dispatch(loadRuleArraySuccess(boardObjects, ruleArray)),
+      dispatch(loadRuleArray(boardObjects, ruleArray)),
     [dispatch],
   );
   const [boardObjects, setBoardObjects] = useState('');
