@@ -1,7 +1,6 @@
 import { isActionOf } from 'typesafe-actions';
-import { catchError, filter, map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import shortid from 'shortid';
-import { of } from 'rxjs';
 import { combineEpics } from 'redux-observable';
 import { addRuleArray } from '../actions/rule-arrays';
 import { RootEpic } from '../../@types/epic';
@@ -11,14 +10,17 @@ import { addLayer, removeLayer } from '../actions/layers';
 const addRuleArrayRequestEpic: RootEpic = (action$) =>
   action$.pipe(
     filter(isActionOf(addRuleArray.request)),
-    map((action) =>
-      addRuleArray.success(
-        shortid(),
-        parseRuleArray(action.payload.rawRuleArray),
-        action.payload.rawRuleArray,
-      ),
-    ),
-    catchError((error) => of(addRuleArray.failure(error))),
+    map((action) => {
+      try {
+        return addRuleArray.success(
+          shortid(),
+          parseRuleArray(action.payload.rawRuleArray),
+          action.payload.rawRuleArray,
+        );
+      } catch (error) {
+        return addRuleArray.failure(error);
+      }
+    }),
   );
 
 const addRuleArrayFailureEpic: RootEpic = (action$) =>
