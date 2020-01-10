@@ -123,7 +123,7 @@ const EntrancePage = () => {
                   [setBoardObjects],
                 )}
                 size="small"
-                placeholder={`Custom Board Objects:
+                placeholder={`Custom Board Objects (JSON format):
 Board Object Shape:
 {
   "id": string;
