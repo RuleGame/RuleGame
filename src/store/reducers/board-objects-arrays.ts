@@ -1,8 +1,15 @@
 import { getType } from 'typesafe-actions';
+import storage from 'redux-persist/es/storage';
+import { persistReducer } from 'redux-persist';
 import { BoardObjectType } from '../../@types';
 import { RootAction } from '../actions';
 import removeFirst from '../../utils/removeFirst';
 import { addBoardObjectsArray, removeBoardObjectsArray } from '../actions/board-objects-arrays';
+
+const persistConfig = {
+  key: 'board-objects-arrays',
+  storage,
+};
 
 export type State = {
   byId: {
@@ -64,4 +71,4 @@ const reducer = (state: State = initialState, action: RootAction): State => {
   }
 };
 
-export default reducer;
+export default persistReducer(persistConfig, reducer);
