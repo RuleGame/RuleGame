@@ -48,7 +48,7 @@ const EntrancePage = () => {
               )
             }
           >
-            <Box direction="row" gap="medium">
+            <Box direction="row" gap="medium" pad="medium">
               <FormField
                 label={`Board Objects Arrays ${boardObjectsArrays.length === 0 ? '(empty)' : ''}`}
                 name="boardObjectsArrays"

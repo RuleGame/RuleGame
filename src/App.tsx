@@ -11,10 +11,7 @@ import Layers from './components/Layers';
 import { removeLayer } from './store/actions/layers';
 import { RootAction } from './store/actions';
 
-const StyledApp = styled.div<{}>`
-  width: 100vw;
-  height: 100vh;
-`;
+const StyledApp = styled.div<{}>``;
 
 const App = () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
