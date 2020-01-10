@@ -6,6 +6,7 @@ import * as page from './page';
 import * as ruleRow from './rule-row';
 import * as layers from './layers';
 import * as ruleArrays from './rule-arrays';
+import * as boardObjectsArrays from './board-objects-arrays';
 /* eslint-enable import/no-cycle */
 
 export const actions = {
@@ -13,6 +14,7 @@ export const actions = {
   ruleRow,
   layers,
   ruleArrays,
+  boardObjectsArrays,
 };
 
 export type RootAction = ActionType<typeof actions>;

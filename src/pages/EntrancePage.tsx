@@ -1,36 +1,14 @@
 import React, { useCallback, useState } from 'react';
-import { Button, Form, Heading, TextArea } from 'grommet';
-import { GiPlayButton } from 'react-icons/gi';
-import styled from 'styled-components';
+import { Box, Button, Form, FormField, Heading, RadioButtonGroup, TextArea } from 'grommet';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
-import { entranceButtonCy } from '../constants/data-cy-builders';
-import { BoardObjectType, Game, RuleArray } from '../@types';
+import { BoardObjectType, RuleArray } from '../@types';
 import { RootAction } from '../store/actions';
 import randomObjectsCreator from '../store/epics/__helpers__/objects-creator';
-import { ruleArraysSelector } from '../store/selectors';
+import { boardObjectsArraysSelector, ruleArraysSelector } from '../store/selectors';
 import { addRuleArray } from '../store/actions/rule-arrays';
 import { loadRuleArray } from '../store/actions/rule-row';
-
-const StyledEntrancePage = styled.div<{}>`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-const StyledHeading = styled(Heading)<{}>``;
-
-const StyledGameList = styled.div<{}>`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  .btn {
-    margin-bottom: 1em;
-  }
-`;
+import { addBoardObjectsArray } from '../store/actions/board-objects-arrays';
 
 const EntrancePage = () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
@@ -42,48 +20,66 @@ const EntrancePage = () => {
   );
   const [boardObjects, setBoardObjects] = useState('');
   const ruleArrays = useSelector(ruleArraysSelector);
+  const boardObjectsArrays = useSelector(boardObjectsArraysSelector);
+  const [selectedRuleArrayIndex, setSelectedRuleArrayIndex] = useState(0);
+  const [selectedBoardObjectsArrayIndex, setSelectedBoardObjectsArrayIndex] = useState(0);
 
   return (
-    <StyledEntrancePage>
-      <StyledHeading>Entrance Page</StyledHeading>
-      <StyledGameList>
-        {ruleArrays.map((ruleArray) => (
-          <Button
-            className="btn"
-            icon={<GiPlayButton />}
-            label="Game 1"
-            onClick={() => {
-              try {
-                if (boardObjects.trim().length > 0) {
-                  // eslint-disable-next-line no-eval
-                  dispatchSetRuleArray(ruleArray.value, JSON.parse(boardObjects));
-                } else {
-                  dispatchSetRuleArray(ruleArray.value);
-                }
-              } catch (e) {
-                // eslint-disable-next-line no-alert
-                alert(`Problem parsing the board objects:\n${boardObjects}`);
-              }
-            }}
-            data-cy={entranceButtonCy(Game.GAME1)}
-          />
-        ))}
-      </StyledGameList>
+    <Box>
+      <Heading>Entrance Page</Heading>
       <Form
-        onSubmit={useCallback(() => {
-          dispatch(addRuleArray.request(enteredAtomArray));
-        }, [dispatch, enteredAtomArray])}
+        onSubmit={() =>
+          dispatchSetRuleArray(
+            ruleArrays[selectedRuleArrayIndex].value,
+            boardObjectsArrays[selectedBoardObjectsArrayIndex].value,
+          )
+        }
       >
-        Custom BoardObjects
-        <TextArea
-          name="BoardObjects"
-          value={boardObjects}
-          onChange={useCallback(
-            (e: React.ChangeEvent<HTMLTextAreaElement>) => setBoardObjects(e.target.value),
-            [],
-          )}
-          rows={20}
-          placeholder={`Custom BoardObjects:
+        <FormField
+          label={`Board Objects Arrays ${boardObjectsArrays.length === 0 ? '(none)' : ''}`}
+          name="boardObjectsArrays"
+          pad
+        >
+          <RadioButtonGroup
+            name="Board Objects Arrays"
+            value={String(selectedBoardObjectsArrayIndex)}
+            options={boardObjectsArrays.map((_, i) => ({
+              label: `Board Objects Array ${i}`,
+              value: String(i),
+            }))}
+            onChange={(event) => setSelectedBoardObjectsArrayIndex(Number(event.target.value))}
+          />
+        </FormField>
+        <FormField
+          label={`Rule Arrays ${ruleArrays.length === 0 ? '(none)' : ''}`}
+          name="ruleArrays"
+          pad
+        >
+          <RadioButtonGroup
+            name="Board Objects Arrays"
+            value={String(selectedRuleArrayIndex)}
+            options={ruleArrays.map((_, i) => ({
+              label: `Rule Array ${i}`,
+              value: String(i),
+            }))}
+            onChange={(event) => setSelectedRuleArrayIndex(Number(event.target.value))}
+          />
+        </FormField>
+        <Button
+          type="submit"
+          label="Start"
+          disabled={ruleArrays.length === 0 || boardObjectsArrays.length === 0}
+        />
+      </Form>
+      <Form onSubmit={() => dispatch(addBoardObjectsArray.request(boardObjects))}>
+        <FormField label="Custom BoardObjects" name="BoardObjects" value={boardObjects}>
+          <TextArea
+            rows={20}
+            onChange={useCallback(
+              (e: React.ChangeEvent<HTMLTextAreaElement>) => setBoardObjects(e.target.value),
+              [setBoardObjects],
+            )}
+            placeholder={`Custom BoardObjects:
 Type:
 {
   "id": string;
@@ -111,24 +107,28 @@ Example:
   }
 ]
 `}
-        />
-        Custom RuleArray
-        <TextArea
-          name="RuleArray"
-          value={enteredAtomArray}
-          onChange={useCallback(
-            (e: React.ChangeEvent<HTMLTextAreaElement>) => setEnteredAtomArray(e.target.value),
-            [setEnteredAtomArray],
-          )}
-        />
-        <Button
-          type="submit"
-          primary
-          label="Use Custom Atom"
-          disabled={enteredAtomArray.trim().length === 0}
-        />
+          />
+        </FormField>
+        <Button type="submit" label="Add" />
       </Form>
-    </StyledEntrancePage>
+      <Form
+        onSubmit={useCallback(() => {
+          dispatch(addRuleArray.request(enteredAtomArray));
+        }, [dispatch, enteredAtomArray])}
+      >
+        <FormField label="Custom RuleArray" name="RuleArray">
+          <TextArea
+            value={enteredAtomArray}
+            onChange={useCallback(
+              (e: React.ChangeEvent<HTMLTextAreaElement>) => setEnteredAtomArray(e.target.value),
+              [setEnteredAtomArray],
+            )}
+          />
+        </FormField>
+
+        <Button type="submit" primary label="Add" disabled={enteredAtomArray.trim().length === 0} />
+      </Form>
+    </Box>
   );
 };
 

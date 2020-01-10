@@ -4,6 +4,7 @@ import page from './page';
 import ruleRow from './rule-row';
 import layers from './layers';
 import ruleArrays from './rule-arrays';
+import boardObjectArrays from './board-objects-arrays';
 
 export const createRootReducer = () =>
   combineReducers({
@@ -11,6 +12,7 @@ export const createRootReducer = () =>
     ruleRow,
     layers,
     ruleArrays,
+    boardObjectArrays,
   });
 
 export default createRootReducer;
