@@ -7,7 +7,7 @@ import { addRuleArray, removeRuleArray } from '../actions/rule-arrays';
 import removeFirst from '../../utils/removeFirst';
 
 const persistConfig = {
-  key: 'board-objects-arrays',
+  key: 'rule-arrays',
   storage,
 };
 
