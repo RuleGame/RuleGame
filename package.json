@@ -2,6 +2,9 @@
   "name": "rule-game",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=12"
+  },
   "scripts": {
     "build": "react-app-rewired build",
     "cypress:open": "cypress open",
