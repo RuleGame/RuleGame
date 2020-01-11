@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { Box, Button, CheckBox, Form, FormField, Heading, TextArea, Text } from 'grommet';
+import {
+  Box,
+  Button,
+  CheckBox,
+  Form,
+  FormField,
+  Heading,
+  TextArea,
+  Text,
+  Paragraph,
+} from 'grommet';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Close, View } from 'grommet-icons';
@@ -24,65 +34,71 @@ const EntrancePage = () => {
 
   return (
     <Box direction="column" align="center" gap="medium" pad="medium">
-      <Box align="center" pad="xlarge" elevation="large">
-        <Heading>Enter a Game</Heading>
-        <Box pad="small">
-          {games.length > 0 ? (
-            games.map((game) => (
-              <Box direction="row" key={game.id}>
-                {showEditGames && (
-                  <Button
-                    icon={<View />}
-                    onClick={() =>
-                      dispatch(
-                        addLayer(
-                          `${game.name} Game Preview:`,
-                          `Rule Array:\n${ruleArraysById[game.ruleArray].stringified}\n\nBoard Objects:\n${boardObjectsArraysById[game.boardObjectsArray].stringified}`,
-                          [
-                            {
-                              key: 'close',
-                              label: 'Close',
-                              action: removeLayer('game-preview'),
-                            },
-                          ],
-                          'game-preview',
-                        ),
-                      )
-                    }
-                  />
-                )}
-                <Button onClick={() => dispatch(enterGame(game.id))} label={game.name} />
-                {showEditGames && (
-                  <Button
-                    onClick={() =>
-                      dispatch(
-                        addLayer(
-                          'Delete Game?',
-                          `Are you sure you want to delete ${game.name}?`,
-                          [
-                            {
-                              key: 'yes',
-                              label: 'Yes',
-                              action: [removeLayer('delete-game'), removeGame(game.id)],
-                            },
-                            {
-                              key: 'no',
-                              label: 'No',
-                              action: removeLayer('delete-game'),
-                            },
-                          ],
-                          'delete-game',
-                        ),
-                      )
-                    }
-                    icon={<Close />}
-                  />
-                )}
-              </Box>
-            ))
-          ) : (
-            <Text>(Empty... Add a Game Below)</Text>
-          )}
+      <Box align="center" elevation="large" fill>
+        <Box background="brand" fill align="center" pad="medium" justify="center">
+          <Heading>Introduction</Heading>
+          <Paragraph>My Rule Game Introduction</Paragraph>
+        </Box>
+        <Box pad="medium">
+          <Heading>Enter a Game</Heading>
+          <Box pad="small" fill align="center" justify="center" gap="small">
+            {games.length > 0 ? (
+              games.map((game) => (
+                <Box direction="row" key={game.id}>
+                  {showEditGames && (
+                    <Button
+                      icon={<View />}
+                      onClick={() =>
+                        dispatch(
+                          addLayer(
+                            `${game.name} Game Preview:`,
+                            `Rule Array:\n${ruleArraysById[game.ruleArray].stringified}\n\nBoard Objects:\n${boardObjectsArraysById[game.boardObjectsArray].stringified}`,
+                            [
+                              {
+                                key: 'close',
+                                label: 'Close',
+                                action: removeLayer('game-preview'),
+                              },
+                            ],
+                            'game-preview',
+                          ),
+                        )
+                      }
+                    />
+                  )}
+                  <Button onClick={() => dispatch(enterGame(game.id))} label={game.name} />
+                  {showEditGames && (
+                    <Button
+                      onClick={() =>
+                        dispatch(
+                          addLayer(
+                            'Delete Game?',
+                            `Are you sure you want to delete ${game.name}?`,
+                            [
+                              {
+                                key: 'yes',
+                                label: 'Yes',
+                                action: [removeLayer('delete-game'), removeGame(game.id)],
+                              },
+                              {
+                                key: 'no',
+                                label: 'No',
+                                action: removeLayer('delete-game'),
+                              },
+                            ],
+                            'delete-game',
+                          ),
+                        )
+                      }
+                      icon={<Close />}
+                    />
+                  )}
+                </Box>
+              ))
+            ) : (
+              <Text>(Empty... Add a Game Below)</Text>
+            )}
+          </Box>
         </Box>
       </Box>
       <CheckBox
