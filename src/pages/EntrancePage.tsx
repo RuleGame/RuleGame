@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import { Box, Button, CheckBox, Form, FormField, Heading, TextArea } from 'grommet';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
-import { Close } from 'grommet-icons';
+import { Close, View } from 'grommet-icons';
 import { RootAction } from '../store/actions';
-import { gamesSelector } from '../store/selectors';
+import {
+  boardObjectsArraysByIdSelector,
+  gamesSelector,
+  ruleArraysByIdSelector,
+} from '../store/selectors';
 import { addGame, enterGame, removeGame } from '../store/actions/games';
+import { addLayer, removeLayer } from '../store/actions/layers';
 
 const EntrancePage = () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
@@ -14,6 +19,8 @@ const EntrancePage = () => {
   const [gameName, setGameName] = useState('');
   const [showEditGames, setShowEditGames] = useState(false);
   const games = useSelector(gamesSelector);
+  const boardObjectsArraysById = useSelector(boardObjectsArraysByIdSelector);
+  const ruleArraysById = useSelector(ruleArraysByIdSelector);
 
   return (
     <Box direction="column" align="center" gap="medium" pad="medium">
@@ -22,6 +29,27 @@ const EntrancePage = () => {
         <Box pad="small">
           {games.map((game) => (
             <Box direction="row" key={game.id}>
+              {showEditGames && (
+                <Button
+                  icon={<View />}
+                  onClick={() =>
+                    dispatch(
+                      addLayer(
+                        `${game.name} Game Preview:`,
+                        `Rule Array:\n${ruleArraysById[game.ruleArray].stringified}\n\nBoard Objects:\n${boardObjectsArraysById[game.boardObjectsArray].stringified}`,
+                        [
+                          {
+                            key: 'close',
+                            label: 'Close',
+                            action: removeLayer('game-preview'),
+                          },
+                        ],
+                        'game-preview',
+                      ),
+                    )
+                  }
+                />
+              )}
               <Button onClick={() => dispatch(enterGame(game.id))} label={game.name} />
               {showEditGames && (
                 <Button onClick={() => dispatch(removeGame(game.id))} icon={<Close />} />

@@ -15,7 +15,7 @@ const Layer: React.FunctionComponent<{
         <Heading color="red" level="3">
           {layer.title}
         </Heading>
-        <Paragraph size="large">
+        <Paragraph size="small">
           {layer.description.split('\n').map((line, i) => (
             // eslint-disable-next-line react/no-array-index-key
             <React.Fragment key={i}>
