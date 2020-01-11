@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { Box, Button, Form, FormField, Heading, TextArea } from 'grommet';
+import React, { useState } from 'react';
+import { Box, Button, CheckBox, Form, FormField, Heading, TextArea } from 'grommet';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Close } from 'grommet-icons';
@@ -12,50 +12,67 @@ const EntrancePage = () => {
   const [enteredAtomArray, setEnteredAtomArray] = useState('');
   const [boardObjects, setBoardObjects] = useState('');
   const [gameName, setGameName] = useState('');
+  const [showEditGames, setShowEditGames] = useState(false);
   const games = useSelector(gamesSelector);
 
   return (
     <Box direction="column" align="center" gap="medium" pad="medium">
       <Box align="center" pad="xlarge" elevation="large">
-        <Heading>Enter Game</Heading>
+        <Heading>Enter a Game</Heading>
         <Box pad="small">
           {games.map((game) => (
             <Box direction="row" key={game.id}>
               <Button onClick={() => dispatch(enterGame(game.id))} label={game.name} />
-              <Button onClick={() => dispatch(removeGame(game.id))} icon={<Close />} />
+              {showEditGames && (
+                <Button onClick={() => dispatch(removeGame(game.id))} icon={<Close />} />
+              )}
             </Box>
           ))}
         </Box>
       </Box>
-      <Box elevation="large" align="center" pad="small">
-        <Heading level="2">Add New Game</Heading>
-        <Form onSubmit={() => dispatch(addGame.request(gameName, enteredAtomArray, boardObjects))}>
-          <Box justify="center" gap="medium">
-            <Box fill justify="center" align="center">
-              <Box width="medium" elevation="medium" pad="small">
-                <FormField
-                  required
-                  label="Game Name"
-                  value={gameName}
-                  onChange={(event) => setGameName(event.target.value)}
-                  placeholder="Name"
-                />
+      <CheckBox
+        checked={showEditGames}
+        label="Edit Games"
+        onChange={(event) => setShowEditGames(event.target.checked)}
+      />
+      {showEditGames && (
+        <Box elevation="large" align="center" pad="small">
+          <Heading level="2">Add a New Game</Heading>
+          <Form
+            onSubmit={() => dispatch(addGame.request(gameName, enteredAtomArray, boardObjects))}
+          >
+            <Box justify="center" gap="medium">
+              <Box fill justify="center" align="center">
+                <Box width="medium" elevation="medium" pad="small">
+                  <FormField
+                    required
+                    label="Game Name"
+                    value={gameName}
+                    onChange={(event) => setGameName(event.target.value)}
+                    placeholder="Name"
+                  />
+                </Box>
               </Box>
-            </Box>
-            <Box direction="row" gap="medium" pad="medium" justify="evenly" wrap elevation="medium">
-              <FormField label="New Board Objects" name="BoardObjects" pad>
-                <TextArea
-                  required
-                  rows={20}
-                  cols={50}
-                  wrap="off"
-                  onChange={useCallback(
-                    (e: React.ChangeEvent<HTMLTextAreaElement>) => setBoardObjects(e.target.value),
-                    [setBoardObjects],
-                  )}
-                  value={boardObjects}
-                  size="small"
-                  placeholder={`Custom Board Objects (JSON format):
+              <Box
+                direction="row"
+                gap="medium"
+                pad="medium"
+                justify="evenly"
+                wrap
+                elevation="medium"
+              >
+                <FormField label="New Board Objects" name="BoardObjects" pad>
+                  <TextArea
+                    required
+                    rows={20}
+                    cols={50}
+                    wrap="off"
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                      setBoardObjects(e.target.value)
+                    }
+                    value={boardObjects}
+                    size="small"
+                    placeholder={`Custom Board Objects (JSON format):
 Board Object Shape:
 {
   "id": string;
@@ -83,31 +100,30 @@ Array Example:
   }
 ]
 `}
-                />
-              </FormField>
-              <FormField label="New Rule Array" name="RuleArray" pad>
-                <TextArea
-                  required
-                  value={enteredAtomArray}
-                  onChange={useCallback(
-                    (e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                      setEnteredAtomArray(e.target.value),
-                    [setEnteredAtomArray],
-                  )}
-                  size="small"
-                  rows={20}
-                  cols={50}
-                  wrap="off"
-                  placeholder="(10,square,*,*,[1,2]) (10,*,green,10,[2,3])
+                  />
+                </FormField>
+                <FormField label="New Rule Array" name="RuleArray" pad>
+                  <TextArea
+                    required
+                    value={enteredAtomArray}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                      setEnteredAtomArray(e.target.value)
+                    }
+                    size="small"
+                    rows={20}
+                    cols={50}
+                    wrap="off"
+                    placeholder="(10,square,*,*,[1,2]) (10,*,green,10,[2,3])
 (*,*,*,*,[ps,pc])
 (*,*,*,*,[(p+1)%4])"
-                />
-              </FormField>
+                  />
+                </FormField>
+              </Box>
+              <Button primary type="submit" label="Add Game" />
             </Box>
-            <Button primary type="submit" label="Add Game" />
-          </Box>
-        </Form>
-      </Box>
+          </Form>
+        </Box>
+      )}
     </Box>
   );
 };
