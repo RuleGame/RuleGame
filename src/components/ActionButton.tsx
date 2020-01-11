@@ -10,7 +10,13 @@ const ActionButton: React.FunctionComponent<{ actionButton: ActionButtonType }> 
   actionButton,
 }) => {
   const dispatch: Dispatch<RootAction> = useDispatch();
-  const handleClick = useCallback(() => dispatch(actionButton.action), [dispatch, actionButton]);
+  const handleClick = useCallback(
+    () =>
+      Array.isArray(actionButton.action)
+        ? actionButton.action.map(dispatch)
+        : dispatch(actionButton.action),
+    [dispatch, actionButton],
+  );
   return <Button primary onClick={handleClick} label={actionButton.label} />;
 };
 

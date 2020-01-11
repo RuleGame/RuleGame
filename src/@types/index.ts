@@ -74,7 +74,7 @@ export type Atom = {
 export type ActionButton = {
   key: string;
   label: string;
-  action: RootAction;
+  action: RootAction | RootAction[];
 };
 
 export type RuleRow = Atom[];

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, CheckBox, Form, FormField, Heading, TextArea } from 'grommet';
+import { Box, Button, CheckBox, Form, FormField, Heading, TextArea, Text } from 'grommet';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Close, View } from 'grommet-icons';
@@ -27,35 +27,62 @@ const EntrancePage = () => {
       <Box align="center" pad="xlarge" elevation="large">
         <Heading>Enter a Game</Heading>
         <Box pad="small">
-          {games.map((game) => (
-            <Box direction="row" key={game.id}>
-              {showEditGames && (
-                <Button
-                  icon={<View />}
-                  onClick={() =>
-                    dispatch(
-                      addLayer(
-                        `${game.name} Game Preview:`,
-                        `Rule Array:\n${ruleArraysById[game.ruleArray].stringified}\n\nBoard Objects:\n${boardObjectsArraysById[game.boardObjectsArray].stringified}`,
-                        [
-                          {
-                            key: 'close',
-                            label: 'Close',
-                            action: removeLayer('game-preview'),
-                          },
-                        ],
-                        'game-preview',
-                      ),
-                    )
-                  }
-                />
-              )}
-              <Button onClick={() => dispatch(enterGame(game.id))} label={game.name} />
-              {showEditGames && (
-                <Button onClick={() => dispatch(removeGame(game.id))} icon={<Close />} />
-              )}
-            </Box>
-          ))}
+          {games.length > 0 ? (
+            games.map((game) => (
+              <Box direction="row" key={game.id}>
+                {showEditGames && (
+                  <Button
+                    icon={<View />}
+                    onClick={() =>
+                      dispatch(
+                        addLayer(
+                          `${game.name} Game Preview:`,
+                          `Rule Array:\n${ruleArraysById[game.ruleArray].stringified}\n\nBoard Objects:\n${boardObjectsArraysById[game.boardObjectsArray].stringified}`,
+                          [
+                            {
+                              key: 'close',
+                              label: 'Close',
+                              action: removeLayer('game-preview'),
+                            },
+                          ],
+                          'game-preview',
+                        ),
+                      )
+                    }
+                  />
+                )}
+                <Button onClick={() => dispatch(enterGame(game.id))} label={game.name} />
+                {showEditGames && (
+                  <Button
+                    onClick={() =>
+                      dispatch(
+                        addLayer(
+                          'Delete Game?',
+                          `Are you sure you want to delete ${game.name}?`,
+                          [
+                            {
+                              key: 'yes',
+                              label: 'Yes',
+                              action: [removeLayer('delete-game'), removeGame(game.id)],
+                            },
+                            {
+                              key: 'no',
+                              label: 'No',
+                              action: removeLayer('delete-game'),
+                            },
+                          ],
+                          'delete-game',
+                        ),
+                      )
+                    }
+                    icon={<Close />}
+                  />
+                )}
+              </Box>
+            ))
+          ) : (
+            <Text>(Empty... Add a Game Below)</Text>
+          )}
         </Box>
       </Box>
       <CheckBox

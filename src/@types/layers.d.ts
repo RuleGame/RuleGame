@@ -4,5 +4,5 @@ export type LayerData = {
   id: string;
   title: string;
   description: string;
-  actionButtons: { key: string; label: string; action: RootAction }[];
+  actionButtons: { key: string; label: string; action: RootAction | RootAction[] }[];
 };
