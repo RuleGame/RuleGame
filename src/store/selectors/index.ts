@@ -143,3 +143,12 @@ export const boardObjectsArraysSelector = createSelector(
   (boardObjectsArraysById, boardObjectsArraysIds) =>
     boardObjectsArraysIds.map((id) => boardObjectsArraysById[id]),
 );
+
+export const gamesByIdSelector = (state: RootState) => state.games.byId;
+
+export const gamesIdsSelector = (state: RootState) => state.games.allIds;
+
+export const gamesSelector = createSelector(
+  [gamesByIdSelector, gamesIdsSelector],
+  (gamesById, gamesIds) => gamesIds.map((id) => gamesById[id]),
+);

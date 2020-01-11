@@ -1,129 +1,61 @@
-import React, { useCallback, useRef, useState } from 'react';
-import {
-  Box,
-  Button,
-  Drop,
-  Form,
-  FormField,
-  Heading,
-  RadioButtonGroup,
-  TextArea,
-  Text,
-} from 'grommet';
+import React, { useCallback, useState } from 'react';
+import { Box, Button, Form, FormField, Heading, TextArea } from 'grommet';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
-import { BoardObjectType, RuleArray } from '../@types';
+import { Close } from 'grommet-icons';
 import { RootAction } from '../store/actions';
-import randomObjectsCreator from '../store/epics/__helpers__/objects-creator';
-import { boardObjectsArraysSelector, ruleArraysSelector } from '../store/selectors';
-import { addRuleArray } from '../store/actions/rule-arrays';
-import { loadRuleArray } from '../store/actions/rule-row';
-import { addBoardObjectsArray } from '../store/actions/board-objects-arrays';
+import { gamesSelector } from '../store/selectors';
+import { addGame, enterGame, removeGame } from '../store/actions/games';
 
 const EntrancePage = () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
-  const startRef = useRef<HTMLButtonElement>(null);
   const [enteredAtomArray, setEnteredAtomArray] = useState('');
-  const dispatchSetRuleArray = useCallback(
-    (ruleArray: RuleArray, boardObjects: BoardObjectType[] = randomObjectsCreator(5)) =>
-      dispatch(loadRuleArray(boardObjects, ruleArray)),
-    [dispatch],
-  );
   const [boardObjects, setBoardObjects] = useState('');
-  const ruleArrays = useSelector(ruleArraysSelector);
-  const boardObjectsArrays = useSelector(boardObjectsArraysSelector);
-  const [selectedRuleArrayIndex, setSelectedRuleArrayIndex] = useState(0);
-  const [selectedBoardObjectsArrayIndex, setSelectedBoardObjectsArrayIndex] = useState(0);
+  const [gameName, setGameName] = useState('');
+  const games = useSelector(gamesSelector);
 
   return (
-    <Box direction="column" align="center" gap="medium">
-      <Box elevation="large" align="center">
+    <Box direction="column" align="center" gap="medium" pad="medium">
+      <Box align="center" pad="xlarge" elevation="large">
         <Heading>Enter Game</Heading>
         <Box pad="small">
-          <Form
-            onSubmit={() =>
-              dispatchSetRuleArray(
-                ruleArrays[selectedRuleArrayIndex].value,
-                boardObjectsArrays[selectedBoardObjectsArrayIndex].value,
-              )
-            }
-          >
-            <Box direction="row" gap="medium" pad="medium">
-              <FormField
-                label={`Board Objects Arrays ${boardObjectsArrays.length === 0 ? '(empty)' : ''}`}
-                name="boardObjectsArrays"
-                pad
-              >
-                <RadioButtonGroup
-                  name="Board Objects Arrays"
-                  value={String(selectedBoardObjectsArrayIndex)}
-                  options={boardObjectsArrays.map((_, i) => ({
-                    label: `Board Objects Array ${i}`,
-                    value: String(i),
-                  }))}
-                  onChange={(event) =>
-                    setSelectedBoardObjectsArrayIndex(Number(event.target.value))
-                  }
-                />
-              </FormField>
-              <FormField
-                label={`Rule Arrays ${ruleArrays.length === 0 ? '(empty)' : ''}`}
-                name="ruleArrays"
-                pad
-              >
-                <RadioButtonGroup
-                  name="Board Objects Arrays"
-                  value={String(selectedRuleArrayIndex)}
-                  options={ruleArrays.map((_, i) => ({
-                    label: `Rule Array ${i}`,
-                    value: String(i),
-                  }))}
-                  onChange={(event) => setSelectedRuleArrayIndex(Number(event.target.value))}
-                />
-              </FormField>
+          {games.map((game) => (
+            <Box direction="row" key={game.id}>
+              <Button onClick={() => dispatch(enterGame(game.id))} label={game.name} />
+              <Button onClick={() => dispatch(removeGame(game.id))} icon={<Close />} />
             </Box>
-            <Box direction="row" justify="center">
-              <Button
-                type="submit"
-                label="Start"
-                disabled={ruleArrays.length === 0 || boardObjectsArrays.length === 0}
-                ref={startRef}
-                primary
-              >
-                {({ hover }: { hover: boolean }) => (
-                  <>
-                    <Text>Start</Text>
-                    {startRef.current &&
-                      hover &&
-                      (ruleArrays.length === 0 || boardObjectsArrays.length === 0) && (
-                        <Drop align={{ top: 'bottom' }} target={startRef.current} plain>
-                          <Box margin="xsmall" pad="small" round background="dark-3">
-                            Add at least 1 Rule Array and 1 Board Objects Array
-                          </Box>
-                        </Drop>
-                      )}
-                  </>
-                )}
-              </Button>
-            </Box>
-          </Form>
+          ))}
         </Box>
       </Box>
-      <Box elevation="large" align="center">
-        <Heading level="2">New Rule Arrays/Board Objects Form</Heading>
-        <Box direction="row" gap="medium" pad="medium" justify="evenly" wrap>
-          <Form onSubmit={() => dispatch(addBoardObjectsArray.request(boardObjects))}>
-            <FormField label="New Board Objects" name="BoardObjects" value={boardObjects} pad>
-              <TextArea
-                rows={20}
-                cols={50}
-                wrap="off"
-                onChange={useCallback(
-                  (e: React.ChangeEvent<HTMLTextAreaElement>) => setBoardObjects(e.target.value),
-                  [setBoardObjects],
-                )}
-                size="small"
-                placeholder={`Custom Board Objects (JSON format):
+      <Box elevation="large" align="center" pad="small">
+        <Heading level="2">Add New Game</Heading>
+        <Form onSubmit={() => dispatch(addGame.request(gameName, enteredAtomArray, boardObjects))}>
+          <Box justify="center" gap="medium">
+            <Box fill justify="center" align="center">
+              <Box width="medium" elevation="medium" pad="small">
+                <FormField
+                  required
+                  label="Game Name"
+                  value={gameName}
+                  onChange={(event) => setGameName(event.target.value)}
+                  placeholder="Name"
+                />
+              </Box>
+            </Box>
+            <Box direction="row" gap="medium" pad="medium" justify="evenly" wrap elevation="medium">
+              <FormField label="New Board Objects" name="BoardObjects" pad>
+                <TextArea
+                  required
+                  rows={20}
+                  cols={50}
+                  wrap="off"
+                  onChange={useCallback(
+                    (e: React.ChangeEvent<HTMLTextAreaElement>) => setBoardObjects(e.target.value),
+                    [setBoardObjects],
+                  )}
+                  value={boardObjects}
+                  size="small"
+                  placeholder={`Custom Board Objects (JSON format):
 Board Object Shape:
 {
   "id": string;
@@ -151,35 +83,30 @@ Array Example:
   }
 ]
 `}
-              />
-            </FormField>
-            <Button type="submit" label="Add" disabled={boardObjects.trim().length === 0} />
-          </Form>
-          <Form
-            onSubmit={useCallback(() => {
-              dispatch(addRuleArray.request(enteredAtomArray));
-            }, [dispatch, enteredAtomArray])}
-          >
-            <FormField label="New Rule Array" name="RuleArray" pad>
-              <TextArea
-                value={enteredAtomArray}
-                onChange={useCallback(
-                  (e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                    setEnteredAtomArray(e.target.value),
-                  [setEnteredAtomArray],
-                )}
-                size="small"
-                rows={20}
-                cols={50}
-                wrap="off"
-                placeholder="(10,square,*,*,[1,2]) (10,*,green,10,[2,3])
+                />
+              </FormField>
+              <FormField label="New Rule Array" name="RuleArray" pad>
+                <TextArea
+                  required
+                  value={enteredAtomArray}
+                  onChange={useCallback(
+                    (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                      setEnteredAtomArray(e.target.value),
+                    [setEnteredAtomArray],
+                  )}
+                  size="small"
+                  rows={20}
+                  cols={50}
+                  wrap="off"
+                  placeholder="(10,square,*,*,[1,2]) (10,*,green,10,[2,3])
 (*,*,*,*,[ps,pc])
 (*,*,*,*,[(p+1)%4])"
-              />
-            </FormField>
-            <Button type="submit" label="Add" disabled={enteredAtomArray.trim().length === 0} />
-          </Form>
-        </Box>
+                />
+              </FormField>
+            </Box>
+            <Button primary type="submit" label="Add Game" />
+          </Box>
+        </Form>
       </Box>
     </Box>
   );

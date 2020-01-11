@@ -5,9 +5,11 @@ import { BoardObjectType } from '../../@types';
 import { RootAction } from '../actions';
 import removeFirst from '../../utils/removeFirst';
 import { addBoardObjectsArray, removeBoardObjectsArray } from '../actions/board-objects-arrays';
+import { addGame } from '../actions/games';
+import { PersistKeys } from './__helpers__/PersistKeys';
 
 const persistConfig = {
-  key: 'board-objects-arrays',
+  key: PersistKeys.BOARD_OBJECTS_ARRAYS,
   storage,
 };
 
@@ -63,6 +65,21 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         ...state,
         byId: newById,
         allIds: removeFirst(state.allIds, action.payload.id),
+      };
+    }
+
+    case getType(addGame.success): {
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [action.payload.boardObjectsArrayId]: {
+            id: action.payload.boardObjectsArrayId,
+            value: action.payload.boardObjectsArray,
+            stringified: action.payload.stringifiedBoardObjectsArray,
+          },
+        },
+        allIds: [...state.allIds, action.payload.boardObjectsArrayId],
       };
     }
 

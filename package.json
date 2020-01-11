@@ -57,6 +57,7 @@
     "@types/react-dom": "16.8.4",
     "eslint": "6.8.0",
     "grommet": "2.9.0",
+    "grommet-icons": "4.4.0",
     "history": "4.9.0",
     "lodash": "4.17.15",
     "polished": "3.4.1",
