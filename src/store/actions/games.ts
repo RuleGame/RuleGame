@@ -6,10 +6,11 @@ import { BoardObjectType, RuleArray } from '../../@types';
 export const addGame = createAsyncAction(
   [
     'games/ADD_GAME_REQUEST',
-    (name: string, ruleArray: string, boardObjectsArray: string) => ({
+    (name: string, ruleArray: string, boardObjectsArray: string, id?: string) => ({
       name,
       ruleArray,
       boardObjectsArray,
+      id: id ?? shortid(),
     }),
   ],
   [
@@ -20,8 +21,9 @@ export const addGame = createAsyncAction(
       stringifiedRuleArray: string,
       boardObjectsArray: BoardObjectType[],
       stringifiedBoardObjectsArray: string,
+      id?: string,
     ) => ({
-      id: shortid(),
+      id: id ?? shortid(),
       name,
       ruleArray,
       ruleArrayId: shortid(),

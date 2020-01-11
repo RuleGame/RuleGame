@@ -18,9 +18,8 @@ export const allAtomCountersZeroSelector = createSelector(
 
 export const boardObjectsByIdSelector = (state: RootState) => state.ruleRow.boardObjectsById;
 
-export const boardObjectsSelector = createSelector(
-  [boardObjectsByIdSelector],
-  (boardObjectsById) => Object.values(boardObjectsById),
+export const boardObjectsSelector = createSelector([boardObjectsByIdSelector], (boardObjectsById) =>
+  Object.values(boardObjectsById),
 );
 
 export const boardObjectsToBucketsToAtomsSelector = (state: RootState) =>
@@ -44,9 +43,8 @@ export const boardObjectToBucketsSelector = createSelector(
   },
 );
 
-export const allChecksSelector = createSelector(
-  [boardObjectsSelector],
-  (boardObjects) => boardObjects.every((boardObject) => boardObject.shape === Shape.CHECK),
+export const allChecksSelector = createSelector([boardObjectsSelector], (boardObjects) =>
+  boardObjects.every((boardObject) => boardObject.shape === Shape.CHECK),
 );
 export const noMoreMovesSelector = createSelector(
   [allAtomCountersZeroSelector, boardObjectToBucketsSelector, allChecksSelector],
@@ -151,4 +149,17 @@ export const gamesIdsSelector = (state: RootState) => state.games.allIds;
 export const gamesSelector = createSelector(
   [gamesByIdSelector, gamesIdsSelector],
   (gamesById, gamesIds) => gamesIds.map((id) => gamesById[id]),
+);
+
+export const exportedGamesSelector = createSelector(
+  [gamesSelector, ruleArraysByIdSelector, boardObjectsArraysByIdSelector],
+  (games, ruleArraysById, boardObjectsById) =>
+    JSON.stringify(
+      games.map((game) => ({
+        id: game.id,
+        name: game.name,
+        ruleArray: ruleArraysById[game.ruleArray].stringified,
+        boardObjectsArray: boardObjectsById[game.boardObjectsArray].stringified,
+      })),
+    ),
 );

@@ -13,9 +13,11 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Close, View } from 'grommet-icons';
+import { saveAs } from 'file-saver';
 import { RootAction } from '../store/actions';
 import {
   boardObjectsArraysByIdSelector,
+  exportedGamesSelector,
   gamesSelector,
   ruleArraysByIdSelector,
 } from '../store/selectors';
@@ -31,6 +33,7 @@ const EntrancePage = () => {
   const games = useSelector(gamesSelector);
   const boardObjectsArraysById = useSelector(boardObjectsArraysByIdSelector);
   const ruleArraysById = useSelector(ruleArraysByIdSelector);
+  const exportGamesString = useSelector(exportedGamesSelector);
 
   return (
     <Box direction="column" align="center" gap="medium" pad="medium">
@@ -52,7 +55,11 @@ const EntrancePage = () => {
                         dispatch(
                           addLayer(
                             `${game.name} Game Preview:`,
-                            `Rule Array:\n${ruleArraysById[game.ruleArray].stringified}\n\nBoard Objects:\n${boardObjectsArraysById[game.boardObjectsArray].stringified}`,
+                            `Rule Array:\n${
+                              ruleArraysById[game.ruleArray].stringified
+                            }\n\nBoard Objects:\n${
+                              boardObjectsArraysById[game.boardObjectsArray].stringified
+                            }`,
                             [
                               {
                                 key: 'close',
@@ -106,6 +113,61 @@ const EntrancePage = () => {
         label="Edit Games"
         onChange={(event) => setShowEditGames(event.target.checked)}
       />
+      <Box gap="small">
+        <Button
+          label="Import Games"
+          onClick={() => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (event: Event) => {
+              const file = (event?.target as HTMLInputElement)?.files?.[0];
+              if (file) {
+                try {
+                  const fileReader = new FileReader();
+                  fileReader.readAsText(file);
+                  fileReader.onload = (event) => {
+                    const games: {
+                      id: string;
+                      name: string;
+                      ruleArray: string;
+                      boardObjectsArray: string;
+                    }[] = JSON.parse(event?.target?.result as string);
+                    games.map((game) =>
+                      dispatch(
+                        addGame.request(game.name, game.ruleArray, game.boardObjectsArray, game.id),
+                      ),
+                    );
+                  };
+                } catch (error) {
+                  dispatch(
+                    addLayer(
+                      'Error Parsing File',
+                      error.message,
+                      [
+                        {
+                          key: 'close',
+                          label: 'Close',
+                          action: removeLayer('close-import-error'),
+                        },
+                      ],
+                      'close-import-error',
+                    ),
+                  );
+                }
+              }
+            };
+            input.click();
+          }}
+        />
+        <Button
+          label="Export Games"
+          onClick={() => {
+            const blob = new Blob([exportGamesString], { type: 'text/plain;charset=utf-8' });
+            saveAs(blob, 'exported-games.json');
+          }}
+        />
+      </Box>
       {showEditGames && (
         <Box elevation="large" align="center" pad="small">
           <Heading level="2">Add a New Game</Heading>
