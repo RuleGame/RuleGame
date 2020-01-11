@@ -19,6 +19,6 @@ export const createRootReducer = () =>
 
 export default createRootReducer;
 
-export type RootState = (typeof createRootReducer) extends (history: History) => Reducer<infer S>
+export type RootState = typeof createRootReducer extends (history: History) => Reducer<infer S>
   ? S
   : never;
