@@ -15,7 +15,10 @@ export const addBoardObjectsArray = createAsyncAction(
       stringified,
     }),
   ],
-  ['board-objects-arrays/ADD_BOARD_OBJECTS_ARRAY_FAILURE', (error: Error) => ({ error })],
+  [
+    'board-objects-arrays/ADD_BOARD_OBJECTS_ARRAY_FAILURE',
+    (error: Error, boardObjectsArrayString: string) => ({ error, boardObjectsArrayString }),
+  ],
 )();
 
 export const removeBoardObjectsArray = createAction(

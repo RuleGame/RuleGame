@@ -17,7 +17,7 @@ const addBoardObjectsArrayRequestEpic: RootEpic = (action$) =>
           action.payload.boardObjectsArrayString,
         );
       } catch (error) {
-        return addBoardObjectsArray.failure(error);
+        return addBoardObjectsArray.failure(error, action.payload.boardObjectsArrayString);
       }
     }),
   );
@@ -30,7 +30,7 @@ const addBoardObjectArraysFailureEpic: RootEpic = (action$) =>
 
       return addLayer(
         'Error Parsing Board Objects:',
-        action.payload.error.message,
+        `${action.payload.boardObjectsArrayString}\n${action.payload.error.message}`,
         [{ key: 'close', label: 'Close', action: removeLayer(layerId) }],
         layerId,
       );

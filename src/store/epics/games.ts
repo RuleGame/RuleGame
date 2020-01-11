@@ -22,7 +22,10 @@ const addGameRequestEpic: RootEpic = (action$) =>
       try {
         parsedBoardObjectsArray = JSON.parse(action.payload.boardObjectsArray);
       } catch (error) {
-        return [addGame.failure(error), addBoardObjectsArray.failure(error)];
+        return [
+          addGame.failure(error),
+          addBoardObjectsArray.failure(error, action.payload.boardObjectsArray),
+        ];
       }
       let parsedRuleArray;
       try {
