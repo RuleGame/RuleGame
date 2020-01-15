@@ -5,6 +5,7 @@ import { RootAction } from '../actions';
 import removeFirst from '../../utils/removeFirst';
 import { addGame, removeGame } from '../actions/games';
 import { PersistKeys } from './__helpers__/PersistKeys';
+import { Game } from '../../@types';
 
 const persistConfig = {
   key: PersistKeys.GAMES,
@@ -13,7 +14,7 @@ const persistConfig = {
 
 export type State = {
   byId: {
-    [id: string]: { id: string; name: string; ruleArray: string; boardObjectsArray: string };
+    [id: string]: Game;
   };
   allIds: string[];
   isRequesting: boolean;

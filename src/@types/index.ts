@@ -31,10 +31,6 @@ export type DropAttempt = { dragged: string; dropped: BucketPosition };
 
 export type Page = 'RuleGame' | 'Entrance';
 
-export enum Game {
-  GAME1,
-}
-
 export enum Color {
   ANY = '*',
   RED = 'red',
@@ -80,3 +76,5 @@ export type ActionButton = {
 export type RuleRow = Atom[];
 
 export type RuleArray = RuleRow[];
+
+export type Game = { id: string; name: string; ruleArray: string; boardObjectsArray: string };
