@@ -1,0 +1,5 @@
+export enum PersistKeys {
+  GAMES = 'GAMES',
+  RULE_ARRAYS = 'RULE_ARRAYS',
+  BOARD_OBJECTS_ARRAYS = 'BOARD_OBJECTS_ARRAYS',
+}

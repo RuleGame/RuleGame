@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-cycle
+import { RootAction } from '../store/actions';
+
 export type BoardObjectId = string;
 
 export enum BucketPosition {
@@ -22,35 +25,14 @@ export type BoardObjectType = {
   y: number;
 };
 
-// export type BoardObjectType = {
-//   buckets: BucketPosition[]; // DressedDisplay
-//   draggable: boolean;
-// } & MinimalBoardObjectType;
-
 export type BucketType = { pos: BucketPosition; x: number; y: number; id: string };
 
 export type DropAttempt = { dragged: string; dropped: BucketPosition };
-
-export type Log = {
-  id: number;
-  data: {
-    boardId: number;
-    moveNum: number;
-    touchAttempts: BoardObjectId[];
-    dropAttempts: DropAttempt[];
-    dropSuccess: DropAttempt;
-  };
-};
-
-export type Rule = 'nearest' | 'clockwise';
-
-export type BoardObjectsMapper = (boardObject: BoardObjectType, index: number) => BoardObjectType;
 
 export type Page = 'RuleGame' | 'Entrance';
 
 export enum Game {
   GAME1,
-  GAME2,
 }
 
 export enum Color {
@@ -88,3 +70,13 @@ export type Atom = {
   position: number;
   fns: AtomFn[];
 };
+
+export type ActionButton = {
+  key: string;
+  label: string;
+  action: RootAction | RootAction[];
+};
+
+export type RuleRow = Atom[];
+
+export type RuleArray = RuleRow[];

@@ -1,30 +1,8 @@
 import { createSelector } from 'reselect';
-import pickBy from 'lodash/pickBy';
 import { RootState } from '../reducers';
 import { BucketPosition, Shape } from '../../@types';
 
-// export const boardObjectsByIdSelector = (state: RootState) => state.game.boardObjectsById;
-
-// export const boardObjectsListSelector = createSelector(
-//   [boardObjectsByIdSelector],
-//   (boardObjectsById) => Object.values(boardObjectsById),
-// );
-
-// export const allCheckedSelector = createSelector(
-//   [boardObjectsListSelector],
-//   (boardObjectsList) => boardObjectsList.every((boardObject) => boardObject.shape === 'check'),
-// );
-
-// export const numBoardObjectsSelector = createSelector(
-//   [boardObjectsListSelector],
-//   (boardObjectsList) => boardObjectsList.length,
-// );
-
-// export const ruleSelector = (state: RootState) => state.game.rule;
-
 export const pageSelector = (state: RootState) => state.page.page;
-
-// export const logsSelector = (state: RootState) => state.game.logs;
 
 export const atomsByIdSelector = (state: RootState) => state.ruleRow.atomsByRowIndex;
 
@@ -40,30 +18,12 @@ export const allAtomCountersZeroSelector = createSelector(
 
 export const boardObjectsByIdSelector = (state: RootState) => state.ruleRow.boardObjectsById;
 
-export const boardObjectsSelector = createSelector(
-  [boardObjectsByIdSelector],
-  (boardObjectsById) => Object.values(boardObjectsById),
+export const boardObjectsSelector = createSelector([boardObjectsByIdSelector], (boardObjectsById) =>
+  Object.values(boardObjectsById),
 );
 
 export const boardObjectsToBucketsToAtomsSelector = (state: RootState) =>
   state.ruleRow.boardObjectsToBucketsToAtoms;
-
-// export const boardObjectToBucketsSelector = createSelector(
-//   [boardObjectsToBucketsToAtomsSelector],
-//   (boardObjectsToBucketsToAtoms) =>
-//     Object.entries(boardObjectsToBucketsToAtoms).reduce<{
-//       [boardObjectId: string]: Set<BucketPosition>;
-//     }>(
-//       (acc, [boardObjectId, bucketToAtoms]) => ({
-//         [boardObjectId]: new Set(
-//           Object.entries(bucketToAtoms)
-//             .filter(([, atomsSet]) => atomsSet.size > 0)
-//             .map(([bucket]) => (bucket as unknown) as BucketPosition),
-//         ),
-//       }),
-//       {},
-//     ),
-// );
 
 export const boardObjectToBucketsSelector = createSelector(
   [boardObjectsToBucketsToAtomsSelector],
@@ -83,11 +43,8 @@ export const boardObjectToBucketsSelector = createSelector(
   },
 );
 
-export const gameStartedSelector = (state: RootState) => !Number.isNaN(state.ruleRow.ruleRowIndex);
-
-export const allChecksSelector = createSelector(
-  [boardObjectsSelector],
-  (boardObjects) => boardObjects.every((boardObject) => boardObject.shape === Shape.CHECK),
+export const allChecksSelector = createSelector([boardObjectsSelector], (boardObjects) =>
+  boardObjects.every((boardObject) => boardObject.shape === Shape.CHECK),
 );
 export const noMoreMovesSelector = createSelector(
   [allAtomCountersZeroSelector, boardObjectToBucketsSelector, allChecksSelector],
@@ -96,8 +53,7 @@ export const noMoreMovesSelector = createSelector(
     Object.values(boardObjectToBuckets).every((bucketsSet) => bucketsSet.size === 0) ||
     allChecks,
 );
-
-export const visibleBoardObjectsSelector = createSelector(
+createSelector(
   [boardObjectsSelector, boardObjectsToBucketsToAtomsSelector],
   (boardObjects, boardObjectsToBucketsToAtoms) =>
     boardObjects.filter((boardObject) => boardObject.id in boardObjectsToBucketsToAtoms),
@@ -154,6 +110,56 @@ export const historyDebugInfoSelector = createSelector(
       : undefined,
 );
 
-export const rawAtomsSelector = (state: RootState) => state.ruleRow.rawAtoms;
+export const rawAtomsSelector = (state: RootState) => state.ruleRow.rawRuleArrayString;
 
 export const gameCompletedSelector = (state: RootState) => state.ruleRow.gameCompleted;
+
+export const layerIdsSelector = (state: RootState) => state.layers.layerIds;
+
+export const layersByIdSelector = (state: RootState) => state.layers.layersById;
+
+export const layersSelector = createSelector(
+  [layerIdsSelector, layersByIdSelector],
+  (layerIds, layersById) => layerIds.map((layerId) => layersById[layerId]),
+);
+
+export const ruleArraysByIdSelector = (state: RootState) => state.ruleArrays.byId;
+
+export const ruleArraysIdsSelector = (state: RootState) => state.ruleArrays.allIds;
+
+export const ruleArraysSelector = createSelector(
+  [ruleArraysByIdSelector, ruleArraysIdsSelector],
+  (ruleArraysById, ruleArraysIds) => ruleArraysIds.map((id) => ruleArraysById[id]),
+);
+
+export const boardObjectsArraysByIdSelector = (state: RootState) => state.boardObjectArrays.byId;
+
+export const boardObjectsArraysIdsSelector = (state: RootState) => state.boardObjectArrays.allIds;
+
+export const boardObjectsArraysSelector = createSelector(
+  [boardObjectsArraysByIdSelector, boardObjectsArraysIdsSelector],
+  (boardObjectsArraysById, boardObjectsArraysIds) =>
+    boardObjectsArraysIds.map((id) => boardObjectsArraysById[id]),
+);
+
+export const gamesByIdSelector = (state: RootState) => state.games.byId;
+
+export const gamesIdsSelector = (state: RootState) => state.games.allIds;
+
+export const gamesSelector = createSelector(
+  [gamesByIdSelector, gamesIdsSelector],
+  (gamesById, gamesIds) => gamesIds.map((id) => gamesById[id]),
+);
+
+export const exportedGamesSelector = createSelector(
+  [gamesSelector, ruleArraysByIdSelector, boardObjectsArraysByIdSelector],
+  (games, ruleArraysById, boardObjectsById) =>
+    JSON.stringify(
+      games.map((game) => ({
+        id: game.id,
+        name: game.name,
+        ruleArray: ruleArraysById[game.ruleArray].stringified,
+        boardObjectsArray: boardObjectsById[game.boardObjectsArray].stringified,
+      })),
+    ),
+);
