@@ -77,4 +77,14 @@ export type RuleRow = Atom[];
 
 export type RuleArray = RuleRow[];
 
-export type Game = { id: string; name: string; ruleArray: string; boardObjectsArray: string };
+export type Game = { id: string; name: string; ruleArray?: string; boardObjectsArrays: string[] };
+
+export type ExportedFile = {
+  id: string;
+  version: string;
+  games: { [id: string]: Game };
+  ruleArrays: { [id: string]: { id: string; name: string; stringified: string } };
+  boardObjectsArrays: {
+    [id: string]: { id: string; name: string; value: BoardObjectType[] };
+  };
+};

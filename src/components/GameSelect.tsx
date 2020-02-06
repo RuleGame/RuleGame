@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Box, Button } from 'grommet';
 import { Close, View } from 'grommet-icons';
 import { Dispatch } from 'redux';
@@ -15,63 +15,73 @@ const GameSelect: React.FunctionComponent<{
   game: Game;
 }> = ({ showEditButtons, game }) => {
   const dispatch: Dispatch<RootAction> = useDispatch();
-  const ruleArray = useSelector<RootState, string>(
-    (state) => ruleArraysByIdSelector(state)[game.ruleArray].stringified,
+  const ruleArray = useSelector<RootState, string | undefined>(
+    (state) => game.ruleArray && ruleArraysByIdSelector(state)[game.ruleArray].stringified,
   );
-  const boardObjectsArray = useSelector<RootState, string>(
-    (state) => boardObjectsArraysByIdSelector(state)[game.boardObjectsArray].stringified,
-  );
+  const boardObjectsArraysById = useSelector(boardObjectsArraysByIdSelector);
 
-  const handlePreview = useCallback(
+  const stringifiedBoardObjectsArrays = useMemo(
     () =>
-      dispatch(
-        addLayer(
-          `${game.name} Game Preview:`,
-          `Rule Array:\n${ruleArray}\n\nBoard Objects:\n${boardObjectsArray}`,
-          [
-            {
-              key: 'close',
-              label: 'Close',
-              action: removeLayer('game-preview'),
-            },
-          ],
-          'game-preview',
-        ),
-      ),
-    [boardObjectsArray, dispatch, game.name, ruleArray],
-  );
-  const handleDelete = useCallback(
-    () =>
-      dispatch(
-        addLayer(
-          'Delete Game?',
-          `Are you sure you want to delete ${game.name}?`,
-          [
-            {
-              key: 'yes',
-              label: 'Yes',
-              action: [removeLayer('delete-game'), removeGame(game.id)],
-            },
-            {
-              key: 'no',
-              label: 'No',
-              action: removeLayer('delete-game'),
-            },
-          ],
-          'delete-game',
-        ),
-      ),
-    [dispatch, game.id, game.name],
+      game.boardObjectsArrays.reduce((acc, boardObjectsArray) => {
+        const b = boardObjectsArraysById[boardObjectsArray];
+        return `${acc}\n\n${b.name}: ${b.stringified}`;
+      }, ''),
+    [boardObjectsArraysById, game.boardObjectsArrays],
   );
 
   return (
     <Box direction="row" key={game.id} gap="small">
-      {showEditButtons && <Button icon={<View />} onClick={handlePreview} />}
+      {showEditButtons && (
+        <Button
+          icon={<View />}
+          onClick={() =>
+            dispatch(
+              addLayer(
+                `${game.name} Game Preview:`,
+                `Rule Array:\n${ruleArray}\n\nBoard Objects:\n${stringifiedBoardObjectsArrays}`,
+                [
+                  {
+                    key: 'close',
+                    label: 'Close',
+                    action: removeLayer('game-preview'),
+                  },
+                ],
+                'game-preview',
+              ),
+            )
+          }
+        />
+      )}
       <Button
         onClick={useCallback(() => dispatch(enterGame(game.id)), [dispatch, game.id])}
         label={game.name}
       />
-      {showEditButtons && <Button onClick={handleDelete} icon={<Close />} />}
+      {showEditButtons && (
+        <Button
+          onClick={() =>
+            dispatch(
+              addLayer(
+                'Delete Game?',
+                `Are you sure you want to delete ${game.name}?`,
+                [
+                  {
+                    key: 'yes',
+                    label: 'Yes',
+                    action: [removeLayer('delete-game'), removeGame(game.id)],
+                  },
+                  {
+                    key: 'no',
+                    label: 'No',
+                    action: removeLayer('delete-game'),
+                  },
+                ],
+                'delete-game',
+              ),
+            )
+          }
+          icon={<Close />}
+        />
+      )}
     </Box>
   );
 };

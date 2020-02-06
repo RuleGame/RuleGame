@@ -13,6 +13,7 @@ const addBoardObjectsArrayRequestEpic: RootEpic = (action$) =>
       try {
         return addBoardObjectsArray.success(
           shortid(),
+          action.payload.name,
           JSON.parse(action.payload.boardObjectsArrayString),
           action.payload.boardObjectsArrayString,
         );

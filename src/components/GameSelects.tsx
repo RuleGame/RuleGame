@@ -12,7 +12,7 @@ const GameSelects: React.FunctionComponent<{
   return (
     <Box align="center" gap="small">
       {games.map((game) => (
-        <GameSelect game={game} showEditButtons={showEditButtons} />
+        <GameSelect key={game.id} game={game} showEditButtons={showEditButtons} />
       ))}
       {showEditButtons && <Button icon={<Trash />} label="Delete All" onClick={onDeleteAll} />}
     </Box>

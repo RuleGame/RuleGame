@@ -22,7 +22,7 @@ const App = () => {
   const layers = useSelector(layersSelector);
 
   return (
-    <Grommet plain>
+    <Grommet full plain>
       <StyledApp>{page === 'Entrance' ? <EntrancePage /> : <RuleGamePage />}</StyledApp>
       <Layers onLayerClose={handleCloseLayer} layers={layers} />
     </Grommet>

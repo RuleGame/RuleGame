@@ -1,6 +1,8 @@
 import { createSelector } from 'reselect';
+import shortid from 'shortid';
 import { RootState } from '../reducers';
-import { BucketPosition, Shape } from '../../@types';
+import { BoardObjectType, BucketPosition, ExportedFile, Shape } from '../../@types';
+import { FILE_VERSION } from '../../constants';
 
 export const pageSelector = (state: RootState) => state.page.page;
 
@@ -152,14 +154,25 @@ export const gamesSelector = createSelector(
 );
 
 export const exportedGamesSelector = createSelector(
-  [gamesSelector, ruleArraysByIdSelector, boardObjectsArraysByIdSelector],
-  (games, ruleArraysById, boardObjectsById) =>
-    JSON.stringify(
-      games.map((game) => ({
-        id: game.id,
-        name: game.name,
-        ruleArray: ruleArraysById[game.ruleArray].stringified,
-        boardObjectsArray: boardObjectsById[game.boardObjectsArray].stringified,
-      })),
-    ),
+  [gamesByIdSelector, ruleArraysByIdSelector, boardObjectsArraysByIdSelector],
+  (gamesById, ruleArraysById, boardObjectsArraysById) =>
+    JSON.stringify({
+      id: shortid(),
+      version: FILE_VERSION,
+      games: gamesById,
+      ruleArrays: Object.entries(ruleArraysById).reduce<{
+        [id: string]: { id: string; name: string; stringified: string };
+      }>((acc, [id, curr]) => {
+        const { value: _, ...rest } = curr;
+        acc[id] = rest;
+        return acc;
+      }, {}),
+      boardObjectsArrays: Object.entries(boardObjectsArraysById).reduce<{
+        [id: string]: { id: string; name: string; value: BoardObjectType[] };
+      }>((acc, [id, curr]) => {
+        const { stringified: _, ...rest } = curr;
+        acc[id] = rest;
+        return acc;
+      }, {}),
+    } as ExportedFile),
 );

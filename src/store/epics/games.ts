@@ -2,61 +2,54 @@ import { combineEpics } from 'redux-observable';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { isActionOf } from 'typesafe-actions';
 import { RootEpic } from '../../@types/epic';
-import { addGame, enterGame } from '../actions/games';
+import { loadGames } from '../actions/games';
+import { BoardObjectType, ExportedFile, RuleArray } from '../../@types';
 import { parseRuleArray } from '../../utils/atom-parser';
-import { loadRuleArray } from '../actions/rule-row';
-import {
-  boardObjectsArraysByIdSelector,
-  gamesByIdSelector,
-  ruleArraysByIdSelector,
-} from '../selectors';
-import { addRuleArray } from '../actions/rule-arrays';
-import { addBoardObjectsArray } from '../actions/board-objects-arrays';
 
 // TODO: Dispatch addRuleArray and addBoardObjectsArrays requests to use their Epics instead
-const addGameRequestEpic: RootEpic = (action$) =>
+const loadGamesEpic: RootEpic = (action$) =>
   action$.pipe(
-    filter(isActionOf(addGame.request)),
-    switchMap((action) => {
-      let parsedBoardObjectsArray;
+    filter(isActionOf(loadGames.request)),
+    switchMap(async ({ payload: { id, file } }) => {
+      const text = await new Response(new Blob([file])).text();
+      return [id, text] as const;
+    }),
+    map(([id, text]) => {
       try {
-        parsedBoardObjectsArray = JSON.parse(action.payload.boardObjectsArray);
+        const {
+          boardObjectsArrays: boardObjectsArraysWithoutStringified,
+          games,
+          ruleArrays: ruleArraysWithoutValues,
+        }: ExportedFile = JSON.parse(text);
+        const ruleArrays = Object.entries(ruleArraysWithoutValues).reduce<{
+          [id: string]: { id: string; name: string; stringified: string; value: RuleArray };
+        }>(
+          (acc, [id, curr]) => ({
+            ...acc,
+            [id]: {
+              ...curr,
+              value: parseRuleArray(curr.stringified),
+            },
+          }),
+          {},
+        );
+        const boardObjectsArrays = Object.entries(boardObjectsArraysWithoutStringified).reduce<{
+          [id: string]: { id: string; name: string; stringified: string; value: BoardObjectType[] };
+        }>(
+          (acc, [id, curr]) => ({
+            ...acc,
+            [id]: {
+              ...curr,
+              stringified: JSON.stringify(curr),
+            },
+          }),
+          {},
+        );
+        return loadGames.success(games, ruleArrays, boardObjectsArrays, id);
       } catch (error) {
-        return [
-          addGame.failure(error),
-          addBoardObjectsArray.failure(error, action.payload.boardObjectsArray),
-        ];
+        return loadGames.failure(error, id);
       }
-      let parsedRuleArray;
-      try {
-        parsedRuleArray = parseRuleArray(action.payload.ruleArray);
-      } catch (error) {
-        return [addGame.failure(error), addRuleArray.failure(error)];
-      }
-
-      return [
-        addGame.success(
-          action.payload.name,
-          parsedRuleArray,
-          action.payload.ruleArray,
-          parsedBoardObjectsArray,
-          action.payload.boardObjectsArray,
-        ),
-      ];
     }),
   );
 
-const enterGameEpic: RootEpic = (action$, state$) =>
-  action$.pipe(
-    filter(isActionOf(enterGame)),
-    map((action) => {
-      const game = gamesByIdSelector(state$.value)[action.payload.id];
-      const boardObjectsArray = boardObjectsArraysByIdSelector(state$.value)[
-        game.boardObjectsArray
-      ];
-      const ruleArray = ruleArraysByIdSelector(state$.value)[game.ruleArray];
-      return loadRuleArray(boardObjectsArray.value, ruleArray.value, ruleArray.stringified);
-    }),
-  );
-
-export default combineEpics(addGameRequestEpic, enterGameEpic);
+export default combineEpics(loadGamesEpic);

@@ -16,3 +16,5 @@ export const shapes: Shape[] = [Shape.SQUARE, Shape.TRIANGLE, Shape.STAR, Shape.
 
 export const borderWidth = 1;
 export const borderHeight = 1;
+
+export const FILE_VERSION = '0.0.0';

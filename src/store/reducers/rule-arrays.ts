@@ -5,16 +5,11 @@ import { RuleArray } from '../../@types';
 import { RootAction } from '../actions';
 import { addRuleArray, removeRuleArray } from '../actions/rule-arrays';
 import removeFirst from '../../utils/removeFirst';
-import { addGame } from '../actions/games';
-import { PersistKeys } from './__helpers__/PersistKeys';
-
-const persistConfig = {
-  key: PersistKeys.RULE_ARRAYS,
-  storage,
-};
+import { loadGames } from '../actions/games';
+import { PersistKeys, PersistVersions } from './__helpers__/PersistConstants';
 
 export type State = {
-  byId: { [id: string]: { id: string; stringified: string; value: RuleArray } };
+  byId: { [id: string]: { id: string; name: string; stringified: string; value: RuleArray } };
   allIds: string[];
   isRequesting: boolean;
 };
@@ -42,6 +37,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
             id: action.payload.id,
             value: action.payload.ruleArray,
             stringified: action.payload.stringified,
+            name: action.payload.name,
           },
         },
         allIds: [...state.allIds, action.payload.id],
@@ -66,18 +62,13 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       };
     }
 
-    case getType(addGame.success): {
+    case getType(loadGames.success): {
       return {
         ...state,
         byId: {
           ...state.byId,
-          [action.payload.ruleArrayId]: {
-            id: action.payload.ruleArrayId,
-            value: action.payload.ruleArray,
-            stringified: action.payload.stringifiedRuleArray,
-          },
+          ...action.payload.ruleArrays,
         },
-        allIds: [...state.allIds, action.payload.ruleArrayId],
       };
     }
 
@@ -86,4 +77,11 @@ const reducer = (state: State = initialState, action: RootAction): State => {
   }
 };
 
-export default persistReducer(persistConfig, reducer);
+export default persistReducer(
+  {
+    version: PersistVersions[PersistKeys.RULE_ARRAYS],
+    key: PersistKeys.RULE_ARRAYS,
+    storage,
+  },
+  reducer,
+);
