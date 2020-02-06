@@ -123,7 +123,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
                           fn(boardObject.id, state.totalMoveHistory, state.initialBoardObjectsById),
                         )
                         .forEach((bucket) => {
-                          if (Number.isNaN(bucket) && state.totalMoveHistory.length === 0) {
+                          if (Number.isNaN(bucket)) {
                             acc[BucketPosition.TR].add(atom.id);
                             acc[BucketPosition.TL].add(atom.id);
                             acc[BucketPosition.BR].add(atom.id);
@@ -204,7 +204,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
                           fn(boardObject.id, newTotalMoveHistory, state.initialBoardObjectsById),
                         )
                         .forEach((bucket) => {
-                          if (Number.isNaN(bucket) && newTotalMoveHistory.length === 0) {
+                          if (Number.isNaN(bucket)) {
                             acc[BucketPosition.TR].add(atom.id);
                             acc[BucketPosition.TL].add(atom.id);
                             acc[BucketPosition.BR].add(atom.id);
