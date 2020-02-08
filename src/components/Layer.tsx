@@ -11,7 +11,7 @@ const Layer: React.FunctionComponent<{
 
   return (
     <GrommetLayer onEsc={closeLayer} onClickOutside={closeLayer} position="top">
-      <Box pad="large">
+      <Box pad="large" overflow="auto">
         <Heading color="red" level="3">
           {layer.title}
         </Heading>
