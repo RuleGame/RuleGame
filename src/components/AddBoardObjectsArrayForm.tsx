@@ -13,7 +13,7 @@ const AddBoardObjectsForm: React.FunctionComponent = () => {
 
   return (
     <Box elevation="large" align="center" pad="medium">
-      <Heading level="2">Add a New Board Objects Array</Heading>
+      <Heading level="2">Add a New Custom Board Objects Array</Heading>
       <Form onSubmit={() => dispatch(addBoardObjectsArray.request(name, boardObjectsArray))}>
         <Box align="center">
           <Box align="start">

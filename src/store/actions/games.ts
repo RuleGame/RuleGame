@@ -34,11 +34,19 @@ export const loadGames = createAsyncAction(
 
 export const addGame = createAction(
   'games/ADD_GAME',
-  (name: string, ruleArray: string, boardObjectsArrays: string[]) => ({
+  (
+    name: string,
+    ruleArray: string,
+    boardObjectsArrays: string[],
+    useRandomBoardObjects: boolean,
+    numRandomBoardObjects: number,
+  ) => ({
     name,
     id: shortid(),
     ruleArray,
     boardObjectsArrays,
+    useRandomBoardObjects,
+    numRandomBoardObjects,
   }),
 )();
 

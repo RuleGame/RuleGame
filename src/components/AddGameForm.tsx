@@ -1,4 +1,14 @@
-import { Box, Button, Form, FormField, Heading, RadioButton, Text, TextInput } from 'grommet';
+import {
+  Box,
+  Button,
+  CheckBox,
+  Form,
+  FormField,
+  Heading,
+  RadioButton,
+  Text,
+  TextInput,
+} from 'grommet';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import React, { useState } from 'react';
@@ -30,6 +40,8 @@ const AddGameForm: React.FunctionComponent = () => {
   );
   const [selectedRuleArray, setSelectedRuleArray] = useState<string | undefined>(undefined);
   const ruleArrays = useSelector(ruleArraysSelector);
+  const [useRandomBoardObjects, setUseRandomBoardObjects] = useState(true);
+  const [numRandomBoardObjects, setNumRandomBoardObjects] = useState(5);
 
   return (
     <Box elevation="large" align="center" pad="medium">
@@ -41,8 +53,10 @@ const AddGameForm: React.FunctionComponent = () => {
               name,
               selectedRuleArray as string,
               boardObjectsArrays
-                .filter(({ id }) => isCheckedBoardObjectsArrays[id] ?? false)
+                .filter(({ id }) => isCheckedBoardObjectsArrays[id] ?? true)
                 .map(({ id }) => id),
+              useRandomBoardObjects,
+              numRandomBoardObjects,
             ),
           )
         }
@@ -101,49 +115,66 @@ const AddGameForm: React.FunctionComponent = () => {
                 )}
               </Box>
             </FormField>
-            <FormField label="Board Objects Arrays">
-              <Box gap="none">
-                {boardObjectsArrays.length > 0 ? (
-                  boardObjectsArrays.map((boardObjectsArray) => (
-                    <Box direction="row" justify="start" key={boardObjectsArray.id}>
-                      <Button
-                        onClick={() =>
-                          dispatch(
-                            addLayer(
-                              `${boardObjectsArray.name} Board Objects Array Preview:`,
-                              boardObjectsArray.stringified,
-                              [
-                                {
-                                  key: 'close',
-                                  label: 'Close',
-                                  action: removeLayer('board-objects-array-preview'),
-                                },
-                              ],
-                              'board-objects-array-preview',
-                            ),
-                          )
-                        }
-                        icon={<View />}
-                      />
-                      <BoardObjectsArrayCheckBox
-                        boardObjectsArrayId={boardObjectsArray.id}
-                        checked={isCheckedBoardObjectsArrays[boardObjectsArray.id] ?? true}
-                        onChange={({ target: { checked } }) =>
-                          setIsCheckedBoardObjectsArrays((isCheckedBoardObjectsArrays) => ({
-                            ...isCheckedBoardObjectsArrays,
-                            [boardObjectsArray.id]: checked,
-                          }))
-                        }
-                      />
-                    </Box>
-                  ))
-                ) : (
-                  <Text margin="small" size="xsmall" color="grey">
-                    (Empty... Add Board Objects Arrays)
-                  </Text>
-                )}
-              </Box>
-            </FormField>
+            <CheckBox
+              label="Use Random Board Objects"
+              checked={useRandomBoardObjects}
+              onChange={({ target: { checked } }) => setUseRandomBoardObjects(checked)}
+            />
+            {useRandomBoardObjects ? (
+              <FormField label="Num Random Objects Per Display">
+                <TextInput
+                  type="number"
+                  value={numRandomBoardObjects}
+                  onChange={({ target: { value } }) =>
+                    setNumRandomBoardObjects(Number(value.trim()))
+                  }
+                />
+              </FormField>
+            ) : (
+              <FormField label="Board Objects Arrays">
+                <Box gap="none">
+                  {boardObjectsArrays.length > 0 ? (
+                    boardObjectsArrays.map((boardObjectsArray) => (
+                      <Box direction="row" justify="start" key={boardObjectsArray.id}>
+                        <Button
+                          onClick={() =>
+                            dispatch(
+                              addLayer(
+                                `${boardObjectsArray.name} Board Objects Array Preview:`,
+                                boardObjectsArray.stringified,
+                                [
+                                  {
+                                    key: 'close',
+                                    label: 'Close',
+                                    action: removeLayer('board-objects-array-preview'),
+                                  },
+                                ],
+                                'board-objects-array-preview',
+                              ),
+                            )
+                          }
+                          icon={<View />}
+                        />
+                        <BoardObjectsArrayCheckBox
+                          boardObjectsArrayId={boardObjectsArray.id}
+                          checked={isCheckedBoardObjectsArrays[boardObjectsArray.id] ?? true}
+                          onChange={({ target: { checked } }) =>
+                            setIsCheckedBoardObjectsArrays((isCheckedBoardObjectsArrays) => ({
+                              ...isCheckedBoardObjectsArrays,
+                              [boardObjectsArray.id]: checked,
+                            }))
+                          }
+                        />
+                      </Box>
+                    ))
+                  ) : (
+                    <Text margin="small" size="xsmall" color="grey">
+                      (Empty... Add Board Objects Arrays)
+                    </Text>
+                  )}
+                </Box>
+              </FormField>
+            )}
           </Box>
           <Button primary type="submit" label="Add Game" />
         </Box>

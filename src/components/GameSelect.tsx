@@ -38,7 +38,11 @@ const GameSelect: React.FunctionComponent<{
             dispatch(
               addLayer(
                 `${game.name} Game Preview:`,
-                `Rule Array:\n${ruleArray}\n\nBoard Objects:\n${stringifiedBoardObjectsArrays}`,
+                `Rule Array:\n${ruleArray}\n\nBoard Objects:\n${
+                  game.useRandomBoardObjects
+                    ? `Using ${game.numRandomBoardObjects} random board objects...`
+                    : stringifiedBoardObjectsArrays
+                }`,
                 [
                   {
                     key: 'close',
