@@ -65,12 +65,20 @@ const reducer = (state: State = initialState, action: RootAction): State => {
     }
 
     case getType(loadGames.success): {
+      const allIdsSet = new Set(state.allIds);
+
       return {
         ...state,
         byId: {
           ...state.byId,
           ...action.payload.boardObjectsArrays,
         },
+        allIds: [
+          ...state.allIds,
+          ...Object.values(action.payload.boardObjectsArrays)
+            .filter((boardObjectsArray) => !allIdsSet.has(boardObjectsArray.id))
+            .map((boardObjectsArray) => boardObjectsArray.id),
+        ],
       };
     }
 
