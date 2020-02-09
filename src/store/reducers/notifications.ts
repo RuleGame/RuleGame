@@ -23,7 +23,6 @@ const reducer = (state: State = initialState, action: RootAction): State => {
           [action.payload.id]: {
             id: action.payload.id,
             title: action.payload.title,
-            actionButtons: action.payload.actionButtons,
           },
         },
         ids: [...state.ids, action.payload.id],

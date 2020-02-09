@@ -7,7 +7,6 @@ import { RootEpic } from '../../@types/epic';
 import { parseRuleArray } from '../../utils/atom-parser';
 import { addLayer, removeLayer } from '../actions/layers';
 import { addNotification } from '../actions/notifications';
-import { idHelper } from '../../utils/id-helper';
 
 const addRuleArrayRequestEpic: RootEpic = (action$) =>
   action$.pipe(
@@ -29,21 +28,7 @@ const addRuleArrayRequestEpic: RootEpic = (action$) =>
 const addRuleArraySuccessEpic: RootEpic = (action$) =>
   action$.pipe(
     filter(isActionOf(addRuleArray.success)),
-    map((action) =>
-      idHelper((id) =>
-        addNotification(
-          `Added new rule array: ${action.payload.name}`,
-          [
-            {
-              key: 'close',
-              action: removeLayer(id),
-              label: 'Close',
-            },
-          ],
-          id,
-        ),
-      ),
-    ),
+    map((action) => addNotification(`Added new rule array: ${action.payload.name}`)),
   );
 
 const addRuleArrayFailureEpic: RootEpic = (action$) =>

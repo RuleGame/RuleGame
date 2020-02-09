@@ -14,7 +14,6 @@ import {
 import { addLayer, removeLayer } from '../actions/layers';
 import { loadRuleArray } from '../actions/rule-row';
 import randomObjectsCreator from './__helpers__/objects-creator';
-import { idHelper } from '../../utils/id-helper';
 import { addNotification } from '../actions/notifications';
 
 // TODO: Dispatch addRuleArray and addBoardObjectsArrays requests to use their Epics instead
@@ -126,21 +125,7 @@ const enterGameEpic: RootEpic = (action$, state$) =>
 const addGameEpic: RootEpic = (action$) =>
   action$.pipe(
     filter(isActionOf(addGame)),
-    map((action) =>
-      idHelper((id) =>
-        addNotification(
-          `Added game: ${action.payload.name}`,
-          [
-            {
-              key: 'close',
-              action: removeLayer(id),
-              label: 'Close',
-            },
-          ],
-          id,
-        ),
-      ),
-    ),
+    map((action) => addNotification(`Added game: ${action.payload.name}`)),
   );
 
 export default combineEpics(loadGamesEpic, enterGameEpic, addGameEpic);

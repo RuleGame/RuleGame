@@ -6,7 +6,6 @@ import { RootEpic } from '../../@types/epic';
 import { addLayer, removeLayer } from '../actions/layers';
 import { addBoardObjectsArray } from '../actions/board-objects-arrays';
 import { addNotification } from '../actions/notifications';
-import { idHelper } from '../../utils/id-helper';
 
 const addBoardObjectsArrayRequestEpic: RootEpic = (action$) =>
   action$.pipe(
@@ -28,21 +27,7 @@ const addBoardObjectsArrayRequestEpic: RootEpic = (action$) =>
 const addBoardObjectArraysSuccessEpic: RootEpic = (action$) =>
   action$.pipe(
     filter(isActionOf(addBoardObjectsArray.success)),
-    map((action) => {
-      return idHelper((id) =>
-        addNotification(
-          `Added new board objects array: ${action.payload.name}`,
-          [
-            {
-              key: 'close',
-              action: removeLayer(id),
-              label: 'Close',
-            },
-          ],
-          id,
-        ),
-      );
-    }),
+    map((action) => addNotification(`Added new board objects array: ${action.payload.name}`)),
   );
 
 const addBoardObjectArraysFailureEpic: RootEpic = (action$) =>
