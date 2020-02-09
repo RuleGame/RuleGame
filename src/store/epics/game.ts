@@ -1,41 +1,47 @@
-// import { Epic, combineEpics } from 'redux-observable';
-// import { filter, map, withLatestFrom } from 'rxjs/operators';
-// import { isActionOf } from 'typesafe-actions';
-// import { blueSquareAnyBucket, nearestBucket } from '../../components/__helpers__/rule-set-mappers';
-// import { RootAction } from '../actions';
-// import { initBoard, move, setRule } from '../actions/game';
-// import { RootState } from '../reducers';
-// import { allCheckedSelector, ruleSelector } from '../selectors';
-//
-// const initBoardEpic: Epic<RootAction, RootAction, RootState> = (action$, state$) =>
-//   action$.pipe(
-//     filter(isActionOf(move)),
-//     withLatestFrom(state$),
-//     filter(([, state]) => allCheckedSelector(state)),
-//     map(([, state]) => {
-//       const rule = ruleSelector(state);
-//
-//       return initBoard(
-//         // TODO: Don't use hardcoded conditional checking
-//         rule === 'clockwise' ? blueSquareAnyBucket : nearestBucket,
-//       );
-//     }),
-//   );
-//
-// const setRuleEpic: Epic<RootAction, RootAction, RootState> = (action$, state$) =>
-//   action$.pipe(
-//     filter(isActionOf(setRule)),
-//     withLatestFrom(state$),
-//     map(([action]) => {
-//       switch (action.payload.rule) {
-//         case 'clockwise':
-//           return initBoard(blueSquareAnyBucket);
-//         case 'nearest':
-//           return initBoard(nearestBucket);
-//         // no default
-//       }
-//     }),
-//   );
-//
-// export default combineEpics(initBoardEpic, setRuleEpic);
-export default () => {};
+import { isActionOf } from 'typesafe-actions';
+import { filter, switchMap } from 'rxjs/operators';
+import { combineEpics } from 'redux-observable';
+import { RootEpic } from '../../@types/epic';
+import { nextBoardObjectsArray, setBoardObjectsArray } from '../actions/game';
+import {
+  boardObjectsArraysByIdSelector,
+  currBoardObjectsArrayIndexSelector,
+  currGameIdSelector,
+  gamesByIdSelector,
+  ruleArraysByIdSelector,
+} from '../selectors';
+import { loadRuleArray } from '../actions/rule-row';
+import randomObjectsCreator from './__helpers__/objects-creator';
+import { goToPage } from '../actions/page';
+
+const nextBoardArrayObjectsEpic: RootEpic = (action$, state$) =>
+  action$.pipe(
+    filter(isActionOf(nextBoardObjectsArray)),
+    switchMap(() => {
+      const game = gamesByIdSelector(state$.value)[currGameIdSelector(state$.value) as string];
+      const ruleArray = ruleArraysByIdSelector(state$.value)[game.ruleArray as string];
+
+      if (game.useRandomBoardObjects) {
+        return [
+          loadRuleArray(
+            randomObjectsCreator(game.numRandomBoardObjects),
+            ruleArray.value,
+            ruleArray.stringified,
+          ),
+          goToPage('RuleGame'),
+        ];
+      }
+
+      const currIndex = currBoardObjectsArrayIndexSelector(state$.value) as number;
+      return [
+        setBoardObjectsArray((currIndex + 1) % game.boardObjectsArrays.length),
+        loadRuleArray(
+          boardObjectsArraysByIdSelector(state$.value)[game.boardObjectsArrays[currIndex]].value,
+          ruleArray.value,
+          ruleArray.stringified,
+        ),
+        goToPage('RuleGame'),
+      ];
+    }),
+  );
+export default combineEpics(nextBoardArrayObjectsEpic);

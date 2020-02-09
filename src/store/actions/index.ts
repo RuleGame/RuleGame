@@ -9,6 +9,7 @@ import * as ruleArrays from './rule-arrays';
 import * as boardObjectsArrays from './board-objects-arrays';
 import * as games from './games';
 import * as notifications from './notifications';
+import * as game from './game';
 /* eslint-enable import/no-cycle */
 
 export const actions = {
@@ -19,6 +20,7 @@ export const actions = {
   boardObjectsArrays,
   games,
   notifications,
+  game,
 };
 
 export type RootAction = ActionType<typeof actions>;

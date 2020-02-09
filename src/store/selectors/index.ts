@@ -185,3 +185,8 @@ export const notificationsSelector = createSelector(
   [notificationsByIdSelector, notificationsIdsSelector],
   (notificationsById, notificationsIds) => notificationsIds.map((id) => notificationsById[id]),
 );
+
+export const currGameIdSelector = (state: RootState) => state.game.currGameId;
+
+export const currBoardObjectsArrayIndexSelector = (state: RootState) =>
+  state.game.currBoardObjectsArrayIndex;

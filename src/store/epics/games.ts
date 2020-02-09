@@ -15,6 +15,7 @@ import { addLayer, removeLayer } from '../actions/layers';
 import { loadRuleArray } from '../actions/rule-row';
 import randomObjectsCreator from './__helpers__/objects-creator';
 import { addNotification } from '../actions/notifications';
+import { setBoardObjectsArray, setGameId } from '../actions/game';
 
 // TODO: Dispatch addRuleArray and addBoardObjectsArrays requests to use their Epics instead
 const loadGamesEpic: RootEpic = (action$) =>
@@ -87,6 +88,7 @@ const enterGameEpic: RootEpic = (action$, state$) =>
 
       if (game.useRandomBoardObjects) {
         return [
+          setGameId(id),
           loadRuleArray(
             randomObjectsCreator(game.numRandomBoardObjects),
             ruleArray.value,
@@ -116,6 +118,8 @@ const enterGameEpic: RootEpic = (action$, state$) =>
         game.boardObjectsArrays[0]
       ];
       return [
+        setGameId(id),
+        setBoardObjectsArray(0),
         loadRuleArray(boardObjectsArray.value, ruleArray.value, ruleArray.stringified),
         goToPage('RuleGame'),
       ];

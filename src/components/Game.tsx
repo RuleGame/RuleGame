@@ -20,6 +20,7 @@ import {
 } from '../store/selectors';
 import { RootAction } from '../store/actions';
 import { goToPage } from '../store/actions/page';
+import { nextBoardObjectsArray } from '../store/actions/game';
 
 const StyledGame = styled('div')<{}>`
   display: flex;
@@ -81,7 +82,6 @@ const Game = ({ className }: GameProps): JSX.Element => {
   const ruleRowIndex = useSelector(ruleRowIndexSelector);
   const rawAtoms = useSelector(rawAtomsSelector);
   const gameCompleted = useSelector(gameCompletedSelector);
-  const handleFinishedClick = useCallback(() => dispatch(goToPage('Entrance')), [dispatch]);
 
   return (
     <>
@@ -121,7 +121,8 @@ const Game = ({ className }: GameProps): JSX.Element => {
         <div>
           No more moves left!
           <br />
-          <Button label="Finish" onClick={handleFinishedClick} />
+          <Button label="Finish" onClick={() => dispatch(goToPage('Entrance'))} />
+          <Button label="New Display" onClick={() => dispatch(nextBoardObjectsArray())} />
         </div>
       )}
     </>

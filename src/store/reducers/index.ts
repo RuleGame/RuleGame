@@ -7,6 +7,7 @@ import ruleArrays from './rule-arrays';
 import boardObjectArrays from './board-objects-arrays';
 import games from './games';
 import notifications from './notifications';
+import game from './game';
 
 export const createRootReducer = () =>
   combineReducers({
@@ -17,6 +18,7 @@ export const createRootReducer = () =>
     boardObjectArrays,
     games,
     notifications,
+    game,
   });
 
 export default createRootReducer;
