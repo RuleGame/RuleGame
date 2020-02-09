@@ -21,6 +21,7 @@ import {
 import { RootAction } from '../store/actions';
 import { goToPage } from '../store/actions/page';
 import { nextBoardObjectsArray } from '../store/actions/game';
+import GuessRuleForm from './GuessRuleForm';
 
 const StyledGame = styled('div')<{}>`
   display: flex;
@@ -123,6 +124,7 @@ const Game = ({ className }: GameProps): JSX.Element => {
           <br />
           <Button label="Finish" onClick={() => dispatch(goToPage('Entrance'))} />
           <Button label="New Display" onClick={() => dispatch(nextBoardObjectsArray())} />
+          <GuessRuleForm />
         </div>
       )}
     </>
