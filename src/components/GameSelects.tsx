@@ -10,7 +10,7 @@ const GameSelects: React.FunctionComponent<{
   games: Game[];
 }> = ({ showEditButtons, games, onDeleteAll }) => {
   return (
-    <Box align="center" gap="small">
+    <Box align="center" gap="medium">
       {games.map((game) => (
         <GameSelect key={game.id} game={game} showEditButtons={showEditButtons} />
       ))}

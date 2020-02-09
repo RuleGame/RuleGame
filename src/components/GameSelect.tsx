@@ -30,7 +30,7 @@ const GameSelect: React.FunctionComponent<{
   );
 
   return (
-    <Box direction="row" key={game.id} gap="small" align="center">
+    <Box direction="row" key={game.id} align="center">
       {showEditButtons && (
         <Button
           icon={<View />}
