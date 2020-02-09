@@ -2,7 +2,7 @@ import { combineEpics } from 'redux-observable';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { isActionOf } from 'typesafe-actions';
 import { RootEpic } from '../../@types/epic';
-import { enterGame, loadGames } from '../actions/games';
+import { addGame, enterGame, loadGames } from '../actions/games';
 import { BoardObjectType, ExportedFile, RuleArray } from '../../@types';
 import { parseRuleArray } from '../../utils/atom-parser';
 import { goToPage } from '../actions/page';
@@ -14,6 +14,8 @@ import {
 import { addLayer, removeLayer } from '../actions/layers';
 import { loadRuleArray } from '../actions/rule-row';
 import randomObjectsCreator from './__helpers__/objects-creator';
+import { idHelper } from '../../utils/id-helper';
+import { addNotification } from '../actions/notifications';
 
 // TODO: Dispatch addRuleArray and addBoardObjectsArrays requests to use their Epics instead
 const loadGamesEpic: RootEpic = (action$) =>
@@ -121,4 +123,24 @@ const enterGameEpic: RootEpic = (action$, state$) =>
     }),
   );
 
-export default combineEpics(loadGamesEpic, enterGameEpic);
+const addGameEpic: RootEpic = (action$) =>
+  action$.pipe(
+    filter(isActionOf(addGame)),
+    map((action) =>
+      idHelper((id) =>
+        addNotification(
+          `Added game: ${action.payload.name}`,
+          [
+            {
+              key: 'close',
+              action: removeLayer(id),
+              label: 'Close',
+            },
+          ],
+          id,
+        ),
+      ),
+    ),
+  );
+
+export default combineEpics(loadGamesEpic, enterGameEpic, addGameEpic);

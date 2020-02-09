@@ -6,6 +6,8 @@ import { addRuleArray } from '../actions/rule-arrays';
 import { RootEpic } from '../../@types/epic';
 import { parseRuleArray } from '../../utils/atom-parser';
 import { addLayer, removeLayer } from '../actions/layers';
+import { addNotification } from '../actions/notifications';
+import { idHelper } from '../../utils/id-helper';
 
 const addRuleArrayRequestEpic: RootEpic = (action$) =>
   action$.pipe(
@@ -24,6 +26,26 @@ const addRuleArrayRequestEpic: RootEpic = (action$) =>
     }),
   );
 
+const addRuleArraySuccessEpic: RootEpic = (action$) =>
+  action$.pipe(
+    filter(isActionOf(addRuleArray.success)),
+    map((action) =>
+      idHelper((id) =>
+        addNotification(
+          `Added new rule array: ${action.payload.name}`,
+          [
+            {
+              key: 'close',
+              action: removeLayer(id),
+              label: 'Close',
+            },
+          ],
+          id,
+        ),
+      ),
+    ),
+  );
+
 const addRuleArrayFailureEpic: RootEpic = (action$) =>
   action$.pipe(
     filter(isActionOf(addRuleArray.failure)),
@@ -39,4 +61,8 @@ const addRuleArrayFailureEpic: RootEpic = (action$) =>
     }),
   );
 
-export default combineEpics(addRuleArrayRequestEpic, addRuleArrayFailureEpic);
+export default combineEpics(
+  addRuleArrayRequestEpic,
+  addRuleArrayFailureEpic,
+  addRuleArraySuccessEpic,
+);
