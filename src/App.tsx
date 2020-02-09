@@ -6,10 +6,11 @@ import { Dispatch } from 'redux';
 
 import EntrancePage from './pages/EntrancePage';
 import RuleGamePage from './pages/RuleGamePage';
-import { layersSelector, pageSelector } from './store/selectors';
+import { layersSelector, notificationsSelector, pageSelector } from './store/selectors';
 import Layers from './components/Layers';
 import { removeLayer } from './store/actions/layers';
 import { RootAction } from './store/actions';
+import Notifications from './components/Notifications';
 
 const StyledApp = styled.div<{}>``;
 
@@ -20,11 +21,13 @@ const App = () => {
     dispatch,
   ]);
   const layers = useSelector(layersSelector);
+  const notifications = useSelector(notificationsSelector);
 
   return (
     <Grommet full plain>
       <StyledApp>{page === 'Entrance' ? <EntrancePage /> : <RuleGamePage />}</StyledApp>
       <Layers onLayerClose={handleCloseLayer} layers={layers} />
+      <Notifications notifications={notifications} />
     </Grommet>
   );
 };

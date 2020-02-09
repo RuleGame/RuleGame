@@ -69,8 +69,3 @@ export const setGameBoardObjectsArrays = createAction(
 export const enterGame = createAction('games/ENTER_GAME', (id: string) => ({ id }))();
 
 export const removeGame = createAction('games/REMOVE_GAME', (id: string) => ({ id }))();
-
-// export const addGameBoardObjectsArrays = createAction(
-//   'games/ADD_GAME_BOARD_OBJECTS_ARRAYS',
-//   (id: string, boardObjectsArrays: string[]) => ({ id, boardObjectsArrays }),
-// );

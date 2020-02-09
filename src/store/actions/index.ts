@@ -8,6 +8,7 @@ import * as layers from './layers';
 import * as ruleArrays from './rule-arrays';
 import * as boardObjectsArrays from './board-objects-arrays';
 import * as games from './games';
+import * as notifications from './notifications';
 /* eslint-enable import/no-cycle */
 
 export const actions = {
@@ -17,6 +18,7 @@ export const actions = {
   ruleArrays,
   boardObjectsArrays,
   games,
+  notifications,
 };
 
 export type RootAction = ActionType<typeof actions>;

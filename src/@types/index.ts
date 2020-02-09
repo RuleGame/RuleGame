@@ -29,6 +29,7 @@ export type BucketType = { pos: BucketPosition; x: number; y: number; id: string
 
 export type DropAttempt = { dragged: string; dropped: BucketPosition };
 
+// TODO: Convert to enum
 export type Page = 'RuleGame' | 'Entrance';
 
 export enum Color {
@@ -77,7 +78,14 @@ export type RuleRow = Atom[];
 
 export type RuleArray = RuleRow[];
 
-export type Game = { id: string; name: string; ruleArray?: string; boardObjectsArrays: string[] };
+export type Game = {
+  id: string;
+  name: string;
+  ruleArray?: string;
+  boardObjectsArrays: string[];
+  useRandomBoardObjects: boolean;
+  numRandomBoardObjects: number;
+};
 
 export type ExportedFile = {
   id: string;
