@@ -3,6 +3,7 @@ import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { Dispatch } from 'redux';
+import { hot } from 'react-hot-loader/root';
 
 import EntrancePage from './pages/EntrancePage';
 import RuleGamePage from './pages/RuleGamePage';
@@ -32,4 +33,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default hot(App);
