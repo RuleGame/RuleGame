@@ -1,7 +1,6 @@
 import { getType } from 'typesafe-actions';
 import { RootAction } from '../actions';
-import { removeLayer } from '../actions/layers';
-import { addNotification } from '../actions/notifications';
+import { addNotification, removeNotification } from '../actions/notifications';
 import { NotificationData } from '../../@types/notifications';
 
 export type State = {
@@ -30,7 +29,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         ids: [...state.ids, action.payload.id],
       };
 
-    case getType(removeLayer): {
+    case getType(removeNotification): {
       const { [action.payload.id]: _, ...newLayersById } = state.byId;
 
       return {
