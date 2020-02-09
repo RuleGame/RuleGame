@@ -124,6 +124,7 @@ const Game = ({ className }: GameProps): JSX.Element => {
           <br />
           <Button label="Finish" onClick={() => dispatch(goToPage('Entrance'))} />
           <Button label="New Display" onClick={() => dispatch(nextBoardObjectsArray())} />
+          <Button label="Try a new rule" onClick={() => dispatch(goToPage('Entrance'))} />
           <GuessRuleForm />
         </div>
       )}
