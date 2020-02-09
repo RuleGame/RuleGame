@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import { Dispatch } from 'redux';
 import { hot } from 'react-hot-loader/root';
 
+import { DndProvider } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 import EntrancePage from './pages/EntrancePage';
 import RuleGamePage from './pages/RuleGamePage';
 import { layersSelector, pageSelector } from './store/selectors';
@@ -24,11 +26,13 @@ const App = () => {
   const layers = useSelector(layersSelector);
 
   return (
-    <Grommet full plain>
-      <StyledApp>{page === 'Entrance' ? <EntrancePage /> : <RuleGamePage />}</StyledApp>
-      <Layers onLayerClose={handleCloseLayer} layers={layers} />
-      <Notifications />
-    </Grommet>
+    <DndProvider backend={HTML5Backend}>
+      <Grommet full plain>
+        <StyledApp>{page === 'Entrance' ? <EntrancePage /> : <RuleGamePage />}</StyledApp>
+        <Layers onLayerClose={handleCloseLayer} layers={layers} />
+        <Notifications />
+      </Grommet>
+    </DndProvider>
   );
 };
 
