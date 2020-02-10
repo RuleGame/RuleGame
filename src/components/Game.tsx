@@ -118,6 +118,7 @@ const Game = ({ className }: GameProps): JSX.Element => {
           </StyledLog>
         )}
       </StyledGame>
+      <Button label="Give up" onClick={() => dispatch(goToPage('Entrance'))} />
       {gameCompleted && (
         <div>
           No more moves left!
