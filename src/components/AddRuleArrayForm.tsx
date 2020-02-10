@@ -8,17 +8,18 @@ import { addRuleArray } from '../store/actions/rule-arrays';
 const AddRuleArrayForm: React.FunctionComponent = () => {
   const [name, setName] = useState('');
   const [ruleArray, setRuleArray] = useState('');
+  const [order, setOrder] = useState('');
   const dispatch: Dispatch<RootAction> = useDispatch();
 
   return (
     <Box elevation="large" align="center" pad="medium">
       <Heading level="2">Add a New Rule Array</Heading>
       <Form
-        onSubmit={useCallback(() => dispatch(addRuleArray.request(name, ruleArray)), [
-          dispatch,
-          name,
-          ruleArray,
-        ])}
+        onSubmit={() =>
+          dispatch(
+            addRuleArray.request(name, ruleArray, order.trim().length > 0 ? order : undefined),
+          )
+        }
       >
         <Box align="center">
           <Box align="start">
@@ -28,6 +29,9 @@ const AddRuleArrayForm: React.FunctionComponent = () => {
                 onChange={useCallback((e) => setName(e.target.value), [])}
                 value={name}
               />
+            </FormField>
+            <FormField label="Order">
+              <TextInput value={order} onChange={({ target: { value } }) => setOrder(value)} />
             </FormField>
             <FormField label="New Rule Array">
               <TextArea

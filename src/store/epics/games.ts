@@ -93,6 +93,7 @@ const enterGameEpic: RootEpic = (action$, state$) =>
             randomObjectsCreator(game.numRandomBoardObjects),
             ruleArray.value,
             ruleArray.stringified,
+            ruleArray.order,
           ),
           goToPage('RuleGame'),
         ];
@@ -120,7 +121,12 @@ const enterGameEpic: RootEpic = (action$, state$) =>
       return [
         setGameId(id),
         setBoardObjectsArray(0),
-        loadRuleArray(boardObjectsArray.value, ruleArray.value, ruleArray.stringified),
+        loadRuleArray(
+          boardObjectsArray.value,
+          ruleArray.value,
+          ruleArray.stringified,
+          ruleArray.order,
+        ),
         goToPage('RuleGame'),
       ];
     }),

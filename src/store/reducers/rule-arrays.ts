@@ -11,7 +11,15 @@ import { PersistKeys, PersistVersions } from './__helpers__/PersistConstants';
 import { parseRuleArray } from '../../utils/atom-parser';
 
 export type State = {
-  byId: { [id: string]: { id: string; name: string; stringified: string; value: RuleArray } };
+  byId: {
+    [id: string]: {
+      id: string;
+      name: string;
+      stringified: string;
+      value: RuleArray;
+      order?: number[];
+    };
+  };
   allIds: string[];
   isRequesting: boolean;
 };
@@ -40,6 +48,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
             value: action.payload.ruleArray,
             stringified: action.payload.stringified,
             name: action.payload.name,
+            order: action.payload.order,
           },
         },
         allIds: [...state.allIds, action.payload.id],

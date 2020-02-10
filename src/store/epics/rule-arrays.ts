@@ -18,6 +18,7 @@ const addRuleArrayRequestEpic: RootEpic = (action$) =>
           action.payload.name,
           parseRuleArray(action.payload.rawRuleArray),
           action.payload.rawRuleArray,
+          action.payload.rawOrder ? (JSON.parse(action.payload.rawOrder) as number[]) : undefined,
         );
       } catch (error) {
         return addRuleArray.failure(error);

@@ -82,7 +82,9 @@ const AddGameForm: React.FunctionComponent = () => {
                             dispatch(
                               addLayer(
                                 `${ruleArray.name} Rule Array Preview:`,
-                                ruleArray.stringified,
+                                `${ruleArray.stringified}\n${
+                                  ruleArray.order ? `Order: ${JSON.stringify(ruleArray.order)}` : ''
+                                }`,
                                 [
                                   {
                                     key: 'close',

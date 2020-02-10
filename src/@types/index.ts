@@ -91,7 +91,7 @@ export type ExportedFile = {
   id: string;
   version: string;
   games: { [id: string]: Game };
-  ruleArrays: { [id: string]: { id: string; name: string; stringified: string } };
+  ruleArrays: { [id: string]: { id: string; name: string; stringified: string; order?: number[] } };
   boardObjectsArrays: {
     [id: string]: { id: string; name: string; value: BoardObjectType[] };
   };

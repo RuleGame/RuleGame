@@ -27,6 +27,7 @@ const nextBoardArrayObjectsEpic: RootEpic = (action$, state$) =>
             randomObjectsCreator(game.numRandomBoardObjects),
             ruleArray.value,
             ruleArray.stringified,
+            ruleArray.order,
           ),
           goToPage('RuleGame'),
         ];
@@ -39,6 +40,7 @@ const nextBoardArrayObjectsEpic: RootEpic = (action$, state$) =>
           boardObjectsArraysByIdSelector(state$.value)[game.boardObjectsArrays[currIndex]].value,
           ruleArray.value,
           ruleArray.stringified,
+          ruleArray.order,
         ),
         goToPage('RuleGame'),
       ];

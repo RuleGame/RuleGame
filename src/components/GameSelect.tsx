@@ -15,9 +15,10 @@ const GameSelect: React.FunctionComponent<{
   game: Game;
 }> = ({ showEditButtons, game }) => {
   const dispatch: Dispatch<RootAction> = useDispatch();
-  const ruleArray = useSelector<RootState, string | undefined>(
-    (state) => game.ruleArray && ruleArraysByIdSelector(state)[game.ruleArray].stringified,
-  );
+  const ruleArray = useSelector<
+    RootState,
+    undefined | { id: string; name: string; stringified: string; order?: number[] }
+  >((state) => (game.ruleArray ? ruleArraysByIdSelector(state)[game.ruleArray] : undefined));
   const boardObjectsArraysById = useSelector(boardObjectsArraysByIdSelector);
 
   const stringifiedBoardObjectsArrays = useMemo(
@@ -38,7 +39,9 @@ const GameSelect: React.FunctionComponent<{
             dispatch(
               addLayer(
                 `${game.name} Game Preview:`,
-                `Rule Array:\n${ruleArray}\n\nBoard Objects:\n${
+                `Rule Array:\n${ruleArray?.stringified}\n${
+                  ruleArray?.order ? `Order: ${JSON.stringify(ruleArray.order)}` : ''
+                }\n\nBoard Objects:\n${
                   game.useRandomBoardObjects
                     ? `Using ${game.numRandomBoardObjects} random board objects...`
                     : stringifiedBoardObjectsArrays

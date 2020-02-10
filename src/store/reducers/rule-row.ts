@@ -20,7 +20,7 @@ import {
   setRuleRowIndex,
   touch,
 } from '../actions/rule-row';
-import atomMatch from '../../utils/atom-match';
+import atomMatch, { xYToPosition } from '../../utils/atom-match';
 
 export type State = {
   atomCounts: { [atomId: string]: number };
@@ -47,6 +47,7 @@ export type State = {
   gameCompleted: boolean;
   parsingRuleArray: boolean;
   error?: Error;
+  order?: number[];
 };
 
 export const initialState: State = {
@@ -67,6 +68,7 @@ export const initialState: State = {
   gameCompleted: false,
   parsingRuleArray: false,
   error: undefined,
+  order: [],
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -97,6 +99,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         gameCompleted: false,
         parsingRuleArray: false,
         rawRuleArrayString: action.payload.rawRuleArrayString,
+        order: action.payload.order,
       };
     }
 
@@ -105,46 +108,83 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       // 1. If no possible moves, advance to next rule row or end game.
       // (An epic must detect this and continue to the next rule row then)
       // 2. Hover thingy if possible to drop.
+      const preOrderBoardObjectsToBucketsToAtoms = Object.values(state.boardObjectsById)
+        .filter((boardObject) => boardObject.shape !== Shape.CHECK)
+        .reduce<{ [boardObjectId: string]: { [bucket: number]: Set<string> } }>(
+          (acc, boardObject) => ({
+            ...acc,
+            [boardObject.id]: {
+              ...Object.values(state.atomsByRowIndex[action.payload.index])
+                .filter(atomMatch(boardObject, state.atomCounts))
+                .reduce<{ [bucket: number]: Set<string> }>(
+                  (acc, atom) => {
+                    atom.fns
+                      .map((fn) =>
+                        fn(boardObject.id, state.totalMoveHistory, state.initialBoardObjectsById),
+                      )
+                      .forEach((bucket) => {
+                        if (Number.isNaN(bucket)) {
+                          acc[BucketPosition.TR].add(atom.id);
+                          acc[BucketPosition.TL].add(atom.id);
+                          acc[BucketPosition.BR].add(atom.id);
+                          acc[BucketPosition.BL].add(atom.id);
+                        } else if (!Number.isNaN(bucket)) {
+                          acc[bucket].add(atom.id);
+                        }
+                      });
+                    return acc;
+                  },
+                  {
+                    [BucketPosition.TR]: new Set<string>(),
+                    [BucketPosition.TL]: new Set<string>(),
+                    [BucketPosition.BR]: new Set<string>(),
+                    [BucketPosition.BL]: new Set<string>(),
+                  },
+                ),
+            },
+          }),
+          {},
+        );
+
+      let boardObjectsToBucketsToAtoms = preOrderBoardObjectsToBucketsToAtoms;
+      if (state.order) {
+        const boardObjectsIdsByPosition: {
+          [position: number]: string[];
+        } = Object.entries(preOrderBoardObjectsToBucketsToAtoms).reduce<{
+          [position: number]: string[];
+        }>((acc, [boardObjectId, bucketsToAtoms]) => {
+          if (Object.values(bucketsToAtoms).some((atoms) => atoms.size > 0)) {
+            const pos = xYToPosition(
+              state.initialBoardObjectsById[boardObjectId].x,
+              state.initialBoardObjectsById[boardObjectId].y,
+            );
+
+            if (!(pos in acc)) {
+              acc[pos] = [];
+            }
+
+            acc[pos].push(boardObjectId);
+          }
+          return acc;
+        }, {});
+
+        const highestPos = state.order.find((pos) => pos in boardObjectsIdsByPosition);
+        if (highestPos) {
+          const validBoardObjects = boardObjectsIdsByPosition[highestPos];
+          boardObjectsToBucketsToAtoms = validBoardObjects.reduce(
+            (acc, validBoardObject) => ({
+              ...acc,
+              [validBoardObject]: preOrderBoardObjectsToBucketsToAtoms[validBoardObject],
+            }),
+            {},
+          );
+        }
+      }
+
       return {
         ...state,
         ruleRowIndex: action.payload.index,
-        boardObjectsToBucketsToAtoms: Object.values(state.boardObjectsById)
-          .filter((boardObject) => boardObject.shape !== Shape.CHECK)
-          .reduce(
-            (acc, boardObject) => ({
-              ...acc,
-              [boardObject.id]: {
-                ...Object.values(state.atomsByRowIndex[action.payload.index])
-                  .filter(atomMatch(boardObject, state.atomCounts))
-                  .reduce<{ [bucket: number]: Set<string> }>(
-                    (acc, atom) => {
-                      atom.fns
-                        .map((fn) =>
-                          fn(boardObject.id, state.totalMoveHistory, state.initialBoardObjectsById),
-                        )
-                        .forEach((bucket) => {
-                          if (Number.isNaN(bucket)) {
-                            acc[BucketPosition.TR].add(atom.id);
-                            acc[BucketPosition.TL].add(atom.id);
-                            acc[BucketPosition.BR].add(atom.id);
-                            acc[BucketPosition.BL].add(atom.id);
-                          } else if (!Number.isNaN(bucket)) {
-                            acc[bucket].add(atom.id);
-                          }
-                        });
-                      return acc;
-                    },
-                    {
-                      [BucketPosition.TR]: new Set<string>(),
-                      [BucketPosition.TL]: new Set<string>(),
-                      [BucketPosition.BR]: new Set<string>(),
-                      [BucketPosition.BL]: new Set<string>(),
-                    },
-                  ),
-              },
-            }),
-            {},
-          ),
+        boardObjectsToBucketsToAtoms,
       };
     }
 
