@@ -1,7 +1,6 @@
 import { Grommet } from 'grommet';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
 import { Dispatch } from 'redux';
 import { hot } from 'react-hot-loader/root';
 
@@ -15,8 +14,6 @@ import { removeLayer } from './store/actions/layers';
 import { RootAction } from './store/actions';
 import Notifications from './components/Notifications';
 
-const StyledApp = styled.div<{}>``;
-
 const App = () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
   const page = useSelector(pageSelector);
@@ -28,7 +25,7 @@ const App = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <Grommet full plain>
-        <StyledApp>{page === 'Entrance' ? <EntrancePage /> : <RuleGamePage />}</StyledApp>
+        {page === 'Entrance' ? <EntrancePage /> : <RuleGamePage />}
         <Layers onLayerClose={handleCloseLayer} layers={layers} />
         <Notifications />
       </Grommet>

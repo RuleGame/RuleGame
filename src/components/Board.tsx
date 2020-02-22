@@ -7,8 +7,15 @@ import Bucket from './Bucket';
 
 const StyledBoard = styled.div<{}>`
   display: grid;
-  grid-template-rows: repeat(${rows}, 1fr);
-  grid-template-columns: repeat(${cols}, 1fr);
+  grid-template-rows: repeat(${rows}, ${100 / rows}%);
+  grid-template-columns: repeat(${cols}, ${100 / cols}%);
+  height: 100%;
+  position: relative;
+  &:after {
+    content: '';
+    display: block;
+    padding-bottom: 100%;
+  }
 `;
 
 const StyledBoardObject = styled(BoardObject)<BoardObjectType>`
@@ -60,7 +67,6 @@ const Board = ({
           onClick={() => !disabledBucket && onBoardObjectClick(boardObject)}
         />
       ))}
-      {/* TODO: useCallback cannot be used in a callback (abstract the map return JSX) */}
       {buckets.map((bucket) => (
         <StyledBucket
           {...bucket}

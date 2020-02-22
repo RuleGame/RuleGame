@@ -61,6 +61,9 @@ const loadGamesEpic: RootEpic = (action$) =>
         return loadGames.failure(error, id);
       }
     }),
+    // switchMap((res) => {
+    //   return new Promise<any>((resolve) => setTimeout(() => resolve(res), 3000));
+    // }),
   );
 
 const enterGameEpic: RootEpic = (action$, state$) =>

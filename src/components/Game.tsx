@@ -13,6 +13,7 @@ import {
   disabledBucketSelector,
   gameCompletedSelector,
   historyDebugInfoSelector,
+  orderSelector,
   pausedSelector,
   rawAtomsSelector,
   ruleRowIndexSelector,
@@ -21,12 +22,14 @@ import { RootAction } from '../store/actions';
 import { goToPage } from '../store/actions/page';
 import { nextBoardObjectsArray } from '../store/actions/game';
 import GuessRuleForm from './GuessRuleForm';
+import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
 
 enum GridAreaName {
   DEBUG_TOGGLE = 'DEBUG_TOGGLE',
   HISTORY = 'HISTORY',
   RULE_ARRAY = 'RULE_ARRAY',
   BOARD = 'BOARD',
+  FORM = 'FORM',
 }
 
 const Game: React.FunctionComponent<{
@@ -44,12 +47,14 @@ const Game: React.FunctionComponent<{
   const ruleRowIndex = useSelector(ruleRowIndexSelector);
   const rawAtoms = useSelector(rawAtomsSelector);
   const gameCompleted = useSelector(gameCompletedSelector);
+  const order = useSelector(orderSelector);
 
   return (
-    <Box align="center">
+    <Box pad="small" fill data-cy={CY_GAME}>
       <Grid
-        rows={['auto', 'auto']}
-        columns={['auto', 'auto', 'auto']}
+        fill
+        rows={['auto', 'flex', 'auto']}
+        columns={['auto', 'flex', 'auto']}
         areas={[
           {
             name: GridAreaName.DEBUG_TOGGLE,
@@ -71,6 +76,11 @@ const Game: React.FunctionComponent<{
             start: [2, 1],
             end: [2, 1],
           },
+          {
+            name: GridAreaName.FORM,
+            start: [0, 2],
+            end: [2, 2],
+          },
         ]}
       >
         <Box gridArea={GridAreaName.DEBUG_TOGGLE} justify="center" direction="row">
@@ -88,6 +98,11 @@ const Game: React.FunctionComponent<{
         </Box>
         {debugModeEnabled && rawAtoms && (
           <Box gridArea={GridAreaName.RULE_ARRAY}>
+            {order && (
+              <Box width="small" overflow="auto" margin={{ bottom: 'small' }}>
+                <Text size="small">{JSON.stringify(order)}</Text>
+              </Box>
+            )}
             {rawAtoms.split('\n').map((rawAtom, i) => (
               <Box key={rawAtom} background={ruleRowIndex === i ? 'yellow' : 'none'}>
                 <Text size="small">{rawAtom}</Text>
@@ -95,7 +110,7 @@ const Game: React.FunctionComponent<{
             ))}
           </Box>
         )}
-        <Box gridArea={GridAreaName.BOARD}>
+        <Box gridArea={GridAreaName.BOARD} align="center">
           <Board
             className={className}
             onBoardObjectClick={(boardObject) => dispatch(touch(boardObject.id))}
@@ -119,19 +134,21 @@ const Game: React.FunctionComponent<{
             )}
           </Box>
         )}
+        <Box gridArea={GridAreaName.FORM} align="center">
+          {!gameCompleted && (
+            <Button label="Give up" onClick={() => dispatch(goToPage('Entrance'))} />
+          )}
+          {gameCompleted && (
+            <Box gap="medium">
+              <Text data-cy={CY_NO_MORE_MOVES}>No more moves left!</Text>
+              <Button label="Finish" onClick={() => dispatch(goToPage('Entrance'))} />
+              <Button label="New Display" onClick={() => dispatch(nextBoardObjectsArray())} />
+              <Button label="Try a new rule" onClick={() => dispatch(goToPage('Entrance'))} />
+              <GuessRuleForm />
+            </Box>
+          )}
+        </Box>
       </Grid>
-      <Box>
-        <Button label="Give up" onClick={() => dispatch(goToPage('Entrance'))} />
-        {gameCompleted && (
-          <Box gap="medium">
-            <Text>No more moves left!</Text>
-            <Button label="Finish" onClick={() => dispatch(goToPage('Entrance'))} />
-            <Button label="New Display" onClick={() => dispatch(nextBoardObjectsArray())} />
-            <Button label="Try a new rule" onClick={() => dispatch(goToPage('Entrance'))} />
-            <GuessRuleForm />
-          </Box>
-        )}
-      </Box>
     </Box>
   );
 };

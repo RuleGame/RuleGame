@@ -1,6 +1,10 @@
 import { AnyAction, applyMiddleware, compose, createStore, Middleware } from 'redux';
 import { createLogger } from 'redux-logger';
 import { createEpicMiddleware } from 'redux-observable';
+/* eslint-disable */
+// @ts-ignore
+import { createDynamicMiddlewares } from 'redux-dynamic-middlewares';
+/* eslint-enable */
 import { persistStore } from 'redux-persist';
 import { RootAction } from './actions';
 import { rootEpic } from './epics';
@@ -11,6 +15,8 @@ const DEV = process.env.NODE_ENV !== 'production';
 const epicMiddleware = createEpicMiddleware<RootAction, RootAction, RootState>();
 
 const middleware: Middleware[] = [epicMiddleware];
+
+const dynamicMiddlewaresInstance = createDynamicMiddlewares();
 
 if (!DEV) {
   if (window.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
@@ -23,6 +29,7 @@ if (!DEV) {
         !/^@@/.test(action.type),
       collapsed: true,
     }),
+    dynamicMiddlewaresInstance.enhancer,
   );
 }
 
@@ -39,6 +46,12 @@ const store = createStore<RootState, AnyAction, {}, undefined>(
 );
 
 const persistor = persistStore(store);
+
+if (window.Cypress && DEV) {
+  window.store = store;
+  window.dynamicMiddlewaresInstance = dynamicMiddlewaresInstance;
+}
+
 export default () => {
   epicMiddleware.run(rootEpic);
   return { store, persistor };

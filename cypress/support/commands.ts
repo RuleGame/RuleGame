@@ -1,3 +1,10 @@
+import { Store } from 'redux';
+import { SagaIterator, SagaMiddleware } from 'redux-saga';
+import { take as sagaTake } from 'redux-saga/effects';
+import { getType } from 'typesafe-actions';
+import { ActionCreator, ActionCreatorTypeMetadata } from 'typesafe-actions/dist/type-helpers';
+import { RootAction } from '../../src/store/actions';
+import { RootState } from '../../src/store/reducers';
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -24,7 +31,7 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
-export const reactDnd = (sourceSelector: string, targetSelector: string) => {
+const reactDnd = (sourceSelector: string, targetSelector: string) => {
   /* eslint-disable cypress/no-unnecessary-waiting */
   cy.wait(500);
   cy.get(sourceSelector).trigger('dragstart', { force: true });
@@ -36,19 +43,73 @@ export const reactDnd = (sourceSelector: string, targetSelector: string) => {
   /* eslint-enable cypress/no-unnecessary-waiting */
 };
 
+const take = (
+  putAction: RootAction,
+  sagaMiddleware: SagaMiddleware,
+  actionCreator: ActionCreator & ActionCreatorTypeMetadata<string>,
+  match?: Record<string, Partial<RootAction>>,
+) => {
+  cy.log(`${getType(actionCreator)}${match ? ` with ${JSON.stringify(match)}` : ''}`);
+  cy.wrap(
+    new Promise((resolve) => {
+      sagaMiddleware.run(function*(): SagaIterator {
+        cy.dispatch(putAction);
+        yield sagaTake(
+          (action: RootAction) =>
+            action.type === getType(actionCreator) &&
+            (!match ||
+              Object.entries(match).every(
+                ([key, value]) => (action as Record<string, Partial<RootAction>>)[key] === value,
+              )),
+        );
+        resolve();
+      });
+    }),
+  );
+};
+
+const dispatch = (action: RootAction) => {
+  cy.log('dispatch');
+  cy.window().then((win: Window) => {
+    const { dispatch } = win.store;
+    dispatch(action);
+  });
+};
+
+const addMiddleware = (middleware: SagaMiddleware) => {
+  cy.window().then((win: Window) => {
+    const { dynamicMiddlewaresInstance } = win;
+
+    dynamicMiddlewaresInstance.addMiddleware(middleware);
+  });
+};
+
 // False positive, TS will check for undefined errors here.
 // add new command to the existing Cypress interface
 /* eslint-disable no-undef */
 // @ts-ignore
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
+  // eslint-disable-next-line @typescript-eslint/no-namespace,no-redeclare
   namespace Cypress {
     // eslint-disable-next-line @typescript-eslint/interface-name-prefix
     interface Chainable {
       reactDnd: typeof reactDnd;
+      take: typeof take;
+      dispatch: typeof dispatch;
+      addMiddleware: typeof addMiddleware;
     }
+  }
+  interface Window {
+    store: Store<RootState, RootAction>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Cypress: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    dynamicMiddlewaresInstance: any;
   }
 }
 /* eslint-disable no-undef */
 
 Cypress.Commands.add('reactDnd', reactDnd);
+Cypress.Commands.add('take', take);
+Cypress.Commands.add('dispatch', dispatch);
+Cypress.Commands.add('addMiddleware', addMiddleware);

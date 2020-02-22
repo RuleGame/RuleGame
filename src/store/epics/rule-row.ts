@@ -15,11 +15,13 @@ import { noMoreMovesSelector } from '../selectors';
 import { RootEpic } from '../../@types/epic';
 import { goToPage } from '../actions/page';
 
+export const FEEDBACK_DURATION = 1000;
+
 const moveEpic: RootEpic = (action$, state$) =>
   action$.pipe(
     filter(isActionOf(move)),
     filter(() => state$.value.ruleRow.lastMoveSuccessful),
-    delay(1000),
+    delay(FEEDBACK_DURATION),
     switchMap(() => [
       removeBoardObject(
         state$.value.ruleRow.totalMoveHistory[state$.value.ruleRow.totalMoveHistory.length - 1]

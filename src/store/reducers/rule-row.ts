@@ -197,7 +197,9 @@ const reducer = (state: State = initialState, action: RootAction): State => {
     case getType(move): {
       const { dragged, dropped } = action.payload.dropAttempt;
 
-      const matchedAtoms = Array.from(state.boardObjectsToBucketsToAtoms[dragged][dropped]);
+      const matchedAtoms = Array.from(
+        state.boardObjectsToBucketsToAtoms?.[dragged]?.[dropped] ?? [],
+      );
 
       if (matchedAtoms.length === 0) {
         return {

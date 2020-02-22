@@ -190,3 +190,5 @@ export const currGameIdSelector = (state: RootState) => state.game.currGameId;
 
 export const currBoardObjectsArrayIndexSelector = (state: RootState) =>
   state.game.currBoardObjectsArrayIndex;
+
+export const orderSelector = (state: RootState) => state.ruleRow.order;
