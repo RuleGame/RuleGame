@@ -1,6 +1,6 @@
 import { Store } from 'redux';
 import { SagaIterator, SagaMiddleware } from 'redux-saga';
-import { take as sagaTake } from 'redux-saga/effects';
+import { take as sagaTake, delay, race } from 'redux-saga/effects';
 import { getType } from 'typesafe-actions';
 import { ActionCreator, ActionCreatorTypeMetadata } from 'typesafe-actions/dist/type-helpers';
 import { RootAction } from '../../src/store/actions';
@@ -48,21 +48,36 @@ const take = (
   sagaMiddleware: SagaMiddleware,
   actionCreator: ActionCreator & ActionCreatorTypeMetadata<string>,
   match?: Record<string, Partial<RootAction>>,
+  timeout: number = 4000,
 ) => {
   cy.log(`${getType(actionCreator)}${match ? ` with ${JSON.stringify(match)}` : ''}`);
   cy.wrap(
-    new Promise((resolve) => {
+    new Promise((resolve, reject) => {
       sagaMiddleware.run(function*(): SagaIterator {
         cy.dispatch(putAction);
-        yield sagaTake(
-          (action: RootAction) =>
-            action.type === getType(actionCreator) &&
-            (!match ||
-              Object.entries(match).every(
-                ([key, value]) => (action as Record<string, Partial<RootAction>>)[key] === value,
-              )),
+        const { timedOut } = yield race({
+          timedOut: delay(timeout),
+          success: sagaTake(
+            (action: RootAction) =>
+              action.type === getType(actionCreator) &&
+              (!match ||
+                Object.entries(match).every(
+                  ([key, value]) => (action as Record<string, Partial<RootAction>>)[key] === value,
+                )),
+          ),
+        });
+        if (timedOut) {
+          reject(
+            new Error(
+              `Timed out take action ${getType(actionCreator)}${
+                match ? ` with ${JSON.stringify(match)}` : ''
+              }`,
+            ),
+          );
+        }
+        resolve(
+          `${getType(actionCreator)}${match ? ` with ${JSON.stringify(match)} ` : 'dispatched'}`,
         );
-        resolve();
       });
     }),
   );
