@@ -31,11 +31,11 @@ it('can parse all atom values', () => {
 
   expect(firstAtom.fns.map((fn) => fn('1', totalMoveHistory, boardObjects))).toEqual([
     BucketPosition.TR,
-    BucketPosition.BL,
+    BucketPosition.BR,
   ]);
   expect(secondAtom.fns.map((fn) => fn('1', totalMoveHistory, boardObjects))).toEqual([
-    BucketPosition.BL,
     BucketPosition.BR,
+    BucketPosition.BL,
   ]);
 });
 
@@ -59,8 +59,8 @@ it('can parse * function', () => {
   ).toEqual([
     BucketPosition.TL,
     BucketPosition.TR,
-    BucketPosition.BL,
     BucketPosition.BR,
+    BucketPosition.BL,
   ] as BucketPosition[]);
 });
 
@@ -191,7 +191,7 @@ it('can parse modulo functions', () => {
   };
 
   expect(atom.fns.map((fn) => fn(boardObjectId, totalMoveHistory, boardObjects))).toEqual([
-    BucketPosition.TL,
+    BucketPosition.BL,
   ]);
 });
 
