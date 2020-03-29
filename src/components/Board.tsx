@@ -9,7 +9,8 @@ const StyledBoard = styled.div<{}>`
   display: grid;
   grid-template-rows: repeat(${rows}, ${100 / rows}%);
   grid-template-columns: repeat(${cols}, ${100 / cols}%);
-  height: 100%;
+  height: min(70vh, 100vw);
+  width: min(70vh, 100vw);
   position: relative;
   &:after {
     content: '';

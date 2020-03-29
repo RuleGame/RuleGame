@@ -84,7 +84,7 @@ const take = (
 };
 
 const dispatch = (action: RootAction) => {
-  cy.log('dispatch');
+  cy.log(`dispatch ${JSON.stringify(action)}`);
   cy.window().then((win: Window) => {
     const { dispatch } = win.store;
     dispatch(action);

@@ -50,9 +50,8 @@ const Game: React.FunctionComponent<{
   const order = useSelector(orderSelector);
 
   return (
-    <Box pad="small" fill data-cy={CY_GAME}>
+    <Box pad="small" data-cy={CY_GAME}>
       <Grid
-        fill
         rows={['auto', 'flex', 'auto']}
         columns={['auto', 'flex', 'auto']}
         areas={[

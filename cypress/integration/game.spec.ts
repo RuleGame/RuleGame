@@ -230,7 +230,7 @@ describe('basic', () => {
   });
 
   // TODO: The following do not work because of logic related to no previous matching not found.
-  it.skip('works for previous shape', () => {
+  it('works for previous shape', () => {
     cy.dispatch(enterGame('previous-shape'));
     cy.get(cySelector(CY_GAME)).should('be.visible');
 
@@ -241,7 +241,7 @@ describe('basic', () => {
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });
 
-  it.skip('works for previous color', () => {
+  it('works for previous color', () => {
     cy.dispatch(enterGame('previous-color'));
     cy.get(cySelector(CY_GAME)).should('be.visible');
 
@@ -252,13 +252,26 @@ describe('basic', () => {
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });
 
-  it.skip('works for previous color shape', () => {
+  it('works for previous color shape', () => {
     cy.dispatch(enterGame('previous-shape-color'));
     cy.get(cySelector(CY_GAME)).should('be.visible');
 
     checkMove('red-square-36', true, BucketPosition.BL);
     checkMove('yellow-square-1', false, BucketPosition.BL);
     checkMove('red-square-6', true, BucketPosition.BL);
+
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
+  });
+
+  it('works for simple bucket function arithmetic', () => {
+    cy.dispatch(enterGame('clockwise'));
+    cy.get(cySelector(CY_GAME)).should('be.visible');
+
+    checkMove('red-square-36', true, BucketPosition.TL);
+    checkMove('yellow-square-1', false, BucketPosition.TL);
+    checkMove('yellow-square-1', true, BucketPosition.TR);
+    checkMove('red-square-6', true, BucketPosition.BR);
+    checkMove('blue-circle-31', true, BucketPosition.BL);
 
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });

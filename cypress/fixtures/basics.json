@@ -85,6 +85,12 @@
       "boardObjectsArrays": ["corners"],
       "name": "previous-color-shape",
       "ruleArray": "previous-color-shape"
+    },
+    "clockwise": {
+      "id": "clockwise",
+      "boardObjectsArrays": ["corners"],
+      "name": "clockwise",
+      "ruleArray": "clockwise"
     }
   },
   "ruleArrays": {
@@ -152,6 +158,11 @@
       "id": "full-match",
       "stringified": "(1,square,blue,1,*)",
       "name": "full-match"
+    },
+    "clockwise": {
+      "id": "clockwise",
+      "stringified": "(*,*,*,*,[(p+1)%4])",
+      "name": "clockwise"
     },
     "mDiksQ5N": {
       "id": "mDiksQ5N",

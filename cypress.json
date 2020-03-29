@@ -1,10 +1,10 @@
 {
   "baseUrl": "http://localhost:3000",
-  "ignoreTestFiles": ["*.js", "*.md"],
   "reporter": "junit",
   "reporterOptions": {
     "mochaFile": "test-results/test-output-[hash].xml"
   },
   "chromeWebSecurity": false,
-  "watchForFileChanges": false
+  "watchForFileChanges": false,
+  "testFiles": ["**/*.spec.ts", "**/*.feature"]
 }
