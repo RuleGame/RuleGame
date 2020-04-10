@@ -1,7 +1,12 @@
-import { rows } from '../constants';
+import { rows, cols } from '../constants';
 import { Atom, BoardObjectType, Color, Shape } from '../@types';
 
 export const xYToPosition = (x: number, y: number) => (y - 1) * (rows - 2) + x;
+
+export const positionToXy = (position: number) => ({
+  x: position % (rows - 2),
+  y: Math.floor(position / (cols - 1)),
+});
 
 /**
  * Check for match excluding the atom's functions. Intended to use for the filter function inside

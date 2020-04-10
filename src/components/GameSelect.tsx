@@ -1,14 +1,15 @@
-import React, { useCallback, useMemo } from 'react';
-import { Box, Button } from 'grommet';
+import React, { useCallback } from 'react';
+import { Box, Button, Heading, Paragraph } from 'grommet';
 import { Close, View } from 'grommet-icons';
-import { Dispatch } from 'redux';
 import { useDispatch, useSelector } from 'react-redux';
+import { Dispatch } from 'redux';
 import { Game } from '../@types';
 import { RootAction } from '../store/actions';
-import { boardObjectsArraysByIdSelector, ruleArraysByIdSelector } from '../store/selectors';
-import { addLayer, removeLayer } from '../store/actions/layers';
 import { enterGame, removeGame } from '../store/actions/games';
+import { addLayer, removeLayer } from '../store/actions/layers';
 import { RootState } from '../store/reducers';
+import { boardObjectsArraysByIdSelector, ruleArraysByIdSelector } from '../store/selectors';
+import BoardPreview from './BoardPreview';
 
 const GameSelect: React.FunctionComponent<{
   showEditButtons: boolean;
@@ -21,15 +22,6 @@ const GameSelect: React.FunctionComponent<{
   >((state) => (game.ruleArray ? ruleArraysByIdSelector(state)[game.ruleArray] : undefined));
   const boardObjectsArraysById = useSelector(boardObjectsArraysByIdSelector);
 
-  const stringifiedBoardObjectsArrays = useMemo(
-    () =>
-      game.boardObjectsArrays.reduce((acc, boardObjectsArray) => {
-        const b = boardObjectsArraysById[boardObjectsArray];
-        return `${acc}\n\n${b.name}: ${b.stringified}`;
-      }, ''),
-    [boardObjectsArraysById, game.boardObjectsArrays],
-  );
-
   return (
     <Box direction="row" key={game.id} align="center">
       {showEditButtons && (
@@ -39,13 +31,29 @@ const GameSelect: React.FunctionComponent<{
             dispatch(
               addLayer(
                 `${game.name} Game Preview:`,
-                `Rule Array:\n${ruleArray?.stringified}\n${
-                  ruleArray?.order ? `Order: ${JSON.stringify(ruleArray.order)}` : ''
-                }\n\nBoard Objects:\n${
-                  game.useRandomBoardObjects
+                <Box height={{ min: 'auto' }}>
+                  <Heading>Rule Array:</Heading>
+                  {ruleArray?.stringified.split('\n').map((line, i) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <Paragraph key={i} margin="none">
+                      {line}
+                    </Paragraph>
+                  ))}
+                  {ruleArray?.order && (
+                    <Paragraph> Order: JSON.stringify(ruleArray.order)</Paragraph>
+                  )}
+                  <Heading>Board Objects:</Heading>
+
+                  {game.useRandomBoardObjects
                     ? `Using ${game.numRandomBoardObjects} random board objects...`
-                    : stringifiedBoardObjectsArrays
-                }`,
+                    : game.boardObjectsArrays.map((boardObjectsArray) => (
+                        // eslint-disable-next-line react/jsx-indent
+                        <BoardPreview
+                          key={boardObjectsArray}
+                          boardObjects={boardObjectsArraysById[boardObjectsArray].value}
+                        />
+                      ))}
+                </Box>,
                 [
                   {
                     key: 'close',

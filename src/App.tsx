@@ -1,18 +1,17 @@
-import { Grommet } from 'grommet';
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Dispatch } from 'redux';
-import { hot } from 'react-hot-loader/root';
-
+import { Grommet } from 'grommet';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import { hot } from 'react-hot-loader/root';
+import { useDispatch, useSelector } from 'react-redux';
+import { Dispatch } from 'redux';
+import Layers from './components/Layers';
+import Notifications from './components/Notifications';
 import EntrancePage from './pages/EntrancePage';
 import RuleGamePage from './pages/RuleGamePage';
-import { layersSelector, pageSelector } from './store/selectors';
-import Layers from './components/Layers';
-import { removeLayer } from './store/actions/layers';
 import { RootAction } from './store/actions';
-import Notifications from './components/Notifications';
+import { removeLayer } from './store/actions/layers';
+import { layersSelector, pageSelector } from './store/selectors';
 
 const App = () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
@@ -26,6 +25,9 @@ const App = () => {
     <DndProvider backend={HTML5Backend}>
       <Grommet full plain>
         {page === 'Entrance' ? <EntrancePage /> : <RuleGamePage />}
+        {/* <Box width="min(70vh, 100vw)" height="min(70vh, 100vw)">
+          <BoardEditor />
+        </Box> */}
         <Layers onLayerClose={handleCloseLayer} layers={layers} />
         <Notifications />
       </Grommet>

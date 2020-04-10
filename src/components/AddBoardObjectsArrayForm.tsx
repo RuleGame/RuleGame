@@ -2,8 +2,11 @@ import { Box, Button, CheckBox, Form, FormField, Heading, TextArea, TextInput } 
 import React, { useState } from 'react';
 import { Dispatch } from 'redux';
 import { useDispatch } from 'react-redux';
+import stringify from 'json-stringify-pretty-compact';
 import { addBoardObjectsArray } from '../store/actions/board-objects-arrays';
 import { RootAction } from '../store/actions';
+import { addLayer, removeLayer } from '../store/actions/layers';
+import BoardEditor from './BoardEditor';
 
 const AddBoardObjectsForm: React.FunctionComponent = () => {
   const [boardObjectsArray, setBoardObjectsArray] = useState('');
@@ -25,6 +28,45 @@ const AddBoardObjectsForm: React.FunctionComponent = () => {
                 required
               />
             </FormField>
+            <Button
+              label="Use Interactive Board Editor"
+              onClick={() =>
+                dispatch(
+                  addLayer(
+                    'Board Editor',
+                    <BoardEditor
+                      onLoad={(boardObjects) => {
+                        setBoardObjectsArray(stringify(boardObjects, { maxLength: 20 }));
+                        dispatch(removeLayer('board-editor'));
+                      }}
+                      key={boardObjectsArray}
+                    />,
+                    [
+                      {
+                        key: 'discard',
+                        label: 'Discard',
+                        action: addLayer(
+                          'Unsaved board',
+                          'Are you sure you want to discard',
+                          [
+                            {
+                              key: 'yes',
+                              label: 'Yes',
+                              action: [removeLayer('board-editor'), removeLayer('confirm-discard')],
+                            },
+                            { key: 'no', label: 'No', action: removeLayer('confirm-discard') },
+                          ],
+                          'confirm-discard',
+                        ),
+                      },
+                    ],
+                    'board-editor',
+                    false,
+                    false,
+                  ),
+                )
+              }
+            />
             <FormField label="New Board Objects" name="BoardObjects" pad>
               <TextArea
                 required

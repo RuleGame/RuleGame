@@ -25,6 +25,8 @@ const reducer = (state: State = initialState, action: RootAction): State => {
             title: action.payload.title,
             description: action.payload.description,
             actionButtons: action.payload.actionButtons,
+            closeOnClickOutside: action.payload.closeOnClickOutside,
+            closeOnEsc: action.payload.closeOnEsc,
           },
         },
         layerIds: [...state.layerIds, action.payload.id],
