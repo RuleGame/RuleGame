@@ -1,11 +1,9 @@
 import shortid from 'shortid';
 import range from 'lodash/range';
-import shuffle from 'lodash/shuffle';
 import sample from 'lodash/sample';
 import sampleSize from 'lodash/sampleSize';
-import zip from 'lodash/zip';
 import { BoardObjectType, Color, Shape } from '../../../@types';
-import { borderHeight, borderWidth, colors, cols, rows, shapes } from '../../../constants';
+import { colors, cols, rows, shapes } from '../../../constants';
 import { positionToXy } from '../../../utils/atom-match';
 
 const randomObjectsCreator = (numObjects: number): BoardObjectType[] =>
