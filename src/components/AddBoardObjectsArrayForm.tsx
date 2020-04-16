@@ -12,7 +12,7 @@ const AddBoardObjectsForm: React.FunctionComponent = () => {
   const [boardObjectsArray, setBoardObjectsArray] = useState('');
   const [name, setName] = useState('');
   const dispatch: Dispatch<RootAction> = useDispatch();
-  const [addToAllGames, setAddToAllGames] = useState(true);
+  const [addToAllGames, setAddToAllGames] = useState(false);
 
   return (
     <Box elevation="large" align="center" pad="medium">
