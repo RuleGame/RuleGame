@@ -18,6 +18,7 @@ import { addGame } from '../store/actions/games';
 import { boardObjectsArraysSelector, ruleArraysSelector } from '../store/selectors';
 import BoardObjectsArrayCheckBox from './BoardObjectsArrayCheckBox';
 import { addLayer, removeLayer } from '../store/actions/layers';
+import BoardPreview from './BoardPreview';
 
 const AddGameForm: React.FunctionComponent = () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
@@ -40,7 +41,7 @@ const AddGameForm: React.FunctionComponent = () => {
   );
   const [selectedRuleArray, setSelectedRuleArray] = useState<string | undefined>(undefined);
   const ruleArrays = useSelector(ruleArraysSelector);
-  const [useRandomBoardObjects, setUseRandomBoardObjects] = useState(true);
+  const [useRandomBoardObjects, setUseRandomBoardObjects] = useState(false);
   const [numRandomBoardObjects, setNumRandomBoardObjects] = useState(5);
 
   return (
@@ -143,7 +144,7 @@ const AddGameForm: React.FunctionComponent = () => {
                             dispatch(
                               addLayer(
                                 `${boardObjectsArray.name} Board Objects Array Preview:`,
-                                boardObjectsArray.stringified,
+                                <BoardPreview boardObjects={boardObjectsArray.value} />,
                                 [
                                   {
                                     key: 'close',
