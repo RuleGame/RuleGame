@@ -52,8 +52,8 @@ const Game: React.FunctionComponent<{
   return (
     <Box pad="small" data-cy={CY_GAME}>
       <Grid
-        rows={['auto', 'flex', 'auto']}
-        columns={['auto', 'flex', 'auto']}
+        rows={['auto', 'min(70vh, 100vw)', 'auto']}
+        columns={['auto', 'min(70vh, 100vw)', 'auto']}
         areas={[
           {
             name: GridAreaName.DEBUG_TOGGLE,
@@ -124,7 +124,7 @@ const Game: React.FunctionComponent<{
           />
         </Box>
         {historyDebugInfo && (
-          <Box gridArea={GridAreaName.HISTORY}>
+          <Box gridArea={GridAreaName.HISTORY} overflow="auto">
             History Log:
             {historyDebugInfo.map((dropAttemptString) =>
               dropAttemptString.split('\n').map((item) => {

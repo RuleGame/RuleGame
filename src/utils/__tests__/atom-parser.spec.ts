@@ -215,8 +215,8 @@ it('returns NaNs if history is empty', () => {
 
   expect(atom.fns.map((fn) => fn(boardObjectId, totalMoveHistory, boardObjects))).toEqual([
     NaN,
-    NaN,
-    NaN,
-    NaN,
+    Infinity,
+    Infinity,
+    Infinity,
   ]);
 });

@@ -4,8 +4,8 @@ import { Atom, BoardObjectType, Color, Shape } from '../@types';
 export const xYToPosition = (x: number, y: number) => (y - 1) * (rows - 2) + x;
 
 export const positionToXy = (position: number) => ({
-  x: position % (rows - 2),
-  y: Math.floor(position / (cols - 1)),
+  x: ((position - 1) % (rows - 2)) + 1,
+  y: Math.floor((position - 1) / (cols - 2)) + 1,
 });
 
 /**

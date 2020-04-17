@@ -128,7 +128,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
                           acc[BucketPosition.TL].add(atom.id);
                           acc[BucketPosition.BR].add(atom.id);
                           acc[BucketPosition.BL].add(atom.id);
-                        } else if (!Number.isNaN(bucket)) {
+                        } else if (Number.isFinite(bucket)) {
                           acc[bucket].add(atom.id);
                         }
                       });
@@ -251,7 +251,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
                             acc[BucketPosition.TL].add(atom.id);
                             acc[BucketPosition.BR].add(atom.id);
                             acc[BucketPosition.BL].add(atom.id);
-                          } else if (!Number.isNaN(bucket)) {
+                          } else if (Number.isFinite(bucket)) {
                             acc[bucket].add(atom.id);
                           }
                         });

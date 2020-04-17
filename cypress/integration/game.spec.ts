@@ -201,20 +201,26 @@ describe('basic', () => {
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });
 
-  it('works for first previous...', () => {
-    const testGame = (game: string) => {
-      cy.dispatch(enterGame(game));
-      cy.get(cySelector(CY_GAME)).should('be.visible');
+  // TODO: We will ignore this in the meanwhile because
+  // we expect proper rule arrays.
+  // This test is to check whether any object can be dropped
+  // with a bucket function containing a previous something.
+  // This was to enable to use to proceed at least past the first
+  // row.
+  // it('works for first previous...', () => {
+  //   const testGame = (game: string) => {
+  //     cy.dispatch(enterGame(game));
+  //     cy.get(cySelector(CY_GAME)).should('be.visible');
 
-      checkMove('red-square-36', true, BucketPosition.BL);
-      cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
-    };
+  //     checkMove('red-square-36', true, BucketPosition.BL);
+  //     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
+  //   };
 
-    testGame('first-previous');
-    testGame('first-previous-shape');
-    testGame('first-previous-color');
-    testGame('first-previous-color-shape');
-  });
+  //   testGame('first-previous');
+  //   testGame('first-previous-shape');
+  //   testGame('first-previous-color');
+  //   testGame('first-previous-color-shape');
+  // });
 
   it('works for previous', () => {
     cy.dispatch(enterGame('previous'));
@@ -253,7 +259,7 @@ describe('basic', () => {
   });
 
   it('works for previous color shape', () => {
-    cy.dispatch(enterGame('previous-shape-color'));
+    cy.dispatch(enterGame('previous-color-shape'));
     cy.get(cySelector(CY_GAME)).should('be.visible');
 
     checkMove('red-square-36', true, BucketPosition.BL);

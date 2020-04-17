@@ -20,7 +20,7 @@ const convertRawAtomFnToAtomFn = (rawAtomFn: RawAtomFn): AtomFn => (
     predicate: (dropAttempt: DropAttempt) => boolean,
   ): BucketPosition | undefined => {
     const mostRecent = reversedTotalMoveHistory.find(predicate);
-    return mostRecent !== undefined ? mostRecent.dropped : undefined;
+    return mostRecent !== undefined ? mostRecent.dropped : Infinity;
   };
 
   // TODO: Optimize this later

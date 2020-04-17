@@ -13,7 +13,8 @@ const indexToPos = (index: number) =>
   (rows - 2) * (cols - 2) -
   Math.floor(index / (cols - 2)) * (cols - 2) +
   (index % (cols - 2)) -
-  (cols - 2);
+  (cols - 2) +
+  1;
 
 const BoardPreview: React.FunctionComponent<{
   boardObjects: BoardObjectType[];
