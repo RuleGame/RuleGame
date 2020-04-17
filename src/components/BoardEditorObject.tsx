@@ -1,6 +1,6 @@
 import React from 'react';
-import { DropButton, Box, CheckBox, RadioButton, Text, Button } from 'grommet';
-import { Close } from 'grommet-icons';
+import { DropButton, Box, RadioButton, Text, Button } from 'grommet';
+import { Close, Trash } from 'grommet-icons';
 import { colors, shapes } from '../constants';
 import ShapeObject from './ShapeObject';
 import { Shape, Color, BoardObjectType } from '../@types';
@@ -17,7 +17,18 @@ const BoardEditorObject: React.FunctionComponent<{
     <DropButton
       fill
       plain
-      onOpen={() => setOpen(true)}
+      onOpen={() => {
+        setOpen(true);
+        if (!boardObject) {
+          onChange({
+            color: Color.RED,
+            shape: Shape.SQUARE,
+            id: String(pos),
+            x: positionToXy(pos).x,
+            y: positionToXy(pos).y,
+          });
+        }
+      }}
       onClose={() => setOpen(false)}
       open={open}
       label={
@@ -36,23 +47,13 @@ const BoardEditorObject: React.FunctionComponent<{
         <Box background="ligh-2" gap="small" pad="small">
           <Box direction="row">
             <Box border={{ side: 'bottom' }} pad="small" fill="horizontal">
-              <CheckBox
-                toggle
-                checked={!!boardObject}
-                onChange={({ target: { checked } }) =>
-                  onChange(
-                    checked
-                      ? {
-                          color: Color.RED,
-                          shape: Shape.SQUARE,
-                          id: String(pos),
-                          x: positionToXy(pos).x,
-                          y: positionToXy(pos).y,
-                        }
-                      : undefined,
-                  )
-                }
-                label="Set Object"
+              <Button
+                label="Delete"
+                icon={<Trash />}
+                onClick={() => {
+                  onChange(undefined);
+                  setOpen(false);
+                }}
               />
             </Box>
             <Box>
