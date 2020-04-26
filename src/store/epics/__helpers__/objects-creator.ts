@@ -6,8 +6,11 @@ import { BoardObjectType, Color, Shape } from '../../../@types';
 import { colors, cols, rows, shapes } from '../../../constants';
 import { positionToXy } from '../../../utils/atom-match';
 
+export const getValidPositions = (cols: number, rows: number) =>
+  range(1, (cols - 2) * (rows - 2) + 1);
+
 const randomObjectsCreator = (numObjects: number): BoardObjectType[] =>
-  sampleSize(range((cols - 2) * (rows - 2)), numObjects).map((pos) => ({
+  sampleSize(getValidPositions(cols, rows), numObjects).map((pos) => ({
     id: shortid(),
     color: sample(colors) as Color,
     shape: sample(shapes) as Shape,
