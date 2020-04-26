@@ -71,6 +71,47 @@ export const initialState: State = {
   order: [],
 };
 
+const getBoardObjectsToBucketsToAtoms = (
+  index: number,
+  totalMoveHistory: DropAttempt[],
+  state: State,
+) =>
+  Object.values(state.boardObjectsById)
+    .filter((boardObject) => boardObject.shape !== Shape.CHECK)
+    .reduce<{ [boardObjectId: string]: { [bucket: number]: Set<string> } }>(
+      (acc, boardObject) => ({
+        ...acc,
+        [boardObject.id]: {
+          ...Object.values(state.atomsByRowIndex[index])
+            .filter(atomMatch(boardObject, state.atomCounts))
+            .reduce<{ [bucket: number]: Set<string> }>(
+              (acc, atom) => {
+                atom.fns
+                  .map((fn) => fn(boardObject.id, totalMoveHistory, state.initialBoardObjectsById))
+                  .forEach((bucket) => {
+                    if (Number.isNaN(bucket)) {
+                      acc[BucketPosition.TR].add(atom.id);
+                      acc[BucketPosition.TL].add(atom.id);
+                      acc[BucketPosition.BR].add(atom.id);
+                      acc[BucketPosition.BL].add(atom.id);
+                    } else if (Number.isFinite(bucket)) {
+                      acc[bucket].add(atom.id);
+                    }
+                  });
+                return acc;
+              },
+              {
+                [BucketPosition.TR]: new Set<string>(),
+                [BucketPosition.TL]: new Set<string>(),
+                [BucketPosition.BR]: new Set<string>(),
+                [BucketPosition.BL]: new Set<string>(),
+              },
+            ),
+        },
+      }),
+      {},
+    );
+
 const reducer = (state: State = initialState, action: RootAction): State => {
   switch (action.type) {
     case getType(loadRuleArray): {
@@ -108,43 +149,11 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       // 1. If no possible moves, advance to next rule row or end game.
       // (An epic must detect this and continue to the next rule row then)
       // 2. Hover thingy if possible to drop.
-      const preOrderBoardObjectsToBucketsToAtoms = Object.values(state.boardObjectsById)
-        .filter((boardObject) => boardObject.shape !== Shape.CHECK)
-        .reduce<{ [boardObjectId: string]: { [bucket: number]: Set<string> } }>(
-          (acc, boardObject) => ({
-            ...acc,
-            [boardObject.id]: {
-              ...Object.values(state.atomsByRowIndex[action.payload.index])
-                .filter(atomMatch(boardObject, state.atomCounts))
-                .reduce<{ [bucket: number]: Set<string> }>(
-                  (acc, atom) => {
-                    atom.fns
-                      .map((fn) =>
-                        fn(boardObject.id, state.totalMoveHistory, state.initialBoardObjectsById),
-                      )
-                      .forEach((bucket) => {
-                        if (Number.isNaN(bucket)) {
-                          acc[BucketPosition.TR].add(atom.id);
-                          acc[BucketPosition.TL].add(atom.id);
-                          acc[BucketPosition.BR].add(atom.id);
-                          acc[BucketPosition.BL].add(atom.id);
-                        } else if (Number.isFinite(bucket)) {
-                          acc[bucket].add(atom.id);
-                        }
-                      });
-                    return acc;
-                  },
-                  {
-                    [BucketPosition.TR]: new Set<string>(),
-                    [BucketPosition.TL]: new Set<string>(),
-                    [BucketPosition.BR]: new Set<string>(),
-                    [BucketPosition.BL]: new Set<string>(),
-                  },
-                ),
-            },
-          }),
-          {},
-        );
+      const preOrderBoardObjectsToBucketsToAtoms = getBoardObjectsToBucketsToAtoms(
+        action.payload.index,
+        state.totalMoveHistory,
+        state,
+      );
 
       let boardObjectsToBucketsToAtoms = preOrderBoardObjectsToBucketsToAtoms;
       if (state.order) {
@@ -231,43 +240,11 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         totalMoveHistory: newTotalMoveHistory,
         lastMoveSuccessful: true,
         paused: true,
-        boardObjectsToBucketsToAtoms: Object.values(state.boardObjectsById)
-          .filter((boardObject) => boardObject.shape !== Shape.CHECK)
-          .reduce(
-            (acc, boardObject) => ({
-              ...acc,
-              [boardObject.id]: {
-                ...Object.values(state.atomsByRowIndex[state.ruleRowIndex])
-                  .filter(atomMatch(boardObject, state.atomCounts))
-                  .reduce<{ [bucket: number]: Set<string> }>(
-                    (acc, atom) => {
-                      atom.fns
-                        .map((fn) =>
-                          fn(boardObject.id, newTotalMoveHistory, state.initialBoardObjectsById),
-                        )
-                        .forEach((bucket) => {
-                          if (Number.isNaN(bucket)) {
-                            acc[BucketPosition.TR].add(atom.id);
-                            acc[BucketPosition.TL].add(atom.id);
-                            acc[BucketPosition.BR].add(atom.id);
-                            acc[BucketPosition.BL].add(atom.id);
-                          } else if (Number.isFinite(bucket)) {
-                            acc[bucket].add(atom.id);
-                          }
-                        });
-                      return acc;
-                    },
-                    {
-                      [BucketPosition.TR]: new Set<string>(),
-                      [BucketPosition.TL]: new Set<string>(),
-                      [BucketPosition.BR]: new Set<string>(),
-                      [BucketPosition.BL]: new Set<string>(),
-                    },
-                  ),
-              },
-            }),
-            {},
-          ),
+        boardObjectsToBucketsToAtoms: getBoardObjectsToBucketsToAtoms(
+          state.ruleRowIndex,
+          newTotalMoveHistory,
+          state,
+        ),
       };
     }
 
