@@ -74,20 +74,27 @@ export const initialState: State = {
 const getBoardObjectsToBucketsToAtoms = (
   index: number,
   totalMoveHistory: DropAttempt[],
-  state: State,
+  initialBoardObjectsById: {
+    [boardObjectId: string]: BoardObjectType;
+  },
+  boardObjectsById: {
+    [boardObjectId: string]: BoardObjectType;
+  },
+  atomsByRowIndex: { [atomId: string]: Atom }[],
+  atomCounts: { [atomId: string]: number },
 ) =>
-  Object.values(state.boardObjectsById)
+  Object.values(boardObjectsById)
     .filter((boardObject) => boardObject.shape !== Shape.CHECK)
     .reduce<{ [boardObjectId: string]: { [bucket: number]: Set<string> } }>(
       (acc, boardObject) => ({
         ...acc,
         [boardObject.id]: {
-          ...Object.values(state.atomsByRowIndex[index])
-            .filter(atomMatch(boardObject, state.atomCounts))
+          ...Object.values(atomsByRowIndex[index])
+            .filter(atomMatch(boardObject, atomCounts))
             .reduce<{ [bucket: number]: Set<string> }>(
               (acc, atom) => {
                 atom.fns
-                  .map((fn) => fn(boardObject.id, totalMoveHistory, state.initialBoardObjectsById))
+                  .map((fn) => fn(boardObject.id, totalMoveHistory, initialBoardObjectsById))
                   .forEach((bucket) => {
                     if (Number.isNaN(bucket)) {
                       acc[BucketPosition.TR].add(atom.id);
@@ -152,7 +159,10 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       const preOrderBoardObjectsToBucketsToAtoms = getBoardObjectsToBucketsToAtoms(
         action.payload.index,
         state.totalMoveHistory,
-        state,
+        state.initialBoardObjectsById,
+        state.boardObjectsById,
+        state.atomsByRowIndex,
+        state.atomCounts,
       );
 
       let boardObjectsToBucketsToAtoms = preOrderBoardObjectsToBucketsToAtoms;
@@ -243,7 +253,10 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         boardObjectsToBucketsToAtoms: getBoardObjectsToBucketsToAtoms(
           state.ruleRowIndex,
           newTotalMoveHistory,
-          state,
+          state.initialBoardObjectsById,
+          state.boardObjectsById,
+          state.atomsByRowIndex,
+          state.atomCounts,
         ),
       };
     }
