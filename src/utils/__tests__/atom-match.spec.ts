@@ -3,7 +3,6 @@ import { Color, Shape } from '../../@types';
 
 describe('atom-match', () => {
   it('matches', () => {
-    const x = xYToPosition(2, 1);
     expect(
       atomMatch(
         { x: 2, y: 1, color: Color.BLACK, id: '1', shape: Shape.CIRCLE },
