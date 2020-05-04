@@ -17,7 +17,11 @@ const AddBoardObjectsForm: React.FunctionComponent = () => {
   return (
     <Box elevation="large" align="center" pad="medium">
       <Heading level="2">Add a New Custom Board Objects Array</Heading>
-      <Form onSubmit={() => dispatch(addBoardObjectsArray.request(name, boardObjectsArray))}>
+      <Form
+        onSubmit={() =>
+          dispatch(addBoardObjectsArray.request(name, boardObjectsArray, addToAllGames))
+        }
+      >
         <Box align="center">
           <Box align="start">
             <FormField label="Name">
@@ -79,11 +83,11 @@ const AddBoardObjectsForm: React.FunctionComponent = () => {
                 placeholder={`Custom Board Objects (JSON format):
 Board Object Shape:
 {
-  "id": string;
-  "color": Color;
-  "shape": Shape;
-  "x": number;
-  "y": number;
+  id?: string; // If omitted, id will be position.
+  color: Color;
+  shape: Shape;
+  x: number;
+  y: number;
 }
 
 Array Example:

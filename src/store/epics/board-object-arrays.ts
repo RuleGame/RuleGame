@@ -2,10 +2,13 @@ import { isActionOf } from 'typesafe-actions';
 import { filter, map } from 'rxjs/operators';
 import shortid from 'shortid';
 import { combineEpics } from 'redux-observable';
+import { Optional } from 'utility-types';
 import { RootEpic } from '../../@types/epic';
 import { addLayer, removeLayer } from '../actions/layers';
 import { addBoardObjectsArray } from '../actions/board-objects-arrays';
 import { addNotification } from '../actions/notifications';
+import { BoardObjectType } from '../../@types';
+import { xYToPosition } from '../../utils/atom-match';
 
 const addBoardObjectsArrayRequestEpic: RootEpic = (action$) =>
   action$.pipe(
@@ -15,7 +18,17 @@ const addBoardObjectsArrayRequestEpic: RootEpic = (action$) =>
         return addBoardObjectsArray.success(
           shortid(),
           action.payload.name,
-          JSON.parse(action.payload.boardObjectsArrayString),
+          (JSON.parse(action.payload.boardObjectsArrayString) as Optional<
+            BoardObjectType,
+            'id'
+          >[]).map<BoardObjectType>((boardObject) =>
+            boardObject.id
+              ? (boardObject as BoardObjectType)
+              : {
+                  ...boardObject,
+                  id: String(xYToPosition(boardObject.x, boardObject.y)),
+                },
+          ),
           action.payload.boardObjectsArrayString,
         );
       } catch (error) {
