@@ -28,3 +28,5 @@ cypress/screenshots
 test-results/
 
 .vscode
+
+*.log
