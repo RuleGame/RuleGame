@@ -2,7 +2,7 @@ import { createAction } from 'typesafe-actions';
 import shortid from 'shortid';
 import { Optional } from 'utility-types';
 // eslint-disable-next-line import/no-cycle
-import type { ActionButton } from '../../@types';
+import { ActionButton } from '../../@types';
 
 // TODO: Consider a wrapper function that takes in a callback with id as its parameter
 export const addLayer = createAction(
