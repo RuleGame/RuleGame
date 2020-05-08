@@ -71,7 +71,7 @@ export type Atom = {
 export type ActionButton = {
   key: string;
   label: string;
-  action: RootAction | RootAction[];
+  action: ((id: string) => RootAction) | RootAction | (RootAction | ((id: string) => RootAction))[];
 };
 
 export type RuleRow = Atom[];
@@ -85,6 +85,7 @@ export type Game = {
   boardObjectsArrays: string[];
   useRandomBoardObjects: boolean;
   numRandomBoardObjects: number;
+  numConsecutiveSuccessfulMovesBeforePromptGuess?: number;
 };
 
 export type ExportedFile = {

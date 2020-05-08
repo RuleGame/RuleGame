@@ -16,13 +16,17 @@ const Layer: React.FunctionComponent<{
       position="top"
     >
       <Box pad="large" overflow="auto">
-        <Heading color="red" level="3">
-          {layer.title}
-        </Heading>
+        {typeof (layer.title as string) === 'string' ? (
+          <Heading color="red" level="3">
+            {layer.title}
+          </Heading>
+        ) : (
+          layer.title
+        )}
         {layer.description}
         <div>
           {layer.actionButtons.map((actionButton) => (
-            <ActionButton actionButton={actionButton} key={actionButton.key} />
+            <ActionButton actionButton={actionButton} key={actionButton.key} layerId={layer.id} />
           ))}
         </div>
       </Box>

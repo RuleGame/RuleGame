@@ -48,6 +48,8 @@ export type State = {
   parsingRuleArray: boolean;
   error?: Error;
   order?: number[];
+  numConsecutiveSuccessfulMoves: number;
+  currGameId?: string;
 };
 
 export const initialState: State = {
@@ -69,6 +71,8 @@ export const initialState: State = {
   parsingRuleArray: false,
   error: undefined,
   order: [],
+  numConsecutiveSuccessfulMoves: 0,
+  currGameId: undefined,
 };
 
 const getBoardObjectsToBucketsToAtoms = (
@@ -148,6 +152,8 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         parsingRuleArray: false,
         rawRuleArrayString: action.payload.rawRuleArrayString,
         order: action.payload.order,
+        numConsecutiveSuccessfulMoves: 0,
+        currGameId: action.payload.gameId,
       };
     }
 
@@ -225,6 +231,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
           ...state,
           dropAttempts: [...state.dropAttempts, action.payload.dropAttempt],
           lastMoveSuccessful: false,
+          numConsecutiveSuccessfulMoves: 0,
         };
       }
 
@@ -258,6 +265,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
           state.atomsByRowIndex,
           state.atomCounts,
         ),
+        numConsecutiveSuccessfulMoves: state.numConsecutiveSuccessfulMoves + 1,
       };
     }
 

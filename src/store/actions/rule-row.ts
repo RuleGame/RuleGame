@@ -20,11 +20,13 @@ export const loadRuleArray = createAction(
   (
     boardObjects: BoardObjectType[],
     ruleArray: Atom[][],
+    gameId: string,
     rawRuleArrayString?: string,
     order?: number[],
   ) => ({
     boardObjects,
     ruleArray,
+    gameId,
     rawRuleArrayString,
     order,
   }),

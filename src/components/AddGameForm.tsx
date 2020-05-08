@@ -43,6 +43,10 @@ const AddGameForm: React.FunctionComponent = () => {
   const ruleArrays = useSelector(ruleArraysSelector);
   const [useRandomBoardObjects, setUseRandomBoardObjects] = useState(false);
   const [numRandomBoardObjects, setNumRandomBoardObjects] = useState(5);
+  const [
+    numConsecutiveSuccessfulMovesBeforePromptGuess,
+    setNumConsecutiveSuccessfulMovesBeforePromptGuess,
+  ] = useState<number>();
 
   return (
     <Box elevation="large" align="center" pad="medium">
@@ -58,6 +62,7 @@ const AddGameForm: React.FunctionComponent = () => {
                 .map(({ id }) => id),
               useRandomBoardObjects,
               numRandomBoardObjects,
+              numConsecutiveSuccessfulMovesBeforePromptGuess,
             ),
           )
         }
@@ -117,6 +122,15 @@ const AddGameForm: React.FunctionComponent = () => {
                   </Text>
                 )}
               </Box>
+            </FormField>
+            <FormField label="Number of Consecutive Moves Before Prompt Guess">
+              <TextInput
+                type="number"
+                value={numConsecutiveSuccessfulMovesBeforePromptGuess}
+                onChange={({ target: { value } }) =>
+                  setNumConsecutiveSuccessfulMovesBeforePromptGuess(Number(value.trim()))
+                }
+              />
             </FormField>
             <CheckBox
               label="Use Random Board Objects"

@@ -40,6 +40,7 @@ export const addGame = createAction(
     boardObjectsArrays: string[],
     useRandomBoardObjects: boolean,
     numRandomBoardObjects: number,
+    numConsecutiveSuccessfulMovesBeforePromptGuess?: number,
   ) => ({
     name,
     id: shortid(),
@@ -47,6 +48,7 @@ export const addGame = createAction(
     boardObjectsArrays,
     useRandomBoardObjects,
     numRandomBoardObjects,
+    numConsecutiveSuccessfulMovesBeforePromptGuess,
   }),
 )();
 

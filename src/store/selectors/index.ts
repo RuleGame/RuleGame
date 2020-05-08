@@ -192,3 +192,7 @@ export const currBoardObjectsArrayIndexSelector = (state: RootState) =>
   state.game.currBoardObjectsArrayIndex;
 
 export const orderSelector = (state: RootState) => state.ruleRow.order;
+
+export const currGameNumConsecutiveSuccessfulMovesBeforePromptGuessSelector = (state: RootState) =>
+  state.games.byId[state.ruleRow.currGameId as string]
+    .numConsecutiveSuccessfulMovesBeforePromptGuess;

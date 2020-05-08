@@ -95,6 +95,7 @@ const enterGameEpic: RootEpic = (action$, state$) =>
           loadRuleArray(
             randomObjectsCreator(game.numRandomBoardObjects),
             ruleArray.value,
+            id,
             ruleArray.stringified,
             ruleArray.order,
           ),
@@ -127,6 +128,7 @@ const enterGameEpic: RootEpic = (action$, state$) =>
         loadRuleArray(
           boardObjectsArray.value,
           ruleArray.value,
+          id,
           ruleArray.stringified,
           ruleArray.order,
         ),
