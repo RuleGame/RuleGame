@@ -135,7 +135,10 @@ const Game: React.FunctionComponent<{
         )}
         <Box gridArea={GridAreaName.FORM} align="center">
           {!gameCompleted && (
-            <Button label="Give up" onClick={() => dispatch(goToPage('Entrance'))} />
+            <Box gap="small">
+              <Button label="Give up" onClick={() => dispatch(goToPage('Entrance'))} />
+              <Button label="New Display" onClick={() => dispatch(nextBoardObjectsArray())} />
+            </Box>
           )}
           {gameCompleted && (
             <Box gap="medium">
