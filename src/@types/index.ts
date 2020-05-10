@@ -29,11 +29,8 @@ export type BucketType = { pos: BucketPosition; x: number; y: number; id: string
 
 export type DropAttempt = { dragged: string; dropped: BucketPosition };
 
+// TODO: Convert to enum
 export type Page = 'RuleGame' | 'Entrance';
-
-export enum Game {
-  GAME1,
-}
 
 export enum Color {
   ANY = '*',
@@ -74,9 +71,29 @@ export type Atom = {
 export type ActionButton = {
   key: string;
   label: string;
-  action: RootAction | RootAction[];
+  action: ((id: string) => RootAction) | RootAction | (RootAction | ((id: string) => RootAction))[];
 };
 
 export type RuleRow = Atom[];
 
 export type RuleArray = RuleRow[];
+
+export type Game = {
+  id: string;
+  name: string;
+  ruleArray?: string;
+  boardObjectsArrays: string[];
+  useRandomBoardObjects: boolean;
+  numRandomBoardObjects: number;
+  numConsecutiveSuccessfulMovesBeforePromptGuess?: number;
+};
+
+export type ExportedFile = {
+  id: string;
+  version: string;
+  games: { [id: string]: Game };
+  ruleArrays: { [id: string]: { id: string; name: string; stringified: string; order?: number[] } };
+  boardObjectsArrays: {
+    [id: string]: { id: string; name: string; value: BoardObjectType[] };
+  };
+};

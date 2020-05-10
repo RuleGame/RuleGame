@@ -1,32 +1,23 @@
+import React from 'react';
 import { Grommet } from 'grommet';
-import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
-import { Dispatch } from 'redux';
-
+import { hot } from 'react-hot-loader/root';
+import { useSelector } from 'react-redux';
+import Layers from './components/Layers';
+import Notifications from './components/Notifications';
 import EntrancePage from './pages/EntrancePage';
 import RuleGamePage from './pages/RuleGamePage';
-import { layersSelector, pageSelector } from './store/selectors';
-import Layers from './components/Layers';
-import { removeLayer } from './store/actions/layers';
-import { RootAction } from './store/actions';
-
-const StyledApp = styled.div<{}>``;
+import { pageSelector } from './store/selectors';
 
 const App = () => {
-  const dispatch: Dispatch<RootAction> = useDispatch();
   const page = useSelector(pageSelector);
-  const handleCloseLayer = useCallback((layerId: string) => dispatch(removeLayer(layerId)), [
-    dispatch,
-  ]);
-  const layers = useSelector(layersSelector);
 
   return (
-    <Grommet plain>
-      <StyledApp>{page === 'Entrance' ? <EntrancePage /> : <RuleGamePage />}</StyledApp>
-      <Layers onLayerClose={handleCloseLayer} layers={layers} />
+    <Grommet full plain>
+      {page === 'Entrance' ? <EntrancePage /> : <RuleGamePage />}
+      <Layers />
+      <Notifications />
     </Grommet>
   );
 };
 
-export default App;
+export default hot(App);

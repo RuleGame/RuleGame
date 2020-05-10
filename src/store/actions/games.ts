@@ -1,39 +1,72 @@
 import { createAction, createAsyncAction } from 'typesafe-actions';
 import shortid from 'shortid';
 // eslint-disable-next-line import/no-cycle
-import { BoardObjectType, RuleArray } from '../../@types';
+import { BoardObjectType, Game, RuleArray } from '../../@types';
 
-export const addGame = createAsyncAction(
+export const loadGames = createAsyncAction(
   [
-    'games/ADD_GAME_REQUEST',
-    (name: string, ruleArray: string, boardObjectsArray: string, id?: string) => ({
-      name,
-      ruleArray,
-      boardObjectsArray,
-      id: id ?? shortid(),
+    'games/LOAD_GAMES_REQUEST',
+    (file: File, id: string = shortid()) => ({
+      file,
+      id,
     }),
   ],
   [
-    'games/ADD_GAME_SUCCESS',
+    'games/LOAD_GAMES_SUCCESS',
     (
-      name: string,
-      ruleArray: RuleArray,
-      stringifiedRuleArray: string,
-      boardObjectsArray: BoardObjectType[],
-      stringifiedBoardObjectsArray: string,
-      id?: string,
+      games: { [id: string]: Game },
+      ruleArrays: {
+        [id: string]: { id: string; name: string; stringified: string; value: RuleArray };
+      },
+      boardObjectsArrays: {
+        [id: string]: { id: string; name: string; stringified: string; value: BoardObjectType[] };
+      },
+      id: string,
     ) => ({
-      id: id ?? shortid(),
-      name,
-      ruleArray,
-      ruleArrayId: shortid(),
-      stringifiedRuleArray,
-      boardObjectsArrayId: shortid(),
-      boardObjectsArray,
-      stringifiedBoardObjectsArray,
+      games,
+      ruleArrays,
+      boardObjectsArrays,
+      id,
     }),
   ],
-  ['games/ADD_GAME_FAILURE', (error: Error) => ({ error })],
+  ['games/LOAD_GAMES_FAILURE', (error: Error, id: string) => ({ error, id })],
+)();
+
+export const addGame = createAction(
+  'games/ADD_GAME',
+  (
+    name: string,
+    ruleArray: string,
+    boardObjectsArrays: string[],
+    useRandomBoardObjects: boolean,
+    numRandomBoardObjects: number,
+    numConsecutiveSuccessfulMovesBeforePromptGuess?: number,
+    id = shortid(),
+  ) => ({
+    name,
+    id,
+    ruleArray,
+    boardObjectsArrays,
+    useRandomBoardObjects,
+    numRandomBoardObjects,
+    numConsecutiveSuccessfulMovesBeforePromptGuess,
+  }),
+)();
+
+export const setGameRuleArray = createAction(
+  'games/SET_GAME_RULE_ARRAY',
+  (id: string, ruleArray: string) => ({
+    id,
+    ruleArray,
+  }),
+)();
+
+export const setGameBoardObjectsArrays = createAction(
+  'games/SET_GAME_BOARD_OBJECTS_ARRAYS',
+  (id: string, boardObjectsArrays: string[]) => ({
+    id,
+    boardObjectsArrays,
+  }),
 )();
 
 export const enterGame = createAction('games/ENTER_GAME', (id: string) => ({ id }))();

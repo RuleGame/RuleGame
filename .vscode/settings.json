@@ -1,4 +1,6 @@
 {
   "cucumberautocomplete.steps": ["cypress/integration/**/*.ts"],
-  "cucumberautocomplete.syncfeatures": "cypress/integration/**/*/*.feature"
+  "cucumberautocomplete.syncfeatures": "cypress/integration/**/*/*.feature",
+  "eslint.alwaysShowStatus": true,
+  "eslint.lintTask.enable": true
 }

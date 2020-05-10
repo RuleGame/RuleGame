@@ -26,3 +26,7 @@ cypress/videos
 .idea/
 cypress/screenshots
 test-results/
+
+.vscode
+
+*.log

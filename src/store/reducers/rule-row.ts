@@ -20,7 +20,8 @@ import {
   setRuleRowIndex,
   touch,
 } from '../actions/rule-row';
-import atomMatch from '../../utils/atom-match';
+import atomMatch, { xYToPosition } from '../../utils/atom-match';
+import { DEBUG_ENABLED } from '../../constants/env';
 
 export type State = {
   atomCounts: { [atomId: string]: number };
@@ -47,6 +48,9 @@ export type State = {
   gameCompleted: boolean;
   parsingRuleArray: boolean;
   error?: Error;
+  order?: number[];
+  numConsecutiveSuccessfulMoves: number;
+  currGameId?: string;
 };
 
 export const initialState: State = {
@@ -62,12 +66,63 @@ export const initialState: State = {
   numRuleRows: 0,
   lastMoveSuccessful: false,
   paused: false,
-  debugMode: false,
+  debugMode: DEBUG_ENABLED && false,
   rawRuleArrayString: undefined,
   gameCompleted: false,
   parsingRuleArray: false,
   error: undefined,
+  order: [],
+  numConsecutiveSuccessfulMoves: 0,
+  currGameId: undefined,
 };
+
+const getBoardObjectsToBucketsToAtoms = (
+  index: number,
+  totalMoveHistory: DropAttempt[],
+  initialBoardObjectsById: {
+    [boardObjectId: string]: BoardObjectType;
+  },
+  boardObjectsById: {
+    [boardObjectId: string]: BoardObjectType;
+  },
+  atomsByRowIndex: { [atomId: string]: Atom }[],
+  atomCounts: { [atomId: string]: number },
+) =>
+  Object.values(boardObjectsById)
+    .filter((boardObject) => boardObject.shape !== Shape.CHECK)
+    .reduce<{ [boardObjectId: string]: { [bucket: number]: Set<string> } }>(
+      (acc, boardObject) => ({
+        ...acc,
+        [boardObject.id]: {
+          ...Object.values(atomsByRowIndex[index])
+            .filter(atomMatch(boardObject, atomCounts))
+            .reduce<{ [bucket: number]: Set<string> }>(
+              (acc, atom) => {
+                atom.fns
+                  .map((fn) => fn(boardObject.id, totalMoveHistory, initialBoardObjectsById))
+                  .forEach((bucket) => {
+                    if (Number.isNaN(bucket)) {
+                      acc[BucketPosition.TR].add(atom.id);
+                      acc[BucketPosition.TL].add(atom.id);
+                      acc[BucketPosition.BR].add(atom.id);
+                      acc[BucketPosition.BL].add(atom.id);
+                    } else if (Number.isFinite(bucket)) {
+                      acc[bucket].add(atom.id);
+                    }
+                  });
+                return acc;
+              },
+              {
+                [BucketPosition.TR]: new Set<string>(),
+                [BucketPosition.TL]: new Set<string>(),
+                [BucketPosition.BR]: new Set<string>(),
+                [BucketPosition.BL]: new Set<string>(),
+              },
+            ),
+        },
+      }),
+      {},
+    );
 
 const reducer = (state: State = initialState, action: RootAction): State => {
   switch (action.type) {
@@ -97,6 +152,9 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         gameCompleted: false,
         parsingRuleArray: false,
         rawRuleArrayString: action.payload.rawRuleArrayString,
+        order: action.payload.order,
+        numConsecutiveSuccessfulMoves: 0,
+        currGameId: action.payload.gameId,
       };
     }
 
@@ -105,46 +163,54 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       // 1. If no possible moves, advance to next rule row or end game.
       // (An epic must detect this and continue to the next rule row then)
       // 2. Hover thingy if possible to drop.
+      const preOrderBoardObjectsToBucketsToAtoms = getBoardObjectsToBucketsToAtoms(
+        action.payload.index,
+        state.totalMoveHistory,
+        state.initialBoardObjectsById,
+        state.boardObjectsById,
+        state.atomsByRowIndex,
+        state.atomCounts,
+      );
+
+      let boardObjectsToBucketsToAtoms = preOrderBoardObjectsToBucketsToAtoms;
+      if (state.order) {
+        const boardObjectsIdsByPosition: {
+          [position: number]: string[];
+        } = Object.entries(preOrderBoardObjectsToBucketsToAtoms).reduce<{
+          [position: number]: string[];
+        }>((acc, [boardObjectId, bucketsToAtoms]) => {
+          if (Object.values(bucketsToAtoms).some((atoms) => atoms.size > 0)) {
+            const pos = xYToPosition(
+              state.initialBoardObjectsById[boardObjectId].x,
+              state.initialBoardObjectsById[boardObjectId].y,
+            );
+
+            if (!(pos in acc)) {
+              acc[pos] = [];
+            }
+
+            acc[pos].push(boardObjectId);
+          }
+          return acc;
+        }, {});
+
+        const highestPos = state.order.find((pos) => pos in boardObjectsIdsByPosition);
+        if (highestPos) {
+          const validBoardObjects = boardObjectsIdsByPosition[highestPos];
+          boardObjectsToBucketsToAtoms = validBoardObjects.reduce(
+            (acc, validBoardObject) => ({
+              ...acc,
+              [validBoardObject]: preOrderBoardObjectsToBucketsToAtoms[validBoardObject],
+            }),
+            {},
+          );
+        }
+      }
+
       return {
         ...state,
         ruleRowIndex: action.payload.index,
-        boardObjectsToBucketsToAtoms: Object.values(state.boardObjectsById)
-          .filter((boardObject) => boardObject.shape !== Shape.CHECK)
-          .reduce(
-            (acc, boardObject) => ({
-              ...acc,
-              [boardObject.id]: {
-                ...Object.values(state.atomsByRowIndex[action.payload.index])
-                  .filter(atomMatch(boardObject, state.atomCounts))
-                  .reduce<{ [bucket: number]: Set<string> }>(
-                    (acc, atom) => {
-                      atom.fns
-                        .map((fn) =>
-                          fn(boardObject.id, state.totalMoveHistory, state.initialBoardObjectsById),
-                        )
-                        .forEach((bucket) => {
-                          if (Number.isNaN(bucket) && state.totalMoveHistory.length === 0) {
-                            acc[BucketPosition.TR].add(atom.id);
-                            acc[BucketPosition.TL].add(atom.id);
-                            acc[BucketPosition.BR].add(atom.id);
-                            acc[BucketPosition.BL].add(atom.id);
-                          } else if (!Number.isNaN(bucket)) {
-                            acc[bucket].add(atom.id);
-                          }
-                        });
-                      return acc;
-                    },
-                    {
-                      [BucketPosition.TR]: new Set<string>(),
-                      [BucketPosition.TL]: new Set<string>(),
-                      [BucketPosition.BR]: new Set<string>(),
-                      [BucketPosition.BL]: new Set<string>(),
-                    },
-                  ),
-              },
-            }),
-            {},
-          ),
+        boardObjectsToBucketsToAtoms,
       };
     }
 
@@ -157,13 +223,16 @@ const reducer = (state: State = initialState, action: RootAction): State => {
     case getType(move): {
       const { dragged, dropped } = action.payload.dropAttempt;
 
-      const matchedAtoms = Array.from(state.boardObjectsToBucketsToAtoms[dragged][dropped]);
+      const matchedAtoms = Array.from(
+        state.boardObjectsToBucketsToAtoms?.[dragged]?.[dropped] ?? [],
+      );
 
       if (matchedAtoms.length === 0) {
         return {
           ...state,
           dropAttempts: [...state.dropAttempts, action.payload.dropAttempt],
           lastMoveSuccessful: false,
+          numConsecutiveSuccessfulMoves: 0,
         };
       }
 
@@ -189,43 +258,15 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         totalMoveHistory: newTotalMoveHistory,
         lastMoveSuccessful: true,
         paused: true,
-        boardObjectsToBucketsToAtoms: Object.values(state.boardObjectsById)
-          .filter((boardObject) => boardObject.shape !== Shape.CHECK)
-          .reduce(
-            (acc, boardObject) => ({
-              ...acc,
-              [boardObject.id]: {
-                ...Object.values(state.atomsByRowIndex[state.ruleRowIndex])
-                  .filter(atomMatch(boardObject, state.atomCounts))
-                  .reduce<{ [bucket: number]: Set<string> }>(
-                    (acc, atom) => {
-                      atom.fns
-                        .map((fn) =>
-                          fn(boardObject.id, newTotalMoveHistory, state.initialBoardObjectsById),
-                        )
-                        .forEach((bucket) => {
-                          if (Number.isNaN(bucket) && newTotalMoveHistory.length === 0) {
-                            acc[BucketPosition.TR].add(atom.id);
-                            acc[BucketPosition.TL].add(atom.id);
-                            acc[BucketPosition.BR].add(atom.id);
-                            acc[BucketPosition.BL].add(atom.id);
-                          } else if (!Number.isNaN(bucket)) {
-                            acc[bucket].add(atom.id);
-                          }
-                        });
-                      return acc;
-                    },
-                    {
-                      [BucketPosition.TR]: new Set<string>(),
-                      [BucketPosition.TL]: new Set<string>(),
-                      [BucketPosition.BR]: new Set<string>(),
-                      [BucketPosition.BL]: new Set<string>(),
-                    },
-                  ),
-              },
-            }),
-            {},
-          ),
+        boardObjectsToBucketsToAtoms: getBoardObjectsToBucketsToAtoms(
+          state.ruleRowIndex,
+          newTotalMoveHistory,
+          state.initialBoardObjectsById,
+          state.boardObjectsById,
+          state.atomsByRowIndex,
+          state.atomCounts,
+        ),
+        numConsecutiveSuccessfulMoves: state.numConsecutiveSuccessfulMoves + 1,
       };
     }
 

@@ -5,14 +5,26 @@ import { BoardObjectType } from '../../@types';
 export const addBoardObjectsArray = createAsyncAction(
   [
     'board-objects-arrays/ADD_BOARD_OBJECTS_ARRAY',
-    (boardObjectsArrayString: string) => ({ boardObjectsArrayString }),
+    (name: string, boardObjectsArrayString: string, addToAllGames: boolean = false) => ({
+      name,
+      boardObjectsArrayString,
+      addToAllGames,
+    }),
   ],
   [
     'board-objects-arrays/ADD_BOARD_OBJECTS_ARRAY_SUCCESS',
-    (id: string, boardObjectsArray: BoardObjectType[], stringified: string) => ({
+    (
+      id: string,
+      name: string,
+      boardObjectsArray: BoardObjectType[],
+      stringified: string,
+      addToAllGames: boolean = false,
+    ) => ({
       id,
       boardObjectsArray,
       stringified,
+      name,
+      addToAllGames,
     }),
   ],
   [

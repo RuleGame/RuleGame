@@ -17,10 +17,18 @@ export const removeBoardObject = createAction(
 
 export const loadRuleArray = createAction(
   'rule-row/LOAD_RULE_ARRAY',
-  (boardObjects: BoardObjectType[], ruleArray: Atom[][], rawRuleArrayString?: string) => ({
+  (
+    boardObjects: BoardObjectType[],
+    ruleArray: Atom[][],
+    gameId: string,
+    rawRuleArrayString?: string,
+    order?: number[],
+  ) => ({
     boardObjects,
     ruleArray,
+    gameId,
     rawRuleArrayString,
+    order,
   }),
 )();
 

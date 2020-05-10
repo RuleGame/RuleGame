@@ -1,7 +1,6 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, CheckBox } from 'grommet';
-import styled from 'styled-components';
+import { Box, Button, CheckBox, Grid, Text } from 'grommet';
 import { Dispatch } from 'redux';
 import { BoardObjectItem, BucketType } from '../@types';
 import { disableDebugMode, enableDebugMode, move, touch } from '../store/actions/rule-row';
@@ -14,117 +13,148 @@ import {
   disabledBucketSelector,
   gameCompletedSelector,
   historyDebugInfoSelector,
+  orderSelector,
   pausedSelector,
   rawAtomsSelector,
   ruleRowIndexSelector,
 } from '../store/selectors';
 import { RootAction } from '../store/actions';
 import { goToPage } from '../store/actions/page';
+import { nextBoardObjectsArray } from '../store/actions/game';
+import GuessRuleForm from './GuessRuleForm';
+import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
+import { DEBUG_ENABLED } from '../constants/env';
 
-const StyledGame = styled('div')<{}>`
-  display: flex;
-`;
+enum GridAreaName {
+  DEBUG_TOGGLE = 'DEBUG_TOGGLE',
+  HISTORY = 'HISTORY',
+  RULE_ARRAY = 'RULE_ARRAY',
+  BOARD = 'BOARD',
+  FORM = 'FORM',
+}
 
-const StyledLog = styled('div')<{}>`
-  display: flex;
-  flex-direction: column;
-  font-size: 0.75em;
-  height: 80vh;
-  overflow: auto;
-`;
-
-const StyledRawAtoms = styled('div')<{}>`
-  display: flex;
-  flex-direction: column;
-  font-size: 0.75em;
-  height: 80vh;
-  overflow: auto;
-`;
-
-const StyledRawAtom = styled('div')<{ highlighted: boolean }>`
-  background-color: ${({ highlighted }) => (highlighted ? 'yellow' : 'none')};
-`;
-
-type GameProps = {
+const Game: React.FunctionComponent<{
   className?: string;
-};
-
-const Game = ({ className }: GameProps): JSX.Element => {
+}> = ({ className }) => {
   const dispatch: Dispatch<RootAction> = useDispatch();
 
   const disabledBucket = useSelector(disabledBucketSelector);
   const boardObjects = useSelector(boardObjectsSelector);
   const boardObjectsToBuckets = useSelector(boardObjectToBucketsSelector);
   const paused = useSelector(pausedSelector);
-  const handleBoardObjectClick = useCallback((boardObject) => dispatch(touch(boardObject.id)), [
-    dispatch,
-  ]);
   const boardObjectsToDebugInfo = useSelector(boardObjectsToDebugInfoSelector);
   const debugModeEnabled = useSelector(debugModeSelector);
-  const handleDebugModeChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (event.target.checked) {
-        dispatch(enableDebugMode());
-      } else {
-        dispatch(disableDebugMode());
-      }
-    },
-    [dispatch],
-  );
-  const handleDrop = useCallback(
-    (bucket: BucketType) => (droppedItem: BoardObjectItem): void => {
-      dispatch(move({ dragged: droppedItem.id, dropped: bucket.pos }));
-    },
-    [dispatch],
-  );
   const historyDebugInfo = useSelector(historyDebugInfoSelector);
   const ruleRowIndex = useSelector(ruleRowIndexSelector);
   const rawAtoms = useSelector(rawAtomsSelector);
   const gameCompleted = useSelector(gameCompletedSelector);
-  const handleFinishedClick = useCallback(() => dispatch(goToPage('Entrance')), [dispatch]);
+  const order = useSelector(orderSelector);
 
   return (
-    <>
-      <CheckBox checked={debugModeEnabled} label="Debug Mode" onChange={handleDebugModeChange} />
-      <StyledGame>
+    <Box pad="small" data-cy={CY_GAME}>
+      <Grid
+        rows={['auto', 'min(70vh, 100vw)', 'auto']}
+        columns={['auto', 'min(70vh, 100vw)', 'auto']}
+        areas={[
+          {
+            name: GridAreaName.DEBUG_TOGGLE,
+            start: [0, 0],
+            end: [2, 0],
+          },
+          {
+            name: GridAreaName.RULE_ARRAY,
+            start: [0, 1],
+            end: [0, 1],
+          },
+          {
+            name: GridAreaName.BOARD,
+            start: [1, 1],
+            end: [1, 1],
+          },
+          {
+            name: GridAreaName.HISTORY,
+            start: [2, 1],
+            end: [2, 1],
+          },
+          {
+            name: GridAreaName.FORM,
+            start: [0, 2],
+            end: [2, 2],
+          },
+        ]}
+      >
+        <Box gridArea={GridAreaName.DEBUG_TOGGLE} justify="center" direction="row">
+          {DEBUG_ENABLED && (
+            <CheckBox
+              checked={debugModeEnabled}
+              label="Debug Mode"
+              onChange={(event) => {
+                if (event.target.checked) {
+                  dispatch(enableDebugMode());
+                } else {
+                  dispatch(disableDebugMode());
+                }
+              }}
+            />
+          )}
+        </Box>
         {debugModeEnabled && rawAtoms && (
-          <StyledRawAtoms>
+          <Box gridArea={GridAreaName.RULE_ARRAY}>
+            {order && (
+              <Box width="small" overflow="auto" margin={{ bottom: 'small' }}>
+                <Text size="small">{JSON.stringify(order)}</Text>
+              </Box>
+            )}
             {rawAtoms.split('\n').map((rawAtom, i) => (
-              <StyledRawAtom key={rawAtom} highlighted={ruleRowIndex === i}>
-                {rawAtom}
-              </StyledRawAtom>
+              <Box key={rawAtom} background={ruleRowIndex === i ? 'yellow' : 'none'}>
+                <Text size="small">{rawAtom}</Text>
+              </Box>
             ))}
-          </StyledRawAtoms>
+          </Box>
         )}
-        <Board
-          className={className}
-          onBoardObjectClick={handleBoardObjectClick}
-          boardObjects={boardObjects}
-          boardObjectsToBuckets={boardObjectsToBuckets}
-          boardObjectsToDebugInfo={boardObjectsToDebugInfo}
-          paused={paused}
-          disabledBucket={disabledBucket}
-          onDrop={handleDrop}
-        />
+        <Box gridArea={GridAreaName.BOARD} align="center">
+          <Board
+            className={className}
+            onBoardObjectClick={(boardObject) => dispatch(touch(boardObject.id))}
+            boardObjects={boardObjects}
+            boardObjectsToBuckets={boardObjectsToBuckets}
+            boardObjectsToDebugInfo={boardObjectsToDebugInfo}
+            paused={paused}
+            disabledBucket={disabledBucket}
+            onDrop={(bucket: BucketType) => (droppedItem: BoardObjectItem): void => {
+              dispatch(move({ dragged: droppedItem.id, dropped: bucket.pos }));
+            }}
+          />
+        </Box>
         {historyDebugInfo && (
-          <StyledLog>
+          <Box gridArea={GridAreaName.HISTORY} overflow="auto">
             History Log:
             {historyDebugInfo.map((dropAttemptString) =>
               dropAttemptString.split('\n').map((item) => {
                 return <div key={item}>{item}</div>;
               }),
             )}
-          </StyledLog>
+          </Box>
         )}
-      </StyledGame>
-      {gameCompleted && (
-        <div>
-          No more moves left!
-          <br />
-          <Button label="Finish" onClick={handleFinishedClick} />
-        </div>
-      )}
-    </>
+        <Box gridArea={GridAreaName.FORM} align="center">
+          {!gameCompleted && (
+            <Box gap="small">
+              <Button label="Give up" onClick={() => dispatch(goToPage('Entrance'))} />
+              <Button label="New Display" onClick={() => dispatch(nextBoardObjectsArray())} />
+            </Box>
+          )}
+          {gameCompleted && (
+            <Box gap="medium">
+              <Text data-cy={CY_NO_MORE_MOVES}>No more moves left!</Text>
+              <Button label="Finish" onClick={() => dispatch(goToPage('Entrance'))} />
+              <Button label="New Display" onClick={() => dispatch(nextBoardObjectsArray())} />
+              <Button label="Try a new rule" onClick={() => dispatch(goToPage('Entrance'))} />
+              <GuessRuleForm />
+            </Box>
+          )}
+        </Box>
+      </Grid>
+    </Box>
   );
 };
 

@@ -5,17 +5,12 @@ import { BoardObjectType } from '../../@types';
 import { RootAction } from '../actions';
 import removeFirst from '../../utils/removeFirst';
 import { addBoardObjectsArray, removeBoardObjectsArray } from '../actions/board-objects-arrays';
-import { addGame } from '../actions/games';
-import { PersistKeys } from './__helpers__/PersistKeys';
-
-const persistConfig = {
-  key: PersistKeys.BOARD_OBJECTS_ARRAYS,
-  storage,
-};
+import { loadGames } from '../actions/games';
+import { PersistKeys, PersistVersions } from './__helpers__/PersistConstants';
 
 export type State = {
   byId: {
-    [id: string]: { id: string; stringified: string; value: BoardObjectType[] };
+    [id: string]: { id: string; name: string; stringified: string; value: BoardObjectType[] };
   };
   allIds: string[];
   isRequesting: boolean;
@@ -44,6 +39,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
             id: action.payload.id,
             value: action.payload.boardObjectsArray,
             stringified: action.payload.stringified,
+            name: action.payload.name,
           },
         },
         allIds: [...state.allIds, action.payload.id],
@@ -68,18 +64,21 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       };
     }
 
-    case getType(addGame.success): {
+    case getType(loadGames.success): {
+      const allIdsSet = new Set(state.allIds);
+
       return {
         ...state,
         byId: {
           ...state.byId,
-          [action.payload.boardObjectsArrayId]: {
-            id: action.payload.boardObjectsArrayId,
-            value: action.payload.boardObjectsArray,
-            stringified: action.payload.stringifiedBoardObjectsArray,
-          },
+          ...action.payload.boardObjectsArrays,
         },
-        allIds: [...state.allIds, action.payload.boardObjectsArrayId],
+        allIds: [
+          ...state.allIds,
+          ...Object.values(action.payload.boardObjectsArrays)
+            .filter((boardObjectsArray) => !allIdsSet.has(boardObjectsArray.id))
+            .map((boardObjectsArray) => boardObjectsArray.id),
+        ],
       };
     }
 
@@ -88,4 +87,11 @@ const reducer = (state: State = initialState, action: RootAction): State => {
   }
 };
 
-export default persistReducer(persistConfig, reducer);
+export default persistReducer(
+  {
+    version: PersistVersions[PersistKeys.BOARD_OBJECTS_ARRAYS],
+    key: PersistKeys.BOARD_OBJECTS_ARRAYS,
+    storage,
+  },
+  reducer,
+);

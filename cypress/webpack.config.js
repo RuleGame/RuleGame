@@ -2,10 +2,11 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js'],
   },
+  node: { fs: 'empty', child_process: 'empty', readline: 'empty' },
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /\.(ts|js)$/,
         exclude: [/node_modules/],
         use: [
           {
@@ -21,6 +22,14 @@ module.exports = {
         use: [
           {
             loader: 'cypress-cucumber-preprocessor/loader',
+          },
+        ],
+      },
+      {
+        test: /\.features$/,
+        use: [
+          {
+            loader: 'cypress-cucumber-preprocessor/lib/featuresLoader',
           },
         ],
       },

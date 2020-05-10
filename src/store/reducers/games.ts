@@ -3,57 +3,48 @@ import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/es/storage';
 import { RootAction } from '../actions';
 import removeFirst from '../../utils/removeFirst';
-import { addGame, removeGame } from '../actions/games';
-import { PersistKeys } from './__helpers__/PersistKeys';
-
-const persistConfig = {
-  key: PersistKeys.GAMES,
-  storage,
-};
+import {
+  addGame,
+  loadGames,
+  removeGame,
+  setGameBoardObjectsArrays,
+  setGameRuleArray,
+} from '../actions/games';
+import { PersistKeys, PersistVersions } from './__helpers__/PersistConstants';
+import { Game } from '../../@types';
+import { addBoardObjectsArray } from '../actions/board-objects-arrays';
 
 export type State = {
   byId: {
-    [id: string]: { id: string; name: string; ruleArray: string; boardObjectsArray: string };
+    [id: string]: Game;
   };
   allIds: string[];
-  isRequesting: boolean;
 };
 
 export const initialState: State = {
   byId: {},
   allIds: [],
-  isRequesting: false,
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
   switch (action.type) {
-    case getType(addGame.request): {
-      return {
-        ...state,
-        isRequesting: true,
-      };
-    }
-    case getType(addGame.success): {
+    case getType(addGame): {
       return {
         ...state,
         byId: {
           ...state.byId,
           [action.payload.id]: {
             id: action.payload.id,
-            ruleArray: action.payload.ruleArrayId,
-            boardObjectsArray: action.payload.boardObjectsArrayId,
+            boardObjectsArrays: [...action.payload.boardObjectsArrays],
             name: action.payload.name,
+            ruleArray: action.payload.ruleArray,
+            useRandomBoardObjects: action.payload.useRandomBoardObjects,
+            numRandomBoardObjects: action.payload.numRandomBoardObjects,
+            numConsecutiveSuccessfulMovesBeforePromptGuess:
+              action.payload.numConsecutiveSuccessfulMovesBeforePromptGuess,
           },
         },
         allIds: [...state.allIds, action.payload.id],
-        isRequesting: false,
-      };
-    }
-
-    case getType(addGame.failure): {
-      return {
-        ...state,
-        isRequesting: false,
       };
     }
 
@@ -67,9 +58,76 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       };
     }
 
+    case getType(setGameRuleArray): {
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [action.payload.id]: {
+            ...state.byId[action.payload.id],
+            ruleArray: action.payload.ruleArray,
+          },
+        },
+      };
+    }
+
+    case getType(setGameBoardObjectsArrays): {
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [action.payload.id]: {
+            ...state.byId[action.payload.id],
+            boardObjectsArrays: [...action.payload.boardObjectsArrays],
+          },
+        },
+      };
+    }
+
+    case getType(loadGames.success): {
+      const allIdsSet = new Set(state.allIds);
+
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          ...action.payload.games,
+        },
+        allIds: [
+          ...state.allIds,
+          ...Object.values(action.payload.games)
+            .filter((game) => !allIdsSet.has(game.id))
+            .map((game) => game.id),
+        ],
+      };
+    }
+
+    case getType(addBoardObjectsArray.success): {
+      return {
+        ...state,
+        byId: Object.entries(state.byId).reduce(
+          (acc, [id, curr]) => ({
+            ...acc,
+            [id]: {
+              ...curr,
+              boardObjectsArrays: [...curr.boardObjectsArrays, action.payload.id],
+            },
+          }),
+          {},
+        ),
+      };
+    }
+
     default:
       return state;
   }
 };
 
-export default persistReducer(persistConfig, reducer);
+export default persistReducer(
+  {
+    version: PersistVersions[PersistKeys.GAMES],
+    key: PersistKeys.GAMES,
+    storage,
+  },
+  reducer,
+);

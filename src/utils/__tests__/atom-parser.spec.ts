@@ -31,11 +31,11 @@ it('can parse all atom values', () => {
 
   expect(firstAtom.fns.map((fn) => fn('1', totalMoveHistory, boardObjects))).toEqual([
     BucketPosition.TR,
-    BucketPosition.BL,
+    BucketPosition.BR,
   ]);
   expect(secondAtom.fns.map((fn) => fn('1', totalMoveHistory, boardObjects))).toEqual([
-    BucketPosition.BL,
     BucketPosition.BR,
+    BucketPosition.BL,
   ]);
 });
 
@@ -59,8 +59,8 @@ it('can parse * function', () => {
   ).toEqual([
     BucketPosition.TL,
     BucketPosition.TR,
-    BucketPosition.BL,
     BucketPosition.BR,
+    BucketPosition.BL,
   ] as BucketPosition[]);
 });
 
@@ -191,19 +191,31 @@ it('can parse modulo functions', () => {
   };
 
   expect(atom.fns.map((fn) => fn(boardObjectId, totalMoveHistory, boardObjects))).toEqual([
-    BucketPosition.TL,
+    BucketPosition.BL,
   ]);
 });
 
-it('returns NaNs if history is empty', () => {
+it('returns NaNs for a bucket function if its inputs are not to be found in the history but still matches static conditions like shape and color', () => {
   const atoms = atomParser('(*,*,*,*,[(pc+1)%4,p,ps,pcs])');
   expect(atoms).toHaveLength(1);
   const atom = atoms[0];
 
   const boardObjectId = '1';
-  const totalMoveHistory: DropAttempt[] = [];
+  const totalMoveHistory: DropAttempt[] = [
+    {
+      dragged: '0',
+      dropped: BucketPosition.BR,
+    },
+  ];
 
   const boardObjects: { [id: number]: BoardObjectType } = {
+    0: {
+      color: Color.BLUE,
+      id: '1',
+      shape: Shape.CIRCLE,
+      x: 1,
+      y: 2,
+    },
     1: {
       color: Color.RED,
       id: '1',
@@ -215,7 +227,7 @@ it('returns NaNs if history is empty', () => {
 
   expect(atom.fns.map((fn) => fn(boardObjectId, totalMoveHistory, boardObjects))).toEqual([
     NaN,
-    NaN,
+    BucketPosition.BR,
     NaN,
     NaN,
   ]);

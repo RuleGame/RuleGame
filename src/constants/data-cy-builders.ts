@@ -1,6 +1,3 @@
-import { Game, Shape } from '../@types';
+export const cyShapeObject = (id: string) => `shape-object-${id}`;
 
-export const shapeObjectCy = <T extends string = Shape>(id: string, shape: T) =>
-  `shape-object-${id}-${shape}`;
-
-export const entranceButtonCy = (game: Game) => `game-${game}`;
+export const cySelector = (value: string) => `[data-cy=${value}]`;

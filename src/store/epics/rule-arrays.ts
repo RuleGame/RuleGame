@@ -6,6 +6,7 @@ import { addRuleArray } from '../actions/rule-arrays';
 import { RootEpic } from '../../@types/epic';
 import { parseRuleArray } from '../../utils/atom-parser';
 import { addLayer, removeLayer } from '../actions/layers';
+import { addNotification } from '../actions/notifications';
 
 const addRuleArrayRequestEpic: RootEpic = (action$) =>
   action$.pipe(
@@ -13,14 +14,22 @@ const addRuleArrayRequestEpic: RootEpic = (action$) =>
     map((action) => {
       try {
         return addRuleArray.success(
-          shortid(),
+          action.payload.id,
+          action.payload.name,
           parseRuleArray(action.payload.rawRuleArray),
           action.payload.rawRuleArray,
+          action.payload.rawOrder ? (JSON.parse(action.payload.rawOrder) as number[]) : undefined,
         );
       } catch (error) {
         return addRuleArray.failure(error);
       }
     }),
+  );
+
+const addRuleArraySuccessEpic: RootEpic = (action$) =>
+  action$.pipe(
+    filter(isActionOf(addRuleArray.success)),
+    map((action) => addNotification(`Added new rule array: ${action.payload.name}`)),
   );
 
 const addRuleArrayFailureEpic: RootEpic = (action$) =>
@@ -38,4 +47,8 @@ const addRuleArrayFailureEpic: RootEpic = (action$) =>
     }),
   );
 
-export default combineEpics(addRuleArrayRequestEpic, addRuleArrayFailureEpic);
+export default combineEpics(
+  addRuleArrayRequestEpic,
+  addRuleArrayFailureEpic,
+  addRuleArraySuccessEpic,
+);
