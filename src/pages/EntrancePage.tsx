@@ -64,14 +64,14 @@ const EntrancePage = () => {
         </Box>
       </Box>
       {EDIT_GAMES_ENABLED && (
-        <>
+        <Box gap="medium" align="center">
           <CheckBox
             checked={showEditGames}
             label="Edit Games"
             onChange={(event) => setShowEditGames(event.target.checked)}
           />
           <GamesFilesButtons />
-        </>
+        </Box>
       )}
       {showEditGames && (
         <Box direction="row" gap="medium" align="stretch">
