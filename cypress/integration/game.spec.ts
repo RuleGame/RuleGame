@@ -281,7 +281,7 @@ describe('basic', () => {
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });
 
-  it.only('allows valid drops for any objects whose previous color shape has not been dropped yet while matching atom shape and color', () => {
+  it('allows valid drops for any objects whose previous color shape has not been dropped yet while matching atom shape and color', () => {
     cy.addAndEnterGame(
       '(1,square,black,1,[p])',
       [{ id: '1', color: Color.BLACK, x: 1, y: 1, shape: Shape.SQUARE }],
