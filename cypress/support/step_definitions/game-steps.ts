@@ -3,9 +3,9 @@ import createSagaMiddleware, { SagaMiddleware } from 'redux-saga';
 import { BucketPosition, Shape } from '../../../src/@types';
 import { enterGame, loadGames } from '../../../src/store/actions/games';
 import { enableDebugMode, move } from '../../../src/store/actions/rule-row';
-import { FEEDBACK_DURATION } from '../../../src/store/epics/rule-row';
 import { cySelector, cyShapeObject } from '../../../src/constants/data-cy-builders';
 import { CY_GAME, CY_NO_MORE_MOVES } from '../../../src/constants/data-cy';
+import { FEEDBACK_DURATION } from '../../../src/constants';
 
 let sagaMiddleware: SagaMiddleware;
 

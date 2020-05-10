@@ -1,11 +1,17 @@
 import { createAction, createAsyncAction } from 'typesafe-actions';
+import shortid from 'shortid';
 // eslint-disable-next-line import/no-cycle
 import { RuleArray } from '../../@types';
 
 export const addRuleArray = createAsyncAction(
   [
     'rule-arrays/ADD_RULE_ARRAY_REQUEST',
-    (name: string, rawRuleArray: string, rawOrder?: string) => ({ name, rawRuleArray, rawOrder }),
+    (name: string, rawRuleArray: string, rawOrder?: string, id: string = shortid()) => ({
+      name,
+      rawRuleArray,
+      rawOrder,
+      id,
+    }),
   ],
   [
     'rule-arrays/ADD_RULE_ARRAY_SUCCESS',

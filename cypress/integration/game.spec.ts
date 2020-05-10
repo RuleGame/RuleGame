@@ -2,23 +2,22 @@
 /// <reference types="cypress" />
 import createSagaMiddleware, { SagaMiddleware } from 'redux-saga';
 import { enterGame, loadGames } from '../../src/store/actions/games';
-import { CY_GAME, CY_NO_MORE_MOVES } from '../../src/constants/data-cy';
+import { CY_GAME, CY_NO_MORE_MOVES, CyLayer } from '../../src/constants/data-cy';
 import { cySelector, cyShapeObject } from '../../src/constants/data-cy-builders';
-import { BucketPosition, Shape } from '../../src/@types';
+import { BucketPosition, Color, Shape } from '../../src/@types';
 import { enableDebugMode, move } from '../../src/store/actions/rule-row';
-import { FEEDBACK_DURATION } from '../../src/store/epics/rule-row';
+import { FEEDBACK_DURATION } from '../../src/constants';
 
 describe('basic', () => {
   let sagaMiddleware: SagaMiddleware;
 
-  const checkMove = (object: string, isValid: boolean) => {
+  const checkMove = (object: string, isValid: boolean = true) => {
     cy.take(move({ dragged: object, dropped: BucketPosition.BL }), sagaMiddleware, move);
     cy.wait(1.25 * FEEDBACK_DURATION);
     cy.get(`${cySelector(cyShapeObject(object))}[data-shape="${Shape.CHECK}"]`).should(
       isValid ? 'be.visible' : 'not.be.visible',
     );
   };
-
   before(() => {
     cy.visit('/');
     sagaMiddleware = createSagaMiddleware();
@@ -280,5 +279,74 @@ describe('basic', () => {
     checkMove('blue-circle-31', true, BucketPosition.BL);
 
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
+  });
+});
+
+describe.only('Guess Prompt', () => {
+  before(() => {
+    cy.visit('/');
+    cy.dispatch(enableDebugMode());
+  });
+
+  const makeMove = (object: string, bucket: BucketPosition = BucketPosition.BL) => {
+    const sagaMiddleware = createSagaMiddleware();
+    cy.addMiddleware(sagaMiddleware);
+    cy.take(move({ dragged: object, dropped: bucket }), sagaMiddleware, move);
+    cy.wait(1.25 * FEEDBACK_DURATION);
+    cy.removeMiddleware(sagaMiddleware);
+  };
+
+  it('shows guess prompt after 1 move', () => {
+    cy.addAndEnterGame(
+      '(*,*,*,*,*)',
+      [
+        { id: '1', color: Color.BLACK, x: 1, y: 1, shape: Shape.SQUARE },
+        { id: '2', color: Color.BLACK, x: 2, y: 1, shape: Shape.SQUARE },
+      ],
+      1,
+    );
+    makeMove('1');
+    cy.get(cySelector(CyLayer.GUESS_PROMPT)).should('be.visible');
+
+    cy.get(cySelector(CyLayer.GUESS_PROMPT))
+      .contains('close')
+      .click();
+  });
+
+  it('shows guess prompt after 2 moves', () => {
+    cy.addAndEnterGame(
+      '(*,*,*,*,*)',
+      [
+        { id: '1', color: Color.BLACK, x: 1, y: 1, shape: Shape.SQUARE },
+        { id: '2', color: Color.BLACK, x: 2, y: 1, shape: Shape.SQUARE },
+      ],
+      2,
+    );
+    makeMove('1');
+    cy.get(cySelector(CyLayer.GUESS_PROMPT)).should('not.be.visible');
+    makeMove('2');
+    cy.get(cySelector(CyLayer.GUESS_PROMPT)).should('be.visible');
+
+    cy.get(cySelector(CyLayer.GUESS_PROMPT))
+      .contains('close')
+      .click();
+  });
+
+  it('does not show guess prompt if not provided', () => {
+    cy.addAndEnterGame(
+      '(*,*,*,*,*)',
+      [
+        { id: '1', color: Color.BLACK, x: 1, y: 1, shape: Shape.SQUARE },
+        { id: '2', color: Color.BLACK, x: 2, y: 1, shape: Shape.SQUARE },
+        { id: '3', color: Color.BLACK, x: 3, y: 1, shape: Shape.SQUARE },
+      ],
+      undefined,
+    );
+    makeMove('1');
+    cy.get(cySelector(CyLayer.GUESS_PROMPT)).should('not.be.visible');
+    makeMove('2');
+    cy.get(cySelector(CyLayer.GUESS_PROMPT)).should('not.be.visible');
+    makeMove('3');
+    cy.get(cySelector(CyLayer.GUESS_PROMPT)).should('not.be.visible');
   });
 });

@@ -14,4 +14,5 @@ export type LayerData = {
   }[];
   closeOnEsc: boolean;
   closeOnClickOutside: boolean;
+  dataCyIdentifier?: string;
 };

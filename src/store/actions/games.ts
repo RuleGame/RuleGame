@@ -41,9 +41,10 @@ export const addGame = createAction(
     useRandomBoardObjects: boolean,
     numRandomBoardObjects: number,
     numConsecutiveSuccessfulMovesBeforePromptGuess?: number,
+    id = shortid(),
   ) => ({
     name,
-    id: shortid(),
+    id,
     ruleArray,
     boardObjectsArrays,
     useRandomBoardObjects,

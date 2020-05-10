@@ -14,7 +14,7 @@ const addRuleArrayRequestEpic: RootEpic = (action$) =>
     map((action) => {
       try {
         return addRuleArray.success(
-          shortid(),
+          action.payload.id,
           action.payload.name,
           parseRuleArray(action.payload.rawRuleArray),
           action.payload.rawRuleArray,

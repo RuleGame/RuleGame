@@ -23,8 +23,8 @@ import { numConsecutiveSuccessfulMovesSelector } from '../selectors/rule-row';
 import { addLayer, removeLayer } from '../actions/layers';
 import HappyFace from '../../assets/smiley-face.png';
 import { RootAction } from '../actions';
-
-export const FEEDBACK_DURATION = 1000;
+import { CyLayer } from '../../constants/data-cy';
+import { FEEDBACK_DURATION } from '../../constants';
 
 const moveEpic: RootEpic = (action$, state$) => {
   return action$.pipe(
@@ -62,6 +62,10 @@ const moveEpic: RootEpic = (action$, state$) => {
                 label: 'close',
               },
             ],
+            undefined,
+            undefined,
+            undefined,
+            CyLayer.GUESS_PROMPT,
           ),
         );
       }

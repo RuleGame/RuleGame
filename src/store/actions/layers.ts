@@ -3,6 +3,7 @@ import shortid from 'shortid';
 import { Optional } from 'utility-types';
 // eslint-disable-next-line import/no-cycle
 import { ActionButton } from '../../@types';
+import { CyLayer } from '../../constants/data-cy';
 
 // TODO: Consider a wrapper function that takes in a callback with id as its parameter
 export const addLayer = createAction(
@@ -14,6 +15,7 @@ export const addLayer = createAction(
     id?: string,
     closeOnEsc = true,
     closeOnClickOutside = true,
+    dataCyIdentifier?: CyLayer,
   ) => {
     const actionButtonsWithKeys: ActionButton[] = actionButtons.map(
       (actionButton) =>
@@ -28,6 +30,7 @@ export const addLayer = createAction(
       id: id || shortid(),
       closeOnEsc,
       closeOnClickOutside,
+      dataCyIdentifier,
     };
   },
 )();

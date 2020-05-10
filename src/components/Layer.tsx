@@ -15,7 +15,7 @@ const Layer: React.FunctionComponent<{
       onClickOutside={layer.closeOnClickOutside ? closeLayer : undefined}
       position="top"
     >
-      <Box pad="large" overflow="auto">
+      <Box pad="large" overflow="auto" data-cy={layer.dataCyIdentifier}>
         {typeof (layer.title as string) === 'string' ? (
           <Heading color="red" level="3">
             {layer.title}
