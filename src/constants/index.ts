@@ -18,4 +18,4 @@ export const borderWidth = 1;
 export const borderHeight = 1;
 
 export const FILE_VERSION = '0.0.0';
-export const FEEDBACK_DURATION = 1000;
+export const FEEDBACK_DURATION = 0;
