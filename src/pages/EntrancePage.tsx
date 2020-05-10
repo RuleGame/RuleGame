@@ -11,10 +11,11 @@ import AddGameForm from '../components/AddGameForm';
 import GamesFilesButtons from '../components/GameFilesButtons';
 import AddRuleArrayForm from '../components/AddRuleArrayForm';
 import AddBoardObjectsForm from '../components/AddBoardObjectsArrayForm';
+import { EDIT_GAMES_ENABLED } from '../constants/env';
 
 const EntrancePage = () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
-  const [showEditGames, setShowEditGames] = useState(true);
+  const [showEditGames, setShowEditGames] = useState(EDIT_GAMES_ENABLED && true);
   const games = useSelector(gamesSelector);
 
   return (
@@ -62,12 +63,16 @@ const EntrancePage = () => {
           </Box>
         </Box>
       </Box>
-      <CheckBox
-        checked={showEditGames}
-        label="Edit Games"
-        onChange={(event) => setShowEditGames(event.target.checked)}
-      />
-      <GamesFilesButtons />
+      {EDIT_GAMES_ENABLED && (
+        <>
+          <CheckBox
+            checked={showEditGames}
+            label="Edit Games"
+            onChange={(event) => setShowEditGames(event.target.checked)}
+          />
+          <GamesFilesButtons />
+        </>
+      )}
       {showEditGames && (
         <Box direction="row" gap="medium" align="stretch">
           <AddGameForm />

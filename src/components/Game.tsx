@@ -23,6 +23,7 @@ import { goToPage } from '../store/actions/page';
 import { nextBoardObjectsArray } from '../store/actions/game';
 import GuessRuleForm from './GuessRuleForm';
 import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
+import { DEBUG_ENABLED } from '../constants/env';
 
 enum GridAreaName {
   DEBUG_TOGGLE = 'DEBUG_TOGGLE',
@@ -83,17 +84,19 @@ const Game: React.FunctionComponent<{
         ]}
       >
         <Box gridArea={GridAreaName.DEBUG_TOGGLE} justify="center" direction="row">
-          <CheckBox
-            checked={debugModeEnabled}
-            label="Debug Mode"
-            onChange={(event) => {
-              if (event.target.checked) {
-                dispatch(enableDebugMode());
-              } else {
-                dispatch(disableDebugMode());
-              }
-            }}
-          />
+          {DEBUG_ENABLED && (
+            <CheckBox
+              checked={debugModeEnabled}
+              label="Debug Mode"
+              onChange={(event) => {
+                if (event.target.checked) {
+                  dispatch(enableDebugMode());
+                } else {
+                  dispatch(disableDebugMode());
+                }
+              }}
+            />
+          )}
         </Box>
         {debugModeEnabled && rawAtoms && (
           <Box gridArea={GridAreaName.RULE_ARRAY}>

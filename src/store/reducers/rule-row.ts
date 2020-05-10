@@ -21,6 +21,7 @@ import {
   touch,
 } from '../actions/rule-row';
 import atomMatch, { xYToPosition } from '../../utils/atom-match';
+import { DEBUG_ENABLED } from '../../constants/env';
 
 export type State = {
   atomCounts: { [atomId: string]: number };
@@ -65,7 +66,7 @@ export const initialState: State = {
   numRuleRows: 0,
   lastMoveSuccessful: false,
   paused: false,
-  debugMode: false,
+  debugMode: DEBUG_ENABLED && false,
   rawRuleArrayString: undefined,
   gameCompleted: false,
   parsingRuleArray: false,
