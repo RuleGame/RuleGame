@@ -42,6 +42,7 @@ export const addGame = createAction(
     numRandomBoardObjects: number,
     numConsecutiveSuccessfulMovesBeforePromptGuess?: number,
     id = shortid(),
+    restartIfNotCleared: boolean = false,
   ) => ({
     name,
     id,
@@ -50,6 +51,7 @@ export const addGame = createAction(
     useRandomBoardObjects,
     numRandomBoardObjects,
     numConsecutiveSuccessfulMovesBeforePromptGuess,
+    restartIfNotCleared,
   }),
 )();
 

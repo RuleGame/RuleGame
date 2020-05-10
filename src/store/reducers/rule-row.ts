@@ -51,6 +51,8 @@ export type State = {
   order?: number[];
   numConsecutiveSuccessfulMoves: number;
   currGameId?: string;
+  restartIfNotCleared: boolean;
+  hasRestarted: boolean;
 };
 
 export const initialState: State = {
@@ -74,6 +76,8 @@ export const initialState: State = {
   order: [],
   numConsecutiveSuccessfulMoves: 0,
   currGameId: undefined,
+  restartIfNotCleared: false,
+  hasRestarted: false,
 };
 
 const getBoardObjectsToBucketsToAtoms = (
@@ -155,6 +159,8 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         order: action.payload.order,
         numConsecutiveSuccessfulMoves: 0,
         currGameId: action.payload.gameId,
+        hasRestarted: false,
+        restartIfNotCleared: action.payload.restartIfNotCleared,
       };
     }
 
@@ -211,6 +217,10 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         ...state,
         ruleRowIndex: action.payload.index,
         boardObjectsToBucketsToAtoms,
+        // Going from largest index to 0 indicates a restart
+        hasRestarted:
+          state.hasRestarted ||
+          (state.ruleRowIndex === state.numRuleRows - 1 && action.payload.index === 0),
       };
     }
 

@@ -24,6 +24,7 @@ import { nextBoardObjectsArray } from '../store/actions/game';
 import GuessRuleForm from './GuessRuleForm';
 import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
 import { DEBUG_ENABLED } from '../constants/env';
+import { currGameIdSelector } from '../store/selectors/rule-row';
 
 enum GridAreaName {
   DEBUG_TOGGLE = 'DEBUG_TOGGLE',
@@ -49,6 +50,7 @@ const Game: React.FunctionComponent<{
   const rawAtoms = useSelector(rawAtomsSelector);
   const gameCompleted = useSelector(gameCompletedSelector);
   const order = useSelector(orderSelector);
+  const gameId = useSelector(currGameIdSelector);
 
   return (
     <Box pad="small" data-cy={CY_GAME}>
@@ -149,7 +151,7 @@ const Game: React.FunctionComponent<{
               <Button label="Finish" onClick={() => dispatch(goToPage('Entrance'))} />
               <Button label="New Display" onClick={() => dispatch(nextBoardObjectsArray())} />
               <Button label="Try a new rule" onClick={() => dispatch(goToPage('Entrance'))} />
-              <GuessRuleForm />
+              <GuessRuleForm gameId={gameId as string} />
             </Box>
           )}
         </Box>
