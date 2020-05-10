@@ -350,7 +350,7 @@ describe('Guess Prompt', () => {
     cy.get(cySelector(CyLayer.GUESS_PROMPT)).should('be.visible');
 
     cy.get(cySelector(CyLayer.GUESS_PROMPT))
-      .contains('close')
+      .contains('Continue Playing')
       .click();
   });
 
@@ -369,7 +369,7 @@ describe('Guess Prompt', () => {
     cy.get(cySelector(CyLayer.GUESS_PROMPT)).should('be.visible');
 
     cy.get(cySelector(CyLayer.GUESS_PROMPT))
-      .contains('close')
+      .contains('Continue Playing')
       .click();
   });
 

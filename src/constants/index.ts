@@ -19,3 +19,5 @@ export const borderHeight = 1;
 
 export const FILE_VERSION = '0.0.0';
 export const FEEDBACK_DURATION = 0;
+
+export const RULE_EMAIL_ADDRESS = 'pkantor@wisc.edu';

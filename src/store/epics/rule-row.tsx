@@ -19,12 +19,13 @@ import {
 } from '../selectors';
 import { RootEpic } from '../../@types/epic';
 import { goToPage } from '../actions/page';
-import { numConsecutiveSuccessfulMovesSelector } from '../selectors/rule-row';
+import { currGameIdSelector, numConsecutiveSuccessfulMovesSelector } from '../selectors/rule-row';
 import { addLayer, removeLayer } from '../actions/layers';
 import HappyFace from '../../assets/smiley-face.png';
 import { RootAction } from '../actions';
 import { CyLayer } from '../../constants/data-cy';
 import { FEEDBACK_DURATION } from '../../constants';
+import GuessRuleForm from '../../components/GuessRuleForm';
 
 const moveEpic: RootEpic = (action$, state$) => {
   return action$.pipe(
@@ -55,11 +56,16 @@ const moveEpic: RootEpic = (action$, state$) => {
             <Box height="25vh">
               <Image src={HappyFace} alt="happy-face" fit="contain" />
             </Box>,
-            <Heading>Would you like to guess the rule?</Heading>,
+            <Box align="center">
+              <Heading>Would you like to guess the rule?</Heading>
+              <Box width="50%">
+                <GuessRuleForm gameId={currGameIdSelector(state$.value) as string} />
+              </Box>
+            </Box>,
             [
               {
                 action: (layerId) => removeLayer(layerId),
-                label: 'close',
+                label: 'Continue Playing',
               },
             ],
             undefined,
