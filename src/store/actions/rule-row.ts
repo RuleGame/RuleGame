@@ -23,12 +23,14 @@ export const loadRuleArray = createAction(
     gameId: string,
     rawRuleArrayString?: string,
     order?: number[],
+    restartIfNotCleared: boolean = false,
   ) => ({
     boardObjects,
     ruleArray,
     gameId,
     rawRuleArrayString,
     order,
+    restartIfNotCleared,
   }),
 )();
 

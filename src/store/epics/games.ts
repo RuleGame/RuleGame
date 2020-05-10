@@ -98,6 +98,7 @@ const enterGameEpic: RootEpic = (action$, state$) =>
             id,
             ruleArray.stringified,
             ruleArray.order,
+            game.restartIfNotCleared,
           ),
           goToPage('RuleGame'),
         ];
@@ -131,6 +132,7 @@ const enterGameEpic: RootEpic = (action$, state$) =>
           id,
           ruleArray.stringified,
           ruleArray.order,
+          game.restartIfNotCleared,
         ),
         goToPage('RuleGame'),
       ];

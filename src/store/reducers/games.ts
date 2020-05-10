@@ -42,6 +42,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
             numRandomBoardObjects: action.payload.numRandomBoardObjects,
             numConsecutiveSuccessfulMovesBeforePromptGuess:
               action.payload.numConsecutiveSuccessfulMovesBeforePromptGuess,
+            restartIfNotCleared: action.payload.restartIfNotCleared,
           },
         },
         allIds: [...state.allIds, action.payload.id],
