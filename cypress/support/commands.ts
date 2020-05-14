@@ -129,6 +129,7 @@ const addAndEnterGame = (
   ruleArray: string,
   boardObjectsArray: Optional<BoardObjectType, 'id'>[],
   numConsecutiveSuccessfulMovesBeforePromptGuess?: number,
+  restartIfNotCleared?: boolean,
 ) => {
   const sagaMiddleware = createSagaMiddleware();
   const ruleArrayId = shortid();
@@ -168,6 +169,7 @@ const addAndEnterGame = (
       0,
       numConsecutiveSuccessfulMovesBeforePromptGuess,
       gameId,
+      restartIfNotCleared,
     ),
     sagaMiddleware,
     addGame,

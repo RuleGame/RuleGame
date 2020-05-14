@@ -1,11 +1,12 @@
 import keyBy from 'lodash/keyBy';
 import { getType } from 'typesafe-actions';
 import {
-  Atom,
   BoardObjectId,
   BoardObjectType,
   BucketPosition,
   DropAttempt,
+  RuleArray,
+  RuleRow,
   Shape,
 } from '../../@types';
 import { RootAction } from '../actions';
@@ -25,8 +26,6 @@ import { DEBUG_ENABLED } from '../../constants/env';
 
 export type State = {
   atomCounts: { [atomId: string]: number };
-  // Indexed by rule array index
-  atomsByRowIndex: { [atomId: string]: Atom }[];
   boardObjectsToBucketsToAtoms: {
     [boardObjectId: string]: { [bucket: number]: Set<string> };
   };
@@ -52,12 +51,14 @@ export type State = {
   numConsecutiveSuccessfulMoves: number;
   currGameId?: string;
   restartIfNotCleared: boolean;
-  hasRestarted: boolean;
+  ruleRowsCompleted: number;
+  ruleArray?: RuleArray;
+  // One element per rule row.
+  ruleArrayInfos: { successfulMoves: number }[];
 };
 
 export const initialState: State = {
   atomCounts: {},
-  atomsByRowIndex: [],
   boardObjectsToBucketsToAtoms: {},
   initialBoardObjectsById: {},
   boardObjectsById: {},
@@ -77,11 +78,12 @@ export const initialState: State = {
   numConsecutiveSuccessfulMoves: 0,
   currGameId: undefined,
   restartIfNotCleared: false,
-  hasRestarted: false,
+  ruleRowsCompleted: 0,
+  ruleArray: undefined,
+  ruleArrayInfos: [],
 };
 
 const getBoardObjectsToBucketsToAtoms = (
-  index: number,
   totalMoveHistory: DropAttempt[],
   initialBoardObjectsById: {
     [boardObjectId: string]: BoardObjectType;
@@ -89,8 +91,8 @@ const getBoardObjectsToBucketsToAtoms = (
   boardObjectsById: {
     [boardObjectId: string]: BoardObjectType;
   },
-  atomsByRowIndex: { [atomId: string]: Atom }[],
   atomCounts: { [atomId: string]: number },
+  ruleRow: RuleRow,
 ) =>
   Object.values(boardObjectsById)
     .filter((boardObject) => boardObject.shape !== Shape.CHECK)
@@ -98,7 +100,7 @@ const getBoardObjectsToBucketsToAtoms = (
       (acc, boardObject) => ({
         ...acc,
         [boardObject.id]: {
-          ...Object.values(atomsByRowIndex[index])
+          ...ruleRow
             .filter(atomMatch(boardObject, atomCounts))
             .reduce<{ [bucket: number]: Set<string> }>(
               (acc, atom) => {
@@ -135,15 +137,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
 
       return {
         ...state,
-        atomCounts: action.payload.ruleArray.flat().reduce(
-          (acc, atom) => ({
-            ...acc,
-            [atom.id]: atom.counter,
-          }),
-          {},
-        ),
         boardObjectsToBucketsToAtoms: {},
-        atomsByRowIndex: action.payload.ruleArray.map((atoms) => keyBy(atoms, (atom) => atom.id)),
         initialBoardObjectsById: boardObjectsById,
         boardObjectsById,
         ruleRowIndex: NaN,
@@ -159,23 +153,34 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         order: action.payload.order,
         numConsecutiveSuccessfulMoves: 0,
         currGameId: action.payload.gameId,
-        hasRestarted: false,
         restartIfNotCleared: action.payload.restartIfNotCleared,
+        ruleRowsCompleted: 0,
+        ruleArray: action.payload.ruleArray,
+        ruleArrayInfos: action.payload.ruleArray.map(() => ({
+          successfulMoves: 0,
+        })),
       };
     }
 
     case getType(setRuleRowIndex): {
+      const atomCounts = state.ruleArray![action.payload.index].reduce(
+        (acc, atom) => ({
+          ...acc,
+          [atom.id]: atom.counter,
+        }),
+        {},
+      );
+
       // Why we need to compute all possible moves:
       // 1. If no possible moves, advance to next rule row or end game.
       // (An epic must detect this and continue to the next rule row then)
       // 2. Hover thingy if possible to drop.
       const preOrderBoardObjectsToBucketsToAtoms = getBoardObjectsToBucketsToAtoms(
-        action.payload.index,
         state.totalMoveHistory,
         state.initialBoardObjectsById,
         state.boardObjectsById,
-        state.atomsByRowIndex,
-        state.atomCounts,
+        atomCounts,
+        state.ruleArray![action.payload.index],
       );
 
       let boardObjectsToBucketsToAtoms = preOrderBoardObjectsToBucketsToAtoms;
@@ -215,12 +220,13 @@ const reducer = (state: State = initialState, action: RootAction): State => {
 
       return {
         ...state,
+        atomCounts,
         ruleRowIndex: action.payload.index,
         boardObjectsToBucketsToAtoms,
-        // Going from largest index to 0 indicates a restart
-        hasRestarted:
-          state.hasRestarted ||
-          (state.ruleRowIndex === state.numRuleRows - 1 && action.payload.index === 0),
+        ruleRowsCompleted: state.ruleRowsCompleted + 1,
+        ruleArrayInfos: state.ruleArrayInfos.map((ruleArrayInfo, i) =>
+          i !== state.ruleRowIndex ? ruleArrayInfo : { ...ruleArrayInfo, successfulMoves: 0 },
+        ),
       };
     }
 
@@ -238,6 +244,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       );
 
       if (matchedAtoms.length === 0) {
+        // Made an incorrect move
         return {
           ...state,
           dropAttempts: [...state.dropAttempts, action.payload.dropAttempt],
@@ -269,14 +276,21 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         lastMoveSuccessful: true,
         paused: true,
         boardObjectsToBucketsToAtoms: getBoardObjectsToBucketsToAtoms(
-          state.ruleRowIndex,
           newTotalMoveHistory,
           state.initialBoardObjectsById,
           state.boardObjectsById,
-          state.atomsByRowIndex,
           state.atomCounts,
+          state.ruleArray![state.ruleRowIndex],
         ),
         numConsecutiveSuccessfulMoves: state.numConsecutiveSuccessfulMoves + 1,
+        ruleArrayInfos: state.ruleArrayInfos.map((ruleArrayInfo, i) =>
+          i !== state.ruleRowIndex
+            ? ruleArrayInfo
+            : {
+                ...ruleArrayInfo,
+                successfulMoves: state.ruleArrayInfos[state.ruleRowIndex].successfulMoves + 1,
+              },
+        ),
       };
     }
 
