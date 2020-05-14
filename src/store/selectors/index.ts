@@ -6,16 +6,13 @@ import { FILE_VERSION } from '../../constants';
 
 export const pageSelector = (state: RootState) => state.page.page;
 
-export const atomsByIdSelector = (state: RootState) => state.ruleRow.atomsByRowIndex;
-
 export const ruleRowIndexSelector = (state: RootState) => state.ruleRow.ruleRowIndex;
 
 export const atomCountersSelector = (state: RootState) => state.ruleRow.atomCounts;
 
 export const allAtomCountersZeroSelector = createSelector(
-  [atomsByIdSelector, ruleRowIndexSelector, atomCountersSelector],
-  (atomsByRuleRowIndex, ruleRowIndex, atomCounters) =>
-    Object.values(atomsByRuleRowIndex[ruleRowIndex]).every((atom) => atomCounters[atom.id] <= 0),
+  [ruleRowIndexSelector, atomCountersSelector],
+  (ruleRowIndex, atomCounters) => Object.values(atomCounters).every((count) => count <= 0),
 );
 
 export const boardObjectsByIdSelector = (state: RootState) => state.ruleRow.boardObjectsById;
@@ -48,6 +45,7 @@ export const boardObjectToBucketsSelector = createSelector(
 export const allChecksSelector = createSelector([boardObjectsSelector], (boardObjects) =>
   boardObjects.every((boardObject) => boardObject.shape === Shape.CHECK),
 );
+
 export const noMoreMovesSelector = createSelector(
   [allAtomCountersZeroSelector, boardObjectToBucketsSelector, allChecksSelector],
   (allAtomCountersZero, boardObjectToBuckets, allChecks) =>
@@ -64,6 +62,8 @@ createSelector(
 export const pausedSelector = (state: RootState) => state.ruleRow.paused;
 
 export const totalHistorySelector = (state: RootState) => state.ruleRow.totalMoveHistory;
+
+export const dropAttemptsSelector = (state: RootState) => state.ruleRow.dropAttempts;
 
 export const disabledBucketSelector = (state: RootState) =>
   state.ruleRow.paused && state.ruleRow.totalMoveHistory.length > 0

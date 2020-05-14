@@ -9,4 +9,5 @@ export const restartIfNotClearedSelector = (state: RootState) => state.ruleRow.r
 
 export const numRuleRowsSelector = (state: RootState) => state.ruleRow.numRuleRows;
 
-export const hasRestartedSelector = (state: RootState) => state.ruleRow.hasRestarted;
+export const noSuccessfulMovesSelector = (state: RootState) =>
+  state.ruleRow.ruleArrayInfos.every((ruleArrayInfo) => ruleArrayInfo.successfulMoves === 0);

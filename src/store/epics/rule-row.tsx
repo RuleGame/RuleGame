@@ -22,7 +22,7 @@ import { RootEpic } from '../../@types/epic';
 import { goToPage } from '../actions/page';
 import {
   currGameIdSelector,
-  hasRestartedSelector,
+  noSuccessfulMovesSelector,
   numConsecutiveSuccessfulMovesSelector,
   numRuleRowsSelector,
   restartIfNotClearedSelector,
@@ -114,11 +114,11 @@ const endRuleRowEpic: RootEpic = (action$, state$) =>
       const restartIfNotCleared = restartIfNotClearedSelector(state$.value);
       const ruleRowIndex = ruleRowIndexSelector(state$.value);
       const numRuleRows = numRuleRowsSelector(state$.value);
-      const hasRestarted = hasRestartedSelector(state$.value);
+      const noSuccessfulMoves = noSuccessfulMovesSelector(state$.value);
 
       if (
-        (!restartIfNotCleared || (restartIfNotCleared && hasRestarted)) &&
-        ruleRowIndex === numRuleRows - 1
+        ruleRowIndex === numRuleRows - 1 &&
+        (!restartIfNotCleared || (restartIfNotCleared && noSuccessfulMoves))
       ) {
         return endRuleArray();
       }

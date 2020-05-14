@@ -47,7 +47,7 @@ const AddGameForm: React.FunctionComponent = () => {
     numConsecutiveSuccessfulMovesBeforePromptGuess,
     setNumConsecutiveSuccessfulMovesBeforePromptGuess,
   ] = useState<number>();
-  const [restartIfNotCleared, setRestartIfNotCleared] = useState(true);
+  const [restartIfNotCleared, setRestartIfNotCleared] = useState(false);
 
   return (
     <Box elevation="large" align="center" pad="medium">

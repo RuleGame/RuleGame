@@ -426,3 +426,46 @@ describe('history', () => {
     checkMove('3', true, BucketPosition.TL);
   });
 });
+
+describe('restart', () => {
+  before(() => {
+    cy.visit('/');
+    cy.dispatch(enableDebugMode());
+  });
+
+  const checkMove = (
+    object: string,
+    isValid: boolean = true,
+    bucket: BucketPosition = BucketPosition.BL,
+  ) => {
+    const sagaMiddleware = createSagaMiddleware();
+    cy.addMiddleware(sagaMiddleware);
+    cy.take(move({ dragged: object, dropped: bucket }), sagaMiddleware, move);
+    cy.wait(1.25 * FEEDBACK_DURATION);
+    cy.get(`${cySelector(cyShapeObject(object))}[data-shape="${Shape.CHECK}"]`).should(
+      isValid ? 'be.visible' : 'not.be.visible',
+    );
+    cy.wait(1.25 * FEEDBACK_DURATION);
+    cy.removeMiddleware(sagaMiddleware);
+  };
+
+  it('restarts', () => {
+    cy.addAndEnterGame(
+      '(1,*,*,*,*)',
+      [
+        { id: '1', color: Color.BLACK, x: 1, y: 1, shape: Shape.SQUARE },
+        { id: '2', color: Color.BLUE, x: 2, y: 1, shape: Shape.STAR },
+        { id: '3', color: Color.RED, x: 3, y: 1, shape: Shape.CIRCLE },
+      ],
+      undefined,
+      true,
+    );
+
+    checkMove('1');
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('not.be.visible');
+    checkMove('2');
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('not.be.visible');
+    checkMove('3');
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
+  });
+});

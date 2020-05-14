@@ -51,7 +51,9 @@
     "@typescript-eslint/no-object-literal-type-assertion": ["error", { "allowAsParameter": true }],
     "react/prop-types": "off",
     "func-names": "off",
-    "@typescript-eslint/interface-name-prefix": "off"
+    "@typescript-eslint/interface-name-prefix": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "react/jsx-one-expression-per-line": "off"
   },
   "settings": {
     "import/resolver": {
