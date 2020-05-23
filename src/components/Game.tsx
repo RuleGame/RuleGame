@@ -151,7 +151,7 @@ const Game: React.FunctionComponent<{
             <Box gap="medium">
               <Text data-cy={CY_NO_MORE_MOVES}>
                 {allChecked
-                  ? 'No more moves left!'
+                  ? 'You’ve cleared all the shapes! Please guess the rule below”!'
                   : 'Error: Bad Rule Array (Board could not be cleared)'}
               </Text>
               <Button label="Finish" onClick={() => dispatch(goToPage('Entrance'))} />
