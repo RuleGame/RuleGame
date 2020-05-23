@@ -6,6 +6,7 @@ import { BoardObjectItem, BucketType } from '../@types';
 import { disableDebugMode, enableDebugMode, move, touch } from '../store/actions/rule-row';
 import Board from './Board';
 import {
+  allChecksSelector,
   boardObjectsSelector,
   boardObjectsToDebugInfoSelector,
   boardObjectToBucketsSelector,
@@ -51,6 +52,7 @@ const Game: React.FunctionComponent<{
   const gameCompleted = useSelector(gameCompletedSelector);
   const order = useSelector(orderSelector);
   const gameId = useSelector(currGameIdSelector);
+  const allChecked = useSelector(allChecksSelector);
 
   return (
     <Box pad="small" data-cy={CY_GAME}>
@@ -147,7 +149,11 @@ const Game: React.FunctionComponent<{
           )}
           {gameCompleted && (
             <Box gap="medium">
-              <Text data-cy={CY_NO_MORE_MOVES}>No more moves left!</Text>
+              <Text data-cy={CY_NO_MORE_MOVES}>
+                {allChecked
+                  ? 'No more moves left!'
+                  : 'Error: Bad Rule Array (Board could not be cleared)'}
+              </Text>
               <Button label="Finish" onClick={() => dispatch(goToPage('Entrance'))} />
               <Button label="New Display" onClick={() => dispatch(nextBoardObjectsArray())} />
               <Button label="Try a new rule" onClick={() => dispatch(goToPage('Entrance'))} />
