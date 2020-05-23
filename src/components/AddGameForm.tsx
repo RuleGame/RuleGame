@@ -47,7 +47,6 @@ const AddGameForm: React.FunctionComponent = () => {
     numConsecutiveSuccessfulMovesBeforePromptGuess,
     setNumConsecutiveSuccessfulMovesBeforePromptGuess,
   ] = useState<number>();
-  const [restartIfNotCleared, setRestartIfNotCleared] = useState(false);
 
   return (
     <Box elevation="large" align="center" pad="medium">
@@ -65,7 +64,7 @@ const AddGameForm: React.FunctionComponent = () => {
               numRandomBoardObjects,
               numConsecutiveSuccessfulMovesBeforePromptGuess,
               undefined,
-              restartIfNotCleared,
+              true,
             ),
           )
         }
@@ -126,11 +125,6 @@ const AddGameForm: React.FunctionComponent = () => {
                 )}
               </Box>
             </FormField>
-            <CheckBox
-              label="Restart Rule Array Once If Not Cleared"
-              checked={restartIfNotCleared}
-              onChange={({ target: { checked } }) => setRestartIfNotCleared(checked)}
-            />
             <FormField label="Number of Consecutive Moves Before Prompt Guess">
               <TextInput
                 type="number"
