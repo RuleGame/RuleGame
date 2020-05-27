@@ -10,6 +10,7 @@ import { pageSelector } from './store/selectors';
 
 const App = () => {
   const page = useSelector(pageSelector);
+  // const book = useBookQuery();
 
   return (
     <Grommet full plain>

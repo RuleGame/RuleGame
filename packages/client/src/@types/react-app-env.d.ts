@@ -1,22 +1,5 @@
-import { Store } from 'redux';
-import { RootState } from '../store/reducers';
-
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
-
-declare global {
-  interface Window {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    __REDUX_DEVTOOLS_EXTENSION__: any;
-    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any;
-    __REACT_DEVTOOLS_GLOBAL_HOOK__: any;
-    /* eslint-enable @typescript-eslint/no-explicit-any */
-    store: Store<RootState>;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Cypress: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    dynamicMiddlewaresInstance: any;
-  }
-}
+/* eslint-disable-next-line spaced-comment */
+/// <reference types="react-scripts" />
 
 declare module '*.png' {
   const resource: string;

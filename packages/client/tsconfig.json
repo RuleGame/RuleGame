@@ -16,5 +16,5 @@
     "sourceMap": true,
     "isolatedModules": true
   },
-  "include": ["src"]
+  "include": ["src", "global.d.ts"]
 }
