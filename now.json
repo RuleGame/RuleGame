@@ -3,7 +3,7 @@
   "name": "rule-game",
   "alias": "rule-game",
   "builds": [
-    { "src": "packages/client/package.json", "use": "@now/static-build", "config": { "distDir": "packages/client/build" } }
+    { "src": "packages/client/package.json", "use": "@now/static-build", "config": { "distDir": "build" } }
   ],
   "routes": [
     {
