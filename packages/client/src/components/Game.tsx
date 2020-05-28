@@ -25,7 +25,7 @@ import { nextBoardObjectsArray } from '../store/actions/game';
 import GuessRuleForm from './GuessRuleForm';
 import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
 import { DEBUG_ENABLED } from '../constants/env';
-import { currGameIdSelector, restartIfNotClearedSelector } from '../store/selectors/rule-row';
+import { currGameIdSelector } from '../store/selectors/rule-row';
 
 enum GridAreaName {
   DEBUG_TOGGLE = 'DEBUG_TOGGLE',
@@ -53,7 +53,6 @@ const Game: React.FunctionComponent<{
   const order = useSelector(orderSelector);
   const gameId = useSelector(currGameIdSelector);
   const allChecked = useSelector(allChecksSelector);
-  const restartIfNotCleared = useSelector(restartIfNotClearedSelector);
 
   return (
     <Box pad="small" data-cy={CY_GAME}>
@@ -111,12 +110,15 @@ const Game: React.FunctionComponent<{
               </Box>
             )}
             {rawAtoms.split('\n').map((rawAtom, i) => (
-              <Box key={rawAtom} background={ruleRowIndex === i ? 'yellow' : 'none'}>
+              <Box
+                key={rawAtom}
+                background={ruleRowIndex === i && !gameCompleted ? 'yellow' : 'none'}
+              >
                 <Text size="small">{rawAtom}</Text>
               </Box>
             ))}
-            <Box>
-              <Text size="small">{restartIfNotCleared ? 'loop' : 'end'}</Text>
+            <Box background={gameCompleted ? 'yellow' : 'end'}>
+              <Text size="small">loop/end</Text>
             </Box>
           </Box>
         )}
