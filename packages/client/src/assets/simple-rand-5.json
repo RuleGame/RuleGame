@@ -8,7 +8,8 @@
       "name": "rand",
       "ruleArray": "un4Q-9EI",
       "useRandomBoardObjects": true,
-      "numRandomBoardObjects": 5
+      "numRandomBoardObjects": 5,
+      "restartIfNotCleared": true
     }
   },
   "ruleArrays": {
