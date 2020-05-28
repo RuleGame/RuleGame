@@ -116,7 +116,7 @@ const Game: React.FunctionComponent<{
               </Box>
             ))}
             <Box>
-              <Text size="small">{restartIfNotCleared ? 'Restart' : 'End'}</Text>
+              <Text size="small">{restartIfNotCleared ? 'loop' : 'end'}</Text>
             </Box>
           </Box>
         )}
