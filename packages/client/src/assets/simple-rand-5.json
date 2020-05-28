@@ -15,7 +15,7 @@
   "ruleArrays": {
     "un4Q-9EI": {
       "id": "un4Q-9EI",
-      "stringified": "(10,square,*,*,[1,2]) (10,*,green,10,[2,3])\n(*,*,*,*,[ps,pc])\n(*,*,*,*,[(p+1)%4])",
+      "stringified": "(10,square,*,*,[1,2]) (10,*,blue,10,[2,3])\n(*,*,*,*,[ps,pc])\n(*,*,*,*,[(p+1)%4])",
       "name": "1"
     }
   },

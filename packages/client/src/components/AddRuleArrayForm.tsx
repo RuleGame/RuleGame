@@ -42,7 +42,7 @@ const AddRuleArrayForm: React.FunctionComponent = () => {
                 rows={20}
                 cols={50}
                 wrap="off"
-                placeholder="(10,square,*,*,[1,2]) (10,*,green,10,[2,3])
+                placeholder="(10,square,*,*,[1,2]) (10,*,blue,10,[2,3])
 (*,*,*,*,[ps,pc])
 (*,*,*,*,[(p+1)%4])"
               />
