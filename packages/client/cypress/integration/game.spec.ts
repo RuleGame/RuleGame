@@ -280,47 +280,6 @@ describe('basic', () => {
 
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });
-
-  it('allows valid drops for any objects whose previous color shape has not been dropped yet while matching atom shape and color', () => {
-    cy.addAndEnterGame(
-      '(1,square,black,1,[p])',
-      [{ id: '1', color: Color.BLACK, x: 1, y: 1, shape: Shape.SQUARE }],
-      2,
-    );
-    checkMove('1', true, BucketPosition.BL);
-
-    cy.addAndEnterGame(
-      '(1,square,black,1,[p])',
-      [{ id: '1', color: Color.BLACK, x: 1, y: 1, shape: Shape.SQUARE }],
-      2,
-    );
-    checkMove('1', true, BucketPosition.BR);
-
-    cy.addAndEnterGame(
-      '(1,square,black,1,[p])',
-      [{ id: '1', color: Color.BLACK, x: 1, y: 1, shape: Shape.SQUARE }],
-      2,
-    );
-    checkMove('1', true, BucketPosition.TR);
-
-    cy.addAndEnterGame(
-      '(1,square,black,1,[p])',
-      [{ id: '1', color: Color.BLACK, x: 1, y: 1, shape: Shape.SQUARE }],
-      2,
-    );
-    checkMove('1', true, BucketPosition.TL);
-
-    // Wrong color should not be allowed to drop anywhere
-    cy.addAndEnterGame(
-      '(1,square,black,1,[p])',
-      [{ id: '1', color: Color.BLUE, x: 1, y: 1, shape: Shape.SQUARE }],
-      2,
-    );
-    checkMove('1', false, BucketPosition.TL);
-    checkMove('1', false, BucketPosition.TR);
-    checkMove('1', false, BucketPosition.BR);
-    checkMove('1', false, BucketPosition.BL);
-  });
 });
 
 describe('Guess Prompt', () => {
@@ -414,16 +373,16 @@ describe('history', () => {
     cy.removeMiddleware(sagaMiddleware);
   };
 
-  it('allows any bucket to be dropped into if no buckets functions return valid bucket in history', () => {
+  it('does not allow any bucket to be dropped into if no buckets functions return valid bucket in history', () => {
     cy.addAndEnterGame('(*,*,*,*,[pcs])', [
       { id: '1', color: Color.BLACK, x: 1, y: 1, shape: Shape.SQUARE },
       { id: '2', color: Color.BLUE, x: 2, y: 1, shape: Shape.STAR },
       { id: '3', color: Color.RED, x: 3, y: 1, shape: Shape.CIRCLE },
     ]);
 
-    checkMove('1', true, BucketPosition.BL);
-    checkMove('2', true, BucketPosition.BR);
-    checkMove('3', true, BucketPosition.TL);
+    checkMove('1', false, BucketPosition.BL);
+    checkMove('2', false, BucketPosition.BR);
+    checkMove('3', false, BucketPosition.TL);
   });
 });
 

@@ -107,12 +107,7 @@ const getBoardObjectsToBucketsToAtoms = (
                 atom.fns
                   .map((fn) => fn(boardObject.id, totalMoveHistory, initialBoardObjectsById))
                   .forEach((bucket) => {
-                    if (Number.isNaN(bucket)) {
-                      acc[BucketPosition.TR].add(atom.id);
-                      acc[BucketPosition.TL].add(atom.id);
-                      acc[BucketPosition.BR].add(atom.id);
-                      acc[BucketPosition.BL].add(atom.id);
-                    } else if (Number.isFinite(bucket)) {
+                    if (Number.isFinite(bucket)) {
                       acc[bucket].add(atom.id);
                     }
                   });

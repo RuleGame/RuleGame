@@ -161,7 +161,7 @@
     },
     "clockwise": {
       "id": "clockwise",
-      "stringified": "(*,*,*,*,[(p+1)%4])",
+      "stringified": "(1,*,*,*,*)\n(*,*,*,*,[(p+1)%4])",
       "name": "clockwise"
     },
     "mDiksQ5N": {
