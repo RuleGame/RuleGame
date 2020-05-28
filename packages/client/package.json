@@ -10,7 +10,6 @@
     "cypress": "cypress open",
     "eject": "react-scripts eject",
     "lint:css": "stylelint ./**/*.tsx",
-    "now-build": "react-app-rewired build && mv build dist",
     "start": "react-app-rewired start",
     "test": "react-app-rewired test --env=jsdom"
   },
