@@ -458,4 +458,33 @@ describe('restart', () => {
     checkMove('8', true, BucketPosition.BL);
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('not.be.visible');
   });
+
+  it('restarts simple', () => {
+    cy.addAndEnterGame(
+      `(1,*,red,*,[0])
+(1,*,blue,*,[1])
+(1,*,black,*,[2])
+(1,*,yellow,*,[3])`,
+      [
+        { id: '1', color: Color.RED, x: 6, y: 1, shape: Shape.TRIANGLE },
+        { id: '2', color: Color.BLUE, x: 1, y: 4, shape: Shape.SQUARE },
+        { id: '3', color: Color.BLACK, x: 5, y: 6, shape: Shape.SQUARE },
+        { id: '4', color: Color.RED, x: 6, y: 6, shape: Shape.TRIANGLE },
+        { id: '5', color: Color.BLACK, x: 2, y: 3, shape: Shape.SQUARE },
+      ],
+      undefined,
+      true,
+    );
+
+    checkMove('1', true, BucketPosition.TL);
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('not.be.visible');
+    checkMove('2', true, BucketPosition.TR);
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('not.be.visible');
+    checkMove('3', true, BucketPosition.BR);
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('not.be.visible');
+    checkMove('4', true, BucketPosition.TL);
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('not.be.visible');
+    checkMove('5', true, BucketPosition.BR);
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
+  });
 });

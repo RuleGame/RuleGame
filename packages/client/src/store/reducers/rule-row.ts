@@ -220,7 +220,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         boardObjectsToBucketsToAtoms,
         ruleRowsCompleted: state.ruleRowsCompleted + 1,
         ruleArrayInfos: state.ruleArrayInfos.map((ruleArrayInfo, i) =>
-          i !== state.ruleRowIndex ? ruleArrayInfo : { ...ruleArrayInfo, successfulMoves: 0 },
+          i !== action.payload.index ? ruleArrayInfo : { ...ruleArrayInfo, successfulMoves: 0 },
         ),
       };
     }
