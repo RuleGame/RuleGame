@@ -30,7 +30,7 @@ const shapesMapping: (color?: string) => { [shape in Shape]: JSX.Element | null 
 });
 
 const ShapeObject = React.forwardRef<HTMLDivElement, ShapeProps>(
-  ({ shape, className, shapeObjectId, onClick = () => {}, debugInfo, color, canDrag }, ref) => {
+  ({ shape, className, shapeObjectId, onClick, debugInfo, color, canDrag }, ref) => {
     // noinspection HtmlUnknownBooleanAttribute
     return (
       <>
@@ -46,8 +46,8 @@ const ShapeObject = React.forwardRef<HTMLDivElement, ShapeProps>(
             justifyContent: 'center',
             width: '100%',
             height: '100%',
-            opacity: canDrag || !VALID_SHAPES.has(shape) ? 1 : 0.25,
-            cursor: !canDrag && VALID_SHAPES.has(shape) ? 'not-allowed' : undefined,
+            opacity: onClick && !canDrag && VALID_SHAPES.has(shape) ? 0.25 : 1,
+            cursor: onClick && !canDrag && VALID_SHAPES.has(shape) ? 'not-allowed' : undefined,
           }}
           data-shape={shape}
         >
