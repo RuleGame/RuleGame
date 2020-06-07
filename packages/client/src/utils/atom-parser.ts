@@ -1,5 +1,5 @@
 import shortid from 'shortid';
-import { Atom, AtomFn, BucketPosition, Color, DropAttempt, Shape } from '../@types';
+import { Atom, AtomFn, BucketPosition, Color, DropAttempt, Shape, VALID_SHAPES } from '../@types';
 
 type RawAtomFn = (
   p: BucketPosition | undefined,
@@ -84,13 +84,7 @@ const parseAtomString = (atom: string): Atom => {
 
   const errors = [];
   const shape = matchedShape;
-  const validShapes = Object.values(Shape).filter(
-    (shape) =>
-      shape !== Shape.HAPPY &&
-      shape !== Shape.CHECK &&
-      shape !== Shape.BUCKET &&
-      shape !== Shape.NOTHING,
-  );
+  const validShapes = Object.values(Shape).filter((shape) => VALID_SHAPES.has(shape));
   if (!validShapes.includes(shape as Shape)) {
     errors.push(
       `"${matchedShape}" is not a valid shape.\n\nSupported shapes: ${validShapes.join(

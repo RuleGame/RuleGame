@@ -53,6 +53,14 @@ export enum Shape {
   CHECK = 'check',
 }
 
+export const VALID_SHAPES = new Set<Shape>([
+  Shape.ANY,
+  Shape.SQUARE,
+  Shape.TRIANGLE,
+  Shape.STAR,
+  Shape.CIRCLE,
+]);
+
 export type AtomFn = (
   boardObjectId: BoardObjectId,
   totalMoveHistory: DropAttempt[],

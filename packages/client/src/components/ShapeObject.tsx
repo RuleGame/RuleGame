@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
-import { FiCircle, FiSquare, FiStar, FiTriangle, FiCheck } from 'react-icons/fi';
+import { FiCheck, FiCircle, FiSquare, FiStar, FiTriangle } from 'react-icons/fi';
 import HappyFace from '../assets/smiley-face.png';
 import bucketSvg from '../assets/bucket.svg';
 import { cyShapeObject } from '../constants/data-cy-builders';
-import { Shape, Color } from '../@types';
+import { Color, Shape, VALID_SHAPES } from '../@types';
 
 export type ShapeProps = {
   ref: React.Ref<HTMLDivElement>;
@@ -14,6 +14,7 @@ export type ShapeProps = {
   onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   debugInfo?: string;
   color?: Color;
+  canDrag?: boolean;
 };
 
 const shapesMapping: (color?: string) => { [shape in Shape]: JSX.Element | null } = (color) => ({
@@ -29,7 +30,7 @@ const shapesMapping: (color?: string) => { [shape in Shape]: JSX.Element | null 
 });
 
 const ShapeObject = React.forwardRef<HTMLDivElement, ShapeProps>(
-  ({ shape, className, shapeObjectId, onClick = () => {}, debugInfo, color }, ref) => {
+  ({ shape, className, shapeObjectId, onClick = () => {}, debugInfo, color, canDrag }, ref) => {
     // noinspection HtmlUnknownBooleanAttribute
     return (
       <>
@@ -45,6 +46,8 @@ const ShapeObject = React.forwardRef<HTMLDivElement, ShapeProps>(
             justifyContent: 'center',
             width: '100%',
             height: '100%',
+            opacity: canDrag || !VALID_SHAPES.has(shape) ? 1 : 0.25,
+            cursor: !canDrag && VALID_SHAPES.has(shape) ? 'not-allowed' : undefined,
           }}
           data-shape={shape}
         >
