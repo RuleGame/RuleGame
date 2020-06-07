@@ -61,6 +61,14 @@ export const VALID_SHAPES = new Set<Shape>([
   Shape.CIRCLE,
 ]);
 
+export const VALID_COLORS = new Set<Color>([
+  Color.ANY,
+  Color.RED,
+  Color.BLUE,
+  Color.BLACK,
+  Color.YELLOW,
+]);
+
 export type AtomFn = (
   boardObjectId: BoardObjectId,
   totalMoveHistory: DropAttempt[],
