@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Button, CheckBox, Grid, Text } from 'grommet';
+import { Box, Button, CheckBox, Grid, Heading, Text } from 'grommet';
 import { Dispatch } from 'redux';
 import { BoardObjectItem, BucketType } from '../@types';
 import { disableDebugMode, enableDebugMode, move, touch } from '../store/actions/rule-row';
@@ -25,9 +25,10 @@ import { nextBoardObjectsArray } from '../store/actions/game';
 import GuessRuleForm from './GuessRuleForm';
 import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
 import { DEBUG_ENABLED } from '../constants/env';
-import { currGameIdSelector } from '../store/selectors/rule-row';
+import { currGameIdSelector, currGameNameSelector } from '../store/selectors/rule-row';
 
 enum GridAreaName {
+  HEADING = 'HEADING',
   DEBUG_TOGGLE = 'DEBUG_TOGGLE',
   HISTORY = 'HISTORY',
   RULE_ARRAY = 'RULE_ARRAY',
@@ -53,40 +54,49 @@ const Game: React.FunctionComponent<{
   const order = useSelector(orderSelector);
   const gameId = useSelector(currGameIdSelector);
   const allChecked = useSelector(allChecksSelector);
+  const gameName = useSelector(currGameNameSelector);
 
   return (
     <Box pad="small" data-cy={CY_GAME}>
       <Grid
-        rows={['auto', 'min(70vh, 100vw)', 'auto']}
+        rows={['auto', 'auto', 'min(70vh, 100vw)', 'auto']}
         columns={['auto', 'min(70vh, 100vw)', 'auto']}
         areas={[
           {
-            name: GridAreaName.DEBUG_TOGGLE,
+            name: GridAreaName.HEADING,
             start: [0, 0],
             end: [2, 0],
           },
           {
-            name: GridAreaName.RULE_ARRAY,
+            name: GridAreaName.DEBUG_TOGGLE,
             start: [0, 1],
-            end: [0, 1],
-          },
-          {
-            name: GridAreaName.BOARD,
-            start: [1, 1],
-            end: [1, 1],
-          },
-          {
-            name: GridAreaName.HISTORY,
-            start: [2, 1],
             end: [2, 1],
           },
           {
-            name: GridAreaName.FORM,
+            name: GridAreaName.RULE_ARRAY,
             start: [0, 2],
+            end: [0, 2],
+          },
+          {
+            name: GridAreaName.BOARD,
+            start: [1, 2],
+            end: [1, 2],
+          },
+          {
+            name: GridAreaName.HISTORY,
+            start: [2, 2],
             end: [2, 2],
+          },
+          {
+            name: GridAreaName.FORM,
+            start: [0, 3],
+            end: [2, 3],
           },
         ]}
       >
+        <Box gridArea={GridAreaName.HEADING} align="center">
+          <Heading>{gameName}</Heading>
+        </Box>
         <Box gridArea={GridAreaName.DEBUG_TOGGLE} justify="center" direction="row">
           {DEBUG_ENABLED && (
             <CheckBox
