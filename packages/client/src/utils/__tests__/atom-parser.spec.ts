@@ -232,3 +232,40 @@ it('returns NaNs for a bucket function if its inputs are not to be found in the 
     NaN,
   ]);
 });
+
+it('works for [1,2,3] bucket functions', () => {
+  const atoms = atomParser('(*,*,*,*,[1,2,3])');
+  expect(atoms).toHaveLength(1);
+  const atom = atoms[0];
+
+  const boardObjectId = '1';
+  const totalMoveHistory: DropAttempt[] = [
+    {
+      dragged: '0',
+      dropped: BucketPosition.BR,
+    },
+  ];
+
+  const boardObjects: { [id: number]: BoardObjectType } = {
+    0: {
+      color: Color.BLUE,
+      id: '1',
+      shape: Shape.CIRCLE,
+      x: 1,
+      y: 2,
+    },
+    1: {
+      color: Color.RED,
+      id: '1',
+      shape: Shape.SQUARE,
+      x: 0,
+      y: 2,
+    },
+  };
+
+  expect(atom.fns.map((fn) => fn(boardObjectId, totalMoveHistory, boardObjects))).toEqual([
+    1,
+    2,
+    3,
+  ]);
+});

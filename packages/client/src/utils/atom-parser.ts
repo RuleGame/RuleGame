@@ -68,7 +68,7 @@ const parseAtomRawFnString = (rawAtomFnString: string): AtomFn[] => {
 };
 
 const parseAtomString = (atom: string): Atom => {
-  const regex = /\((\d+|\*),(.+),(.+),([\d*]+),(.+)\)/;
+  const regex = /\((\d+|\*),(.+),(.+),(\d+|\*+),(\*|\[.*])\)/;
   const matches = regex.exec(atom);
   if (matches === null) {
     throw Error(
