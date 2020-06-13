@@ -11,13 +11,29 @@ import { FEEDBACK_DURATION } from '../../src/constants';
 describe('basic', () => {
   let sagaMiddleware: SagaMiddleware;
 
-  const checkMove = (object: string, isValid: boolean = true) => {
-    cy.take(move({ dragged: object, dropped: BucketPosition.BL }), sagaMiddleware, move);
+  const checkMove = (
+    object: string,
+    isValid: boolean = true,
+    bucket: BucketPosition = BucketPosition.BL,
+  ) => {
+    const sagaMiddleware = createSagaMiddleware();
+    cy.addMiddleware(sagaMiddleware);
+    cy.take(move({ dragged: object, dropped: bucket }), sagaMiddleware, move);
     cy.wait(1.25 * FEEDBACK_DURATION);
     cy.get(`${cySelector(cyShapeObject(object))}[data-shape="${Shape.CHECK}"]`).should(
       isValid ? 'be.visible' : 'not.be.visible',
     );
+    cy.wait(1.25 * FEEDBACK_DURATION);
+    cy.removeMiddleware(sagaMiddleware);
   };
+  //
+  // const checkMove = (object: string, isValid: boolean = true) => {
+  //   cy.take(move({ dragged: object, dropped: BucketPosition.BL }), sagaMiddleware, move);
+  //   cy.wait(1.25 * FEEDBACK_DURATION);
+  //   cy.get(`${cySelector(cyShapeObject(object))}[data-shape="${Shape.CHECK}"]`).should(
+  //     isValid ? 'be.visible' : 'not.be.visible',
+  //   );
+  // };
   before(() => {
     cy.visit('/');
     sagaMiddleware = createSagaMiddleware();
@@ -59,6 +75,24 @@ describe('basic', () => {
     checkMove('yellow-square-1', true);
     checkMove('red-square-6', true);
     checkMove('red-square-36', true);
+
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
+  });
+
+  it.only('works for 2 counters in same row', () => {
+    cy.addAndEnterGame(
+      `(1,*,*,*,[0,1]) (1,*,*,*,[2,3])`,
+      [
+        { id: '1', color: Color.RED, x: 3, y: 6, shape: Shape.CIRCLE },
+        { id: '2', color: Color.BLUE, x: 5, y: 4, shape: Shape.STAR },
+      ],
+      undefined,
+      false,
+    );
+
+    checkMove('1', true, BucketPosition.TR);
+    checkMove('2', false, BucketPosition.TR);
+    checkMove('2', true, BucketPosition.BR);
 
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });

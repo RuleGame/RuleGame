@@ -249,16 +249,17 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       }
 
       const newTotalMoveHistory = [...state.totalMoveHistory, action.payload.dropAttempt];
+      const newAtomCounts = matchedAtoms.reduce(
+        (acc, atomId) => ({
+          ...acc,
+          [atomId]: state.atomCounts[atomId] - 1,
+        }),
+        state.atomCounts,
+      );
 
       return {
         ...state,
-        atomCounts: matchedAtoms.reduce(
-          (acc, atomId) => ({
-            ...acc,
-            [atomId]: state.atomCounts[atomId] - 1,
-          }),
-          state.atomCounts,
-        ),
+        atomCounts: newAtomCounts,
         boardObjectsById: {
           ...state.boardObjectsById,
           [dragged]: {
@@ -274,7 +275,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
           newTotalMoveHistory,
           state.initialBoardObjectsById,
           state.boardObjectsById,
-          state.atomCounts,
+          newAtomCounts,
           state.ruleArray![state.ruleRowIndex],
         ),
         numConsecutiveSuccessfulMoves: state.numConsecutiveSuccessfulMoves + 1,
