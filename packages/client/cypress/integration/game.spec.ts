@@ -68,6 +68,32 @@ describe('basic', () => {
     checkOrder('2', '1');
   });
 
+  it('orders work after every move and rule row', () => {
+    cy.addAndEnterGame(
+      `(1,*,*,*,[0])
+(*,*,*,*,[(p+1)%4])`,
+      [
+        { id: '1', color: Color.BLUE, x: 2, y: 6, shape: Shape.STAR },
+        { id: '2', color: Color.BLUE, x: 3, y: 6, shape: Shape.TRIANGLE },
+        { id: '3', color: Color.BLACK, x: 4, y: 5, shape: Shape.SQUARE },
+        { id: '4', color: Color.BLUE, x: 5, y: 1, shape: Shape.SQUARE },
+      ],
+      undefined,
+      false,
+      '[31,32,33,34,35,36,25,26,27,28,29,30,19,20,21,22,23,24,13,14,15,16,17,18,7,8,9,10,11,12,1,2,3,4,5,6]',
+    );
+
+    checkMove('1', true, BucketPosition.TL);
+    checkMove('2', true, BucketPosition.TR);
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('not.be.visible');
+
+    checkMove('4', false, BucketPosition.BR);
+    checkMove('3', true, BucketPosition.BR);
+    checkMove('4', true, BucketPosition.BL);
+
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
+  });
+
   it('works for counters', () => {
     cy.dispatch(enterGame('counter'));
     cy.get(cySelector(CY_GAME)).should('be.visible');
@@ -79,7 +105,7 @@ describe('basic', () => {
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });
 
-  it.only('works for 2 counters in same row', () => {
+  it('works for 2 counters in same row', () => {
     cy.addAndEnterGame(
       `(1,*,*,*,[0,1]) (1,*,*,*,[2,3])`,
       [

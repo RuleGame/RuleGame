@@ -130,6 +130,7 @@ const addAndEnterGame = (
   boardObjectsArray: Optional<BoardObjectType, 'id'>[],
   numConsecutiveSuccessfulMovesBeforePromptGuess?: number,
   restartIfNotCleared?: boolean,
+  order?: string,
 ) => {
   const sagaMiddleware = createSagaMiddleware();
   const ruleArrayId = shortid();
@@ -138,7 +139,7 @@ const addAndEnterGame = (
 
   cy.addMiddleware(sagaMiddleware);
   cy.take(
-    addRuleArray.request(ruleArrayId, ruleArray, undefined, ruleArrayId),
+    addRuleArray.request(ruleArrayId, ruleArray, order, ruleArrayId),
     sagaMiddleware,
     addRuleArray.success,
   );

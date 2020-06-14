@@ -256,7 +256,6 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         }),
         state.atomCounts,
       );
-
       return {
         ...state,
         atomCounts: newAtomCounts,
@@ -271,13 +270,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         totalMoveHistory: newTotalMoveHistory,
         lastMoveSuccessful: true,
         paused: true,
-        boardObjectsToBucketsToAtoms: getBoardObjectsToBucketsToAtoms(
-          newTotalMoveHistory,
-          state.initialBoardObjectsById,
-          state.boardObjectsById,
-          newAtomCounts,
-          state.ruleArray![state.ruleRowIndex],
-        ),
+        // boardObjectsToBucketsToAtoms,
         numConsecutiveSuccessfulMoves: state.numConsecutiveSuccessfulMoves + 1,
         ruleArrayInfos: state.ruleArrayInfos.map((ruleArrayInfo, i) =>
           i !== state.ruleRowIndex
@@ -291,14 +284,54 @@ const reducer = (state: State = initialState, action: RootAction): State => {
     }
 
     case getType(removeBoardObject): {
-      // FIXME: Removing is bad because it loses the references for the total history
-      const {
-        [action.payload.boardObjectId]: _2,
-        ...newBoardObjectsToBucketsToAtoms
-      } = state.boardObjectsToBucketsToAtoms;
+      // 1. If no possible moves, advance to next rule row or end game.
+      // (An epic must detect this and continue to the next rule row then)
+      // 2. Hover thingy if possible to drop.
+      const preOrderBoardObjectsToBucketsToAtoms = getBoardObjectsToBucketsToAtoms(
+        state.totalMoveHistory,
+        state.initialBoardObjectsById,
+        state.boardObjectsById,
+        state.atomCounts,
+        state.ruleArray![state.ruleRowIndex],
+      );
+
+      let boardObjectsToBucketsToAtoms = preOrderBoardObjectsToBucketsToAtoms;
+      if (state.order) {
+        const boardObjectsIdsByPosition: {
+          [position: number]: string[];
+        } = Object.entries(preOrderBoardObjectsToBucketsToAtoms).reduce<{
+          [position: number]: string[];
+        }>((acc, [boardObjectId, bucketsToAtoms]) => {
+          if (Object.values(bucketsToAtoms).some((atoms) => atoms.size > 0)) {
+            const pos = xYToPosition(
+              state.initialBoardObjectsById[boardObjectId].x,
+              state.initialBoardObjectsById[boardObjectId].y,
+            );
+
+            if (!(pos in acc)) {
+              acc[pos] = [];
+            }
+
+            acc[pos].push(boardObjectId);
+          }
+          return acc;
+        }, {});
+
+        const highestPos = state.order.find((pos) => pos in boardObjectsIdsByPosition);
+        if (highestPos) {
+          const validBoardObjects = boardObjectsIdsByPosition[highestPos];
+          boardObjectsToBucketsToAtoms = validBoardObjects.reduce(
+            (acc, validBoardObject) => ({
+              ...acc,
+              [validBoardObject]: preOrderBoardObjectsToBucketsToAtoms[validBoardObject],
+            }),
+            {},
+          );
+        }
+      }
       return {
         ...state,
-        boardObjectsToBucketsToAtoms: newBoardObjectsToBucketsToAtoms,
+        boardObjectsToBucketsToAtoms,
       };
     }
     case getType(resumeGame):
