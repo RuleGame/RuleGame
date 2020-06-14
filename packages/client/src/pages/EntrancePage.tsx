@@ -22,8 +22,19 @@ const EntrancePage = () => {
     <Box direction="column" align="center" gap="medium" pad="medium">
       <Box align="center" elevation="large" fill>
         <Box background="brand" fill align="center" pad="medium" justify="center">
-          <Heading>Introduction</Heading>
-          <Paragraph>My Rule Game Introduction</Paragraph>
+          <Heading>RuleGame Challenge</Heading>
+          <Paragraph fill>
+            Welcome to the RuleGame challenge. There are {games.length} different rules. Each rule
+            describes an allowed way of clearing some colored objects from a game board. To clear an
+            object, you must grab it with the mouse, and drag it to the correct bucket. When you
+            release it at the correct bucket, the bucket smiles, and the object’s place turns into a
+            check mark. If you release it at the wrong bucket, it jumps back onto the board where it
+            was. When you hover over an object, the little hand will tell you that it can move.
+            After you have cleared an entire display, you can give up, or ask for a new display.
+            After you have cleared a few displays without too many errors, you can take a chance to
+            guess at the rule. Please be patient after you guess because we require human judges to
+            review your guesses.
+          </Paragraph>
         </Box>
         <Box pad="medium">
           <Heading>Enter a Game</Heading>

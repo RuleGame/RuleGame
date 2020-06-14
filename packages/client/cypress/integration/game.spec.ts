@@ -11,13 +11,29 @@ import { FEEDBACK_DURATION } from '../../src/constants';
 describe('basic', () => {
   let sagaMiddleware: SagaMiddleware;
 
-  const checkMove = (object: string, isValid: boolean = true) => {
-    cy.take(move({ dragged: object, dropped: BucketPosition.BL }), sagaMiddleware, move);
+  const checkMove = (
+    object: string,
+    isValid: boolean = true,
+    bucket: BucketPosition = BucketPosition.BL,
+  ) => {
+    const sagaMiddleware = createSagaMiddleware();
+    cy.addMiddleware(sagaMiddleware);
+    cy.take(move({ dragged: object, dropped: bucket }), sagaMiddleware, move);
     cy.wait(1.25 * FEEDBACK_DURATION);
     cy.get(`${cySelector(cyShapeObject(object))}[data-shape="${Shape.CHECK}"]`).should(
       isValid ? 'be.visible' : 'not.be.visible',
     );
+    cy.wait(1.25 * FEEDBACK_DURATION);
+    cy.removeMiddleware(sagaMiddleware);
   };
+  //
+  // const checkMove = (object: string, isValid: boolean = true) => {
+  //   cy.take(move({ dragged: object, dropped: BucketPosition.BL }), sagaMiddleware, move);
+  //   cy.wait(1.25 * FEEDBACK_DURATION);
+  //   cy.get(`${cySelector(cyShapeObject(object))}[data-shape="${Shape.CHECK}"]`).should(
+  //     isValid ? 'be.visible' : 'not.be.visible',
+  //   );
+  // };
   before(() => {
     cy.visit('/');
     sagaMiddleware = createSagaMiddleware();
@@ -52,6 +68,32 @@ describe('basic', () => {
     checkOrder('2', '1');
   });
 
+  it('orders work after every move and rule row', () => {
+    cy.addAndEnterGame(
+      `(1,*,*,*,[0])
+(*,*,*,*,[(p+1)%4])`,
+      [
+        { id: '1', color: Color.BLUE, x: 2, y: 6, shape: Shape.STAR },
+        { id: '2', color: Color.BLUE, x: 3, y: 6, shape: Shape.TRIANGLE },
+        { id: '3', color: Color.BLACK, x: 4, y: 5, shape: Shape.SQUARE },
+        { id: '4', color: Color.BLUE, x: 5, y: 1, shape: Shape.SQUARE },
+      ],
+      undefined,
+      false,
+      '[31,32,33,34,35,36,25,26,27,28,29,30,19,20,21,22,23,24,13,14,15,16,17,18,7,8,9,10,11,12,1,2,3,4,5,6]',
+    );
+
+    checkMove('1', true, BucketPosition.TL);
+    checkMove('2', true, BucketPosition.TR);
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('not.be.visible');
+
+    checkMove('4', false, BucketPosition.BR);
+    checkMove('3', true, BucketPosition.BR);
+    checkMove('4', true, BucketPosition.BL);
+
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
+  });
+
   it('works for counters', () => {
     cy.dispatch(enterGame('counter'));
     cy.get(cySelector(CY_GAME)).should('be.visible');
@@ -59,6 +101,24 @@ describe('basic', () => {
     checkMove('yellow-square-1', true);
     checkMove('red-square-6', true);
     checkMove('red-square-36', true);
+
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
+  });
+
+  it('works for 2 counters in same row', () => {
+    cy.addAndEnterGame(
+      `(1,*,*,*,[0,1]) (1,*,*,*,[2,3])`,
+      [
+        { id: '1', color: Color.RED, x: 3, y: 6, shape: Shape.CIRCLE },
+        { id: '2', color: Color.BLUE, x: 5, y: 4, shape: Shape.STAR },
+      ],
+      undefined,
+      false,
+    );
+
+    checkMove('1', true, BucketPosition.TR);
+    checkMove('2', false, BucketPosition.TR);
+    checkMove('2', true, BucketPosition.BR);
 
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });

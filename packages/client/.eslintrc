@@ -53,7 +53,9 @@
     "func-names": "off",
     "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
-    "react/jsx-one-expression-per-line": "off"
+    "react/jsx-one-expression-per-line": "off",
+
+    "import/named": "off"
   },
   "settings": {
     "import/resolver": {

@@ -11,3 +11,6 @@ export const numRuleRowsSelector = (state: RootState) => state.ruleRow.numRuleRo
 
 export const noSuccessfulMovesSelector = (state: RootState) =>
   state.ruleRow.ruleArrayInfos.every((ruleArrayInfo) => ruleArrayInfo.successfulMoves === 0);
+
+export const currGameNameSelector = (state: RootState) =>
+  state.ruleRow.currGameId && state.games.byId[state.ruleRow.currGameId].name;
