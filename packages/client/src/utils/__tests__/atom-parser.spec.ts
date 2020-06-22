@@ -15,8 +15,8 @@ it('can parse all atom values', () => {
   expect(firstAtom.color).toEqual(Color.ANY);
   expect(secondAtom.color).toEqual(Color.GREEN);
 
-  expect(firstAtom.position).toEqual(NaN);
-  expect(secondAtom.position).toEqual(10);
+  expect(firstAtom.position).toBeUndefined();
+  expect(secondAtom.position).toEqual(new Set([10]));
 
   const totalMoveHistory: DropAttempt[] = [];
   const boardObjects: { [id: number]: BoardObjectType } = {
@@ -37,6 +37,34 @@ it('can parse all atom values', () => {
     BucketPosition.BR,
     BucketPosition.BL,
   ]);
+});
+
+it('parses left positions', () => {
+  const atoms = atomParser('(10,square,*,L,[1,2])');
+  const [firstAtom] = atoms;
+
+  expect(firstAtom.position).toEqual(new Set([1, 7, 13, 19, 25, 31]));
+});
+
+it('parses right positions', () => {
+  const atoms = atomParser('(10,square,*,R,[1,2])');
+  const [firstAtom] = atoms;
+
+  expect(firstAtom.position).toEqual(new Set([6, 12, 18, 24, 30, 36]));
+});
+
+it('parses top positions', () => {
+  const atoms = atomParser('(10,square,*,T,[1,2])');
+  const [firstAtom] = atoms;
+
+  expect(firstAtom.position).toEqual(new Set([31, 32, 33, 34, 35, 36]));
+});
+
+it('parses bottom positions', () => {
+  const atoms = atomParser('(10,square,*,B,[1,2])');
+  const [firstAtom] = atoms;
+
+  expect(firstAtom.position).toEqual(new Set([1, 2, 3, 4, 5, 6]));
 });
 
 it('can parse * function', () => {

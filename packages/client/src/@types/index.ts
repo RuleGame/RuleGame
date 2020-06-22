@@ -80,7 +80,8 @@ export type Atom = {
   counter: number;
   shape: Shape;
   color: Color;
-  position: number;
+  // Undefined means any position (*)
+  position?: Set<number>;
   fns: AtomFn[];
 };
 

@@ -1,5 +1,7 @@
 import shortid from 'shortid';
+import range from 'lodash/range';
 import { Atom, AtomFn, BucketPosition, Color, DropAttempt, Shape, VALID_SHAPES } from '../@types';
+import { cols, rows } from '../constants';
 
 type RawAtomFn = (
   p: BucketPosition | undefined,
@@ -68,7 +70,7 @@ const parseAtomRawFnString = (rawAtomFnString: string): AtomFn[] => {
 };
 
 const parseAtomString = (atom: string): Atom => {
-  const regex = /\((\d+|\*),(.+),(.+),(\d+|\*+),(\*|\[.*])\)/;
+  const regex = /\((\d+|\*),(.+),(.+),(.+|\*+),(\*|\[.*])\)/;
   const matches = regex.exec(atom);
   if (matches === null) {
     throw Error(
@@ -79,8 +81,23 @@ const parseAtomString = (atom: string): Atom => {
 
   const counter = matchedCounter === '*' ? Infinity : Number(matchedCounter);
 
-  // Allow * to be represented as NaN
-  const position = Number(matchedPosition);
+  const leftPositions = range(rows - 2).map((i) => (cols - 2) * i + 1);
+  const rightPositions = range(rows - 2).map((i) => (cols - 2) * i + cols - 2);
+  const topPositions = range(1, cols - 1).map((i) => i + (rows - 3) * (cols - 2));
+  const bottomPositions = range(1, cols - 1);
+
+  const position =
+    matchedPosition !== '*'
+      ? new Set<number>(
+          // eslint-disable-next-line no-eval
+          eval(`(L, R, T, B) => ([${matchedPosition}].flat())`)(
+            leftPositions,
+            rightPositions,
+            topPositions,
+            bottomPositions,
+          ),
+        )
+      : undefined;
 
   const errors = [];
   const shape = matchedShape;

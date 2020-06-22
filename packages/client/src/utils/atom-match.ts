@@ -18,4 +18,4 @@ export default (boardObject: BoardObjectType, atomCounts: { [atomId: string]: nu
   atomCounts[atom.id] > 0 &&
   (atom.color === Color.ANY || atom.color === boardObject.color) &&
   (atom.shape === Shape.ANY || atom.shape === boardObject.shape) &&
-  (Number.isNaN(atom.position) || xYToPosition(boardObject.x, boardObject.y) === atom.position);
+  (atom.position?.has(xYToPosition(boardObject.x, boardObject.y)) ?? true);
