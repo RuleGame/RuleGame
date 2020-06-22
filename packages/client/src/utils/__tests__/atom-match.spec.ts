@@ -8,7 +8,7 @@ describe('atom-match', () => {
         { x: 2, y: 1, color: Color.BLACK, id: '1', shape: Shape.CIRCLE },
         { 1: 2 },
       )({
-        position: 2,
+        position: new Set([2]),
         counter: 2,
         shape: Shape.CIRCLE,
         id: '1',
@@ -24,7 +24,7 @@ describe('atom-match', () => {
         { x: 2, y: 1, color: Color.BLACK, id: '1', shape: Shape.CIRCLE },
         { 1: Infinity },
       )({
-        position: 4,
+        position: new Set([4]),
         counter: 2,
         shape: Shape.ANY,
         id: '1',
@@ -40,7 +40,7 @@ describe('atom-match', () => {
         { x: 2, y: 1, color: Color.BLACK, id: '1', shape: Shape.CIRCLE },
         { 1: 0 },
       )({
-        position: NaN,
+        position: new Set([NaN]),
         counter: 2,
         shape: Shape.ANY,
         id: '1',
@@ -56,7 +56,7 @@ describe('atom-match', () => {
         { x: 2, y: 1, color: Color.BLACK, id: '1', shape: Shape.CIRCLE },
         { 1: Infinity },
       )({
-        position: NaN,
+        position: new Set([NaN]),
         counter: 2,
         shape: Shape.TRIANGLE,
         id: '1',
@@ -72,7 +72,7 @@ describe('atom-match', () => {
         { x: 2, y: 1, color: Color.BLACK, id: '1', shape: Shape.CIRCLE },
         { 1: Infinity },
       )({
-        position: NaN,
+        position: new Set([NaN]),
         counter: 2,
         shape: Shape.ANY,
         id: '1',
@@ -88,7 +88,7 @@ describe('atom-match', () => {
         { x: 2, y: 1, color: Color.BLACK, id: '1', shape: Shape.CIRCLE },
         { 1: Infinity },
       )({
-        position: NaN,
+        position: new Set([NaN]),
         counter: 2,
         shape: Shape.ANY,
         id: '1',

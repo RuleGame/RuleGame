@@ -160,6 +160,122 @@ describe('basic', () => {
 
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });
+
+  it('drops for left position', () => {
+    cy.addAndEnterGame(
+      `(*,*,*,L,*)`,
+      [
+        { id: '1', color: Color.RED, x: 1, y: 1, shape: Shape.CIRCLE },
+        { id: '2', color: Color.BLUE, x: 1, y: 2, shape: Shape.STAR },
+        { id: '3', color: Color.BLUE, x: 1, y: 3, shape: Shape.STAR },
+        { id: '4', color: Color.BLUE, x: 1, y: 4, shape: Shape.STAR },
+        { id: '5', color: Color.BLUE, x: 1, y: 5, shape: Shape.STAR },
+        { id: '6', color: Color.BLUE, x: 1, y: 6, shape: Shape.STAR },
+        { id: '7', color: Color.BLUE, x: 6, y: 1, shape: Shape.STAR },
+        { id: '8', color: Color.BLUE, x: 6, y: 6, shape: Shape.STAR },
+      ],
+      undefined,
+      false,
+    );
+
+    checkMove('8', false, BucketPosition.BR);
+    checkMove('7', false, BucketPosition.BR);
+    checkMove('1', true, BucketPosition.TR);
+    checkMove('2', true, BucketPosition.TR);
+    checkMove('3', true, BucketPosition.BR);
+    checkMove('4', true, BucketPosition.BR);
+    checkMove('5', true, BucketPosition.BR);
+    checkMove('6', true, BucketPosition.BR);
+
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
+  });
+
+  it('drops for right position', () => {
+    cy.addAndEnterGame(
+      `(*,*,*,R,*)`,
+      [
+        { id: '1', color: Color.RED, x: 6, y: 1, shape: Shape.CIRCLE },
+        { id: '2', color: Color.BLUE, x: 6, y: 2, shape: Shape.STAR },
+        { id: '3', color: Color.BLUE, x: 6, y: 3, shape: Shape.STAR },
+        { id: '4', color: Color.BLUE, x: 6, y: 4, shape: Shape.STAR },
+        { id: '5', color: Color.BLUE, x: 6, y: 5, shape: Shape.STAR },
+        { id: '6', color: Color.BLUE, x: 6, y: 6, shape: Shape.STAR },
+        { id: '7', color: Color.BLUE, x: 1, y: 1, shape: Shape.STAR },
+        { id: '8', color: Color.BLUE, x: 1, y: 6, shape: Shape.STAR },
+      ],
+      undefined,
+      false,
+    );
+
+    checkMove('8', false, BucketPosition.BR);
+    checkMove('7', false, BucketPosition.BR);
+    checkMove('1', true, BucketPosition.TR);
+    checkMove('2', true, BucketPosition.TR);
+    checkMove('3', true, BucketPosition.BR);
+    checkMove('4', true, BucketPosition.BR);
+    checkMove('5', true, BucketPosition.BR);
+    checkMove('6', true, BucketPosition.BR);
+
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
+  });
+
+  it('drops for top position', () => {
+    cy.addAndEnterGame(
+      `(*,*,*,T,*)`,
+      [
+        { id: '1', color: Color.RED, x: 1, y: 6, shape: Shape.CIRCLE },
+        { id: '2', color: Color.BLUE, x: 2, y: 6, shape: Shape.STAR },
+        { id: '3', color: Color.BLUE, x: 3, y: 6, shape: Shape.STAR },
+        { id: '4', color: Color.BLUE, x: 4, y: 6, shape: Shape.STAR },
+        { id: '5', color: Color.BLUE, x: 5, y: 6, shape: Shape.STAR },
+        { id: '6', color: Color.BLUE, x: 6, y: 6, shape: Shape.STAR },
+        { id: '7', color: Color.BLUE, x: 6, y: 1, shape: Shape.STAR },
+        { id: '8', color: Color.BLUE, x: 1, y: 1, shape: Shape.STAR },
+      ],
+      undefined,
+      false,
+    );
+
+    checkMove('8', false, BucketPosition.BR);
+    checkMove('7', false, BucketPosition.BR);
+    checkMove('1', true, BucketPosition.TR);
+    checkMove('2', true, BucketPosition.TR);
+    checkMove('3', true, BucketPosition.BR);
+    checkMove('4', true, BucketPosition.BR);
+    checkMove('5', true, BucketPosition.BR);
+    checkMove('6', true, BucketPosition.BR);
+
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
+  });
+
+  it('drops for bottom position', () => {
+    cy.addAndEnterGame(
+      `(*,*,*,B,*)`,
+      [
+        { id: '1', color: Color.RED, x: 1, y: 1, shape: Shape.CIRCLE },
+        { id: '2', color: Color.BLUE, x: 2, y: 1, shape: Shape.STAR },
+        { id: '3', color: Color.BLUE, x: 3, y: 1, shape: Shape.STAR },
+        { id: '4', color: Color.BLUE, x: 4, y: 1, shape: Shape.STAR },
+        { id: '5', color: Color.BLUE, x: 5, y: 1, shape: Shape.STAR },
+        { id: '6', color: Color.BLUE, x: 6, y: 1, shape: Shape.STAR },
+        { id: '7', color: Color.BLUE, x: 6, y: 6, shape: Shape.STAR },
+        { id: '8', color: Color.BLUE, x: 1, y: 6, shape: Shape.STAR },
+      ],
+      undefined,
+      false,
+    );
+
+    checkMove('8', false, BucketPosition.BR);
+    checkMove('7', false, BucketPosition.BR);
+    checkMove('1', true, BucketPosition.TR);
+    checkMove('2', true, BucketPosition.TR);
+    checkMove('3', true, BucketPosition.BR);
+    checkMove('4', true, BucketPosition.BR);
+    checkMove('5', true, BucketPosition.BR);
+    checkMove('6', true, BucketPosition.BR);
+
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
+  });
 });
 
 describe('basic', () => {
