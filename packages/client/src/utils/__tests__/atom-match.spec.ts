@@ -8,7 +8,6 @@ describe('atom-match', () => {
         { x: 2, y: 1, color: Color.BLACK, id: '1', shape: Shape.CIRCLE },
         { 1: 2 },
       )({
-        position: new Set([2]),
         counter: 2,
         shape: Shape.CIRCLE,
         id: '1',
@@ -18,29 +17,12 @@ describe('atom-match', () => {
     ).toEqual(true);
   });
 
-  it('does not match on position', () => {
-    expect(
-      atomMatch(
-        { x: 2, y: 1, color: Color.BLACK, id: '1', shape: Shape.CIRCLE },
-        { 1: Infinity },
-      )({
-        position: new Set([4]),
-        counter: 2,
-        shape: Shape.ANY,
-        id: '1',
-        color: Color.ANY,
-        fns: [],
-      }),
-    ).toEqual(false);
-  });
-
   it('does not match on counter', () => {
     expect(
       atomMatch(
         { x: 2, y: 1, color: Color.BLACK, id: '1', shape: Shape.CIRCLE },
         { 1: 0 },
       )({
-        position: new Set([NaN]),
         counter: 2,
         shape: Shape.ANY,
         id: '1',
@@ -56,7 +38,6 @@ describe('atom-match', () => {
         { x: 2, y: 1, color: Color.BLACK, id: '1', shape: Shape.CIRCLE },
         { 1: Infinity },
       )({
-        position: new Set([NaN]),
         counter: 2,
         shape: Shape.TRIANGLE,
         id: '1',
@@ -72,7 +53,6 @@ describe('atom-match', () => {
         { x: 2, y: 1, color: Color.BLACK, id: '1', shape: Shape.CIRCLE },
         { 1: Infinity },
       )({
-        position: new Set([NaN]),
         counter: 2,
         shape: Shape.ANY,
         id: '1',
@@ -88,7 +68,6 @@ describe('atom-match', () => {
         { x: 2, y: 1, color: Color.BLACK, id: '1', shape: Shape.CIRCLE },
         { 1: Infinity },
       )({
-        position: new Set([NaN]),
         counter: 2,
         shape: Shape.ANY,
         id: '1',

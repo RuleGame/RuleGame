@@ -1,7 +1,17 @@
 import shortid from 'shortid';
 import range from 'lodash/range';
-import { Atom, AtomFn, BucketPosition, Color, DropAttempt, Shape, VALID_SHAPES } from '../@types';
+import {
+  Atom,
+  AtomFn,
+  BucketPosition,
+  Color,
+  DropAttempt,
+  PositionsFn,
+  Shape,
+  VALID_SHAPES,
+} from '../@types';
 import { cols, rows } from '../constants';
+import { xYToPosition } from './atom-match';
 
 type RawAtomFn = (
   p: BucketPosition | undefined,
@@ -70,7 +80,7 @@ const parseAtomRawFnString = (rawAtomFnString: string): AtomFn[] => {
 };
 
 const parseAtomString = (atom: string): Atom => {
-  const regex = /\((\d+|\*),(.+),(.+),(.+|\*+),(\*|\[.*])\)/;
+  const regex = /\((\d+|\*),(.+),(.+),(\d+|[*TBLR]),(\*|\[.*])\)/;
   const matches = regex.exec(atom);
   if (matches === null) {
     throw Error(
@@ -81,22 +91,72 @@ const parseAtomString = (atom: string): Atom => {
 
   const counter = matchedCounter === '*' ? Infinity : Number(matchedCounter);
 
-  const leftPositions = range(rows - 2).map((i) => (cols - 2) * i + 1);
-  const rightPositions = range(rows - 2).map((i) => (cols - 2) * i + cols - 2);
-  const topPositions = range(1, cols - 1).map((i) => i + (rows - 3) * (cols - 2));
-  const bottomPositions = range(1, cols - 1);
+  // const leftPositions = range(rows - 2).map((i) => (cols - 2) * i + 1);
+  // const rightPositions = range(rows - 2).map((i) => (cols - 2) * i + cols - 2);
+  // const topPositions = range(1, cols - 1).map((i) => i + (rows - 3) * (cols - 2));
+  // const bottomPositions = range(1, cols - 1);
 
-  const position =
+  const bottomPositions: PositionsFn = (boardObjectId, totalMoveHistory, boardObjects) => {
+    const minY = Object.values(boardObjects)
+      .filter((boardObject) => boardObject.shape !== Shape.CHECK)
+      .reduce<number | undefined>((acc, boardObject) => {
+        return Math.min(boardObject.y, acc ?? Infinity);
+      }, undefined);
+
+    // Allow all buckets by returning undefined if minY undefined (not found)
+    return minY === undefined
+      ? undefined
+      : new Set(range(1, cols - 1).map((x) => xYToPosition(x, minY)));
+  };
+
+  const topPositions: PositionsFn = (boardObjectId, totalMoveHistory, boardObjects) => {
+    const minY = Object.values(boardObjects)
+      .filter((boardObject) => boardObject.shape !== Shape.CHECK)
+      .reduce<number | undefined>((acc, boardObject) => {
+        return Math.max(boardObject.y, acc ?? -Infinity);
+      }, undefined);
+
+    // Allow all buckets by returning undefined if minY undefined (not found)
+    return minY === undefined
+      ? undefined
+      : new Set(range(1, cols - 1).map((x) => xYToPosition(x, minY)));
+  };
+
+  const leftPositions: PositionsFn = (boardObjectId, totalMoveHistory, boardObjects) => {
+    const minX = Object.values(boardObjects)
+      .filter((boardObject) => boardObject.shape !== Shape.CHECK)
+      .reduce<number | undefined>((acc, boardObject) => {
+        return Math.min(boardObject.x, acc ?? Infinity);
+      }, undefined);
+
+    // Allow all buckets by returning undefined if minY undefined (not found)
+    return minX === undefined
+      ? undefined
+      : new Set(range(1, rows - 1).map((y) => xYToPosition(minX, y)));
+  };
+
+  const rightPositions: PositionsFn = (boardObjectId, totalMoveHistory, boardObjects) => {
+    const minX = Object.values(boardObjects)
+      .filter((boardObject) => boardObject.shape !== Shape.CHECK)
+      .reduce<number | undefined>((acc, boardObject) => {
+        return Math.max(boardObject.x, acc ?? -Infinity);
+      }, undefined);
+
+    // Allow all buckets by returning undefined if minY undefined (not found)
+    return minX === undefined
+      ? undefined
+      : new Set(range(1, rows - 1).map((y) => xYToPosition(minX, y)));
+  };
+
+  const position: Atom['position'] =
     matchedPosition !== '*'
-      ? new Set<number>(
-          // eslint-disable-next-line no-eval
-          eval(`(L, R, T, B) => ([${matchedPosition}].flat())`)(
-            leftPositions,
-            rightPositions,
-            topPositions,
-            bottomPositions,
-          ),
-        )
+      ? // eslint-disable-next-line no-eval
+        (eval(`(L, R, T, B) => ${matchedPosition}`)(
+          leftPositions,
+          rightPositions,
+          topPositions,
+          bottomPositions,
+        ) as PositionsFn | number)
       : undefined;
 
   const errors = [];

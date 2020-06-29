@@ -186,6 +186,8 @@ describe('basic', () => {
     checkMove('4', true, BucketPosition.BR);
     checkMove('5', true, BucketPosition.BR);
     checkMove('6', true, BucketPosition.BR);
+    checkMove('7', true, BucketPosition.BR);
+    checkMove('8', true, BucketPosition.BR);
 
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });
@@ -215,6 +217,8 @@ describe('basic', () => {
     checkMove('4', true, BucketPosition.BR);
     checkMove('5', true, BucketPosition.BR);
     checkMove('6', true, BucketPosition.BR);
+    checkMove('7', true, BucketPosition.BR);
+    checkMove('8', true, BucketPosition.BR);
 
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });
@@ -244,6 +248,8 @@ describe('basic', () => {
     checkMove('4', true, BucketPosition.BR);
     checkMove('5', true, BucketPosition.BR);
     checkMove('6', true, BucketPosition.BR);
+    checkMove('7', true, BucketPosition.BR);
+    checkMove('8', true, BucketPosition.BR);
 
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });
@@ -273,6 +279,8 @@ describe('basic', () => {
     checkMove('4', true, BucketPosition.BR);
     checkMove('5', true, BucketPosition.BR);
     checkMove('6', true, BucketPosition.BR);
+    checkMove('7', true, BucketPosition.BR);
+    checkMove('8', true, BucketPosition.BR);
 
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });

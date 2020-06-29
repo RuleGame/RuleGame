@@ -1,5 +1,12 @@
 import atomParser from '../atom-parser';
-import { BoardObjectType, BucketPosition, Color, DropAttempt, Shape } from '../../@types';
+import {
+  BoardObjectType,
+  BucketPosition,
+  Color,
+  DropAttempt,
+  PositionsFn,
+  Shape,
+} from '../../@types';
 
 it('can parse all atom values', () => {
   const atoms = atomParser('(10,square,*,*,[1,2]) (*,*,green,10,[2,3])');
@@ -16,7 +23,7 @@ it('can parse all atom values', () => {
   expect(secondAtom.color).toEqual(Color.GREEN);
 
   expect(firstAtom.position).toBeUndefined();
-  expect(secondAtom.position).toEqual(new Set([10]));
+  expect(secondAtom.position).toEqual(10);
 
   const totalMoveHistory: DropAttempt[] = [];
   const boardObjects: { [id: number]: BoardObjectType } = {
@@ -37,34 +44,6 @@ it('can parse all atom values', () => {
     BucketPosition.BR,
     BucketPosition.BL,
   ]);
-});
-
-it('parses left positions', () => {
-  const atoms = atomParser('(10,square,*,L,[1,2])');
-  const [firstAtom] = atoms;
-
-  expect(firstAtom.position).toEqual(new Set([1, 7, 13, 19, 25, 31]));
-});
-
-it('parses right positions', () => {
-  const atoms = atomParser('(10,square,*,R,[1,2])');
-  const [firstAtom] = atoms;
-
-  expect(firstAtom.position).toEqual(new Set([6, 12, 18, 24, 30, 36]));
-});
-
-it('parses top positions', () => {
-  const atoms = atomParser('(10,square,*,T,[1,2])');
-  const [firstAtom] = atoms;
-
-  expect(firstAtom.position).toEqual(new Set([31, 32, 33, 34, 35, 36]));
-});
-
-it('parses bottom positions', () => {
-  const atoms = atomParser('(10,square,*,B,[1,2])');
-  const [firstAtom] = atoms;
-
-  expect(firstAtom.position).toEqual(new Set([1, 2, 3, 4, 5, 6]));
 });
 
 it('can parse * function', () => {
@@ -296,4 +275,416 @@ it('works for [1,2,3] bucket functions', () => {
     2,
     3,
   ]);
+});
+
+describe('B positions function', () => {
+  it('allows most bottom positions', () => {
+    const atoms = atomParser('(*,*,*,B,[0])');
+    expect(atoms).toHaveLength(1);
+    const atom = atoms[0];
+
+    const boardObjects: { [id: number]: BoardObjectType } = {
+      // Checks (dropped objects) should be ignored
+      0: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CHECK,
+        x: 1,
+        y: 1,
+      },
+      1: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CIRCLE,
+        x: 1,
+        y: 1,
+      },
+      2: {
+        color: Color.RED,
+        id: '2',
+        shape: Shape.SQUARE,
+        x: 1,
+        y: 2,
+      },
+    };
+
+    const totalMoveHistory: DropAttempt[] = [];
+
+    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+      new Set<number>([1, 2, 3, 4, 5, 6]),
+    );
+  });
+
+  it('allows second most bottom positions', () => {
+    const atoms = atomParser('(*,*,*,B,[0])');
+    expect(atoms).toHaveLength(1);
+    const atom = atoms[0];
+
+    const boardObjects: { [id: number]: BoardObjectType } = {
+      // Checks (dropped objects) should be ignored
+      0: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CHECK,
+        x: 1,
+        y: 1,
+      },
+      1: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CIRCLE,
+        x: 1,
+        y: 2,
+      },
+      2: {
+        color: Color.RED,
+        id: '2',
+        shape: Shape.SQUARE,
+        x: 1,
+        y: 3,
+      },
+    };
+
+    const totalMoveHistory: DropAttempt[] = [];
+
+    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+      new Set<number>([7, 8, 9, 10, 11, 12]),
+    );
+  });
+
+  it('undefined with no board objects', () => {
+    const atoms = atomParser('(*,*,*,B,[0])');
+    expect(atoms).toHaveLength(1);
+    const atom = atoms[0];
+
+    const boardObjects: { [id: number]: BoardObjectType } = {
+      1: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CHECK,
+        x: 1,
+        y: 2,
+      },
+      2: {
+        color: Color.RED,
+        id: '2',
+        shape: Shape.CHECK,
+        x: 1,
+        y: 3,
+      },
+    };
+
+    const totalMoveHistory: DropAttempt[] = [];
+
+    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toBeUndefined();
+  });
+});
+
+describe('T positions function', () => {
+  it('allows most top positions', () => {
+    const atoms = atomParser('(*,*,*,T,[0])');
+    expect(atoms).toHaveLength(1);
+    const atom = atoms[0];
+
+    const boardObjects: { [id: number]: BoardObjectType } = {
+      // Checks (dropped objects) should be ignored
+      0: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CHECK,
+        x: 1,
+        y: 6,
+      },
+      1: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CIRCLE,
+        x: 1,
+        y: 6,
+      },
+      2: {
+        color: Color.RED,
+        id: '2',
+        shape: Shape.SQUARE,
+        x: 1,
+        y: 5,
+      },
+    };
+
+    const totalMoveHistory: DropAttempt[] = [];
+
+    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+      new Set<number>([31, 32, 33, 34, 35, 36]),
+    );
+  });
+
+  it('allows second most top positions', () => {
+    const atoms = atomParser('(*,*,*,T,[0])');
+    expect(atoms).toHaveLength(1);
+    const atom = atoms[0];
+
+    const boardObjects: { [id: number]: BoardObjectType } = {
+      // Checks (dropped objects) should be ignored
+      0: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CHECK,
+        x: 1,
+        y: 6,
+      },
+      1: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CIRCLE,
+        x: 1,
+        y: 5,
+      },
+      2: {
+        color: Color.RED,
+        id: '2',
+        shape: Shape.SQUARE,
+        x: 1,
+        y: 4,
+      },
+    };
+
+    const totalMoveHistory: DropAttempt[] = [];
+
+    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+      new Set<number>([25, 26, 27, 28, 29, 30]),
+    );
+  });
+
+  it('undefined with no board objects', () => {
+    const atoms = atomParser('(*,*,*,T,[0])');
+    expect(atoms).toHaveLength(1);
+    const atom = atoms[0];
+
+    const boardObjects: { [id: number]: BoardObjectType } = {
+      1: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CHECK,
+        x: 1,
+        y: 2,
+      },
+      2: {
+        color: Color.RED,
+        id: '2',
+        shape: Shape.CHECK,
+        x: 1,
+        y: 3,
+      },
+    };
+
+    const totalMoveHistory: DropAttempt[] = [];
+
+    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toBeUndefined();
+  });
+});
+
+describe('L positions function', () => {
+  it('allows most left positions', () => {
+    const atoms = atomParser('(*,*,*,L,[0])');
+    expect(atoms).toHaveLength(1);
+    const atom = atoms[0];
+
+    const boardObjects: { [id: number]: BoardObjectType } = {
+      // Checks (dropped objects) should be ignored
+      0: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CHECK,
+        x: 1,
+        y: 6,
+      },
+      1: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CIRCLE,
+        x: 1,
+        y: 6,
+      },
+      2: {
+        color: Color.RED,
+        id: '2',
+        shape: Shape.SQUARE,
+        x: 2,
+        y: 5,
+      },
+    };
+
+    const totalMoveHistory: DropAttempt[] = [];
+
+    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+      new Set<number>([1, 7, 13, 19, 25, 31]),
+    );
+  });
+
+  it('allows second most left positions', () => {
+    const atoms = atomParser('(*,*,*,L,[0])');
+    expect(atoms).toHaveLength(1);
+    const atom = atoms[0];
+
+    const boardObjects: { [id: number]: BoardObjectType } = {
+      // Checks (dropped objects) should be ignored
+      0: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CHECK,
+        x: 1,
+        y: 6,
+      },
+      1: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CIRCLE,
+        x: 2,
+        y: 5,
+      },
+      2: {
+        color: Color.RED,
+        id: '2',
+        shape: Shape.SQUARE,
+        x: 3,
+        y: 4,
+      },
+    };
+
+    const totalMoveHistory: DropAttempt[] = [];
+
+    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+      new Set<number>([2, 8, 14, 20, 26, 32]),
+    );
+  });
+
+  it('undefined with no board objects', () => {
+    const atoms = atomParser('(*,*,*,L,[0])');
+    expect(atoms).toHaveLength(1);
+    const atom = atoms[0];
+
+    const boardObjects: { [id: number]: BoardObjectType } = {
+      1: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CHECK,
+        x: 1,
+        y: 2,
+      },
+      2: {
+        color: Color.RED,
+        id: '2',
+        shape: Shape.CHECK,
+        x: 1,
+        y: 3,
+      },
+    };
+
+    const totalMoveHistory: DropAttempt[] = [];
+
+    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toBeUndefined();
+  });
+});
+
+describe('R positions function', () => {
+  it('allows most right positions', () => {
+    const atoms = atomParser('(*,*,*,R,[0])');
+    expect(atoms).toHaveLength(1);
+    const atom = atoms[0];
+
+    const boardObjects: { [id: number]: BoardObjectType } = {
+      // Checks (dropped objects) should be ignored
+      0: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CHECK,
+        x: 6,
+        y: 6,
+      },
+      1: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CIRCLE,
+        x: 6,
+        y: 6,
+      },
+      2: {
+        color: Color.RED,
+        id: '2',
+        shape: Shape.SQUARE,
+        x: 5,
+        y: 5,
+      },
+    };
+
+    const totalMoveHistory: DropAttempt[] = [];
+
+    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+      new Set<number>([6, 12, 18, 24, 30, 36]),
+    );
+  });
+
+  it('allows second most right positions', () => {
+    const atoms = atomParser('(*,*,*,R,[0])');
+    expect(atoms).toHaveLength(1);
+    const atom = atoms[0];
+
+    const boardObjects: { [id: number]: BoardObjectType } = {
+      // Checks (dropped objects) should be ignored
+      0: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CHECK,
+        x: 6,
+        y: 6,
+      },
+      1: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CIRCLE,
+        x: 5,
+        y: 5,
+      },
+      2: {
+        color: Color.RED,
+        id: '2',
+        shape: Shape.SQUARE,
+        x: 4,
+        y: 4,
+      },
+    };
+
+    const totalMoveHistory: DropAttempt[] = [];
+
+    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+      new Set<number>([5, 11, 17, 23, 29, 35]),
+    );
+  });
+
+  it('undefined with no board objects', () => {
+    const atoms = atomParser('(*,*,*,R,[0])');
+    expect(atoms).toHaveLength(1);
+    const atom = atoms[0];
+
+    const boardObjects: { [id: number]: BoardObjectType } = {
+      1: {
+        color: Color.BLUE,
+        id: '1',
+        shape: Shape.CHECK,
+        x: 1,
+        y: 2,
+      },
+      2: {
+        color: Color.RED,
+        id: '2',
+        shape: Shape.CHECK,
+        x: 1,
+        y: 3,
+      },
+    };
+
+    const totalMoveHistory: DropAttempt[] = [];
+
+    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toBeUndefined();
+  });
 });

@@ -75,13 +75,19 @@ export type AtomFn = (
   boardObjects: { [id: string]: BoardObjectType },
 ) => BucketPosition;
 
+export type PositionsFn = (
+  boardObjectId: BoardObjectId,
+  totalMoveHistory: DropAttempt[],
+  boardObjects: { [id: string]: BoardObjectType },
+) => Set<number> | undefined;
+
 export type Atom = {
   id: string;
   counter: number;
   shape: Shape;
   color: Color;
   // Undefined means any position (*)
-  position?: Set<number>;
+  position?: PositionsFn | number;
   fns: AtomFn[];
 };
 
