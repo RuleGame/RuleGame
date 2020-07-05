@@ -284,6 +284,60 @@ describe('basic', () => {
 
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });
+
+  it('drops for farthest position', () => {
+    cy.addAndEnterGame(
+      `(*,*,*,Farthest,*)`,
+      [
+        {
+          color: Color.BLUE,
+          id: '0',
+          shape: Shape.TRIANGLE,
+          x: 4,
+          y: 3,
+        },
+        {
+          color: Color.RED,
+          id: '1',
+          shape: Shape.SQUARE,
+          x: 2,
+          y: 2,
+        },
+        {
+          color: Color.RED,
+          id: '2',
+          shape: Shape.SQUARE,
+          x: 5,
+          y: 6,
+        },
+        {
+          color: Color.RED,
+          id: '3',
+          shape: Shape.SQUARE,
+          x: 1,
+          y: 6,
+        },
+        {
+          color: Color.RED,
+          id: '4',
+          shape: Shape.SQUARE,
+          x: 1,
+          y: 1,
+        },
+      ],
+      undefined,
+      false,
+    );
+
+    checkMove('1', false, BucketPosition.BR);
+    checkMove('0', true, BucketPosition.BR);
+    checkMove('1', true, BucketPosition.BR);
+    checkMove('2', true, BucketPosition.TR);
+    checkMove('3', true, BucketPosition.TR);
+    checkMove('4', true, BucketPosition.BR);
+
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
+  });
 });
 
 describe('basic', () => {

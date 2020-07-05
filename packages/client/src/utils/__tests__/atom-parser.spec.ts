@@ -670,6 +670,73 @@ describe('R positions function', () => {
     );
   });
 
+  it('allows farthest positions', () => {
+    const atoms = atomParser('(*,*,*,Farthest,*)');
+    expect(atoms).toHaveLength(1);
+    const atom = atoms[0];
+
+    const boardObjects: { [id: number]: BoardObjectType } = {
+      // Checks (dropped objects) should be ignored
+      0: {
+        color: Color.BLUE,
+        id: '0',
+        shape: Shape.TRIANGLE,
+        x: 4,
+        y: 3,
+      },
+      1: {
+        color: Color.RED,
+        id: '1',
+        shape: Shape.SQUARE,
+        x: 2,
+        y: 2,
+      },
+      2: {
+        color: Color.RED,
+        id: '2',
+        shape: Shape.SQUARE,
+        x: 5,
+        y: 6,
+      },
+      3: {
+        color: Color.RED,
+        id: '3',
+        shape: Shape.SQUARE,
+        x: 1,
+        y: 6,
+      },
+      4: {
+        color: Color.RED,
+        id: '4',
+        shape: Shape.SQUARE,
+        x: 1,
+        y: 1,
+      },
+    };
+
+    const totalMoveHistory: DropAttempt[] = [];
+
+    expect((atom.position as PositionsFn)('0', totalMoveHistory, boardObjects)).toEqual(
+      new Set<number>([16]),
+    );
+    boardObjects[0].shape = Shape.CHECK;
+    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+      new Set<number>([8]),
+    );
+    boardObjects[1].shape = Shape.CHECK;
+    expect((atom.position as PositionsFn)('2', totalMoveHistory, boardObjects)).toEqual(
+      new Set<number>([35]),
+    );
+    boardObjects[2].shape = Shape.CHECK;
+    expect((atom.position as PositionsFn)('3', totalMoveHistory, boardObjects)).toEqual(
+      new Set<number>([1, 31]),
+    );
+    boardObjects[3].shape = Shape.CHECK;
+    expect((atom.position as PositionsFn)('4', totalMoveHistory, boardObjects)).toEqual(
+      new Set<number>([1]),
+    );
+  });
+
   it('undefined with no board objects', () => {
     const atoms = atomParser('(*,*,*,R,[Nearby])');
     expect(atoms).toHaveLength(1);

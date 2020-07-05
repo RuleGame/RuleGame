@@ -1,6 +1,15 @@
 import shortid from 'shortid';
 import range from 'lodash/range';
-import { Atom, AtomFn, BucketPosition, Color, PositionsFn, Shape, VALID_SHAPES } from '../@types';
+import {
+  Atom,
+  AtomFn,
+  BoardObjectType,
+  BucketPosition,
+  Color,
+  PositionsFn,
+  Shape,
+  VALID_SHAPES,
+} from '../@types';
 import { cols, rows } from '../constants';
 import { xYToPosition } from './atom-match';
 
@@ -122,7 +131,7 @@ const parseAtomRawFnString = (rawAtomFnString: string): AtomFn[] => {
 };
 
 const parseAtomString = (atom: string): Atom => {
-  const regex = /\((\d+|\*),(.+),(.+),(\d+|[*TBLR]),(\*|\[.*])\)/;
+  const regex = /\((\d+|\*),(.+),(.+),(.+),(\*|\[.*])\)/;
   const matches = regex.exec(atom);
   if (matches === null) {
     throw Error(
@@ -185,14 +194,53 @@ const parseAtomString = (atom: string): Atom => {
       : new Set(range(1, rows - 1).map((y) => xYToPosition(minX, y)));
   };
 
+  const farthestPositions: PositionsFn = (boardObjectId, totalMoveHistory, boardObjects) => {
+    const computeDistance = (x: number, y: number, boardObject: BoardObjectType) => {
+      return Math.sqrt((x - boardObject.x) ** 2 + (y - boardObject.y) ** 2);
+    };
+
+    const { farthestPositions } = Object.values(boardObjects)
+      .filter((boardObject) => boardObject.shape !== Shape.CHECK)
+      .reduce<{
+        farthestDistance: number;
+        farthestPositions: Set<number>;
+      }>(
+        ({ farthestDistance, farthestPositions }, boardObject) => {
+          const nearestBucketDistance = Math.min(
+            ...[
+              [0, 0],
+              [0, rows - 1],
+              [cols - 1, 0],
+              [cols - 1, rows - 1],
+            ].map(([x, y]) => computeDistance(x, y, boardObject)),
+          );
+
+          if (nearestBucketDistance > farthestDistance) {
+            farthestPositions.clear();
+          }
+
+          if (nearestBucketDistance >= farthestDistance) {
+            farthestPositions.add(xYToPosition(boardObject.x, boardObject.y));
+            farthestDistance = nearestBucketDistance;
+          }
+
+          return { farthestDistance, farthestPositions };
+        },
+        { farthestDistance: -Infinity, farthestPositions: new Set() },
+      );
+
+    return farthestPositions;
+  };
+
   const position: Atom['position'] =
     matchedPosition !== '*'
       ? // eslint-disable-next-line no-eval
-        (eval(`(L, R, T, B) => ${matchedPosition}`)(
+        (eval(`(L, R, T, B, Farthest) => ${matchedPosition}`)(
           leftPositions,
           rightPositions,
           topPositions,
           bottomPositions,
+          farthestPositions,
         ) as PositionsFn | number)
       : undefined;
 
