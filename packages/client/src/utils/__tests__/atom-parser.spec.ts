@@ -1,5 +1,6 @@
 import atomParser from '../atom-parser';
 import {
+  Atom,
   BoardObjectType,
   BucketPosition,
   Color,
@@ -7,6 +8,27 @@ import {
   PositionsFn,
   Shape,
 } from '../../@types';
+
+const getValidBuckets = (
+  fns: Atom['fns'],
+  boardObjectId: string,
+  totalMoveHistory: DropAttempt[],
+  boardObjects: { [id: number]: BoardObjectType },
+): Set<BucketPosition> => {
+  return new Set(
+    fns
+      .map((fn) => {
+        const temp = fn(boardObjectId, totalMoveHistory, boardObjects);
+
+        if (typeof temp === 'number') {
+          return temp;
+        }
+
+        return temp.values();
+      })
+      .filter((v) => v !== undefined) as BucketPosition[],
+  );
+};
 
 it('can parse all atom values', () => {
   const atoms = atomParser('(10,square,*,*,[1,2]) (*,*,green,10,[2,3])');
@@ -36,14 +58,12 @@ it('can parse all atom values', () => {
     },
   };
 
-  expect(firstAtom.fns.map((fn) => fn('1', totalMoveHistory, boardObjects))).toEqual([
-    BucketPosition.TR,
-    BucketPosition.BR,
-  ]);
-  expect(secondAtom.fns.map((fn) => fn('1', totalMoveHistory, boardObjects))).toEqual([
-    BucketPosition.BR,
-    BucketPosition.BL,
-  ]);
+  expect(getValidBuckets(firstAtom.fns, '1', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.TR, BucketPosition.BR]),
+  );
+  expect(getValidBuckets(secondAtom.fns, '1', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.BR, BucketPosition.BL]),
+  );
 });
 
 it('can parse * function', () => {
@@ -52,23 +72,16 @@ it('can parse * function', () => {
   const [atom] = atoms;
 
   expect(
-    atom.fns.map((fn) =>
-      fn('1', [], {
-        1: {
-          color: Color.RED,
-          id: '1',
-          shape: Shape.SQUARE,
-          x: 0,
-          y: 2,
-        },
-      }),
-    ),
-  ).toEqual([
-    BucketPosition.TL,
-    BucketPosition.TR,
-    BucketPosition.BR,
-    BucketPosition.BL,
-  ] as BucketPosition[]);
+    getValidBuckets(atom.fns, '1', [], {
+      1: {
+        color: Color.RED,
+        id: '1',
+        shape: Shape.SQUARE,
+        x: 0,
+        y: 2,
+      },
+    }),
+  ).toEqual(new Set([BucketPosition.TL, BucketPosition.TR, BucketPosition.BR, BucketPosition.BL]));
 });
 
 it('can parse p, ps, pc, and pcs', () => {
@@ -130,12 +143,9 @@ it('can parse p, ps, pc, and pcs', () => {
     },
   };
 
-  expect(atom.fns.map((fn) => fn(boardObjectId, totalMoveHistory, boardObjects))).toEqual([
-    BucketPosition.TL,
-    BucketPosition.TR,
-    BucketPosition.BR,
-    BucketPosition.BL,
-  ]);
+  expect(getValidBuckets(atom.fns, boardObjectId, totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.TL, BucketPosition.TR, BucketPosition.BR, BucketPosition.BL]),
+  );
 });
 
 it('can parse modulo functions', () => {
@@ -197,9 +207,9 @@ it('can parse modulo functions', () => {
     },
   };
 
-  expect(atom.fns.map((fn) => fn(boardObjectId, totalMoveHistory, boardObjects))).toEqual([
-    BucketPosition.BL,
-  ]);
+  expect(getValidBuckets(atom.fns, boardObjectId, totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.BL]),
+  );
 });
 
 it('returns NaNs for a bucket function if its inputs are not to be found in the history but still matches static conditions like shape and color', () => {
@@ -232,12 +242,9 @@ it('returns NaNs for a bucket function if its inputs are not to be found in the 
     },
   };
 
-  expect(atom.fns.map((fn) => fn(boardObjectId, totalMoveHistory, boardObjects))).toEqual([
-    NaN,
-    BucketPosition.BR,
-    NaN,
-    NaN,
-  ]);
+  expect(getValidBuckets(atom.fns, boardObjectId, totalMoveHistory, boardObjects)).toEqual(
+    new Set([NaN, BucketPosition.BR, NaN, NaN]),
+  );
 });
 
 it('works for [1,2,3] bucket functions', () => {
@@ -270,11 +277,9 @@ it('works for [1,2,3] bucket functions', () => {
     },
   };
 
-  expect(atom.fns.map((fn) => fn(boardObjectId, totalMoveHistory, boardObjects))).toEqual([
-    1,
-    2,
-    3,
-  ]);
+  expect(getValidBuckets(atom.fns, boardObjectId, totalMoveHistory, boardObjects)).toEqual(
+    new Set([1, 2, 3]),
+  );
 });
 
 describe('B positions function', () => {

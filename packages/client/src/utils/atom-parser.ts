@@ -1,69 +1,19 @@
 import shortid from 'shortid';
 import range from 'lodash/range';
-import {
-  Atom,
-  AtomFn,
-  BucketPosition,
-  Color,
-  DropAttempt,
-  PositionsFn,
-  Shape,
-  VALID_SHAPES,
-} from '../@types';
+import { Atom, AtomFn, BucketPosition, Color, PositionsFn, Shape, VALID_SHAPES } from '../@types';
 import { cols, rows } from '../constants';
 import { xYToPosition } from './atom-match';
-
-type RawAtomFn = (
-  p: BucketPosition | undefined,
-  pcs: BucketPosition | undefined,
-  pc: BucketPosition | undefined,
-  ps: BucketPosition | undefined,
-) => number;
-
-// TODO: Add reselect to cache args and return value
-const convertRawAtomFnToAtomFn = (rawAtomFn: RawAtomFn): AtomFn => (
-  boardObjectId,
-  totalMoveHistory,
-  boardObjects,
-) => {
-  const reversedTotalMoveHistory = [...totalMoveHistory].reverse();
-
-  /**
-   * Returns most recent dropped bucket id according to predicate
-   * else undefined if no match
-   * @param predicate
-   */
-  const findMostRecentId = (
-    predicate: (dropAttempt: DropAttempt) => boolean,
-  ): BucketPosition | undefined => {
-    const mostRecent = reversedTotalMoveHistory.find(predicate);
-    return mostRecent !== undefined ? mostRecent.dropped : undefined;
-  };
-
-  // TODO: Optimize this later
-  return rawAtomFn(
-    findMostRecentId(() => true),
-    findMostRecentId(
-      (dropAttempt) =>
-        boardObjects[dropAttempt.dragged].color === boardObjects[boardObjectId].color &&
-        boardObjects[dropAttempt.dragged].shape === boardObjects[boardObjectId].shape,
-    ),
-    findMostRecentId(
-      (dropAttempt) =>
-        boardObjects[dropAttempt.dragged].color === boardObjects[boardObjectId].color,
-    ),
-    findMostRecentId(
-      (dropAttempt) =>
-        boardObjects[dropAttempt.dragged].shape === boardObjects[boardObjectId].shape,
-    ),
-  );
-};
 
 const parseAtomRawFnString = (rawAtomFnString: string): AtomFn[] => {
   // Drop in any bucket position if *
   if (rawAtomFnString === '*') {
     // Assuming BucketPosition is numbered from 0 to 3.
-    return [0, 1, 2, 3].map((bucketPosition) => () => bucketPosition);
+    return [
+      BucketPosition.BL,
+      BucketPosition.BR,
+      BucketPosition.TR,
+      BucketPosition.TL,
+    ].map((bucket) => () => bucket);
   }
 
   const regex = /^\[(.+)]$/;
@@ -72,10 +22,54 @@ const parseAtomRawFnString = (rawAtomFnString: string): AtomFn[] => {
     throw Error(`Bad function value: ${rawAtomFnString}`);
   }
   const fnStrings = fnsRawStrings[1].split(',');
+
+  const p: AtomFn = (boardObjectId, totalMoveHistory) => {
+    const reversedTotalMoveHistory = [...totalMoveHistory].reverse();
+
+    const mostRecent = reversedTotalMoveHistory.find(() => true);
+    return mostRecent?.dropped ?? NaN;
+  };
+
+  const pc: AtomFn = (boardObjectId, totalMoveHistory, boardObjects) => {
+    const reversedTotalMoveHistory = [...totalMoveHistory].reverse();
+
+    const mostRecent = reversedTotalMoveHistory.find(
+      (dropAttempt) =>
+        boardObjects[dropAttempt.dragged].color === boardObjects[boardObjectId].color,
+    );
+    return mostRecent?.dropped ?? NaN;
+  };
+
+  const pcs: AtomFn = (boardObjectId, totalMoveHistory, boardObjects) => {
+    const reversedTotalMoveHistory = [...totalMoveHistory].reverse();
+
+    const mostRecent = reversedTotalMoveHistory.find(
+      (dropAttempt) =>
+        boardObjects[dropAttempt.dragged].color === boardObjects[boardObjectId].color &&
+        boardObjects[dropAttempt.dragged].shape === boardObjects[boardObjectId].shape,
+    );
+    return mostRecent?.dropped ?? NaN;
+  };
+
+  const ps: AtomFn = (boardObjectId, totalMoveHistory, boardObjects) => {
+    const reversedTotalMoveHistory = [...totalMoveHistory].reverse();
+
+    const mostRecent = reversedTotalMoveHistory.find(
+      (dropAttempt) =>
+        boardObjects[dropAttempt.dragged].shape === boardObjects[boardObjectId].shape,
+    );
+    return mostRecent?.dropped ?? NaN;
+  };
+
   return fnStrings.map((fnString) => {
-    // eslint-disable-next-line no-eval
-    const evalFn: RawAtomFn = eval(`(p=NaN, pcs=NaN, pc=NaN, ps=NaN) => ${fnString}`);
-    return convertRawAtomFnToAtomFn(evalFn);
+    const evalFn: AtomFn = (boardObjectId, totalMoveHistory, boardObjects) =>
+      // eslint-disable-next-line no-eval
+      eval(`(p, pcs, pc, ps) => ${fnString}`)(
+        ...([p, pcs, pc, ps] as const).map((fn) =>
+          fn(boardObjectId, totalMoveHistory, boardObjects),
+        ),
+      );
+    return evalFn;
   });
 };
 
@@ -90,11 +84,6 @@ const parseAtomString = (atom: string): Atom => {
   const [, matchedCounter, matchedShape, matchedColor, matchedPosition, matchedFn] = matches;
 
   const counter = matchedCounter === '*' ? Infinity : Number(matchedCounter);
-
-  // const leftPositions = range(rows - 2).map((i) => (cols - 2) * i + 1);
-  // const rightPositions = range(rows - 2).map((i) => (cols - 2) * i + cols - 2);
-  // const topPositions = range(1, cols - 1).map((i) => i + (rows - 3) * (cols - 2));
-  // const bottomPositions = range(1, cols - 1);
 
   const bottomPositions: PositionsFn = (boardObjectId, totalMoveHistory, boardObjects) => {
     const minY = Object.values(boardObjects)

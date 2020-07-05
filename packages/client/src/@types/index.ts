@@ -73,7 +73,7 @@ export type AtomFn = (
   boardObjectId: BoardObjectId,
   totalMoveHistory: DropAttempt[],
   boardObjects: { [id: string]: BoardObjectType },
-) => BucketPosition;
+) => Set<BucketPosition> | BucketPosition;
 
 export type PositionsFn = (
   boardObjectId: BoardObjectId,
