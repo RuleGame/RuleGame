@@ -262,7 +262,10 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         // Made an incorrect move
         return {
           ...state,
-          dropAttempts: [...state.dropAttempts, action.payload.dropAttempt],
+          dropAttempts: [
+            ...state.dropAttempts,
+            { ...action.payload.dropAttempt, successful: false },
+          ],
           lastMoveSuccessful: false,
           numConsecutiveSuccessfulMoves: 0,
         };
@@ -286,7 +289,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
             shape: Shape.CHECK,
           },
         },
-        dropAttempts: [...state.dropAttempts, action.payload.dropAttempt],
+        dropAttempts: [...state.dropAttempts, { ...action.payload.dropAttempt, successful: true }],
         totalMoveHistory: newTotalMoveHistory,
         lastMoveSuccessful: true,
         paused: true,

@@ -27,7 +27,7 @@ export type BoardObjectType = {
 
 export type BucketType = { pos: BucketPosition; x: number; y: number; id: string };
 
-export type DropAttempt = { dragged: string; dropped: BucketPosition };
+export type DropAttempt = { dragged: string; dropped: BucketPosition; successful?: boolean };
 
 // TODO: Convert to enum
 export type Page = 'RuleGame' | 'Entrance';

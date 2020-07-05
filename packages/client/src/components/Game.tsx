@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Button, CheckBox, Grid, Heading, Text } from 'grommet';
 import { Dispatch } from 'redux';
+import { saveAs } from 'file-saver';
 import { BoardObjectItem, BucketType } from '../@types';
 import { disableDebugMode, enableDebugMode, move, touch } from '../store/actions/rule-row';
 import Board from './Board';
@@ -25,7 +26,11 @@ import { nextBoardObjectsArray } from '../store/actions/game';
 import GuessRuleForm from './GuessRuleForm';
 import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
 import { DEBUG_ENABLED } from '../constants/env';
-import { currGameIdSelector, currGameNameSelector } from '../store/selectors/rule-row';
+import {
+  currGameIdSelector,
+  currGameNameSelector,
+  dropAttemptsSelector,
+} from '../store/selectors/rule-row';
 
 enum GridAreaName {
   HEADING = 'HEADING',
@@ -55,6 +60,7 @@ const Game: React.FunctionComponent<{
   const gameId = useSelector(currGameIdSelector);
   const allChecked = useSelector(allChecksSelector);
   const gameName = useSelector(currGameNameSelector);
+  const dropAttempts = useSelector(dropAttemptsSelector);
 
   return (
     <Box pad="small" data-cy={CY_GAME}>
@@ -148,6 +154,15 @@ const Game: React.FunctionComponent<{
         </Box>
         {historyDebugInfo && (
           <Box gridArea={GridAreaName.HISTORY} overflow="auto">
+            <Button
+              label="Export Full History"
+              onClick={() => {
+                const blob = new Blob([JSON.stringify(dropAttempts)], {
+                  type: 'text/plain;charset=utf-8',
+                });
+                saveAs(blob, `full-history-${gameId}.json`);
+              }}
+            />
             History Log:
             {historyDebugInfo.map((dropAttemptString) =>
               dropAttemptString.split('\n').map((item) => {
