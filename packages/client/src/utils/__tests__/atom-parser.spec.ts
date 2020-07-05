@@ -1,3 +1,4 @@
+import range from 'lodash/range';
 import atomParser from '../atom-parser';
 import {
   Atom,
@@ -8,6 +9,8 @@ import {
   PositionsFn,
   Shape,
 } from '../../@types';
+import { cols, rows } from '../../constants';
+import { positionToXy } from '../atom-match';
 
 const getValidBuckets = (
   fns: Atom['fns'],
@@ -24,9 +27,10 @@ const getValidBuckets = (
           return temp;
         }
 
-        return temp.values();
+        return Array.from(temp);
       })
-      .filter((v) => v !== undefined) as BucketPosition[],
+      .filter((v) => v !== undefined)
+      .flat() as BucketPosition[],
   );
 };
 
@@ -667,7 +671,7 @@ describe('R positions function', () => {
   });
 
   it('undefined with no board objects', () => {
-    const atoms = atomParser('(*,*,*,R,[0])');
+    const atoms = atomParser('(*,*,*,R,[Nearby])');
     expect(atoms).toHaveLength(1);
     const atom = atoms[0];
 
@@ -692,4 +696,128 @@ describe('R positions function', () => {
 
     expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toBeUndefined();
   });
+});
+
+it('parses Nearby', () => {
+  const atoms = atomParser('(*,*,*,*,[Nearby])');
+  expect(atoms).toHaveLength(1);
+  const atom = atoms[0];
+
+  const boardObjects: { [id: number]: BoardObjectType } = range(
+    1,
+    (rows - 2) * (cols - 2) + 1,
+  ).reduce(
+    (acc, i) => ({
+      ...acc,
+      [String(i)]: {
+        color: Color.BLUE,
+        id: String(i),
+        x: positionToXy(i).x,
+        y: positionToXy(i).y,
+      },
+    }),
+    {},
+  );
+
+  const totalMoveHistory: DropAttempt[] = [];
+
+  expect(getValidBuckets(atom.fns, '13', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.BL]),
+  );
+  expect(getValidBuckets(atom.fns, '14', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.BL]),
+  );
+  expect(getValidBuckets(atom.fns, '15', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.BL]),
+  );
+  expect(getValidBuckets(atom.fns, '16', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.BR]),
+  );
+  expect(getValidBuckets(atom.fns, '17', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.BR]),
+  );
+  expect(getValidBuckets(atom.fns, '18', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.BR]),
+  );
+
+  expect(getValidBuckets(atom.fns, '19', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.TL]),
+  );
+  expect(getValidBuckets(atom.fns, '20', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.TL]),
+  );
+  expect(getValidBuckets(atom.fns, '21', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.TL]),
+  );
+  expect(getValidBuckets(atom.fns, '22', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.TR]),
+  );
+  expect(getValidBuckets(atom.fns, '23', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.TR]),
+  );
+  expect(getValidBuckets(atom.fns, '24', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.TR]),
+  );
+});
+
+it('parses Remotest', () => {
+  const atoms = atomParser('(*,*,*,*,[Remotest])');
+  expect(atoms).toHaveLength(1);
+  const atom = atoms[0];
+
+  const boardObjects: { [id: number]: BoardObjectType } = range(
+    1,
+    (rows - 2) * (cols - 2) + 1,
+  ).reduce(
+    (acc, i) => ({
+      ...acc,
+      [String(i)]: {
+        color: Color.BLUE,
+        id: String(i),
+        x: positionToXy(i).x,
+        y: positionToXy(i).y,
+      },
+    }),
+    {},
+  );
+
+  const totalMoveHistory: DropAttempt[] = [];
+
+  expect(getValidBuckets(atom.fns, '13', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.TR]),
+  );
+  expect(getValidBuckets(atom.fns, '14', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.TR]),
+  );
+  expect(getValidBuckets(atom.fns, '15', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.TR]),
+  );
+  expect(getValidBuckets(atom.fns, '16', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.TL]),
+  );
+  expect(getValidBuckets(atom.fns, '17', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.TL]),
+  );
+  expect(getValidBuckets(atom.fns, '18', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.TL]),
+  );
+
+  expect(getValidBuckets(atom.fns, '19', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.BR]),
+  );
+  expect(getValidBuckets(atom.fns, '20', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.BR]),
+  );
+  expect(getValidBuckets(atom.fns, '21', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.BR]),
+  );
+  expect(getValidBuckets(atom.fns, '22', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.BL]),
+  );
+  expect(getValidBuckets(atom.fns, '23', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.BL]),
+  );
+  expect(getValidBuckets(atom.fns, '24', totalMoveHistory, boardObjects)).toEqual(
+    new Set([BucketPosition.BL]),
+  );
 });

@@ -61,11 +61,59 @@ const parseAtomRawFnString = (rawAtomFnString: string): AtomFn[] => {
     return mostRecent?.dropped ?? NaN;
   };
 
+  const nearby: AtomFn = (boardObjectId, totalMoveHistory, boardObjects) => {
+    const { x, y } = boardObjects[boardObjectId];
+    // Normalize x and y to index by 0
+    const nX = x;
+    const nY = y;
+    const validBuckets = new Set<BucketPosition>();
+    if (nX < cols / 2 && nY < rows / 2) {
+      validBuckets.add(BucketPosition.BL);
+      // Use floor to include objects in the middle too
+      // when considering top and right sides buckets
+    }
+    if (nX < cols / 2 && nY >= Math.floor(rows / 2)) {
+      validBuckets.add(BucketPosition.TL);
+    }
+    if (nX >= Math.floor(cols / 2) && nY < rows / 2) {
+      validBuckets.add(BucketPosition.BR);
+    }
+    if (nX >= Math.floor(cols / 2) && nY >= Math.floor(rows / 2)) {
+      validBuckets.add(BucketPosition.TR);
+    }
+
+    return validBuckets;
+  };
+
+  const remotest: AtomFn = (boardObjectId, totalMoveHistory, boardObjects) => {
+    const { x, y } = boardObjects[boardObjectId];
+    // Normalize x and y to index by 0
+    const nX = x;
+    const nY = y;
+    const validBuckets = new Set<BucketPosition>();
+    if (nX < cols / 2 && nY < rows / 2) {
+      validBuckets.add(BucketPosition.TR);
+      // Use floor to include objects in the middle too
+      // when considering top and right sides buckets
+    }
+    if (nX < cols / 2 && nY >= Math.floor(rows / 2)) {
+      validBuckets.add(BucketPosition.BR);
+    }
+    if (nX >= Math.floor(cols / 2) && nY < rows / 2) {
+      validBuckets.add(BucketPosition.TL);
+    }
+    if (nX >= Math.floor(cols / 2) && nY >= Math.floor(rows / 2)) {
+      validBuckets.add(BucketPosition.BL);
+    }
+
+    return validBuckets;
+  };
+
   return fnStrings.map((fnString) => {
     const evalFn: AtomFn = (boardObjectId, totalMoveHistory, boardObjects) =>
       // eslint-disable-next-line no-eval
-      eval(`(p, pcs, pc, ps) => ${fnString}`)(
-        ...([p, pcs, pc, ps] as const).map((fn) =>
+      eval(`(p, pcs, pc, ps, Nearby, Remotest) => ${fnString}`)(
+        ...([p, pcs, pc, ps, nearby, remotest] as const).map((fn) =>
           fn(boardObjectId, totalMoveHistory, boardObjects),
         ),
       );

@@ -124,7 +124,7 @@ const getBoardObjectsToBucketsToAtoms = (
               (acc, atom) => {
                 atom.fns
                   .map((fn) => fn(boardObject.id, totalMoveHistory, initialBoardObjectsById))
-                  .map((temp) => (temp instanceof Set ? temp.values() : [temp]))
+                  .map((temp) => (temp instanceof Set ? Array.from(temp.values()) : [temp]))
                   .flat()
                   .forEach((bucket) => {
                     if (Number.isFinite(bucket)) {
