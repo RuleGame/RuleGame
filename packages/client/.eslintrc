@@ -55,7 +55,8 @@
     "@typescript-eslint/no-non-null-assertion": "off",
     "react/jsx-one-expression-per-line": "off",
 
-    "import/named": "off"
+    "import/named": "off",
+    "no-param-reassign": "off"
   },
   "settings": {
     "import/resolver": {

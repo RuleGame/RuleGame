@@ -9,14 +9,14 @@ import games from './games';
 import game from './game';
 import { RootEpic } from '../../@types/epic';
 import { loadGames } from '../actions/games';
-import simpleRand5 from '../../assets/simple-rand-5.json';
+import games2138 from '../../assets/Games.21-38.json';
 
 const goToPageEpic: RootEpic = (action$) =>
   action$.pipe(
     // Third party actions such as persist are not included in RootAction
     // so just cast the types to a string
     filter((action) => (action.type as string) === REHYDRATE),
-    map(() => loadGames.request(new File([JSON.stringify(simpleRand5)], 'temp'))),
+    map(() => loadGames.request(new File([JSON.stringify(games2138)], 'temp'))),
   );
 
 export const rootEpic = combineEpics(

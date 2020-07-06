@@ -27,7 +27,7 @@ export type BoardObjectType = {
 
 export type BucketType = { pos: BucketPosition; x: number; y: number; id: string };
 
-export type DropAttempt = { dragged: string; dropped: BucketPosition };
+export type DropAttempt = { dragged: string; dropped: BucketPosition; successful?: boolean };
 
 // TODO: Convert to enum
 export type Page = 'RuleGame' | 'Entrance';
@@ -73,7 +73,13 @@ export type AtomFn = (
   boardObjectId: BoardObjectId,
   totalMoveHistory: DropAttempt[],
   boardObjects: { [id: string]: BoardObjectType },
-) => BucketPosition;
+) => Set<BucketPosition> | BucketPosition;
+
+export type PositionsFn = (
+  boardObjectId: BoardObjectId,
+  totalMoveHistory: DropAttempt[],
+  boardObjects: { [id: string]: BoardObjectType },
+) => Set<number> | undefined;
 
 export type Atom = {
   id: string;
@@ -81,7 +87,7 @@ export type Atom = {
   shape: Shape;
   color: Color;
   // Undefined means any position (*)
-  position?: Set<number>;
+  position?: PositionsFn | number;
   fns: AtomFn[];
 };
 

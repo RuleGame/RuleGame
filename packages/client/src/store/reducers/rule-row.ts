@@ -55,6 +55,7 @@ export type State = {
   ruleArray?: RuleArray;
   // One element per rule row.
   ruleArrayInfos: { successfulMoves: number }[];
+  validPositionsByAtom: { [atomId: string]: Set<number> };
 };
 
 export const initialState: State = {
@@ -81,6 +82,7 @@ export const initialState: State = {
   ruleRowsCompleted: 0,
   ruleArray: undefined,
   ruleArrayInfos: [],
+  validPositionsByAtom: {},
 };
 
 const getBoardObjectsToBucketsToAtoms = (
@@ -95,6 +97,7 @@ const getBoardObjectsToBucketsToAtoms = (
   ruleRow: RuleRow,
 ) =>
   Object.values(boardObjectsById)
+    // .filter((boardObject) => validPositions.has(xYToPosition(boardObject.x, boardObject.y)))
     .filter((boardObject) => boardObject.shape !== Shape.CHECK)
     .reduce<{ [boardObjectId: string]: { [bucket: number]: Set<string> } }>(
       (acc, boardObject) => ({
@@ -102,10 +105,27 @@ const getBoardObjectsToBucketsToAtoms = (
         [boardObject.id]: {
           ...ruleRow
             .filter(atomMatch(boardObject, atomCounts))
+            .filter((atom) => {
+              if (atom.position === undefined) {
+                // Defaults to allowed (*) if not defined
+                return true;
+              }
+              if (typeof atom.position === 'number') {
+                return atom.position === xYToPosition(boardObject.x, boardObject.y);
+              }
+              // Defaults to allowed (*) if not defined
+              return (
+                atom
+                  .position(boardObject.id, totalMoveHistory, boardObjectsById)
+                  ?.has(xYToPosition(boardObject.x, boardObject.y)) ?? true
+              );
+            })
             .reduce<{ [bucket: number]: Set<string> }>(
               (acc, atom) => {
                 atom.fns
                   .map((fn) => fn(boardObject.id, totalMoveHistory, initialBoardObjectsById))
+                  .map((temp) => (temp instanceof Set ? Array.from(temp.values()) : [temp]))
+                  .flat()
                   .forEach((bucket) => {
                     if (Number.isFinite(bucket)) {
                       acc[bucket].add(atom.id);
@@ -242,7 +262,10 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         // Made an incorrect move
         return {
           ...state,
-          dropAttempts: [...state.dropAttempts, action.payload.dropAttempt],
+          dropAttempts: [
+            ...state.dropAttempts,
+            { ...action.payload.dropAttempt, successful: false },
+          ],
           lastMoveSuccessful: false,
           numConsecutiveSuccessfulMoves: 0,
         };
@@ -266,7 +289,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
             shape: Shape.CHECK,
           },
         },
-        dropAttempts: [...state.dropAttempts, action.payload.dropAttempt],
+        dropAttempts: [...state.dropAttempts, { ...action.payload.dropAttempt, successful: true }],
         totalMoveHistory: newTotalMoveHistory,
         lastMoveSuccessful: true,
         paused: true,

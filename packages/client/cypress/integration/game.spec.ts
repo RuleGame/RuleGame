@@ -186,6 +186,8 @@ describe('basic', () => {
     checkMove('4', true, BucketPosition.BR);
     checkMove('5', true, BucketPosition.BR);
     checkMove('6', true, BucketPosition.BR);
+    checkMove('7', true, BucketPosition.BR);
+    checkMove('8', true, BucketPosition.BR);
 
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });
@@ -215,6 +217,8 @@ describe('basic', () => {
     checkMove('4', true, BucketPosition.BR);
     checkMove('5', true, BucketPosition.BR);
     checkMove('6', true, BucketPosition.BR);
+    checkMove('7', true, BucketPosition.BR);
+    checkMove('8', true, BucketPosition.BR);
 
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });
@@ -244,6 +248,8 @@ describe('basic', () => {
     checkMove('4', true, BucketPosition.BR);
     checkMove('5', true, BucketPosition.BR);
     checkMove('6', true, BucketPosition.BR);
+    checkMove('7', true, BucketPosition.BR);
+    checkMove('8', true, BucketPosition.BR);
 
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });
@@ -273,6 +279,62 @@ describe('basic', () => {
     checkMove('4', true, BucketPosition.BR);
     checkMove('5', true, BucketPosition.BR);
     checkMove('6', true, BucketPosition.BR);
+    checkMove('7', true, BucketPosition.BR);
+    checkMove('8', true, BucketPosition.BR);
+
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
+  });
+
+  it('drops for farthest position', () => {
+    cy.addAndEnterGame(
+      `(*,*,*,Farthest,*)`,
+      [
+        {
+          color: Color.BLUE,
+          id: '0',
+          shape: Shape.TRIANGLE,
+          x: 4,
+          y: 3,
+        },
+        {
+          color: Color.RED,
+          id: '1',
+          shape: Shape.SQUARE,
+          x: 2,
+          y: 2,
+        },
+        {
+          color: Color.RED,
+          id: '2',
+          shape: Shape.SQUARE,
+          x: 5,
+          y: 6,
+        },
+        {
+          color: Color.RED,
+          id: '3',
+          shape: Shape.SQUARE,
+          x: 1,
+          y: 6,
+        },
+        {
+          color: Color.RED,
+          id: '4',
+          shape: Shape.SQUARE,
+          x: 1,
+          y: 1,
+        },
+      ],
+      undefined,
+      false,
+    );
+
+    checkMove('1', false, BucketPosition.BR);
+    checkMove('0', true, BucketPosition.BR);
+    checkMove('1', true, BucketPosition.BR);
+    checkMove('2', true, BucketPosition.TR);
+    checkMove('3', true, BucketPosition.TR);
+    checkMove('4', true, BucketPosition.BR);
 
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });
@@ -453,6 +515,78 @@ describe('basic', () => {
     checkMove('yellow-square-1', true, BucketPosition.TR);
     checkMove('red-square-6', true, BucketPosition.BR);
     checkMove('blue-circle-31', true, BucketPosition.BL);
+
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
+  });
+
+  it('works for nearest', () => {
+    cy.addAndEnterGame(
+      `(*,*,*,*,[Nearby])`,
+      [
+        { id: '1', color: Color.RED, x: 3, y: 3, shape: Shape.CIRCLE },
+        { id: '2', color: Color.BLUE, x: 3, y: 4, shape: Shape.STAR },
+        { id: '3', color: Color.BLUE, x: 4, y: 3, shape: Shape.STAR },
+        { id: '4', color: Color.BLUE, x: 4, y: 4, shape: Shape.STAR },
+      ],
+      undefined,
+      false,
+    );
+
+    checkMove('1', false, BucketPosition.TL);
+    checkMove('1', false, BucketPosition.TR);
+    checkMove('1', false, BucketPosition.BR);
+    checkMove('1', true, BucketPosition.BL);
+
+    checkMove('2', false, BucketPosition.BR);
+    checkMove('2', false, BucketPosition.BL);
+    checkMove('2', false, BucketPosition.TR);
+    checkMove('2', true, BucketPosition.TL);
+
+    checkMove('3', false, BucketPosition.BL);
+    checkMove('3', false, BucketPosition.TL);
+    checkMove('3', false, BucketPosition.TR);
+    checkMove('3', true, BucketPosition.BR);
+
+    checkMove('4', false, BucketPosition.BL);
+    checkMove('4', false, BucketPosition.TL);
+    checkMove('4', false, BucketPosition.BR);
+    checkMove('4', true, BucketPosition.TR);
+
+    cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
+  });
+
+  it('works for remotest', () => {
+    cy.addAndEnterGame(
+      `(*,*,*,*,[Remotest])`,
+      [
+        { id: '1', color: Color.RED, x: 3, y: 3, shape: Shape.CIRCLE },
+        { id: '2', color: Color.BLUE, x: 3, y: 4, shape: Shape.STAR },
+        { id: '3', color: Color.BLUE, x: 4, y: 3, shape: Shape.STAR },
+        { id: '4', color: Color.BLUE, x: 4, y: 4, shape: Shape.STAR },
+      ],
+      undefined,
+      false,
+    );
+
+    checkMove('1', false, BucketPosition.TL);
+    checkMove('1', false, BucketPosition.BL);
+    checkMove('1', false, BucketPosition.BR);
+    checkMove('1', true, BucketPosition.TR);
+
+    checkMove('2', false, BucketPosition.TL);
+    checkMove('2', false, BucketPosition.BL);
+    checkMove('2', false, BucketPosition.TR);
+    checkMove('2', true, BucketPosition.BR);
+
+    checkMove('3', false, BucketPosition.BL);
+    checkMove('3', false, BucketPosition.BR);
+    checkMove('3', false, BucketPosition.TR);
+    checkMove('3', true, BucketPosition.TL);
+
+    checkMove('4', false, BucketPosition.TR);
+    checkMove('4', false, BucketPosition.TL);
+    checkMove('4', false, BucketPosition.BR);
+    checkMove('4', true, BucketPosition.BL);
 
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });

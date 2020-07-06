@@ -14,3 +14,9 @@ export const noSuccessfulMovesSelector = (state: RootState) =>
 
 export const currGameNameSelector = (state: RootState) =>
   state.ruleRow.currGameId && state.games.byId[state.ruleRow.currGameId].name;
+
+export const dropAttemptsSelector = (state: RootState) =>
+  state.ruleRow.dropAttempts.map((dropAttempt) => ({
+    ...dropAttempt,
+    dragged: state.ruleRow.initialBoardObjectsById[dropAttempt.dragged],
+  }));
