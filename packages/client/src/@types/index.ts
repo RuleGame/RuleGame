@@ -51,6 +51,7 @@ export enum Shape {
   BUCKET = 'bucket',
   HAPPY = 'happy',
   CHECK = 'check',
+  UNHAPPY = 'unhappy',
 }
 
 export const VALID_SHAPES = new Set<Shape>([
@@ -120,4 +121,14 @@ export type ExportedFile = {
   boardObjectsArrays: {
     [id: string]: { id: string; name: string; value: BoardObjectType[] };
   };
+};
+
+export type HistoryLog = {
+  playerName: string;
+  displays: {
+    game: string;
+    time: number;
+    boardObjectsArray: BoardObjectType[];
+    dropAttempts: (DropAttempt & { time: number })[];
+  }[];
 };

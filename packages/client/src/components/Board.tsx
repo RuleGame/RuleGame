@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { BoardObjectItem, BoardObjectType, BucketPosition, BucketType } from '../@types';
+import { useSelector } from 'react-redux';
+import { BoardObjectItem, BoardObjectType, BucketPosition, BucketType, Shape } from '../@types';
 import { buckets, cols, rows } from '../constants';
 import BoardObject from './BoardObject';
 import Bucket from './Bucket';
+import { droppedBucketSelector } from '../store/selectors';
 
 const StyledBoard = styled.div<{}>`
   display: grid;
@@ -38,7 +40,7 @@ type BoardProps = {
   };
   className?: string;
   paused: boolean;
-  disabledBucket: BucketPosition | undefined;
+  droppedBucketShape: Shape;
   onBoardObjectClick: (boardObject: BoardObjectType) => void;
   boardObjectsToDebugInfo?: { [boardObjectId: string]: string };
 };
@@ -50,9 +52,11 @@ const Board = ({
   className,
   paused,
   onBoardObjectClick,
-  disabledBucket,
+  droppedBucketShape,
   boardObjectsToDebugInfo,
 }: BoardProps): JSX.Element => {
+  const droppedBucket = useSelector(droppedBucketSelector);
+
   return (
     <StyledBoard className={className}>
       {boardObjects.map((boardObject) => (
@@ -65,7 +69,7 @@ const Board = ({
             buckets: boardObjectsToBuckets[boardObject.id],
             debugInfo: boardObjectsToDebugInfo && boardObjectsToDebugInfo[boardObject.id],
           }}
-          onClick={() => !disabledBucket && onBoardObjectClick(boardObject)}
+          onClick={() => !droppedBucket && onBoardObjectClick(boardObject)}
         />
       ))}
       {buckets.map((bucket) => (
@@ -74,7 +78,7 @@ const Board = ({
           key={`${bucket.x}-${bucket.y}`}
           onDrop={onDrop(bucket)}
           canDrop={() => !paused}
-          dropped={disabledBucket === bucket.pos}
+          shape={droppedBucket === bucket.pos ? droppedBucketShape : Shape.BUCKET}
           bucket={bucket}
         />
       ))}

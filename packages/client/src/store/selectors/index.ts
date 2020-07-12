@@ -65,9 +65,16 @@ export const totalHistorySelector = (state: RootState) => state.ruleRow.totalMov
 
 export const dropAttemptsSelector = (state: RootState) => state.ruleRow.dropAttempts;
 
-export const disabledBucketSelector = (state: RootState) =>
-  state.ruleRow.paused && state.ruleRow.totalMoveHistory.length > 0
-    ? state.ruleRow.totalMoveHistory[state.ruleRow.totalMoveHistory.length - 1].dropped
+export const droppedBucketShapeSelector = (state: RootState): Shape => {
+  if (state.ruleRow.paused) {
+    return state.ruleRow.lastMoveSuccessful ? Shape.HAPPY : Shape.UNHAPPY;
+  }
+  return Shape.BUCKET;
+};
+
+export const droppedBucketSelector = (state: RootState) =>
+  state.ruleRow.paused && state.ruleRow.dropAttempts.length > 0
+    ? state.ruleRow.dropAttempts[state.ruleRow.dropAttempts.length - 1].dropped
     : undefined;
 
 export const debugModeSelector = (state: RootState) => state.ruleRow.debugMode;

@@ -1,4 +1,5 @@
 import { RootState } from '../reducers';
+import { DropAttempt } from '../../@types';
 
 export const numConsecutiveSuccessfulMovesSelector = (state: RootState) =>
   state.ruleRow.numConsecutiveSuccessfulMoves;
@@ -15,8 +16,7 @@ export const noSuccessfulMovesSelector = (state: RootState) =>
 export const currGameNameSelector = (state: RootState) =>
   state.ruleRow.currGameId && state.games.byId[state.ruleRow.currGameId].name;
 
-export const dropAttemptsSelector = (state: RootState) =>
-  state.ruleRow.dropAttempts.map((dropAttempt) => ({
-    ...dropAttempt,
-    dragged: state.ruleRow.initialBoardObjectsById[dropAttempt.dragged],
-  }));
+export const latestDropAttemptSelector = (state: RootState): DropAttempt =>
+  state.ruleRow.dropAttempts[state.ruleRow.dropAttempts.length - 1];
+
+export const gamePausedSelector = (state: RootState) => state.ruleRow.paused;

@@ -12,7 +12,7 @@ import {
   boardObjectsToDebugInfoSelector,
   boardObjectToBucketsSelector,
   debugModeSelector,
-  disabledBucketSelector,
+  droppedBucketShapeSelector,
   gameCompletedSelector,
   historyDebugInfoSelector,
   orderSelector,
@@ -26,11 +26,8 @@ import { nextBoardObjectsArray } from '../store/actions/game';
 import GuessRuleForm from './GuessRuleForm';
 import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
 import { DEBUG_ENABLED } from '../constants/env';
-import {
-  currGameIdSelector,
-  currGameNameSelector,
-  dropAttemptsSelector,
-} from '../store/selectors/rule-row';
+import { currGameIdSelector, currGameNameSelector } from '../store/selectors/rule-row';
+import { historySelector } from '../store/selectors/history';
 
 enum GridAreaName {
   HEADING = 'HEADING',
@@ -46,7 +43,7 @@ const Game: React.FunctionComponent<{
 }> = ({ className }) => {
   const dispatch: Dispatch<RootAction> = useDispatch();
 
-  const disabledBucket = useSelector(disabledBucketSelector);
+  const droppedBucketShape = useSelector(droppedBucketShapeSelector);
   const boardObjects = useSelector(boardObjectsSelector);
   const boardObjectsToBuckets = useSelector(boardObjectToBucketsSelector);
   const paused = useSelector(pausedSelector);
@@ -60,7 +57,7 @@ const Game: React.FunctionComponent<{
   const gameId = useSelector(currGameIdSelector);
   const allChecked = useSelector(allChecksSelector);
   const gameName = useSelector(currGameNameSelector);
-  const dropAttempts = useSelector(dropAttemptsSelector);
+  const history = useSelector(historySelector);
 
   return (
     <Box pad="small" data-cy={CY_GAME}>
@@ -101,6 +98,15 @@ const Game: React.FunctionComponent<{
         ]}
       >
         <Box gridArea={GridAreaName.HEADING} align="center">
+          <Button
+            label="Export Full History"
+            onClick={() => {
+              const blob = new Blob([JSON.stringify(history)], {
+                type: 'text/plain;charset=utf-8',
+              });
+              saveAs(blob, `full-history-${Math.floor(performance.now())}.json`);
+            }}
+          />
           <Heading>{gameName}</Heading>
         </Box>
         <Box gridArea={GridAreaName.DEBUG_TOGGLE} justify="center" direction="row">
@@ -146,7 +152,7 @@ const Game: React.FunctionComponent<{
             boardObjectsToBuckets={boardObjectsToBuckets}
             boardObjectsToDebugInfo={boardObjectsToDebugInfo}
             paused={paused}
-            disabledBucket={disabledBucket}
+            droppedBucketShape={droppedBucketShape}
             onDrop={(bucket: BucketType) => (droppedItem: BoardObjectItem): void => {
               dispatch(move({ dragged: droppedItem.id, dropped: bucket.pos }));
             }}
@@ -154,15 +160,6 @@ const Game: React.FunctionComponent<{
         </Box>
         {historyDebugInfo && (
           <Box gridArea={GridAreaName.HISTORY} overflow="auto">
-            <Button
-              label="Export Full History"
-              onClick={() => {
-                const blob = new Blob([JSON.stringify(dropAttempts)], {
-                  type: 'text/plain;charset=utf-8',
-                });
-                saveAs(blob, `full-history-${gameId}.json`);
-              }}
-            />
             History Log:
             {historyDebugInfo.map((dropAttemptString) =>
               dropAttemptString.split('\n').map((item) => {

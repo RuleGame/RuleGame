@@ -267,6 +267,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
             { ...action.payload.dropAttempt, successful: false },
           ],
           lastMoveSuccessful: false,
+          paused: true,
           numConsecutiveSuccessfulMoves: 0,
         };
       }

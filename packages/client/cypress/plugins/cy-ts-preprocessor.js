@@ -3,16 +3,19 @@ const wp = require('@cypress/webpack-preprocessor');
 
 const webpackOptions = {
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.tsx', '.jsx', '.js'],
   },
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /\.j|tsx?$/,
         exclude: [/node_modules/],
         use: [
           {
-            loader: 'ts-loader',
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-typescript'],
+            },
           },
         ],
       },

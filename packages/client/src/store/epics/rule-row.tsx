@@ -22,6 +22,7 @@ import { RootEpic } from '../../@types/epic';
 import { goToPage } from '../actions/page';
 import {
   currGameIdSelector,
+  latestDropAttemptSelector,
   noSuccessfulMovesSelector,
   numConsecutiveSuccessfulMovesSelector,
   numRuleRowsSelector,
@@ -33,18 +34,22 @@ import { RootAction } from '../actions';
 import { CyLayer } from '../../constants/data-cy';
 import { FEEDBACK_DURATION } from '../../constants';
 import GuessRuleForm from '../../components/GuessRuleForm';
+import { logMove } from '../actions/history';
+import { DropAttempt } from '../../@types';
 
 const moveEpic: RootEpic = (action$, state$) => {
   return action$.pipe(
     filter(isActionOf(move)),
     filter(() => state$.value.ruleRow.lastMoveSuccessful),
     delay(FEEDBACK_DURATION),
-    switchMap(() => {
+    switchMap((action) => {
       const currGameNumConsecutiveSuccessfulMovesBeforePromptGuessSelector1 = currGameNumConsecutiveSuccessfulMovesBeforePromptGuessSelector(
         state$.value,
       );
+      const latestDropAttempt = latestDropAttemptSelector(state$.value) as DropAttempt;
 
       const actions: RootAction[] = [
+        logMove(latestDropAttempt, action.payload.time),
         removeBoardObject(
           state$.value.ruleRow.totalMoveHistory[state$.value.ruleRow.totalMoveHistory.length - 1]
             .dragged,
@@ -82,6 +87,21 @@ const moveEpic: RootEpic = (action$, state$) => {
           ),
         );
       }
+
+      return actions;
+    }),
+  );
+};
+
+const invalidMoveEpic: RootEpic = (action$, state$) => {
+  return action$.pipe(
+    filter(isActionOf(move)),
+    filter(() => !state$.value.ruleRow.lastMoveSuccessful),
+    delay(FEEDBACK_DURATION),
+    switchMap((action) => {
+      const latestDropAttempt = latestDropAttemptSelector(state$.value) as DropAttempt;
+
+      const actions: RootAction[] = [logMove(latestDropAttempt, action.payload.time), resumeGame()];
 
       return actions;
     }),
@@ -132,4 +152,5 @@ export default combineEpics(
   endRuleArrayEpic,
   setRuleArrayEpic,
   noMoreMovesEpic,
+  invalidMoveEpic,
 );

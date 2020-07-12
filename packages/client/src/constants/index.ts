@@ -1,5 +1,7 @@
 import { BucketPosition, BucketType, Color, Shape } from '../@types';
 
+export const DEV = process.env.NODE_ENV !== 'production';
+
 export const rows = 8;
 export const cols = 8;
 
@@ -18,6 +20,7 @@ export const borderWidth = 1;
 export const borderHeight = 1;
 
 export const FILE_VERSION = '0.0.0';
-export const FEEDBACK_DURATION = 1000;
+
+export const FEEDBACK_DURATION = window.Cypress ? 100 : 1000;
 
 export const RULE_EMAIL_ADDRESS = 'w2020rulegame@gmail.com';
