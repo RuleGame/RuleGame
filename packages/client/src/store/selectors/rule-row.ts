@@ -18,3 +18,5 @@ export const currGameNameSelector = (state: RootState) =>
 
 export const latestDropAttemptSelector = (state: RootState): DropAttempt =>
   state.ruleRow.dropAttempts[state.ruleRow.dropAttempts.length - 1];
+
+export const gamePausedSelector = (state: RootState) => state.ruleRow.paused;

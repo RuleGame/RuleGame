@@ -93,6 +93,21 @@ const moveEpic: RootEpic = (action$, state$) => {
   );
 };
 
+const invalidMoveEpic: RootEpic = (action$, state$) => {
+  return action$.pipe(
+    filter(isActionOf(move)),
+    filter(() => !state$.value.ruleRow.lastMoveSuccessful),
+    delay(FEEDBACK_DURATION),
+    switchMap((action) => {
+      const latestDropAttempt = latestDropAttemptSelector(state$.value) as DropAttempt;
+
+      const actions: RootAction[] = [logMove(latestDropAttempt, action.payload.time), resumeGame()];
+
+      return actions;
+    }),
+  );
+};
+
 const noMoreMovesEpic: RootEpic = (action$, state$) =>
   action$.pipe(
     filter(isActionOf([setRuleRowIndex, removeBoardObject])),
@@ -137,4 +152,5 @@ export default combineEpics(
   endRuleArrayEpic,
   setRuleArrayEpic,
   noMoreMovesEpic,
+  invalidMoveEpic,
 );

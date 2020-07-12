@@ -12,7 +12,7 @@ import {
   boardObjectsToDebugInfoSelector,
   boardObjectToBucketsSelector,
   debugModeSelector,
-  disabledBucketSelector,
+  droppedBucketShapeSelector,
   gameCompletedSelector,
   historyDebugInfoSelector,
   orderSelector,
@@ -43,7 +43,7 @@ const Game: React.FunctionComponent<{
 }> = ({ className }) => {
   const dispatch: Dispatch<RootAction> = useDispatch();
 
-  const disabledBucket = useSelector(disabledBucketSelector);
+  const droppedBucketShape = useSelector(droppedBucketShapeSelector);
   const boardObjects = useSelector(boardObjectsSelector);
   const boardObjectsToBuckets = useSelector(boardObjectToBucketsSelector);
   const paused = useSelector(pausedSelector);
@@ -152,7 +152,7 @@ const Game: React.FunctionComponent<{
             boardObjectsToBuckets={boardObjectsToBuckets}
             boardObjectsToDebugInfo={boardObjectsToDebugInfo}
             paused={paused}
-            disabledBucket={disabledBucket}
+            droppedBucketShape={droppedBucketShape}
             onDrop={(bucket: BucketType) => (droppedItem: BoardObjectItem): void => {
               dispatch(move({ dragged: droppedItem.id, dropped: bucket.pos }));
             }}

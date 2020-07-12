@@ -51,6 +51,7 @@ export enum Shape {
   BUCKET = 'bucket',
   HAPPY = 'happy',
   CHECK = 'check',
+  UNHAPPY = 'unhappy',
 }
 
 export const VALID_SHAPES = new Set<Shape>([
