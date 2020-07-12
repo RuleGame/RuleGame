@@ -1,7 +1,9 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
 import styled from 'styled-components';
-import { BoardObjectItem, Shape } from '../@types';
+import { Stack } from 'grommet';
+import { Close } from 'grommet-icons';
+import { BoardObjectItem, Shape, VALID_SHAPES } from '../@types';
 import ShapeObject from './ShapeObject';
 
 export type BoardObjectProps = {
@@ -31,15 +33,18 @@ const BoardObject = ({
     canDrag,
   });
   return (
-    <StyledShapeObject
-      shape={shape}
-      className={className}
-      onClick={onClick}
-      ref={ref}
-      canDrag={canDrag}
-      shapeObjectId={item.id}
-      debugInfo={item.debugInfo}
-    />
+    <Stack className={className}>
+      {!canDrag && VALID_SHAPES.has(shape) && <Close size="100%" color="grey" />}
+      <StyledShapeObject
+        shape={shape}
+        onClick={onClick}
+        ref={ref}
+        canDrag={canDrag}
+        shapeObjectId={item.id}
+        debugInfo={item.debugInfo}
+        opacity={!canDrag && VALID_SHAPES.has(shape) ? 0.25 : 1}
+      />
+    </Stack>
   );
 };
 
