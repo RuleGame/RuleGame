@@ -12,6 +12,7 @@ import * as boardObjectsArrays from './board-objects-arrays';
 import * as games from './games';
 import * as notifications from './notifications';
 import * as game from './game';
+import * as history from './history';
 /* eslint-enable import/no-cycle */
 
 export const actions = {
@@ -23,6 +24,7 @@ export const actions = {
   games,
   notifications,
   game,
+  history,
 };
 
 export type RootAction = ActionType<typeof actions>;
@@ -39,9 +41,8 @@ export declare type ActionCreatorType<
       >
     > extends A['type']
     ? TActionCreatorOrMap
-    : never
-  : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TActionCreatorOrMap extends Record<any, any>
+    : never // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  : TActionCreatorOrMap extends Record<any, any>
   ? {
       [K in keyof TActionCreatorOrMap]: ActionCreatorType<A, TActionCreatorOrMap[K]>;
     }[keyof TActionCreatorOrMap]
@@ -52,9 +53,8 @@ export declare type ActionCreatorType<
 export declare type RootActionCreatorType<
   TActionCreatorOrMap = typeof actions
 > = TActionCreatorOrMap extends ActionCreator
-  ? TActionCreatorOrMap
-  : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TActionCreatorOrMap extends Record<any, any>
+  ? TActionCreatorOrMap // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  : TActionCreatorOrMap extends Record<any, any>
   ? {
       [K in keyof TActionCreatorOrMap]: ActionCreatorType<TActionCreatorOrMap[K]>;
     }[keyof TActionCreatorOrMap]

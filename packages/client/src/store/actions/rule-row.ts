@@ -4,6 +4,7 @@ import { Atom, BoardObjectType, DropAttempt } from '../../@types';
 
 export const move = createAction('rule-row/MOVE', (dropAttempt: DropAttempt) => ({
   dropAttempt,
+  time: performance.now(),
 }))();
 
 export const touch = createAction('rule-row/TOUCH', (boardObjectId: string) => ({
@@ -31,6 +32,7 @@ export const loadRuleArray = createAction(
     rawRuleArrayString,
     order,
     restartIfNotCleared,
+    time: performance.now(),
   }),
 )();
 
