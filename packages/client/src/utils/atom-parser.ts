@@ -232,15 +232,54 @@ const parseAtomString = (atom: string): Atom => {
     return farthestPositions;
   };
 
+  const nearestPositions: PositionsFn = (boardObjectId, totalMoveHistory, boardObjects) => {
+    const computeDistance = (x: number, y: number, boardObject: BoardObjectType) => {
+      return Math.sqrt((x - boardObject.x) ** 2 + (y - boardObject.y) ** 2);
+    };
+
+    const { nearestPositions } = Object.values(boardObjects)
+      .filter((boardObject) => boardObject.shape !== Shape.CHECK)
+      .reduce<{
+        nearestDistance: number;
+        nearestPositions: Set<number>;
+      }>(
+        ({ nearestDistance, nearestPositions }, boardObject) => {
+          const nearestBucketDistance = Math.min(
+            ...[
+              [0, 0],
+              [0, rows - 1],
+              [cols - 1, 0],
+              [cols - 1, rows - 1],
+            ].map(([x, y]) => computeDistance(x, y, boardObject)),
+          );
+
+          if (nearestBucketDistance < nearestDistance) {
+            nearestPositions.clear();
+          }
+
+          if (nearestBucketDistance <= nearestDistance) {
+            nearestPositions.add(xYToPosition(boardObject.x, boardObject.y));
+            nearestDistance = nearestBucketDistance;
+          }
+
+          return { nearestDistance, nearestPositions };
+        },
+        { nearestDistance: Infinity, nearestPositions: new Set() },
+      );
+
+    return nearestPositions;
+  };
+
   const position: Atom['position'] =
     matchedPosition !== '*'
       ? // eslint-disable-next-line no-eval
-        (eval(`(L, R, T, B, Farthest) => ${matchedPosition}`)(
+        (eval(`(L, R, T, B, Farthest, Nearest) => ${matchedPosition}`)(
           leftPositions,
           rightPositions,
           topPositions,
           bottomPositions,
           farthestPositions,
+          nearestPositions,
         ) as PositionsFn | number)
       : undefined;
 
