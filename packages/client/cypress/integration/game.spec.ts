@@ -339,7 +339,7 @@ describe('basic', () => {
     cy.get(cySelector(CY_NO_MORE_MOVES)).should('be.visible');
   });
 
-  it.only('drops for nearest position', () => {
+  it('drops for nearest position', () => {
     cy.addAndEnterGame(
       `(*,*,*,Nearest,*)`,
       [
