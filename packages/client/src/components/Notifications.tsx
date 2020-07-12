@@ -8,9 +8,11 @@ const Notifications: React.FunctionComponent = () => {
 
   return (
     <>
-      {notificationsIds.map((notificationsId) => (
-        <Notification notificationId={notificationsId} key={notificationsId} />
-      ))}
+      {/* Disable Notifications in Cypress */}
+      {window.Cypress === undefined &&
+        notificationsIds.map((notificationsId) => (
+          <Notification notificationId={notificationsId} key={notificationsId} />
+        ))}
     </>
   );
 };
