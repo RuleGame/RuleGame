@@ -104,7 +104,7 @@ const Game: React.FunctionComponent<{
               const blob = new Blob([JSON.stringify(history)], {
                 type: 'text/plain;charset=utf-8',
               });
-              saveAs(blob, `full-history-${Math.floor(performance.now())}.json`);
+              saveAs(blob, `full-history-${Date.now()}.json`);
             }}
           />
           <Heading>{gameName}</Heading>
