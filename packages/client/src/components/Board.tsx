@@ -6,7 +6,7 @@ import { BoardObjectItem, BoardObjectType, BucketPosition, BucketType, Shape } f
 import { buckets, cols, rows } from '../constants';
 import BoardObject from './BoardObject';
 import Bucket from './Bucket';
-import { droppedBucketSelector } from '../store/selectors';
+import { checkedObjectsSelector, droppedBucketSelector } from '../store/selectors';
 import BucketDropList from './BucketDropList';
 
 const StyledBoard = styled.div<{}>`
@@ -66,6 +66,7 @@ const Board = ({
   boardObjectsToDebugInfo,
 }: BoardProps): JSX.Element => {
   const droppedBucket = useSelector(droppedBucketSelector);
+  const checkedObjects = useSelector(checkedObjectsSelector);
 
   return (
     <Grid
@@ -127,6 +128,7 @@ const Board = ({
                 debugInfo: boardObjectsToDebugInfo && boardObjectsToDebugInfo[boardObject.id],
               }}
               onClick={() => !droppedBucket && onBoardObjectClick(boardObject)}
+              checked={checkedObjects.has(boardObject.id)}
             />
           ))}
           {buckets.map((bucket) => (

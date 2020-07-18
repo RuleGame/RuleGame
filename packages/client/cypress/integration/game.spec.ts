@@ -3,7 +3,7 @@
 import createSagaMiddleware, { SagaMiddleware } from 'redux-saga';
 import { enterGame, loadGames } from '../../src/store/actions/games';
 import { CY_GAME, CY_NO_MORE_MOVES, CyLayer } from '../../src/constants/data-cy';
-import { cySelector, cyShapeObject } from '../../src/constants/data-cy-builders';
+import { cyBoardObject, cySelector } from '../../src/constants/data-cy-builders';
 import { BucketPosition, Color, Shape } from '../../src/@types';
 import { enableDebugMode, move } from '../../src/store/actions/rule-row';
 import { FEEDBACK_DURATION } from '../../src/constants';
@@ -20,8 +20,10 @@ describe('basic', () => {
     cy.addMiddleware(sagaMiddleware);
     cy.take(move({ dragged: object, dropped: bucket }), sagaMiddleware, move);
     cy.wait(1.25 * FEEDBACK_DURATION);
-    cy.get(`${cySelector(cyShapeObject(object))}[data-shape="${Shape.CHECK}"]`).should(
-      isValid ? 'be.visible' : 'not.be.visible',
+    cy.get(cySelector(cyBoardObject(object))).should(
+      'have.attr',
+      'data-cy-checked',
+      String(isValid),
     );
     cy.wait(1.25 * FEEDBACK_DURATION);
     cy.removeMiddleware(sagaMiddleware);
@@ -404,8 +406,10 @@ describe('basic', () => {
   ) => {
     cy.take(move({ dragged: object, dropped: bucket }), sagaMiddleware, move);
     cy.wait(1.25 * FEEDBACK_DURATION);
-    cy.get(`${cySelector(cyShapeObject(object))}[data-shape="${Shape.CHECK}"]`).should(
-      isValid ? 'be.visible' : 'not.be.visible',
+    cy.get(cySelector(cyBoardObject(object))).should(
+      'have.attr',
+      'data-cy-checked',
+      String(isValid),
     );
   };
 
@@ -730,8 +734,10 @@ describe('history', () => {
     cy.addMiddleware(sagaMiddleware);
     cy.take(move({ dragged: object, dropped: bucket }), sagaMiddleware, move);
     cy.wait(1.25 * FEEDBACK_DURATION);
-    cy.get(`${cySelector(cyShapeObject(object))}[data-shape="${Shape.CHECK}"]`).should(
-      isValid ? 'be.visible' : 'not.be.visible',
+    cy.get(cySelector(cyBoardObject(object))).should(
+      'have.attr',
+      'data-cy-checked',
+      String(isValid),
     );
     cy.wait(1.25 * FEEDBACK_DURATION);
     cy.removeMiddleware(sagaMiddleware);
@@ -765,8 +771,10 @@ describe('restart', () => {
     cy.addMiddleware(sagaMiddleware);
     cy.take(move({ dragged: object, dropped: bucket }), sagaMiddleware, move);
     cy.wait(1.25 * FEEDBACK_DURATION);
-    cy.get(`${cySelector(cyShapeObject(object))}[data-shape="${Shape.CHECK}"]`).should(
-      isValid ? 'be.visible' : 'not.be.visible',
+    cy.get(cySelector(cyBoardObject(object))).should(
+      'have.attr',
+      'data-cy-checked',
+      String(isValid),
     );
     cy.wait(1.25 * FEEDBACK_DURATION);
     cy.removeMiddleware(sagaMiddleware);

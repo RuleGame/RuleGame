@@ -42,8 +42,11 @@ export const boardObjectToBucketsSelector = createSelector(
   },
 );
 
-export const allChecksSelector = createSelector([boardObjectsSelector], (boardObjects) =>
-  boardObjects.every((boardObject) => boardObject.shape === Shape.CHECK),
+export const checkedObjectsSelector = (state: RootState) => state.ruleRow.checkedObjects;
+
+export const allChecksSelector = createSelector(
+  [boardObjectsSelector, checkedObjectsSelector],
+  (boardObjects, checkedObjects) => boardObjects.length === checkedObjects.size,
 );
 
 export const noMoreMovesSelector = createSelector(
