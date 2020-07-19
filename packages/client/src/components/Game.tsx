@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Button, CheckBox, Grid, Heading, Text } from 'grommet';
 import { Dispatch } from 'redux';
@@ -44,6 +44,7 @@ const Game: React.FunctionComponent<{
   className?: string;
 }> = ({ className }) => {
   const dispatch: Dispatch<RootAction> = useDispatch();
+  const [submittedGuess, setSubmittedGuess] = useState(false);
 
   const droppedBucketShape = useSelector(droppedBucketShapeSelector);
   const boardObjects = useSelector(boardObjectsSelector);
@@ -181,24 +182,29 @@ const Game: React.FunctionComponent<{
               <Button label="Give up" onClick={() => dispatch(goToPage('Entrance'))} />
             </Box>
           )}
-          {gameCompleted && (
-            <Box gap="medium">
-              <Text data-cy={CY_NO_MORE_MOVES}>
-                {allChecked
-                  ? 'You’ve cleared all the shapes! Please guess the rule below”!'
-                  : 'Error: Bad Rule Array (Board could not be cleared)'}
-              </Text>
-              <Button label="Finish" onClick={() => dispatch(goToPage('Entrance'))} />
-              <Button
-                label={`New Display${noMoreDisplays ? ' (No more displays)' : ''}`}
-                disabled={noMoreDisplays}
-                onClick={() => dispatch(nextBoardObjectsArray())}
-              />
+          {gameCompleted &&
+            (submittedGuess ? (
+              <Box gap="medium">
+                <Text data-cy={CY_NO_MORE_MOVES}>
+                  {allChecked
+                    ? 'You’ve cleared all the shapes! Please guess the rule below”!'
+                    : 'Error: Bad Rule Array (Board could not be cleared)'}
+                </Text>
+                <Button label="Finish" onClick={() => dispatch(goToPage('Entrance'))} />
+                <Button
+                  label={`New Display${noMoreDisplays ? ' (No more displays)' : ''}`}
+                  disabled={noMoreDisplays}
+                  onClick={() => {
+                    setSubmittedGuess(false);
+                    dispatch(nextBoardObjectsArray());
+                  }}
+                />
 
-              <Button label="Try a new rule" onClick={() => dispatch(goToPage('Entrance'))} />
-              <GuessRuleForm gameId={gameId as string} />
-            </Box>
-          )}
+                <Button label="Try a new rule" onClick={() => dispatch(goToPage('Entrance'))} />
+              </Box>
+            ) : (
+              <GuessRuleForm gameId={gameId as string} onSubmit={() => setSubmittedGuess(true)} />
+            ))}
         </Box>
       </Grid>
     </Box>
