@@ -172,7 +172,6 @@ const Game: React.FunctionComponent<{
           {!gameCompleted && (
             <Box gap="small">
               <Button label="Give up" onClick={() => dispatch(goToPage('Entrance'))} />
-              <Button label="New Display" onClick={() => dispatch(nextBoardObjectsArray())} />
             </Box>
           )}
           {gameCompleted && (
