@@ -29,7 +29,7 @@ import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
 import { DEBUG_ENABLED } from '../constants/env';
 import { currGameIdSelector, currGameNameSelector } from '../store/selectors/rule-row';
 import { historySelector } from '../store/selectors/history';
-import { currDisplayNumSelector } from '../store/selectors/game';
+import { numDisplaysLeftSelector } from '../store/selectors/game';
 
 enum GridAreaName {
   HEADING = 'HEADING',
@@ -62,7 +62,7 @@ const Game: React.FunctionComponent<{
   const gameName = useSelector(currGameNameSelector);
   const history = useSelector(historySelector);
   const noMoreDisplays = useSelector(noMoreDisplaysSelector);
-  const currDisplayNum = useSelector(currDisplayNumSelector);
+  const numDisplaysLeft = useSelector(numDisplaysLeftSelector);
 
   return (
     <Box pad="small" data-cy={CY_GAME}>
@@ -113,9 +113,11 @@ const Game: React.FunctionComponent<{
             }}
           />
           <Heading margin={{ bottom: 'none' }}>{gameName}</Heading>
-          <Heading margin={{ top: 'none' }} level="4">
-            Display: {currDisplayNum}
-          </Heading>
+          {numDisplaysLeft !== undefined && (
+            <Heading margin={{ top: 'none' }} level="4">
+              Displays Left: {numDisplaysLeft}
+            </Heading>
+          )}
         </Box>
         <Box gridArea={GridAreaName.DEBUG_TOGGLE} justify="center" direction="row">
           {DEBUG_ENABLED && (
