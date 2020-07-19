@@ -8,3 +8,4 @@ export const setBoardObjectsArray = createAction(
   'game/SET_BOARD_OBJECTS_ARRAY',
   (index: number) => ({ index }),
 )();
+export const incNumDisplaysCompleted = createAction('games/INC_NUM_DISPLAYS_COMPLETED')();

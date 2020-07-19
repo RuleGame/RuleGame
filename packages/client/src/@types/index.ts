@@ -111,6 +111,7 @@ export type Game = {
   numRandomBoardObjects: number;
   numConsecutiveSuccessfulMovesBeforePromptGuess?: number;
   restartIfNotCleared?: boolean;
+  numDisplaysLimit?: number;
 };
 
 export type ExportedFile = {

@@ -15,6 +15,7 @@ import {
   droppedBucketShapeSelector,
   gameCompletedSelector,
   historyDebugInfoSelector,
+  noMoreDisplaysSelector,
   orderSelector,
   pausedSelector,
   rawAtomsSelector,
@@ -28,6 +29,7 @@ import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
 import { DEBUG_ENABLED } from '../constants/env';
 import { currGameIdSelector, currGameNameSelector } from '../store/selectors/rule-row';
 import { historySelector } from '../store/selectors/history';
+import { currDisplayNumSelector } from '../store/selectors/game';
 
 enum GridAreaName {
   HEADING = 'HEADING',
@@ -58,6 +60,8 @@ const Game: React.FunctionComponent<{
   const allChecked = useSelector(allChecksSelector);
   const gameName = useSelector(currGameNameSelector);
   const history = useSelector(historySelector);
+  const noMoreDisplays = useSelector(noMoreDisplaysSelector);
+  const currDisplayNum = useSelector(currDisplayNumSelector);
 
   return (
     <Box pad="small" data-cy={CY_GAME}>
@@ -107,7 +111,10 @@ const Game: React.FunctionComponent<{
               saveAs(blob, `full-history-${Date.now()}.json`);
             }}
           />
-          <Heading>{gameName}</Heading>
+          <Heading margin={{ bottom: 'none' }}>{gameName}</Heading>
+          <Heading margin={{ top: 'none' }} level="4">
+            Display: {currDisplayNum}
+          </Heading>
         </Box>
         <Box gridArea={GridAreaName.DEBUG_TOGGLE} justify="center" direction="row">
           {DEBUG_ENABLED && (
@@ -182,7 +189,12 @@ const Game: React.FunctionComponent<{
                   : 'Error: Bad Rule Array (Board could not be cleared)'}
               </Text>
               <Button label="Finish" onClick={() => dispatch(goToPage('Entrance'))} />
-              <Button label="New Display" onClick={() => dispatch(nextBoardObjectsArray())} />
+              <Button
+                label={`New Display${noMoreDisplays ? ' (No more displays)' : ''}`}
+                disabled={noMoreDisplays}
+                onClick={() => dispatch(nextBoardObjectsArray())}
+              />
+
               <Button label="Try a new rule" onClick={() => dispatch(goToPage('Entrance'))} />
               <GuessRuleForm gameId={gameId as string} />
             </Box>

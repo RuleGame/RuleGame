@@ -206,3 +206,9 @@ export const orderSelector = (state: RootState) => state.ruleRow.order;
 export const currGameNumConsecutiveSuccessfulMovesBeforePromptGuessSelector = (state: RootState) =>
   state.games.byId[state.ruleRow.currGameId as string]
     .numConsecutiveSuccessfulMovesBeforePromptGuess;
+
+export const noMoreDisplaysSelector = (state: RootState) =>
+  state.game.currGameId
+    ? state.game.numDisplaysCompleted + 1 >=
+      (state.games.byId[state.game.currGameId]?.numDisplaysLimit ?? Infinity)
+    : false;

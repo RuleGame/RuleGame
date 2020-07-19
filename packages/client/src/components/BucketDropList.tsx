@@ -18,7 +18,7 @@ const BucketDropList: React.FunctionComponent<{
       border={[{ side: 'bottom' }, { side: 'left' }, { side: 'right' }]}
     >
       {bucketDropList.map((boardObject) => (
-        <Box fill="horizontal" height="min-content">
+        <Box fill="horizontal" height="min-content" key={boardObject.id}>
           <ShapeObject shape={boardObject.shape} color={boardObject.color} />
         </Box>
       ))}
