@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Button,
@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { FormCheckmark, FormClose, FormEdit } from 'grommet-icons';
 import { saveAs } from 'file-saver';
+import { useQuery } from 'react-query';
 import { RootAction } from '../store/actions';
 import { gamesSelector } from '../store/selectors';
 import { removeGame } from '../store/actions/games';
@@ -36,6 +37,14 @@ const EntrancePage = () => {
   const [editPlayerNameEnabled, setEditPlayerNameEnabled] = useState(false);
   useEffect(() => setPlayerNameInput(playerName), [playerName]);
   const history = useSelector(historySelector);
+  const { isLoading, error, data } = useQuery('greeting-message', () =>
+    fetch('http://sapir.psych.wisc.edu:7133/greeting-message.txt').then((res) => res.text()),
+  );
+
+  const greetingMessage = useMemo(() => data?.replace('{num_games}', String(games.length)), [
+    games,
+    data,
+  ]);
 
   return (
     <Box direction="column" align="center" gap="medium" pad="medium">
@@ -43,16 +52,11 @@ const EntrancePage = () => {
         <Box background="brand" fill align="center" pad="medium" justify="center">
           <Heading>RuleGame Challenge</Heading>
           <Paragraph fill>
-            Welcome to the RuleGame challenge. There are {games.length} different rules. Each rule
-            describes an allowed way of clearing some colored objects from a game board. To clear an
-            object, you must grab it with the mouse, and drag it to the correct bucket. When you
-            release it at the correct bucket, the bucket smiles, and the object’s place turns into a
-            check mark. If you release it at the wrong bucket, it jumps back onto the board where it
-            was. When you hover over an object, the little hand will tell you that it can move.
-            After you have cleared an entire display, you can give up, or ask for a new display.
-            After you have cleared a few displays without too many errors, you can take a chance to
-            guess at the rule. Please be patient after you guess because we require human judges to
-            review your guesses.
+            {isLoading
+              ? 'Loading greeting message...'
+              : error
+              ? 'Cannot load greeting message'
+              : greetingMessage}
           </Paragraph>
         </Box>
         <Box pad="medium">
