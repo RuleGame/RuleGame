@@ -47,6 +47,7 @@ const AddGameForm: React.FunctionComponent = () => {
     numConsecutiveSuccessfulMovesBeforePromptGuess,
     setNumConsecutiveSuccessfulMovesBeforePromptGuess,
   ] = useState<number>();
+  const [numDisplaysLimit, setNumDisplaysLimit] = useState<number>();
 
   return (
     <Box elevation="large" align="center" pad="medium">
@@ -62,9 +63,12 @@ const AddGameForm: React.FunctionComponent = () => {
                 .map(({ id }) => id),
               useRandomBoardObjects,
               numRandomBoardObjects,
-              numConsecutiveSuccessfulMovesBeforePromptGuess,
+              numConsecutiveSuccessfulMovesBeforePromptGuess === 0
+                ? undefined
+                : numConsecutiveSuccessfulMovesBeforePromptGuess,
               undefined,
               true,
+              numDisplaysLimit === 0 ? undefined : numDisplaysLimit,
             ),
           )
         }
@@ -132,6 +136,13 @@ const AddGameForm: React.FunctionComponent = () => {
                 onChange={({ target: { value } }) =>
                   setNumConsecutiveSuccessfulMovesBeforePromptGuess(Number(value.trim()))
                 }
+              />
+            </FormField>
+            <FormField label="Number of Displays Limit per Game">
+              <TextInput
+                type="number"
+                value={numDisplaysLimit}
+                onChange={({ target: { value } }) => setNumDisplaysLimit(Number(value.trim()))}
               />
             </FormField>
             <CheckBox

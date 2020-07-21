@@ -7,7 +7,6 @@ import {
   DropAttempt,
   RuleArray,
   RuleRow,
-  Shape,
 } from '../../@types';
 import { RootAction } from '../actions';
 import {
@@ -56,6 +55,7 @@ export type State = {
   // One element per rule row.
   ruleArrayInfos: { successfulMoves: number }[];
   validPositionsByAtom: { [atomId: string]: Set<number> };
+  checkedObjects: Set<string>;
 };
 
 export const initialState: State = {
@@ -83,6 +83,7 @@ export const initialState: State = {
   ruleArray: undefined,
   ruleArrayInfos: [],
   validPositionsByAtom: {},
+  checkedObjects: new Set(),
 };
 
 const getBoardObjectsToBucketsToAtoms = (
@@ -95,10 +96,11 @@ const getBoardObjectsToBucketsToAtoms = (
   },
   atomCounts: { [atomId: string]: number },
   ruleRow: RuleRow,
+  checkedObjects: Set<string>,
 ) =>
   Object.values(boardObjectsById)
     // .filter((boardObject) => validPositions.has(xYToPosition(boardObject.x, boardObject.y)))
-    .filter((boardObject) => boardObject.shape !== Shape.CHECK)
+    .filter((boardObject) => !checkedObjects.has(boardObject.id))
     .reduce<{ [boardObjectId: string]: { [bucket: number]: Set<string> } }>(
       (acc, boardObject) => ({
         ...acc,
@@ -116,7 +118,7 @@ const getBoardObjectsToBucketsToAtoms = (
               // Defaults to allowed (*) if not defined
               return (
                 atom
-                  .position(boardObject.id, totalMoveHistory, boardObjectsById)
+                  .position(boardObject.id, totalMoveHistory, boardObjectsById, checkedObjects)
                   ?.has(xYToPosition(boardObject.x, boardObject.y)) ?? true
               );
             })
@@ -174,6 +176,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         ruleArrayInfos: action.payload.ruleArray.map(() => ({
           successfulMoves: 0,
         })),
+        checkedObjects: new Set(),
       };
     }
 
@@ -196,6 +199,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         state.boardObjectsById,
         atomCounts,
         state.ruleArray![action.payload.index],
+        state.checkedObjects,
       );
 
       let boardObjectsToBucketsToAtoms = preOrderBoardObjectsToBucketsToAtoms;
@@ -283,13 +287,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       return {
         ...state,
         atomCounts: newAtomCounts,
-        boardObjectsById: {
-          ...state.boardObjectsById,
-          [dragged]: {
-            ...state.boardObjectsById[dragged],
-            shape: Shape.CHECK,
-          },
-        },
+        checkedObjects: new Set(state.checkedObjects.add(dragged)),
         dropAttempts: [...state.dropAttempts, { ...action.payload.dropAttempt, successful: true }],
         totalMoveHistory: newTotalMoveHistory,
         lastMoveSuccessful: true,
@@ -317,6 +315,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         state.boardObjectsById,
         state.atomCounts,
         state.ruleArray![state.ruleRowIndex],
+        state.checkedObjects,
       );
 
       let boardObjectsToBucketsToAtoms = preOrderBoardObjectsToBucketsToAtoms;

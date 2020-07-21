@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
-import { FiCheck, FiCircle, FiSquare, FiStar, FiTriangle } from 'react-icons/fi';
+import { FiCircle, FiSquare, FiStar, FiTriangle } from 'react-icons/fi';
 import HappyFace from '../assets/smiley-face.png';
 import bucketSvg from '../assets/bucket.svg';
 import unhappyFace from '../assets/unhappy-face.svg';
@@ -26,7 +26,6 @@ const shapesMapping: (color?: string) => { [shape in Shape]: JSX.Element | null 
   triangle: <FiTriangle size="100%" color={color} />,
   happy: <img src={HappyFace} alt="happy-face" height="100%" />,
   bucket: <img src={bucketSvg} alt="bucket" height="100%" />,
-  check: <FiCheck color="green" size="100%" />,
   nothing: null,
   '*': <div>*</div>,
   unhappy: <img src={unhappyFace} alt="unhappy-face" height="100%" />,

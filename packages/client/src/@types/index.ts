@@ -50,7 +50,6 @@ export enum Shape {
   NOTHING = 'nothing',
   BUCKET = 'bucket',
   HAPPY = 'happy',
-  CHECK = 'check',
   UNHAPPY = 'unhappy',
 }
 
@@ -80,6 +79,7 @@ export type PositionsFn = (
   boardObjectId: BoardObjectId,
   totalMoveHistory: DropAttempt[],
   boardObjects: { [id: string]: BoardObjectType },
+  checkedObjects: Set<string>,
 ) => Set<number> | undefined;
 
 export type Atom = {
@@ -111,6 +111,7 @@ export type Game = {
   numRandomBoardObjects: number;
   numConsecutiveSuccessfulMovesBeforePromptGuess?: number;
   restartIfNotCleared?: boolean;
+  numDisplaysLimit?: number;
 };
 
 export type ExportedFile = {

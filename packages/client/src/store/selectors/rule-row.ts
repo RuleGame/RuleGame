@@ -1,5 +1,5 @@
 import { RootState } from '../reducers';
-import { DropAttempt } from '../../@types';
+import { BoardObjectType, BucketPosition, DropAttempt } from '../../@types';
 
 export const numConsecutiveSuccessfulMovesSelector = (state: RootState) =>
   state.ruleRow.numConsecutiveSuccessfulMoves;
@@ -20,3 +20,11 @@ export const latestDropAttemptSelector = (state: RootState): DropAttempt =>
   state.ruleRow.dropAttempts[state.ruleRow.dropAttempts.length - 1];
 
 export const gamePausedSelector = (state: RootState) => state.ruleRow.paused;
+
+export const bucketDropListSelector = (bucketPosition: BucketPosition) => (
+  state: RootState,
+): BoardObjectType[] =>
+  state.ruleRow.totalMoveHistory
+    .filter((dropAttempt) => dropAttempt.dropped === bucketPosition)
+    .map((dropAttempt) => dropAttempt.dragged)
+    .map((boardObjectId) => state.ruleRow.initialBoardObjectsById[boardObjectId]);

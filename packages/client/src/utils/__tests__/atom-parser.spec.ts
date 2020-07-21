@@ -232,7 +232,7 @@ it('returns NaNs for a bucket function if its inputs are not to be found in the 
   const boardObjects: { [id: number]: BoardObjectType } = {
     0: {
       color: Color.BLUE,
-      id: '1',
+      id: '0',
       shape: Shape.CIRCLE,
       x: 1,
       y: 2,
@@ -267,7 +267,7 @@ it('works for [1,2,3] bucket functions', () => {
   const boardObjects: { [id: number]: BoardObjectType } = {
     0: {
       color: Color.BLUE,
-      id: '1',
+      id: '0',
       shape: Shape.CIRCLE,
       x: 1,
       y: 2,
@@ -296,8 +296,8 @@ describe('B positions function', () => {
       // Checks (dropped objects) should be ignored
       0: {
         color: Color.BLUE,
-        id: '1',
-        shape: Shape.CHECK,
+        id: '0',
+        shape: Shape.CIRCLE,
         x: 1,
         y: 1,
       },
@@ -317,9 +317,13 @@ describe('B positions function', () => {
       },
     };
 
+    const checkedObjects = new Set(['0']);
+
     const totalMoveHistory: DropAttempt[] = [];
 
-    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+    expect(
+      (atom.position as PositionsFn)('1', totalMoveHistory, boardObjects, checkedObjects),
+    ).toEqual(
       new Set<number>([1, 2, 3, 4, 5, 6]),
     );
   });
@@ -333,8 +337,8 @@ describe('B positions function', () => {
       // Checks (dropped objects) should be ignored
       0: {
         color: Color.BLUE,
-        id: '1',
-        shape: Shape.CHECK,
+        id: '0',
+        shape: Shape.CIRCLE,
         x: 1,
         y: 1,
       },
@@ -353,10 +357,13 @@ describe('B positions function', () => {
         y: 3,
       },
     };
+    const checkedObjects = new Set(['0']);
 
     const totalMoveHistory: DropAttempt[] = [];
 
-    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+    expect(
+      (atom.position as PositionsFn)('1', totalMoveHistory, boardObjects, checkedObjects),
+    ).toEqual(
       new Set<number>([7, 8, 9, 10, 11, 12]),
     );
   });
@@ -370,22 +377,25 @@ describe('B positions function', () => {
       1: {
         color: Color.BLUE,
         id: '1',
-        shape: Shape.CHECK,
+        shape: Shape.CIRCLE,
         x: 1,
         y: 2,
       },
       2: {
         color: Color.RED,
         id: '2',
-        shape: Shape.CHECK,
+        shape: Shape.CIRCLE,
         x: 1,
         y: 3,
       },
     };
+    const checkedObjects = new Set(['1', '2']);
 
     const totalMoveHistory: DropAttempt[] = [];
 
-    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toBeUndefined();
+    expect(
+      (atom.position as PositionsFn)('1', totalMoveHistory, boardObjects, checkedObjects),
+    ).toBeUndefined();
   });
 });
 
@@ -399,8 +409,8 @@ describe('T positions function', () => {
       // Checks (dropped objects) should be ignored
       0: {
         color: Color.BLUE,
-        id: '1',
-        shape: Shape.CHECK,
+        id: '0',
+        shape: Shape.CIRCLE,
         x: 1,
         y: 6,
       },
@@ -421,8 +431,11 @@ describe('T positions function', () => {
     };
 
     const totalMoveHistory: DropAttempt[] = [];
+    const checkedObjects = new Set(['0']);
 
-    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+    expect(
+      (atom.position as PositionsFn)('1', totalMoveHistory, boardObjects, checkedObjects),
+    ).toEqual(
       new Set<number>([31, 32, 33, 34, 35, 36]),
     );
   });
@@ -436,8 +449,8 @@ describe('T positions function', () => {
       // Checks (dropped objects) should be ignored
       0: {
         color: Color.BLUE,
-        id: '1',
-        shape: Shape.CHECK,
+        id: '0',
+        shape: Shape.CIRCLE,
         x: 1,
         y: 6,
       },
@@ -458,8 +471,11 @@ describe('T positions function', () => {
     };
 
     const totalMoveHistory: DropAttempt[] = [];
+    const checkedObjects = new Set(['0']);
 
-    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+    expect(
+      (atom.position as PositionsFn)('1', totalMoveHistory, boardObjects, checkedObjects),
+    ).toEqual(
       new Set<number>([25, 26, 27, 28, 29, 30]),
     );
   });
@@ -473,22 +489,25 @@ describe('T positions function', () => {
       1: {
         color: Color.BLUE,
         id: '1',
-        shape: Shape.CHECK,
+        shape: Shape.CIRCLE,
         x: 1,
         y: 2,
       },
       2: {
         color: Color.RED,
         id: '2',
-        shape: Shape.CHECK,
+        shape: Shape.CIRCLE,
         x: 1,
         y: 3,
       },
     };
+    const checkedObjects = new Set(['1', '2']);
 
     const totalMoveHistory: DropAttempt[] = [];
 
-    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toBeUndefined();
+    expect(
+      (atom.position as PositionsFn)('1', totalMoveHistory, boardObjects, checkedObjects),
+    ).toBeUndefined();
   });
 });
 
@@ -503,7 +522,7 @@ describe('L positions function', () => {
       0: {
         color: Color.BLUE,
         id: '1',
-        shape: Shape.CHECK,
+        shape: Shape.CIRCLE,
         x: 1,
         y: 6,
       },
@@ -524,8 +543,11 @@ describe('L positions function', () => {
     };
 
     const totalMoveHistory: DropAttempt[] = [];
+    const checkedObjects = new Set([]);
 
-    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+    expect(
+      (atom.position as PositionsFn)('1', totalMoveHistory, boardObjects, checkedObjects),
+    ).toEqual(
       new Set<number>([1, 7, 13, 19, 25, 31]),
     );
   });
@@ -539,8 +561,8 @@ describe('L positions function', () => {
       // Checks (dropped objects) should be ignored
       0: {
         color: Color.BLUE,
-        id: '1',
-        shape: Shape.CHECK,
+        id: '0',
+        shape: Shape.CIRCLE,
         x: 1,
         y: 6,
       },
@@ -561,8 +583,11 @@ describe('L positions function', () => {
     };
 
     const totalMoveHistory: DropAttempt[] = [];
+    const checkedObjects = new Set(['0']);
 
-    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+    expect(
+      (atom.position as PositionsFn)('1', totalMoveHistory, boardObjects, checkedObjects),
+    ).toEqual(
       new Set<number>([2, 8, 14, 20, 26, 32]),
     );
   });
@@ -576,22 +601,25 @@ describe('L positions function', () => {
       1: {
         color: Color.BLUE,
         id: '1',
-        shape: Shape.CHECK,
+        shape: Shape.CIRCLE,
         x: 1,
         y: 2,
       },
       2: {
         color: Color.RED,
         id: '2',
-        shape: Shape.CHECK,
+        shape: Shape.CIRCLE,
         x: 1,
         y: 3,
       },
     };
+    const checkedObjects = new Set(['1', '2']);
 
     const totalMoveHistory: DropAttempt[] = [];
 
-    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toBeUndefined();
+    expect(
+      (atom.position as PositionsFn)('1', totalMoveHistory, boardObjects, checkedObjects),
+    ).toBeUndefined();
   });
 });
 
@@ -605,8 +633,8 @@ describe('R positions function', () => {
       // Checks (dropped objects) should be ignored
       0: {
         color: Color.BLUE,
-        id: '1',
-        shape: Shape.CHECK,
+        id: '0',
+        shape: Shape.CIRCLE,
         x: 6,
         y: 6,
       },
@@ -627,8 +655,11 @@ describe('R positions function', () => {
     };
 
     const totalMoveHistory: DropAttempt[] = [];
+    const checkedObjects = new Set(['0']);
 
-    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+    expect(
+      (atom.position as PositionsFn)('1', totalMoveHistory, boardObjects, checkedObjects),
+    ).toEqual(
       new Set<number>([6, 12, 18, 24, 30, 36]),
     );
   });
@@ -642,8 +673,8 @@ describe('R positions function', () => {
       // Checks (dropped objects) should be ignored
       0: {
         color: Color.BLUE,
-        id: '1',
-        shape: Shape.CHECK,
+        id: '0',
+        shape: Shape.CIRCLE,
         x: 6,
         y: 6,
       },
@@ -664,8 +695,11 @@ describe('R positions function', () => {
     };
 
     const totalMoveHistory: DropAttempt[] = [];
+    const checkedObjects = new Set(['0']);
 
-    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+    expect(
+      (atom.position as PositionsFn)('1', totalMoveHistory, boardObjects, checkedObjects),
+    ).toEqual(
       new Set<number>([5, 11, 17, 23, 29, 35]),
     );
   });
@@ -716,23 +750,34 @@ describe('R positions function', () => {
 
     const totalMoveHistory: DropAttempt[] = [];
 
-    expect((atom.position as PositionsFn)('3', totalMoveHistory, boardObjects)).toEqual(
+    expect(
+      (atom.position as PositionsFn)('3', totalMoveHistory, boardObjects, new Set([])),
+    ).toEqual(
       new Set<number>([1, 31]),
     );
-    boardObjects[3].shape = Shape.CHECK;
-    expect((atom.position as PositionsFn)('4', totalMoveHistory, boardObjects)).toEqual(
+    expect(
+      (atom.position as PositionsFn)('4', totalMoveHistory, boardObjects, new Set(['3'])),
+    ).toEqual(
       new Set<number>([1]),
     );
-    boardObjects[4].shape = Shape.CHECK;
-    expect((atom.position as PositionsFn)('2', totalMoveHistory, boardObjects)).toEqual(
+    expect(
+      (atom.position as PositionsFn)('2', totalMoveHistory, boardObjects, new Set(['3', '4'])),
+    ).toEqual(
       new Set<number>([35]),
     );
-    boardObjects[2].shape = Shape.CHECK;
-    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+    expect(
+      (atom.position as PositionsFn)('1', totalMoveHistory, boardObjects, new Set(['3', '4', '2'])),
+    ).toEqual(
       new Set<number>([8]),
     );
-    boardObjects[1].shape = Shape.CHECK;
-    expect((atom.position as PositionsFn)('0', totalMoveHistory, boardObjects)).toEqual(
+    expect(
+      (atom.position as PositionsFn)(
+        '0',
+        totalMoveHistory,
+        boardObjects,
+        new Set(['3', '4', '2', '1']),
+      ),
+    ).toEqual(
       new Set<number>([16]),
     );
   });
@@ -783,23 +828,34 @@ describe('R positions function', () => {
 
     const totalMoveHistory: DropAttempt[] = [];
 
-    expect((atom.position as PositionsFn)('0', totalMoveHistory, boardObjects)).toEqual(
+    expect(
+      (atom.position as PositionsFn)('0', totalMoveHistory, boardObjects, new Set([])),
+    ).toEqual(
       new Set<number>([16]),
     );
-    boardObjects[0].shape = Shape.CHECK;
-    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toEqual(
+    expect(
+      (atom.position as PositionsFn)('1', totalMoveHistory, boardObjects, new Set(['0'])),
+    ).toEqual(
       new Set<number>([8]),
     );
-    boardObjects[1].shape = Shape.CHECK;
-    expect((atom.position as PositionsFn)('2', totalMoveHistory, boardObjects)).toEqual(
+    expect(
+      (atom.position as PositionsFn)('2', totalMoveHistory, boardObjects, new Set(['0', '1'])),
+    ).toEqual(
       new Set<number>([35]),
     );
-    boardObjects[2].shape = Shape.CHECK;
-    expect((atom.position as PositionsFn)('3', totalMoveHistory, boardObjects)).toEqual(
+    expect(
+      (atom.position as PositionsFn)('3', totalMoveHistory, boardObjects, new Set(['0', '1', '2'])),
+    ).toEqual(
       new Set<number>([1, 31]),
     );
-    boardObjects[3].shape = Shape.CHECK;
-    expect((atom.position as PositionsFn)('4', totalMoveHistory, boardObjects)).toEqual(
+    expect(
+      (atom.position as PositionsFn)(
+        '4',
+        totalMoveHistory,
+        boardObjects,
+        new Set(['0', '1', '2', '3']),
+      ),
+    ).toEqual(
       new Set<number>([1]),
     );
   });
@@ -813,22 +869,25 @@ describe('R positions function', () => {
       1: {
         color: Color.BLUE,
         id: '1',
-        shape: Shape.CHECK,
+        shape: Shape.CIRCLE,
         x: 1,
         y: 2,
       },
       2: {
         color: Color.RED,
         id: '2',
-        shape: Shape.CHECK,
+        shape: Shape.CIRCLE,
         x: 1,
         y: 3,
       },
     };
 
     const totalMoveHistory: DropAttempt[] = [];
+    const checkedObjects = new Set(['1', '2']);
 
-    expect((atom.position as PositionsFn)('1', totalMoveHistory, boardObjects)).toBeUndefined();
+    expect(
+      (atom.position as PositionsFn)('1', totalMoveHistory, boardObjects, checkedObjects),
+    ).toBeUndefined();
   });
 });
 

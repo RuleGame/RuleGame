@@ -42,8 +42,11 @@ export const boardObjectToBucketsSelector = createSelector(
   },
 );
 
-export const allChecksSelector = createSelector([boardObjectsSelector], (boardObjects) =>
-  boardObjects.every((boardObject) => boardObject.shape === Shape.CHECK),
+export const checkedObjectsSelector = (state: RootState) => state.ruleRow.checkedObjects;
+
+export const allChecksSelector = createSelector(
+  [boardObjectsSelector, checkedObjectsSelector],
+  (boardObjects, checkedObjects) => boardObjects.length === checkedObjects.size,
 );
 
 export const noMoreMovesSelector = createSelector(
@@ -203,3 +206,9 @@ export const orderSelector = (state: RootState) => state.ruleRow.order;
 export const currGameNumConsecutiveSuccessfulMovesBeforePromptGuessSelector = (state: RootState) =>
   state.games.byId[state.ruleRow.currGameId as string]
     .numConsecutiveSuccessfulMovesBeforePromptGuess;
+
+export const noMoreDisplaysSelector = (state: RootState) =>
+  state.game.currGameId
+    ? state.game.numDisplaysCompleted + 1 >=
+      (state.games.byId[state.game.currGameId]?.numDisplaysLimit ?? Infinity)
+    : false;

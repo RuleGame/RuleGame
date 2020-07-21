@@ -142,9 +142,14 @@ const parseAtomString = (atom: string): Atom => {
 
   const counter = matchedCounter === '*' ? Infinity : Number(matchedCounter);
 
-  const bottomPositions: PositionsFn = (boardObjectId, totalMoveHistory, boardObjects) => {
+  const bottomPositions: PositionsFn = (
+    boardObjectId,
+    totalMoveHistory,
+    boardObjects,
+    checkedObjects,
+  ) => {
     const minY = Object.values(boardObjects)
-      .filter((boardObject) => boardObject.shape !== Shape.CHECK)
+      .filter(({ id }) => !checkedObjects.has(id))
       .reduce<number | undefined>((acc, boardObject) => {
         return Math.min(boardObject.y, acc ?? Infinity);
       }, undefined);
@@ -155,9 +160,14 @@ const parseAtomString = (atom: string): Atom => {
       : new Set(range(1, cols - 1).map((x) => xYToPosition(x, minY)));
   };
 
-  const topPositions: PositionsFn = (boardObjectId, totalMoveHistory, boardObjects) => {
+  const topPositions: PositionsFn = (
+    boardObjectId,
+    totalMoveHistory,
+    boardObjects,
+    checkedObjects,
+  ) => {
     const minY = Object.values(boardObjects)
-      .filter((boardObject) => boardObject.shape !== Shape.CHECK)
+      .filter(({ id }) => !checkedObjects.has(id))
       .reduce<number | undefined>((acc, boardObject) => {
         return Math.max(boardObject.y, acc ?? -Infinity);
       }, undefined);
@@ -168,9 +178,14 @@ const parseAtomString = (atom: string): Atom => {
       : new Set(range(1, cols - 1).map((x) => xYToPosition(x, minY)));
   };
 
-  const leftPositions: PositionsFn = (boardObjectId, totalMoveHistory, boardObjects) => {
+  const leftPositions: PositionsFn = (
+    boardObjectId,
+    totalMoveHistory,
+    boardObjects,
+    checkedObjects,
+  ) => {
     const minX = Object.values(boardObjects)
-      .filter((boardObject) => boardObject.shape !== Shape.CHECK)
+      .filter(({ id }) => !checkedObjects.has(id))
       .reduce<number | undefined>((acc, boardObject) => {
         return Math.min(boardObject.x, acc ?? Infinity);
       }, undefined);
@@ -181,9 +196,14 @@ const parseAtomString = (atom: string): Atom => {
       : new Set(range(1, rows - 1).map((y) => xYToPosition(minX, y)));
   };
 
-  const rightPositions: PositionsFn = (boardObjectId, totalMoveHistory, boardObjects) => {
+  const rightPositions: PositionsFn = (
+    boardObjectId,
+    totalMoveHistory,
+    boardObjects,
+    checkedObjects,
+  ) => {
     const minX = Object.values(boardObjects)
-      .filter((boardObject) => boardObject.shape !== Shape.CHECK)
+      .filter(({ id }) => !checkedObjects.has(id))
       .reduce<number | undefined>((acc, boardObject) => {
         return Math.max(boardObject.x, acc ?? -Infinity);
       }, undefined);
@@ -194,13 +214,18 @@ const parseAtomString = (atom: string): Atom => {
       : new Set(range(1, rows - 1).map((y) => xYToPosition(minX, y)));
   };
 
-  const farthestPositions: PositionsFn = (boardObjectId, totalMoveHistory, boardObjects) => {
+  const farthestPositions: PositionsFn = (
+    boardObjectId,
+    totalMoveHistory,
+    boardObjects,
+    checkedObjects,
+  ) => {
     const computeDistance = (x: number, y: number, boardObject: BoardObjectType) => {
       return Math.sqrt((x - boardObject.x) ** 2 + (y - boardObject.y) ** 2);
     };
 
     const { farthestPositions } = Object.values(boardObjects)
-      .filter((boardObject) => boardObject.shape !== Shape.CHECK)
+      .filter(({ id }) => !checkedObjects.has(id))
       .reduce<{
         farthestDistance: number;
         farthestPositions: Set<number>;
@@ -232,13 +257,18 @@ const parseAtomString = (atom: string): Atom => {
     return farthestPositions;
   };
 
-  const nearestPositions: PositionsFn = (boardObjectId, totalMoveHistory, boardObjects) => {
+  const nearestPositions: PositionsFn = (
+    boardObjectId,
+    totalMoveHistory,
+    boardObjects,
+    checkedObjects,
+  ) => {
     const computeDistance = (x: number, y: number, boardObject: BoardObjectType) => {
       return Math.sqrt((x - boardObject.x) ** 2 + (y - boardObject.y) ** 2);
     };
 
     const { nearestPositions } = Object.values(boardObjects)
-      .filter((boardObject) => boardObject.shape !== Shape.CHECK)
+      .filter(({ id }) => !checkedObjects.has(id))
       .reduce<{
         nearestDistance: number;
         nearestPositions: Set<number>;

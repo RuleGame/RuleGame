@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Button, CheckBox, Grid, Heading, Text } from 'grommet';
 import { Dispatch } from 'redux';
@@ -15,6 +15,7 @@ import {
   droppedBucketShapeSelector,
   gameCompletedSelector,
   historyDebugInfoSelector,
+  noMoreDisplaysSelector,
   orderSelector,
   pausedSelector,
   rawAtomsSelector,
@@ -28,6 +29,7 @@ import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
 import { DEBUG_ENABLED } from '../constants/env';
 import { currGameIdSelector, currGameNameSelector } from '../store/selectors/rule-row';
 import { historySelector } from '../store/selectors/history';
+import { numDisplaysLeftSelector } from '../store/selectors/game';
 
 enum GridAreaName {
   HEADING = 'HEADING',
@@ -42,6 +44,7 @@ const Game: React.FunctionComponent<{
   className?: string;
 }> = ({ className }) => {
   const dispatch: Dispatch<RootAction> = useDispatch();
+  const [submittedGuess, setSubmittedGuess] = useState(false);
 
   const droppedBucketShape = useSelector(droppedBucketShapeSelector);
   const boardObjects = useSelector(boardObjectsSelector);
@@ -58,6 +61,8 @@ const Game: React.FunctionComponent<{
   const allChecked = useSelector(allChecksSelector);
   const gameName = useSelector(currGameNameSelector);
   const history = useSelector(historySelector);
+  const noMoreDisplays = useSelector(noMoreDisplaysSelector);
+  const numDisplaysLeft = useSelector(numDisplaysLeftSelector);
 
   return (
     <Box pad="small" data-cy={CY_GAME}>
@@ -107,7 +112,12 @@ const Game: React.FunctionComponent<{
               saveAs(blob, `full-history-${Date.now()}.json`);
             }}
           />
-          <Heading>{gameName}</Heading>
+          <Heading margin={{ bottom: 'none' }}>{gameName}</Heading>
+          {numDisplaysLeft !== undefined && (
+            <Heading margin={{ top: 'none' }} level="4">
+              Displays Left: {numDisplaysLeft}
+            </Heading>
+          )}
         </Box>
         <Box gridArea={GridAreaName.DEBUG_TOGGLE} justify="center" direction="row">
           {DEBUG_ENABLED && (
@@ -172,22 +182,31 @@ const Game: React.FunctionComponent<{
           {!gameCompleted && (
             <Box gap="small">
               <Button label="Give up" onClick={() => dispatch(goToPage('Entrance'))} />
-              <Button label="New Display" onClick={() => dispatch(nextBoardObjectsArray())} />
             </Box>
           )}
-          {gameCompleted && (
-            <Box gap="medium">
-              <Text data-cy={CY_NO_MORE_MOVES}>
-                {allChecked
-                  ? 'You’ve cleared all the shapes! Please guess the rule below”!'
-                  : 'Error: Bad Rule Array (Board could not be cleared)'}
-              </Text>
-              <Button label="Finish" onClick={() => dispatch(goToPage('Entrance'))} />
-              <Button label="New Display" onClick={() => dispatch(nextBoardObjectsArray())} />
-              <Button label="Try a new rule" onClick={() => dispatch(goToPage('Entrance'))} />
-              <GuessRuleForm gameId={gameId as string} />
-            </Box>
-          )}
+          {gameCompleted &&
+            (submittedGuess ? (
+              <Box gap="medium">
+                <Text data-cy={CY_NO_MORE_MOVES}>
+                  {allChecked
+                    ? 'You’ve cleared all the shapes! Please guess the rule below”!'
+                    : 'Error: Bad Rule Array (Board could not be cleared)'}
+                </Text>
+                <Button label="Finish" onClick={() => dispatch(goToPage('Entrance'))} />
+                <Button
+                  label={`New Display${noMoreDisplays ? ' (No more displays)' : ''}`}
+                  disabled={noMoreDisplays}
+                  onClick={() => {
+                    setSubmittedGuess(false);
+                    dispatch(nextBoardObjectsArray());
+                  }}
+                />
+
+                <Button label="Try a new rule" onClick={() => dispatch(goToPage('Entrance'))} />
+              </Box>
+            ) : (
+              <GuessRuleForm gameId={gameId as string} onSubmit={() => setSubmittedGuess(true)} />
+            ))}
         </Box>
       </Grid>
     </Box>
