@@ -6,7 +6,7 @@ export enum PersistKeys {
 }
 
 export const PersistVersions: { [key in PersistKeys]: number } = {
-  [PersistKeys.GAMES]: 0,
+  [PersistKeys.GAMES]: 1,
   [PersistKeys.RULE_ARRAYS]: 0,
   [PersistKeys.BOARD_OBJECTS_ARRAYS]: 0,
   [PersistKeys.HISTORY]: 0,
