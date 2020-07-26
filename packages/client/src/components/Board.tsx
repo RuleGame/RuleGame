@@ -26,7 +26,6 @@ const StyledBoard = styled.div<{}>`
 const StyledBoardObject = styled(BoardObject)<BoardObjectType>`
   grid-column: ${(boardObject) => boardObject.x + 1};
   grid-row: ${(boardObject) => rows - boardObject.y};
-  color: ${(boardObject) => boardObject.color};
 `;
 
 const StyledBucket = styled(Bucket)<BucketType>`
