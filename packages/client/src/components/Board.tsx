@@ -8,6 +8,7 @@ import BoardObject from './BoardObject';
 import Bucket from './Bucket';
 import { checkedObjectsSelector, droppedBucketSelector } from '../store/selectors';
 import BucketDropList from './BucketDropList';
+import { moveNumByBoardObjectSelector } from '../store/selectors/rule-row';
 
 const StyledBoard = styled.div<{}>`
   display: grid;
@@ -66,6 +67,7 @@ const Board = ({
 }: BoardProps): JSX.Element => {
   const droppedBucket = useSelector(droppedBucketSelector);
   const checkedObjects = useSelector(checkedObjectsSelector);
+  const moveNumByBoardObject = useSelector(moveNumByBoardObjectSelector);
 
   return (
     <Grid
@@ -128,6 +130,7 @@ const Board = ({
               }}
               onClick={() => !droppedBucket && onBoardObjectClick(boardObject)}
               checked={checkedObjects.has(boardObject.id)}
+              moveNum={moveNumByBoardObject[boardObject.id]}
             />
           ))}
           {buckets.map((bucket) => (

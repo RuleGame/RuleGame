@@ -1,5 +1,7 @@
+import { createSelector } from 'reselect';
 import { RootState } from '../reducers';
 import { BoardObjectType, BucketPosition, DropAttempt } from '../../@types';
+import { totalHistorySelector } from './index';
 
 export const numConsecutiveSuccessfulMovesSelector = (state: RootState) =>
   state.ruleRow.numConsecutiveSuccessfulMoves;
@@ -28,3 +30,13 @@ export const bucketDropListSelector = (bucketPosition: BucketPosition) => (
     .filter((dropAttempt) => dropAttempt.dropped === bucketPosition)
     .map((dropAttempt) => dropAttempt.dragged)
     .map((boardObjectId) => state.ruleRow.initialBoardObjectsById[boardObjectId]);
+
+export const moveNumByBoardObjectSelector = createSelector([totalHistorySelector], (dropAttempts) =>
+  dropAttempts.reduce<{ [boardObjectId: string]: number }>(
+    (acc, dropAttempt, i) => ({
+      ...acc,
+      [dropAttempt.dragged]: i + 1,
+    }),
+    {},
+  ),
+);

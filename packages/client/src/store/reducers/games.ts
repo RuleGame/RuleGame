@@ -44,6 +44,8 @@ const reducer = (state: State = initialState, action: RootAction): State => {
               action.payload.numConsecutiveSuccessfulMovesBeforePromptGuess,
             restartIfNotCleared: action.payload.restartIfNotCleared,
             numDisplaysLimit: action.payload.numDisplaysLimit,
+            showStackMemoryOrder: action.payload.showStackMemoryOrder,
+            showGridMemoryOrder: action.payload.showGridMemoryOrder,
           },
         },
         allIds: [...state.allIds, action.payload.id],

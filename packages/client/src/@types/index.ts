@@ -112,6 +112,8 @@ export type Game = {
   numConsecutiveSuccessfulMovesBeforePromptGuess?: number;
   restartIfNotCleared?: boolean;
   numDisplaysLimit?: number;
+  showStackMemoryOrder?: boolean;
+  showGridMemoryOrder?: boolean;
 };
 
 export type ExportedFile = {
