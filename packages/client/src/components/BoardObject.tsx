@@ -40,8 +40,6 @@ const BoardObject = ({
   });
   return (
     <Stack className={className} data-cy={cyBoardObject(item.id)} data-cy-checked={checked}>
-      {checked && <FiCheck color="green" size="100%" />}
-      {!checked && !canDrag && VALID_SHAPES.has(shape) && <Close size="100%" color="grey" />}
       <StyledShapeObject
         shape={shape}
         color={color}
@@ -50,8 +48,9 @@ const BoardObject = ({
         canDrag={canDrag}
         shapeObjectId={item.id}
         debugInfo={item.debugInfo}
-        opacity={!canDrag && VALID_SHAPES.has(shape) ? 0.25 : 1}
       />
+      {checked && <FiCheck color="green" size="100%" />}
+      {!checked && !canDrag && VALID_SHAPES.has(shape) && <Close size="100%" color="black" />}
     </Stack>
   );
 };
