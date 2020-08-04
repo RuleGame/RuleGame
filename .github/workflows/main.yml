@@ -48,7 +48,7 @@ jobs:
     - name: Copy Build to CS Host
       uses: garygrossgarten/github-action-scp@release
       with:
-        local: dev-${{ github.head_ref }}
+        local: packages/client/dev-${{ github.head_ref }}
         remote: ~/rule-game-temp/
         host: ${{ secrets.CS_HOST }}
         username: ${{ secrets.CS_USERNAME }}
