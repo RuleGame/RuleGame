@@ -43,7 +43,7 @@ jobs:
         REACT_APP_EDIT_GAMES_ENABLED: true
     
     - name: Rename build folder
-      run: mv build dev-${{ github.head_ref }}
+      run: mv build preview-${{ github.head_ref }}
 
     - name: Copy Build to CS Host
       uses: appleboy/scp-action@master
@@ -51,16 +51,16 @@ jobs:
         host: ${{ secrets.CS_HOST }}
         username: ${{ secrets.CS_USERNAME }}
         password: ${{ secrets.CS_PASSWORD }}
-        source: packages/client/dev-${{ github.head_ref }}
+        source: packages/client/preview-${{ github.head_ref }}
         target: ~/rule-game-temp/
         overwrite: true
         strip_components: 2
 
-#     - name: Copy Build to Sapir
-#       uses: appleboy/ssh-action@master
-#       with:
-#         host: ${{ secrets.CS_HOST }}
-#         username: ${{ secrets.CS_USERNAME }}
-#         password: ${{ secrets.CS_PASSWORD }}
-#         script: scp -r ~/rule-game-temp/dev-${{ github.head_ref }} sapir:/var/www/rule-game
+     - name: Copy Build to Sapir
+       uses: appleboy/ssh-action@master
+       with:
+         host: ${{ secrets.CS_HOST }}
+         username: ${{ secrets.CS_USERNAME }}
+         password: ${{ secrets.CS_PASSWORD }}
+         script: scp -r ~/rule-game-temp/preview-${{ github.head_ref }} sapir:/var/www/rule-game
 
