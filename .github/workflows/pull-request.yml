@@ -67,5 +67,5 @@ jobs:
     - name: Comment PR
       uses: thollander/actions-comment-pull-request@master
       with:
-        message: format("Successfully deployed to http://sapir.psych.wisc.edu/rule-game/preview-{0}/", ${{ github.head_ref }})
+        message: Successfully deployed to http://sapir.psych.wisc.edu/rule-game/preview-${{ github.head_ref }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
