@@ -54,6 +54,7 @@ jobs:
         source: packages/client/dev-${{ github.head_ref }}
         target: ~/rule-game-temp/
         overwrite: true
+        strip_components: 2
 
 #     - name: Copy Build to Sapir
 #       uses: appleboy/ssh-action@master
