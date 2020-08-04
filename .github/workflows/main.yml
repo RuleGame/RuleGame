@@ -46,13 +46,14 @@ jobs:
       run: mv build dev-${{ github.head_ref }}
 
     - name: Copy Build to CS Host
-      uses: garygrossgarten/github-action-scp@release
+      uses: appleboy/scp-action@master
       with:
-        local: packages/client/dev-${{ github.head_ref }}
-        remote: ~/rule-game-temp/
         host: ${{ secrets.CS_HOST }}
         username: ${{ secrets.CS_USERNAME }}
         password: ${{ secrets.CS_PASSWORD }}
+        source: packages/client/dev-${{ github.head_ref }}
+        target: ~/rule-game-temp/
+        overwrite: true
 
 #     - name: Copy Build to Sapir
 #       uses: appleboy/ssh-action@master
