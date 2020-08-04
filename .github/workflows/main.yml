@@ -26,10 +26,16 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '12'
+    - uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-  
 
     # Runs a single command using the runners shell
     - name: Install Dependencies
-      run: npm install
+      run: npm ci
 
     - name: Build
       run: npm run build
