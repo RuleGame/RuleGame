@@ -1,0 +1,71 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build_and_deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/client
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '12'
+    - uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-  
+
+    # Runs a single command using the runners shell
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Build
+      run: npm run build
+      env:
+        REACT_APP_DEBUG_MODE_ENABLED: true
+        REACT_APP_EDIT_GAMES_ENABLED: true
+    
+    - name: Rename build folder
+      run: mv build preview-${{ github.head_ref }}
+
+    - name: Copy Build to CS Host
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.CS_HOST }}
+        username: ${{ secrets.CS_USERNAME }}
+        password: ${{ secrets.CS_PASSWORD }}
+        source: packages/client/preview-${{ github.head_ref }}
+        target: ~/rule-game-temp/
+        overwrite: true
+        strip_components: 2
+
+    - name: Copy Build to Sapir
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.CS_HOST }}
+        username: ${{ secrets.CS_USERNAME }}
+        password: ${{ secrets.CS_PASSWORD }}
+        script: scp -r ~/rule-game-temp/preview-${{ github.head_ref }} sapir:/var/www/rule-game
+
+    - name: Comment PR
+      uses: thollander/actions-comment-pull-request@master
+      with:
+        message: Successfully deployed to http://sapir.psych.wisc.edu/rule-game/preview-${{ github.head_ref }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

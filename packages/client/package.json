@@ -5,6 +5,7 @@
   "engines": {
     "node": ">=12"
   },
+  "homepage": "./",
   "scripts": {
     "build": "react-app-rewired build",
     "cypress": "cypress open",

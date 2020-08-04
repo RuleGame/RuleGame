@@ -44,6 +44,8 @@ export const addGame = createAction(
     id = shortid(),
     restartIfNotCleared: boolean = false,
     numDisplaysLimit?: number,
+    showStackMemoryOrder?: boolean,
+    showGridMemoryOrder?: boolean,
   ) => ({
     name,
     id,
@@ -54,6 +56,8 @@ export const addGame = createAction(
     numConsecutiveSuccessfulMovesBeforePromptGuess,
     restartIfNotCleared,
     numDisplaysLimit,
+    showStackMemoryOrder,
+    showGridMemoryOrder,
   }),
 )();
 

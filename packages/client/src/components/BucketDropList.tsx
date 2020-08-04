@@ -1,14 +1,18 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Box } from 'grommet';
+import { Box, Text } from 'grommet';
 import { BucketPosition } from '../@types';
-import { bucketDropListSelector } from '../store/selectors/rule-row';
+import { bucketDropListSelector, moveNumByBoardObjectSelector } from '../store/selectors/rule-row';
 import ShapeObject from './ShapeObject';
+import { showStackMemoryOrderSelector } from '../store/selectors/game';
 
 const BucketDropList: React.FunctionComponent<{
   bucket: BucketPosition;
 }> = ({ bucket }) => {
   const bucketDropList = useSelector(bucketDropListSelector(bucket));
+  const moveNumByBoardObject = useSelector(moveNumByBoardObjectSelector);
+  const showStackMemoryOrder = useSelector(showStackMemoryOrderSelector);
+
   return (
     <Box
       direction="column-reverse"
@@ -18,8 +22,13 @@ const BucketDropList: React.FunctionComponent<{
       border={[{ side: 'bottom' }, { side: 'left' }, { side: 'right' }]}
     >
       {bucketDropList.map((boardObject) => (
-        <Box fill="horizontal" height="min-content" key={boardObject.id}>
-          <ShapeObject shape={boardObject.shape} color={boardObject.color} />
+        <Box direction="row" key={boardObject.id}>
+          <Box fill="horizontal" height="min-content">
+            <ShapeObject shape={boardObject.shape} color={boardObject.color} />
+          </Box>
+          {showStackMemoryOrder && boardObject.id in moveNumByBoardObject && (
+            <Text>{moveNumByBoardObject[boardObject.id]}</Text>
+          )}
         </Box>
       ))}
     </Box>

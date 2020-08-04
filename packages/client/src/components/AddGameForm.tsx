@@ -48,6 +48,8 @@ const AddGameForm: React.FunctionComponent = () => {
     setNumConsecutiveSuccessfulMovesBeforePromptGuess,
   ] = useState<number>();
   const [numDisplaysLimit, setNumDisplaysLimit] = useState<number>();
+  const [showStackMemoryOrder, setShowStackMemoryOrder] = useState(false);
+  const [showGridMemoryOrder, setShowGridMemoryOrder] = useState(false);
 
   return (
     <Box elevation="large" align="center" pad="medium">
@@ -69,6 +71,8 @@ const AddGameForm: React.FunctionComponent = () => {
               undefined,
               true,
               numDisplaysLimit === 0 ? undefined : numDisplaysLimit,
+              showStackMemoryOrder,
+              showGridMemoryOrder,
             ),
           )
         }
@@ -145,6 +149,16 @@ const AddGameForm: React.FunctionComponent = () => {
                 onChange={({ target: { value } }) => setNumDisplaysLimit(Number(value.trim()))}
               />
             </FormField>
+            <CheckBox
+              label="Show Stack Memory Order"
+              checked={showStackMemoryOrder}
+              onChange={({ target: { checked } }) => setShowStackMemoryOrder(checked)}
+            />
+            <CheckBox
+              label="Show Grid Memory Order"
+              checked={showGridMemoryOrder}
+              onChange={({ target: { checked } }) => setShowGridMemoryOrder(checked)}
+            />
             <CheckBox
               label="Use Random Board Objects"
               checked={useRandomBoardObjects}
