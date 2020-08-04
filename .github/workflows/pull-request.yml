@@ -56,11 +56,10 @@ jobs:
         overwrite: true
         strip_components: 2
 
-     - name: Copy Build to Sapir
-       uses: appleboy/ssh-action@master
-       with:
-         host: ${{ secrets.CS_HOST }}
-         username: ${{ secrets.CS_USERNAME }}
-         password: ${{ secrets.CS_PASSWORD }}
-         script: scp -r ~/rule-game-temp/preview-${{ github.head_ref }} sapir:/var/www/rule-game
-
+    - name: Copy Build to Sapir
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.CS_HOST }}
+        username: ${{ secrets.CS_USERNAME }}
+        password: ${{ secrets.CS_PASSWORD }}
+        script: scp -r ~/rule-game-temp/preview-${{ github.head_ref }} sapir:/var/www/rule-game
