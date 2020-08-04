@@ -63,3 +63,9 @@ jobs:
         username: ${{ secrets.CS_USERNAME }}
         password: ${{ secrets.CS_PASSWORD }}
         script: scp -r ~/rule-game-temp/preview-${{ github.head_ref }} sapir:/var/www/rule-game
+
+    - name: Comment PR
+      uses: thollander/actions-comment-pull-request@master
+      with:
+        message: format("Successfully deployed to http://sapir.psych.wisc.edu/rule-game/preview-{0}/", ${{ github.head_ref }})
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
