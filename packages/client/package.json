@@ -53,16 +53,12 @@
     "extends": "react-app"
   },
   "dependencies": {
-    "@apollo/client": "3.0.0-beta.50",
-    "@graphql-codegen/typescript-react-apollo": "1.14.0",
     "@types/jest": "24.0.15",
     "@types/lodash": "4.14.136",
     "@types/react": "16.8.22",
     "@types/react-dom": "16.8.4",
     "eslint": "6.8.0",
     "file-saver": "2.0.2",
-    "graphql": "15.0.0",
-    "graphql-tag": "2.10.3",
     "grommet": "2.14.0",
     "grommet-icons": "4.4.0",
     "history": "4.9.0",
