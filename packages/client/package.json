@@ -53,10 +53,12 @@
     "extends": "react-app"
   },
   "dependencies": {
+    "@types/axios": "0.14.0",
     "@types/jest": "24.0.15",
     "@types/lodash": "4.14.136",
     "@types/react": "16.8.22",
     "@types/react-dom": "16.8.4",
+    "axios": "0.19.2",
     "eslint": "6.8.0",
     "file-saver": "2.0.2",
     "grommet": "2.14.0",
@@ -72,6 +74,8 @@
     "react-dom": "16.8.6",
     "react-hot-loader": "4.12.19",
     "react-icons": "3.7.0",
+    "react-query": "2.5.7-tsnext.1",
+    "react-query-devtools": "2.4.2",
     "react-redux": "7.1.0",
     "react-scripts": "3.3.0",
     "react-tooltip": "3.11.1",
