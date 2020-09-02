@@ -55,7 +55,8 @@ const Game: React.FunctionComponent<{
   const historyDebugInfo = useSelector(historyDebugInfoSelector);
   const ruleRowIndex = useSelector(ruleRowIndexSelector);
   const rawAtoms = useSelector(rawAtomsSelector);
-  const gameCompleted = useSelector(gameCompletedSelector);
+  // const gameCompleted = useSelector(gameCompletedSelector);
+  const gameCompleted = true;
   const order = useSelector(orderSelector);
   const gameId = useSelector(currGameIdSelector);
   const allChecked = useSelector(allChecksSelector);

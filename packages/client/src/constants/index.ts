@@ -24,3 +24,9 @@ export const FILE_VERSION = '0.0.0';
 export const FEEDBACK_DURATION = window.Cypress ? 100 : 1000;
 
 export const RULE_EMAIL_ADDRESS = 'w2020rulegame@gmail.com';
+
+export const WORKER_ID_SEARCH_QUERY = 'workerId';
+
+export enum QUERY_KEYS {
+  TRIALS = 'TRIALS',
+}

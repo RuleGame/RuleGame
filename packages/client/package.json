@@ -92,6 +92,7 @@
     "shortid": "2.2.15",
     "styled-components": "4.3.2",
     "stylelint-webpack-plugin": "0.10.5",
+    "typed-redux-saga": "1.2.0",
     "typesafe-actions": "5.1.0",
     "typescript": "3.8.2",
     "utility-types": "3.10.0",

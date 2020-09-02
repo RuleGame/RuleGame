@@ -68,6 +68,7 @@ export type Endpoints = {
             shape: Shape;
             x: number;
             y: number;
+            dropped?: BucketPosition;
           }[];
         };
         episodeId: string;
@@ -135,6 +136,12 @@ export type Endpoints = {
       }
     >;
   };
+};
+
+type Move = {
+  objectId?: string;
+  bucketId?: string;
+  boardId?: string;
 };
 
 export type ResBody<
