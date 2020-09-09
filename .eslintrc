@@ -1,0 +1,72 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "cypress/globals": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "airbnb-typescript",
+    "prettier",
+    "prettier/@typescript-eslint",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/typescript",
+    "plugin:cypress/recommended"
+  ],
+  "plugins": [
+    "cypress",
+    "react",
+    "react-hooks",
+    "flowtype",
+    "import",
+    "@typescript-eslint/eslint-plugin",
+    "chai-friendly",
+    "switch-case"
+  ],
+  "rules": {
+    "no-unused-vars": "warn",
+    "react/jsx-filename-extension": "off",
+    "react/require-default-props": "off",
+    "@typescript-eslint/prefer-interface": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "@typescript-eslint/indent": "off",
+    "import/prefer-default-export": "off",
+    "no-nested-ternary": "off",
+    "no-plusplus": "off",
+    "no-shadow": "off",
+    "import/no-named-as-default": "off",
+    "no-underscore-dangle": "off",
+    "no-unused-expressions": 0,
+    "chai-friendly/no-unused-expressions": 2,
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": ["**/*.test.js", "**/*.spec.js", "cypress/**/*"]
+      }
+    ],
+    "consistent-return": "off",
+    "@typescript-eslint/no-object-literal-type-assertion": ["error", { "allowAsParameter": true }],
+    "react/prop-types": "off",
+    "func-names": "off",
+    "@typescript-eslint/interface-name-prefix": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "react/jsx-one-expression-per-line": "off",
+
+    "import/named": "off",
+    "no-param-reassign": "off",
+    "switch-case/no-case-curly": "warn",
+    "switch-case/newline-between-switch-case": ["warn", "always"]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".ts", ".jsx", ".tsx", ".d.ts"]
+      }
+    },
+    "import/extensions": [".js", ".ts", ".jsx", ".tsx", ".d.ts"]
+  }
+}
