@@ -50,9 +50,6 @@
       "last 1 safari version"
     ]
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "dependencies": {
     "@types/axios": "0.14.0",
     "@types/jest": "24.0.15",
@@ -116,7 +113,7 @@
     "@types/shortid": "0.0.29",
     "@types/styled-components": "4.1.18",
     "@types/uuid": "3.4.6",
-    "@typescript-eslint/eslint-plugin": "1.11.0",
+    "@typescript-eslint/eslint-plugin": "1.13.0",
     "@typescript-eslint/parser": "1.11.0",
     "babel-plugin-styled-components": "1.10.1",
     "cross-env": "5.2.0",

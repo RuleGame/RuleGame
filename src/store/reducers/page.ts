@@ -12,7 +12,6 @@ const initialState: State = {
 };
 
 const reducer = (state = initialState, action: RootAction): State => {
-  // noinspection JSRedundantSwitchStatement
   switch (action.type) {
     case getType(goToPage):
       return {

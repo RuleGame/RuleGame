@@ -1,10 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Box, Text } from 'grommet';
-import { bucketDropListSelector, moveNumByBoardObjectSelector } from '../store/selectors/rule-row';
 import ShapeObject from './ShapeObject';
-import { showStackMemoryOrderSelector } from '../store/selectors/game';
 import { BucketPosition } from '../constants/BucketPosition';
+import {
+  bucketDropListSelector,
+  moveNumByBoardObjectSelector,
+  showStackMemoryOrderSelector,
+} from '../store/selectors/board';
 
 const BucketDropList: React.FunctionComponent<{
   bucket: BucketPosition;

@@ -21,7 +21,7 @@
     "import",
     "@typescript-eslint/eslint-plugin",
     "chai-friendly",
-    "switch-case"
+    "@typescript-eslint"
   ],
   "rules": {
     "no-unused-vars": "warn",
@@ -57,9 +57,7 @@
     "react/jsx-one-expression-per-line": "off",
 
     "import/named": "off",
-    "no-param-reassign": "off",
-    "switch-case/no-case-curly": "warn",
-    "switch-case/newline-between-switch-case": ["warn", "always"]
+    "no-param-reassign": "off"
   },
   "settings": {
     "import/resolver": {

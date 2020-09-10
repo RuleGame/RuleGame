@@ -5,27 +5,21 @@ import { ActionType } from 'typesafe-actions';
 import { ActionCreator } from 'typesafe-actions/dist/type-helpers';
 import { ValuesType } from 'utility-types';
 import * as page from './page';
-import * as ruleRow from './rule-row';
 import * as layers from './layers';
 import * as ruleArrays from './rule-arrays';
 import * as boardObjectsArrays from './board-objects-arrays';
 import * as games from './games';
 import * as notifications from './notifications';
-import * as game from './game';
-import * as history from './history';
 import * as board from './board';
 /* eslint-enable import/no-cycle */
 
 export const actions = {
   page,
-  ruleRow,
   layers,
   ruleArrays,
   boardObjectsArrays,
   games,
   notifications,
-  game,
-  history,
   board,
 };
 

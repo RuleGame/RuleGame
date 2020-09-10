@@ -15,10 +15,11 @@ import React, { useState } from 'react';
 import { View } from 'grommet-icons';
 import { RootAction } from '../store/actions';
 import { addGame } from '../store/actions/games';
-import { boardObjectsArraysSelector, ruleArraysSelector } from '../store/selectors';
 import BoardObjectsArrayCheckBox from './BoardObjectsArrayCheckBox';
 import { addLayer, removeLayer } from '../store/actions/layers';
 import BoardPreview from './BoardPreview';
+import { ruleArraysSelector } from '../store/selectors/rule-arrays';
+import { boardObjectsArraysSelector } from '../store/selectors/board-object-arrays';
 
 const AddGameForm: React.FunctionComponent = () => {
   const dispatch: Dispatch<RootAction> = useDispatch();

@@ -64,7 +64,7 @@ const take = (
   }
   cy.wrap(
     new Promise((resolve, reject) => {
-      sagaMiddleware.run(function*(): SagaIterator {
+      sagaMiddleware.run(function* (): SagaIterator {
         cy.dispatch(putAction);
         const { timedOut } = yield race({
           timedOut: delay(timeout),

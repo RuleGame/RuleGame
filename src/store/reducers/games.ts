@@ -28,7 +28,7 @@ export const initialState: State = {
 
 const reducer = (state: State = initialState, action: RootAction): State => {
   switch (action.type) {
-    case getType(addGame): {
+    case getType(addGame):
       return {
         ...state,
         byId: {
@@ -50,7 +50,6 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         },
         allIds: [...state.allIds, action.payload.id],
       };
-    }
 
     case getType(removeGame): {
       const { [action.payload.id]: _, ...newById } = state.byId;
@@ -62,7 +61,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       };
     }
 
-    case getType(setGameRuleArray): {
+    case getType(setGameRuleArray):
       return {
         ...state,
         byId: {
@@ -73,9 +72,8 @@ const reducer = (state: State = initialState, action: RootAction): State => {
           },
         },
       };
-    }
 
-    case getType(setGameBoardObjectsArrays): {
+    case getType(setGameBoardObjectsArrays):
       return {
         ...state,
         byId: {
@@ -86,7 +84,6 @@ const reducer = (state: State = initialState, action: RootAction): State => {
           },
         },
       };
-    }
 
     case getType(loadGames.success): {
       const allIdsSet = new Set(state.allIds);
@@ -106,7 +103,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       };
     }
 
-    case getType(addBoardObjectsArray.success): {
+    case getType(addBoardObjectsArray.success):
       return {
         ...state,
         byId: Object.entries(state.byId).reduce(
@@ -120,7 +117,6 @@ const reducer = (state: State = initialState, action: RootAction): State => {
           {},
         ),
       };
-    }
 
     default:
       return state;

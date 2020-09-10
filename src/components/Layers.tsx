@@ -2,9 +2,9 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import Layer from './Layer';
-import { layersSelector } from '../store/selectors';
 import { removeLayer } from '../store/actions/layers';
 import { RootAction } from '../store/actions';
+import { layersSelector } from '../store/selectors/layers';
 
 const Layers: React.FunctionComponent = () => {
   const layers = useSelector(layersSelector);

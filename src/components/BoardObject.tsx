@@ -8,10 +8,10 @@ import { useSelector } from 'react-redux';
 import { VALID_SHAPES } from '../@types';
 import ShapeObject from './ShapeObject';
 import { cyBoardObject } from '../constants/data-cy-builders';
-import { showGridMemoryOrderSelector } from '../store/selectors/game';
 import { BoardObject as BoardObjectType } from '../utils/api';
 import { Color } from '../constants/Color';
 import { Shape } from '../constants/Shape';
+import { showGridMemoryOrderSelector } from '../store/selectors/board';
 
 export type BoardObjectProps = {
   className?: string;

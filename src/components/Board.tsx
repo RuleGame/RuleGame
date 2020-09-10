@@ -7,8 +7,7 @@ import { buckets, cols, rows } from '../constants';
 import BoardObject from './BoardObject';
 import Bucket from './Bucket';
 import BucketDropList from './BucketDropList';
-import { moveNumByBoardObjectSelector } from '../store/selectors/rule-row';
-import { bucketShapesSelector } from '../store/selectors/board';
+import { bucketShapesSelector, moveNumByBoardObjectSelector } from '../store/selectors/board';
 import { BoardObject as BoardObjectType } from '../utils/api';
 import { BucketPosition } from '../constants/BucketPosition';
 

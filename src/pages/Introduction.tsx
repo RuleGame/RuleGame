@@ -3,9 +3,9 @@ import { Box, Button, Heading, Paragraph } from 'grommet';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { RootAction } from '../store/actions';
-import { gamesSelector } from '../store/selectors';
 import { goToPage } from '../store/actions/page';
 import { Page } from '../constants/Page';
+import { gamesSelector } from '../store/selectors/games';
 
 export default () => {
   const dispatch: Dispatch<RootAction> = useDispatch();

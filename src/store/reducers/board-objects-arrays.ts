@@ -24,13 +24,13 @@ export const initialState: State = {
 
 const reducer = (state: State = initialState, action: RootAction): State => {
   switch (action.type) {
-    case getType(addBoardObjectsArray.request): {
+    case getType(addBoardObjectsArray.request):
       return {
         ...state,
         isRequesting: true,
       };
-    }
-    case getType(addBoardObjectsArray.success): {
+
+    case getType(addBoardObjectsArray.success):
       return {
         ...state,
         byId: {
@@ -45,14 +45,12 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         allIds: [...state.allIds, action.payload.id],
         isRequesting: false,
       };
-    }
 
-    case getType(addBoardObjectsArray.failure): {
+    case getType(addBoardObjectsArray.failure):
       return {
         ...state,
         isRequesting: false,
       };
-    }
 
     case getType(removeBoardObjectsArray): {
       const { [action.payload.id]: _, ...newById } = state.byId;

@@ -2,10 +2,16 @@
 /* eslint-disable no-param-reassign */
 // const StylelintPlugin = require('stylelint-webpack-plugin');
 // eslint-disable-next-line @typescript-eslint/no-var-requires,import/no-extraneous-dependencies
+// eslint-disable-next-line @typescript-eslint/no-var-requires,import/no-extraneous-dependencies
 const { useBabelRc, addWebpackModuleRule } = require('customize-cra');
 
 module.exports = function override(config, env) {
   config = useBabelRc()(config);
+  // Definition for rule '@typescript-eslint/no-object-literal-type-assertion' was not found
+  // Probably not using correct list of plugins for react rewired (lint command works directly)
+  // config = useEslintRc(path.resolve(__dirname, '.eslintrc'))(config);
+  // const contents = fs.readFileSync(path.resolve(__dirname, '.eslintrc'), 'utf8');
+  // console.log(contents);
 
   if (env === 'development') {
     config.plugins

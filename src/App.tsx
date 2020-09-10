@@ -1,17 +1,16 @@
 import React from 'react';
-import { Grommet } from 'grommet';
+import { Grommet, Paragraph } from 'grommet';
 import { hot } from 'react-hot-loader/root';
 import { useSelector } from 'react-redux';
 import Layers from './components/Layers';
 import Notifications from './components/Notifications';
-import RuleGamePage from './pages/RuleGamePage';
-import { pageSelector } from './store/selectors';
 import Introduction from './pages/Introduction';
 import Consent from './pages/Consent';
 import Trials from './pages/Trials';
 import DemographicsInstructions from './pages/DemographicsInstructions';
 import { Page } from './constants/Page';
 import LoadingTrials from './pages/LoadingTrials';
+import { pageSelector } from './store/selectors/page';
 
 const App = () => {
   const page = useSelector(pageSelector);
@@ -29,7 +28,7 @@ const App = () => {
       ) : page === Page.DEMOGRAPHICS_INSTRUCTIONS ? (
         <DemographicsInstructions />
       ) : (
-        <RuleGamePage />
+        <Paragraph>Unknown page. Try reloading</Paragraph>
       )}
       <Layers />
       <Notifications />

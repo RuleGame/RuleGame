@@ -1,8 +1,8 @@
 import React from 'react';
 import { CheckBox } from 'grommet';
 import { useSelector } from 'react-redux';
-import { boardObjectsArraysByIdSelector } from '../store/selectors';
 import { RootState } from '../store/reducers';
+import { boardObjectsArraysByIdSelector } from '../store/selectors/board-object-arrays';
 
 const BoardObjectsArrayCheckBox: React.FunctionComponent<{
   boardObjectsArrayId: string;

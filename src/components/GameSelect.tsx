@@ -8,8 +8,9 @@ import { RootAction } from '../store/actions';
 import { enterGame, removeGame } from '../store/actions/games';
 import { addLayer, removeLayer } from '../store/actions/layers';
 import { RootState } from '../store/reducers';
-import { boardObjectsArraysByIdSelector, ruleArraysByIdSelector } from '../store/selectors';
 import BoardPreview from './BoardPreview';
+import { ruleArraysByIdSelector } from '../store/selectors/rule-arrays';
+import { boardObjectsArraysByIdSelector } from '../store/selectors/board-object-arrays';
 
 const GameSelect: React.FunctionComponent<{
   showEditButtons: boolean;

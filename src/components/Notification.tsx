@@ -5,9 +5,9 @@ import { Box, Button, Heading, Layer } from 'grommet';
 import { Close } from 'grommet-icons';
 import { removeNotification } from '../store/actions/notifications';
 import { RootAction } from '../store/actions';
-import { notificationsByIdSelector } from '../store/selectors';
 import { RootState } from '../store/reducers';
 import { NotificationData } from '../@types/notifications';
+import { notificationsByIdSelector } from '../store/selectors/notifications';
 
 const Notification: React.FunctionComponent<{
   notificationId: string;

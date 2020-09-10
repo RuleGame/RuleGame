@@ -1,25 +1,18 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Button, Grid, Heading, Text } from 'grommet';
+import { Box, Button, Grid, Heading } from 'grommet';
 import { Dispatch } from 'redux';
-import { saveAs } from 'file-saver';
 import Board from './Board';
-import {
-  boardObjectsSelector,
-  historyDebugInfoSelector,
-  orderSelector,
-  pausedSelector,
-  rawAtomsSelector,
-  ruleRowIndexSelector,
-} from '../store/selectors';
 import { RootAction } from '../store/actions';
 import GuessRuleForm from './GuessRuleForm';
 import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
-import { DEBUG_ENABLED } from '../constants/env';
-import { historySelector } from '../store/selectors/history';
-import { numDisplaysLeftSelector } from '../store/selectors/game';
 import { giveUp } from '../store/actions/board';
-import { isGameCompletedSelector, seriesNoSelector } from '../store/selectors/board';
+import {
+  boardObjectsSelector,
+  isGameCompletedSelector,
+  pausedSelector,
+  seriesNoSelector,
+} from '../store/selectors/board';
 
 enum GridAreaName {
   HEADING = 'HEADING',

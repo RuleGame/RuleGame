@@ -42,6 +42,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         layerIds: state.layerIds.filter((layerId) => layerId !== action.payload.id),
       };
     }
+
     default:
       return state;
   }
