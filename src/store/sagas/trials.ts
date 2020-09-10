@@ -139,7 +139,7 @@ function* trials(playerId: string) {
           {},
         );
       }
-    } while (activateBonusAction || giveUpAction || guessAction);
+    } while (!activateBonusAction && !giveUpAction && !guessAction);
 
     ({
       data: { alreadyFinished, episodeId, para },
