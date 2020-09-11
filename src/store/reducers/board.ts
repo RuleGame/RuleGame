@@ -1,12 +1,12 @@
 import { getType } from 'typesafe-actions';
 import { RootAction } from '../actions';
-import { Board, Code } from '../../utils/api';
+import { BoardObject, Code, Transcript } from '../../utils/api';
 import { invalidMove, pause, setBoard, unpause, validMove } from '../actions/board';
 import { BucketPosition } from '../../constants/BucketPosition';
 import { Shape } from '../../constants/Shape';
 
 export type State = {
-  board: Board;
+  board: { [boardObjectId: number]: BoardObject };
   bonus: boolean;
   bonusEpisodeNo: number;
   canActivateBonus: boolean;
@@ -18,10 +18,11 @@ export type State = {
   bucketShapes: { [bucket in BucketPosition]: Shape };
   isPaused: boolean;
   seriesNo: number;
+  transcript: Transcript;
 };
 
 export const initialState: State = {
-  board: [],
+  board: {},
   bonus: false,
   bonusEpisodeNo: 0,
   canActivateBonus: false,
@@ -38,6 +39,7 @@ export const initialState: State = {
   },
   isPaused: false,
   seriesNo: 0,
+  transcript: [],
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -61,6 +63,10 @@ const reducer = (state: State = initialState, action: RootAction): State => {
           [BucketPosition.TR]: Shape.BUCKET,
           [BucketPosition.TL]: Shape.BUCKET,
         },
+        // Shouldn't take a huge performance hit updating transcript
+        // for every move. Transcript should be small enough to filter
+        // for each 4 bucket drop list.
+        transcript: action.payload.transcript,
       };
 
     case getType(pause):

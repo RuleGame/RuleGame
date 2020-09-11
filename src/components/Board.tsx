@@ -7,7 +7,12 @@ import { buckets, cols, rows } from '../constants';
 import BoardObject from './BoardObject';
 import Bucket from './Bucket';
 import BucketDropList from './BucketDropList';
-import { bucketShapesSelector, moveNumByBoardObjectSelector } from '../store/selectors/board';
+import {
+  boardObjectsSelector,
+  bucketShapesSelector,
+  moveNumByBoardObjectSelector,
+  showStackMemoryOrderSelector,
+} from '../store/selectors/board';
 import { BoardObject as BoardObjectType } from '../utils/api';
 import { BucketPosition } from '../constants/BucketPosition';
 
@@ -36,7 +41,6 @@ const StyledBucket = styled(Bucket)<BucketType>`
 `;
 
 type BoardProps = {
-  boardObjects: BoardObjectType[];
   className?: string;
   paused: boolean;
 };
@@ -49,9 +53,11 @@ enum GridAreaName {
   BOARD = 'BOARD',
 }
 
-const Board = ({ boardObjects, className }: BoardProps): JSX.Element => {
+const Board = ({ className }: BoardProps): JSX.Element => {
   const moveNumByBoardObject = useSelector(moveNumByBoardObjectSelector);
   const bucketShapes = useSelector(bucketShapesSelector);
+  const boardObjects = useSelector(boardObjectsSelector);
+  const showStackMemoryOrder = useSelector(showStackMemoryOrderSelector);
 
   return (
     <Grid
@@ -82,8 +88,8 @@ const Board = ({ boardObjects, className }: BoardProps): JSX.Element => {
         },
         {
           name: GridAreaName.BOARD,
-          start: [1, 1],
-          end: [1, 2],
+          start: showStackMemoryOrder ? [1, 1] : [0, 0],
+          end: showStackMemoryOrder ? [1, 2] : [2, 3],
         },
       ]}
     >

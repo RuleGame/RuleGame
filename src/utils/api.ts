@@ -66,6 +66,8 @@ export type BoardObject = {
 
 export type Board = BoardObject[];
 
+export type Transcript = { pos: number; bucketNo: BucketPosition; code: Code; pieceId: number }[];
+
 export type Display = {
   board: {
     longId: number;
@@ -82,7 +84,7 @@ export type Display = {
   seriesNo: number;
   totalBoardsPredicted: number;
   totalRewardEarned: number;
-  transcript: { pos: number; bucketNo: number; code: Code }[];
+  transcript: Transcript;
 };
 
 export enum ErrorMsg {

@@ -1,6 +1,6 @@
 import { createAction } from 'typesafe-actions';
 // eslint-disable-next-line import/no-cycle
-import { Board, Code } from '../../utils/api';
+import { BoardObject, Code, Transcript } from '../../utils/api';
 // eslint-disable-next-line import/no-cycle
 import { BucketPosition } from '../../constants/BucketPosition';
 
@@ -11,7 +11,7 @@ export const startTrials = createAction('board/START_TRIALS', (playerId: string)
 export const setBoard = createAction(
   'board/SET_BOARD',
   (
-    board: Board,
+    board: { [boardObjectId: number]: BoardObject },
     bonus: boolean,
     bonusEpisodeNo: number,
     canActivateBonus: boolean,
@@ -22,6 +22,7 @@ export const setBoard = createAction(
     showStackMemoryOrder: boolean,
     stackMemoryDepth: number,
     seriesNo: number,
+    transcript: Transcript,
   ) => ({
     board,
     bonus,
@@ -34,6 +35,7 @@ export const setBoard = createAction(
     showStackMemoryOrder,
     stackMemoryDepth,
     seriesNo,
+    transcript,
   }),
 )();
 

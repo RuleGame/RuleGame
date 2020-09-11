@@ -8,7 +8,6 @@ import GuessRuleForm from './GuessRuleForm';
 import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
 import { giveUp } from '../store/actions/board';
 import {
-  boardObjectsSelector,
   isGameCompletedSelector,
   pausedSelector,
   seriesNoSelector,
@@ -27,7 +26,6 @@ const Game: React.FunctionComponent<{
 }> = ({ className }) => {
   const dispatch: Dispatch<RootAction> = useDispatch();
 
-  const boardObjects = useSelector(boardObjectsSelector);
   const paused = useSelector(pausedSelector);
   const isGameCompleted = useSelector(isGameCompletedSelector);
   const seriesNo = useSelector(seriesNoSelector);
@@ -71,7 +69,7 @@ const Game: React.FunctionComponent<{
           <Heading margin={{ bottom: 'none' }}>{`Rule ${seriesNo + 1}`}</Heading>
         </Box>
         <Box gridArea={GridAreaName.BOARD} align="center">
-          <Board className={className} boardObjects={boardObjects} paused={paused} />
+          <Board className={className} paused={paused} />
         </Box>
         <Box gridArea={GridAreaName.FORM} align="center">
           {!isGameCompleted && (
