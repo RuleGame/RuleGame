@@ -85,6 +85,11 @@ export type Display = {
   totalBoardsPredicted: number;
   totalRewardEarned: number;
   transcript: Transcript;
+  rulesSrc: {
+    orders: number[];
+    rows: string[];
+  };
+  ruleLineNo: number;
 };
 
 export enum ErrorMsg {

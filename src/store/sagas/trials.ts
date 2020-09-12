@@ -66,13 +66,7 @@ function* trials(playerId: string) {
 
       yield* put(
         setBoard(
-          display.board.value.reduce(
-            (acc, curr) => ({
-              ...acc,
-              [curr.id]: curr,
-            }),
-            {},
-          ),
+          display.board.value,
           display.bonus,
           display.bonusEpisodeNo,
           display.canActivateBonus,
@@ -84,6 +78,8 @@ function* trials(playerId: string) {
           stackMemoryDepth,
           display.seriesNo,
           display.transcript,
+          display.rulesSrc,
+          display.ruleLineNo,
         ),
       );
 

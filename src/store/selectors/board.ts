@@ -37,3 +37,17 @@ export const historyDebugInfoSelector = (): string[] | undefined => [];
 export const pausedSelector = (state: RootState) => state.board.isPaused;
 
 export const boardObjectsSelector = (state: RootState) => Object.values(state.board.board);
+
+export const ruleSrcSelector = (state: RootState) => state.board.rulesSrc;
+
+export const ruleLineNoSelector = (state: RootState) => state.board.ruleLineNo;
+
+export const historyInfoSelector = (state: RootState) =>
+  state.board.transcript.map(({ pieceId, code, bucketNo }) => ({
+    code: code === Code.ACCEPT ? 'ACCEPT' : code === Code.DENY ? 'DENY' : code,
+    x: state.board.board[pieceId].x,
+    y: state.board.board[pieceId].y,
+    color: state.board.board[pieceId].color,
+    shape: state.board.board[pieceId].shape,
+    bucketNo,
+  }));

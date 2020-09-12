@@ -19,6 +19,11 @@ export type State = {
   isPaused: boolean;
   seriesNo: number;
   transcript: Transcript;
+  rulesSrc: {
+    orders: number[];
+    rows: string[];
+  };
+  ruleLineNo?: number;
 };
 
 export const initialState: State = {
@@ -40,6 +45,11 @@ export const initialState: State = {
   isPaused: false,
   seriesNo: 0,
   transcript: [],
+  rulesSrc: {
+    orders: [],
+    rows: [],
+  },
+  ruleLineNo: undefined,
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -47,7 +57,13 @@ const reducer = (state: State = initialState, action: RootAction): State => {
     case getType(setBoard):
       return {
         ...state,
-        board: action.payload.board,
+        board: action.payload.board.reduce(
+          (acc, curr) => ({
+            ...acc,
+            [curr.id]: curr,
+          }),
+          {},
+        ),
         bonus: action.payload.bonus,
         bonusEpisodeNo: action.payload.bonusEpisodeNo,
         canActivateBonus: action.payload.canActivateBonus,
@@ -67,6 +83,8 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         // for every move. Transcript should be small enough to filter
         // for each 4 bucket drop list.
         transcript: action.payload.transcript,
+        rulesSrc: action.payload.rulesSrc,
+        ruleLineNo: action.payload.ruleLineNo,
       };
 
     case getType(pause):
