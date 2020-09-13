@@ -24,6 +24,8 @@ export type State = {
     rows: string[];
   };
   ruleLineNo?: number;
+  numMovesMade: number;
+  episodeNo: number;
 };
 
 export const initialState: State = {
@@ -50,6 +52,8 @@ export const initialState: State = {
     rows: [],
   },
   ruleLineNo: undefined,
+  numMovesMade: 0,
+  episodeNo: 0,
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -85,6 +89,8 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         transcript: action.payload.transcript,
         rulesSrc: action.payload.rulesSrc,
         ruleLineNo: action.payload.ruleLineNo,
+        numMovesMade: action.payload.numMovesMade,
+        episodeNo: action.payload.episodeNo,
       };
 
     case getType(pause):

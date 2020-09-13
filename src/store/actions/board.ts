@@ -28,6 +28,8 @@ export const setBoard = createAction(
       rows: string[];
     },
     ruleLineNo: number,
+    numMovesMade: number,
+    episodeNo: number,
   ) => ({
     board,
     bonus,
@@ -43,6 +45,8 @@ export const setBoard = createAction(
     transcript,
     rulesSrc,
     ruleLineNo,
+    numMovesMade,
+    episodeNo,
   }),
 )();
 

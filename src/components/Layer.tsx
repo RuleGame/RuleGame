@@ -15,7 +15,7 @@ const Layer: React.FunctionComponent<{
       onClickOutside={layer.closeOnClickOutside ? closeLayer : undefined}
       position="top"
     >
-      <Box pad="large" overflow="auto" data-cy={layer.dataCyIdentifier}>
+      <Box pad="medium" round overflow="auto" data-cy={layer.dataCyIdentifier}>
         {typeof (layer.title as string) === 'string' ? (
           <Heading color="red" level="3">
             {layer.title}
@@ -24,11 +24,11 @@ const Layer: React.FunctionComponent<{
           layer.title
         )}
         {layer.description}
-        <div>
+        <Box direction="row" margin={{ top: 'small' }}>
           {layer.actionButtons.map((actionButton) => (
             <ActionButton actionButton={actionButton} key={actionButton.key} layerId={layer.id} />
           ))}
-        </div>
+        </Box>
       </Box>
     </GrommetLayer>
   );

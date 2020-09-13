@@ -92,6 +92,31 @@ export type Display = {
   ruleLineNo: number;
 };
 
+type Para = {
+  clearing_threshold: number;
+  max_points: number;
+  b: number;
+  min_points: number;
+  max_colors: number;
+  f: number;
+  feedback_switches: string;
+  min_objects: number;
+  m: number;
+  n: number;
+  clear_how_many: number;
+  bonus_extra_pts: number;
+  rule_id: string;
+  max_objects: number;
+  grid_memory_show_order: boolean;
+  min_shapes: number;
+  stack_memory_show_order: boolean;
+  max_shapes: number;
+  min_colors: number;
+  stack_memory_depth: number;
+  max_boards: number;
+  activate_bonus_at: number;
+};
+
 export enum ErrorMsg {
   FAILED_TO_FIND_ANY_EPISODE = 'Failed to find any episode!',
 }
@@ -120,30 +145,7 @@ export type Endpoints = {
         alreadyFinished: boolean;
         display: Display;
         episodeId: string;
-        para: {
-          clearing_threshold: number;
-          max_points: number;
-          b: number;
-          min_points: number;
-          max_colors: number;
-          f: number;
-          feedback_switches: string;
-          min_objects: number;
-          m: number;
-          n: number;
-          clear_how_many: number;
-          bonus_extra_pts: number;
-          rule_id: string;
-          max_objects: number;
-          grid_memory_show_order: boolean;
-          min_shapes: number;
-          stack_memory_show_order: boolean;
-          max_shapes: number;
-          min_colors: number;
-          stack_memory_depth: number;
-          max_boards: number;
-          activate_bonus_at: number;
-        };
+        para: Para;
       },
       {
         playerId: string;
@@ -159,30 +161,7 @@ export type Endpoints = {
         alreadyFinished: boolean;
         display: Display;
         episodeId: string;
-        para: {
-          clearing_threshold: number;
-          max_points: number;
-          b: number;
-          min_points: number;
-          max_colors: number;
-          f: number;
-          feedback_switches: string;
-          min_objects: number;
-          m: number;
-          n: number;
-          clear_how_many: number;
-          bonus_extra_pts: number;
-          rule_id: string;
-          max_objects: number;
-          grid_memory_show_order: boolean;
-          min_shapes: number;
-          stack_memory_show_order: boolean;
-          max_shapes: number;
-          min_colors: number;
-          stack_memory_depth: number;
-          max_boards: number;
-          activate_bonus_at: number;
-        };
+        para: Para;
       },
       {
         playerId: string;

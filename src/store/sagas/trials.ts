@@ -80,6 +80,8 @@ function* trials(playerId: string) {
           display.transcript,
           display.rulesSrc,
           display.ruleLineNo,
+          display.numMovesMade,
+          display.episodeNo,
         ),
       );
 

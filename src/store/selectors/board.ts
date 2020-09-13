@@ -51,3 +51,14 @@ export const historyInfoSelector = (state: RootState) =>
     shape: state.board.board[pieceId].shape,
     bucketNo,
   }));
+
+export const numMovesMadeSelector = (state: RootState) => state.board.numMovesMade;
+
+// TODO: Need to have numMovesLeft from server else compute on own
+export const numMovesLeftSelector = () => Infinity;
+
+export const episodeNoSelector = (state: RootState) => state.board.episodeNo;
+
+export const totalRewardEarnedSelector = (state: RootState) => state.board.totalRewardEarned;
+
+export const totalBoardsPredictedSelector = (state: RootState) => state.board.totalBoardsPredicted;

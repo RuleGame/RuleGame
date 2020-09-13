@@ -65,15 +65,15 @@ const Game: React.FunctionComponent<{
           },
           {
             name: GridAreaName.FORM,
-            start: [0, 2],
-            end: [2, 2],
+            start: [1, 2],
+            end: [1, 2],
           },
         ]}
       >
         <Box gridArea={GridAreaName.HEADING} align="center">
-          <Heading margin={{ bottom: 'none' }}>{`Rule ${seriesNo + 1}`}</Heading>
+          <Heading margin="none">{`Rule ${seriesNo + 1}`}</Heading>
         </Box>
-        <Box gridArea={GridAreaName.BOARD} align="center">
+        <Box gridArea={GridAreaName.BOARD} align="center" pad="medium">
           <Board className={className} paused={paused} />
         </Box>
         <Box gridArea={GridAreaName.FORM} align="center">
@@ -83,7 +83,7 @@ const Game: React.FunctionComponent<{
             </Box>
           )}
           {isGameCompleted && (
-            <Box data-cy={CY_NO_MORE_MOVES}>
+            <Box data-cy={CY_NO_MORE_MOVES} fill>
               <GuessRuleForm />
             </Box>
           )}

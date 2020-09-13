@@ -57,7 +57,8 @@
     "react/jsx-one-expression-per-line": "off",
 
     "import/named": "off",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "react/jsx-wrap-multilines": "off"
   },
   "settings": {
     "import/resolver": {
