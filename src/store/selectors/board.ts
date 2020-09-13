@@ -31,9 +31,6 @@ export const moveNumByBoardObjectSelector = (
     .filter(({ code }) => code === Code.ACCEPT)
     .reduce((acc, { pieceId }, index) => ({ ...acc, [pieceId]: index + 1 }), {});
 
-// TODO: Need server to send history
-export const historyDebugInfoSelector = (): string[] | undefined => [];
-
 export const pausedSelector = (state: RootState) => state.board.isPaused;
 
 export const boardObjectsSelector = (state: RootState) => Object.values(state.board.board);
