@@ -16,6 +16,7 @@ import {
   seriesNoSelector,
 } from '../store/selectors/board';
 import { DEBUG_ENABLED } from '../constants/env';
+import { addLayer, removeLayer } from '../store/actions/layers';
 
 enum GridAreaName {
   HEADING = 'HEADING',
@@ -36,6 +37,8 @@ const Game: React.FunctionComponent<{
   const ruleSrc = useSelector(ruleSrcSelector);
   const ruleLineNo = useSelector(ruleLineNoSelector);
   const historyInfo = useSelector(historyInfoSelector);
+
+  const ruleName = `Rule ${seriesNo + 1}`;
 
   return (
     <Box pad="small" data-cy={CY_GAME}>
@@ -71,7 +74,7 @@ const Game: React.FunctionComponent<{
         ]}
       >
         <Box gridArea={GridAreaName.HEADING} align="center">
-          <Heading margin="none">{`Rule ${seriesNo + 1}`}</Heading>
+          <Heading margin="none">{ruleName}</Heading>
         </Box>
         <Box gridArea={GridAreaName.BOARD} align="center" pad="medium">
           <Board className={className} paused={paused} />
@@ -79,7 +82,27 @@ const Game: React.FunctionComponent<{
         <Box gridArea={GridAreaName.FORM} align="center">
           {!isGameCompleted && (
             <Box gap="small">
-              <Button label="Give up" onClick={() => dispatch(giveUp())} />
+              <Button
+                label="Give up rule"
+                onClick={() =>
+                  dispatch(
+                    addLayer(
+                      'Give up rule',
+                      `Are you sure you want to give up ${ruleName} and advance to the next rule if any?`,
+                      [
+                        {
+                          label: 'Yes',
+                          action: [giveUp(), (id) => removeLayer(id)],
+                        },
+                        {
+                          label: 'No',
+                          action: (id) => removeLayer(id),
+                        },
+                      ],
+                    ),
+                  )
+                }
+              />
             </Box>
           )}
           {isGameCompleted && (

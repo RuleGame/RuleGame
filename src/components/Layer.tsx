@@ -24,7 +24,7 @@ const Layer: React.FunctionComponent<{
           layer.title
         )}
         {layer.description}
-        <Box direction="row" margin={{ top: 'small' }}>
+        <Box direction="row" margin={{ top: 'small' }} gap="small">
           {layer.actionButtons.map((actionButton) => (
             <ActionButton actionButton={actionButton} key={actionButton.key} layerId={layer.id} />
           ))}
