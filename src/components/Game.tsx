@@ -43,7 +43,7 @@ const Game: React.FunctionComponent<{
   const isInBonus = useSelector(isInBonusSelector);
   const canActivateBonus = useSelector(canActivateBonusSelector);
 
-  const ruleName = `Rule ${seriesNo + 1}`;
+  const ruleName = `Rule ${seriesNo + 1} ${isInBonus ? '(Bonus Round)' : ''}`;
 
   return (
     <Box pad="small" data-cy={CY_GAME}>
@@ -138,7 +138,11 @@ const Game: React.FunctionComponent<{
           )}
           {isGameCompleted && isInBonus && (
             <Box>
-              <Button label="Next" icon={<Next />} onClick={() => dispatch(loadNextBonus())} />
+              <Button
+                label="Next Bonus Round"
+                icon={<Next />}
+                onClick={() => dispatch(loadNextBonus())}
+              />
             </Box>
           )}
         </Box>
@@ -163,7 +167,7 @@ const Game: React.FunctionComponent<{
                 </Box>
               </Box>
             )}
-            {canActivateBonus && (
+            {canActivateBonus && isGameCompleted && !isInBonus && (
               <Box fill="vertical" justify="center">
                 <Box>
                   <Button
