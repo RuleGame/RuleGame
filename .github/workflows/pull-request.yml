@@ -50,9 +50,8 @@ jobs:
           username: ${{ secrets.CS_USERNAME }}
           password: ${{ secrets.CS_PASSWORD }}
           source: preview-${{ github.head_ref }}
-          target: ~/rule-game-temp/preview-${{ github.head_ref }}
+          target: ~/rule-game-temp
           overwrite: true
-          strip_components: 2
 
       - name: Copy Build to Sapir
         uses: appleboy/ssh-action@master
