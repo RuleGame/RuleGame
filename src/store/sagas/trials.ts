@@ -1,16 +1,17 @@
-import { call, delay, put, race } from 'typed-redux-saga';
+import { call, delay, put, race, takeEvery } from 'typed-redux-saga';
+import { getType } from 'typesafe-actions';
 import { Code, ErrorMsg, METHOD } from '../../utils/api';
 import {
   activateBonus,
   giveUp,
   guess,
   invalidMove,
+  loadNextBonus,
   move,
-  skipGuess,
   setBoard,
+  skipGuess,
   startTrials,
   validMove,
-  loadNextBonus,
 } from '../actions/board';
 import { goToPage } from '../actions/page';
 import { boardPositionToBxBy, FEEDBACK_DURATION } from '../../constants';
@@ -52,7 +53,6 @@ function* trials(playerId: string) {
     } = para;
 
     let moveAction: ReturnType<typeof move> | undefined;
-    let activateBonusAction: ReturnType<typeof activateBonus> | undefined;
     let giveUpAction: ReturnType<typeof giveUp> | undefined;
     let guessAction: ReturnType<typeof guess> | undefined;
     let skipGuessAction: ReturnType<typeof skipGuess> | undefined;
@@ -91,14 +91,12 @@ function* trials(playerId: string) {
 
       ({
         moveAction,
-        activateBonusAction,
         giveUpAction,
         guessAction,
         skipGuessAction,
         loadNextBonusAction,
       } = yield* race({
         moveAction: takeAction(move),
-        activateBonusAction: takeAction(activateBonus),
         giveUpAction: takeAction(giveUp),
         guessAction: takeAction(guess),
         skipGuessAction: takeAction(skipGuess),
@@ -134,14 +132,6 @@ function* trials(playerId: string) {
         }
 
         yield* delay(FEEDBACK_DURATION);
-      }
-      if (activateBonusAction) {
-        yield* apiResolve(
-          '/w2020/game-data/GameService2/activateBonus',
-          METHOD.POST,
-          { playerId },
-          {},
-        );
       } else if (giveUpAction) {
         yield* apiResolve(
           '/w2020/game-data/GameService2/giveUp',
@@ -157,13 +147,7 @@ function* trials(playerId: string) {
           {},
         );
       }
-    } while (
-      !activateBonusAction &&
-      !giveUpAction &&
-      !guessAction &&
-      !skipGuessAction &&
-      !loadNextBonusAction
-    );
+    } while (!giveUpAction && !guessAction && !skipGuessAction && !loadNextBonusAction);
 
     ({
       data: { alreadyFinished, episodeId, para },
@@ -179,9 +163,14 @@ function* trials(playerId: string) {
   yield* put(goToPage(Page.DEMOGRAPHICS_INSTRUCTIONS));
 }
 
+function* activateBonusSaga(playerId: string) {
+  yield* apiResolve('/w2020/game-data/GameService2/activateBonus', METHOD.POST, { playerId }, {});
+}
+
 export default function* () {
   const {
     payload: { playerId },
   } = yield* takeAction(startTrials);
+  yield* takeEvery(getType(activateBonus), activateBonusSaga, playerId);
   yield* call(trials, playerId);
 }

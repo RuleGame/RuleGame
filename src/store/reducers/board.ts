@@ -1,7 +1,7 @@
 import { getType } from 'typesafe-actions';
 import { RootAction } from '../actions';
 import { BoardObject, Code, Transcript } from '../../utils/api';
-import { invalidMove, pause, setBoard, unpause, validMove } from '../actions/board';
+import { invalidMove, pause, setBoard, setIsInBonus, unpause, validMove } from '../actions/board';
 import { BucketPosition } from '../../constants/BucketPosition';
 import { Shape } from '../../constants/Shape';
 
@@ -128,6 +128,12 @@ const reducer = (state: State = initialState, action: RootAction): State => {
           ...state.bucketShapes,
           [action.payload.bucket]: Shape.UNHAPPY,
         },
+      };
+
+    case getType(setIsInBonus):
+      return {
+        ...state,
+        isInBonus: action.payload.isInBonus,
       };
 
     default:

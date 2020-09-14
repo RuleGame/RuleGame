@@ -84,3 +84,7 @@ export const invalidMove = createAction(
 export const skipGuess = createAction('board/NEXT')();
 
 export const loadNextBonus = createAction('board/LOAD_NEXT_BONUS')();
+
+export const setIsInBonus = createAction('board/SET_IS_IN_BONUS', (isInBonus: boolean) => ({
+  isInBonus,
+}))();

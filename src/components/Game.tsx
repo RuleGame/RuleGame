@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Button, Grid, Heading, Text } from 'grommet';
 import { Dispatch } from 'redux';
@@ -10,6 +10,7 @@ import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
 import { activateBonus, giveUp, loadNextBonus, skipGuess } from '../store/actions/board';
 import {
   canActivateBonusSelector,
+  episodeNoSelector,
   historyInfoSelector,
   isGameCompletedSelector,
   isInBonusSelector,
@@ -42,6 +43,12 @@ const Game: React.FunctionComponent<{
   const historyInfo = useSelector(historyInfoSelector);
   const isInBonus = useSelector(isInBonusSelector);
   const canActivateBonus = useSelector(canActivateBonusSelector);
+  const episodeNo = useSelector(episodeNoSelector);
+  const [bonusActivated, setBonusActivated] = useState(false);
+
+  useEffect(() => {
+    setBonusActivated(false);
+  }, [episodeNo]);
 
   const ruleName = `Rule ${seriesNo + 1} ${isInBonus ? '(Bonus Round)' : ''}`;
 
@@ -170,17 +177,26 @@ const Game: React.FunctionComponent<{
             {canActivateBonus && isGameCompleted && !isInBonus && (
               <Box fill="vertical" justify="center">
                 <Box>
-                  <Button
-                    primary
-                    color="darkorange"
-                    label={
-                      <Text color="white" size="large" weight="bold">
-                        <Box>Think you got it?</Box>
-                        <Box>Activate bonus rounds!</Box>
-                      </Text>
-                    }
-                    onClick={() => dispatch(activateBonus())}
-                  />
+                  {bonusActivated ? (
+                    <Box border="all" round pad="medium">
+                      <Text size="large">Bonus Activated!</Text>
+                    </Box>
+                  ) : (
+                    <Button
+                      primary
+                      color="darkorange"
+                      label={
+                        <Text color="white" size="large" weight="bold">
+                          <Box>Think you got it?</Box>
+                          <Box>Activate bonus rounds!</Box>
+                        </Text>
+                      }
+                      onClick={() => {
+                        setBonusActivated(true);
+                        dispatch(activateBonus());
+                      }}
+                    />
+                  )}
                 </Box>
               </Box>
             )}

@@ -119,6 +119,7 @@ type Para = {
 
 export enum ErrorMsg {
   FAILED_TO_FIND_ANY_EPISODE = 'Failed to find any episode!',
+  BONUS_ALREADY_ACTIVATED = 'Bonus already activated in the current series',
 }
 
 export type Endpoints = {
