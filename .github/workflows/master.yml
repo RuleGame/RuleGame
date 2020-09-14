@@ -50,7 +50,7 @@ jobs:
           username: ${{ secrets.CS_USERNAME }}
           password: ${{ secrets.CS_PASSWORD }}
           source: prod
-          target: ~/rule-game-temp/
+          target: ~/rule-game-temp/prod
           overwrite: true
           strip_components: 2
 
