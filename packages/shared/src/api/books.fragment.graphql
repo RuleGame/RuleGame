@@ -1,7 +1,0 @@
-## Write your query or mutation here
-#fragment oneBook on Book {
-#        book(id: $id) {
-#            title
-#            author
-#        }
-#    }
