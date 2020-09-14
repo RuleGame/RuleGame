@@ -95,6 +95,7 @@ function* trials(playerId: string) {
         giveUpAction,
         guessAction,
         skipGuessAction,
+        loadNextBonusAction,
       } = yield* race({
         moveAction: takeAction(move),
         activateBonusAction: takeAction(activateBonus),
@@ -156,7 +157,13 @@ function* trials(playerId: string) {
           {},
         );
       }
-    } while (!activateBonusAction && !giveUpAction && !guessAction && !skipGuessAction);
+    } while (
+      !activateBonusAction &&
+      !giveUpAction &&
+      !guessAction &&
+      !skipGuessAction &&
+      !loadNextBonusAction
+    );
 
     ({
       data: { alreadyFinished, episodeId, para },
