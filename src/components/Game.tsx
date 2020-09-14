@@ -49,12 +49,12 @@ const Game: React.FunctionComponent<{
     <Box pad="small" data-cy={CY_GAME}>
       <Grid
         rows={['auto', 'min(50vh, 100vw)', 'auto']}
-        columns={['auto', 'min(50vh, 100vw)', 'auto']}
+        columns={['1fr', 'min(50vh, 100vw)', '1fr']}
         areas={[
           {
             name: GridAreaName.HEADING,
-            start: [0, 0],
-            end: [2, 0],
+            start: [1, 0],
+            end: [1, 0],
           },
           {
             name: GridAreaName.LEFT_OF_BOARD,

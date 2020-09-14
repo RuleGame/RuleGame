@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Box, Grid, Text } from 'grommet';
 import {
   episodeNoSelector,
   numMovesLeftSelector,
@@ -7,7 +8,6 @@ import {
   totalBoardsPredictedSelector,
   totalRewardEarnedSelector,
 } from '../store/selectors/board';
-import { Box, Grid, Heading, Text } from 'grommet';
 
 enum GridArea {
   NUM_MOVES_MADE = 'NUM_MOVES_MADE',

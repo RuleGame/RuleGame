@@ -12,6 +12,7 @@ import { BoardObject as BoardObjectType } from '../utils/api';
 import { Color } from '../constants/Color';
 import { Shape } from '../constants/Shape';
 import { showGridMemoryOrderSelector } from '../store/selectors/board';
+import { DEBUG_ENABLED } from '../constants/env';
 
 export type BoardObjectProps = {
   className?: string;
@@ -72,7 +73,7 @@ const BoardObject = ({
         ref={ref}
         canDrag={canDrag}
         shapeObjectId={boardObject.id}
-        debugInfo={debugInfo}
+        debugInfo={DEBUG_ENABLED ? debugInfo : undefined}
       />
       {hasBeenDropped && <FiCheck color="green" size="100%" />}
       {!hasBeenDropped && !canDrag && VALID_SHAPES.has(shape) && (
