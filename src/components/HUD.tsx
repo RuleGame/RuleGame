@@ -14,13 +14,13 @@ enum GridArea {
   NUM_MOVES_LEFT = 'NUM_MOVES_LEFT',
   GAME = 'GAME',
   BOARD_COUNT = 'BOARD_COUNT',
-  BONUS_EARNED = 'BONUS_EARNED',
+  POINTS = 'POINTS',
 }
 
 const HUD: React.FunctionComponent = ({ children }) => {
   const numMovesMade = useSelector(numMovesMadeSelector);
   const boardNum = useSelector(episodeNoSelector) + 1;
-  const bonusEarned = useSelector(totalRewardEarnedSelector);
+  const points = useSelector(totalRewardEarnedSelector);
   const numMovesLeft = useSelector(numMovesLeftSelector);
   const numBoardsLeft = useSelector(totalBoardsPredictedSelector);
 
@@ -52,7 +52,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
           end: [0, 2],
         },
         {
-          name: GridArea.BONUS_EARNED,
+          name: GridArea.POINTS,
           start: [1, 2],
           end: [1, 2],
         },
@@ -91,13 +91,13 @@ const HUD: React.FunctionComponent = ({ children }) => {
           </Text>
         </Text>
       </Box>
-      <Box gridArea={GridArea.BONUS_EARNED} direction="row" align="end" justify="end">
+      <Box gridArea={GridArea.POINTS} direction="row" align="end" justify="end">
         <Text>
           <Text size="xxlarge" weight="bold">
-            Bonus earned:&nbsp;
+            Points:&nbsp;
           </Text>
           <Text size="2em" color="green" weight="bold">
-            {bonusEarned}
+            {points}
           </Text>
         </Text>
       </Box>
