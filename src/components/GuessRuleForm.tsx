@@ -20,9 +20,10 @@ const GuessRuleForm: React.FunctionComponent = () => {
   const [guessOpened, setGuessOpened] = useState(false);
 
   // Form type should accept generics for submit element and onChange parameter
+  // FireFox needs height={{ min: 'unset' }} inside a grid
   return guessOpened ? (
-    <Box>
-      <Box align="center" direction="row" flex="shrink">
+    <Box height={{ min: 'unset' }}>
+      <Box align="center" direction="row" height={{ min: 'unset' }}>
         <FormField
           label={
             <Text size="xxlarge" weight="bold">
@@ -81,7 +82,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
         </Box>
         <Box
           direction="row"
-          gap="small"
+          gap="xsmall"
           gridArea={GridArea.SCALE}
           justify="center"
           pad={{ left: 'small', right: 'small' }}
@@ -121,10 +122,10 @@ const GuessRuleForm: React.FunctionComponent = () => {
       </Grid>
     </Box>
   ) : (
-    <Box width="20em">
+    // FireFox needs height={{ min: 'unset' }} inside a grid
+    <Box width="20em" fill height={{ min: 'unset' }}>
       <Button
         size="large"
-        fill
         label={
           <Text weight="bold" size="xxlarge" color="white">
             Guess the rule
