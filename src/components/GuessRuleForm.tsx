@@ -36,6 +36,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
           contentProps={{
             flex: 'grow',
             border: { side: 'all', style: 'dashed', size: '0.3em', color: 'gray' },
+            height: 'min-content',
           }}
         >
           <TextInput
