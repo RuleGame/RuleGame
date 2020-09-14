@@ -7,7 +7,7 @@ import { Shape } from '../../constants/Shape';
 
 export type State = {
   board: { [boardObjectId: number]: BoardObject };
-  bonus: boolean;
+  isInBonus: boolean;
   bonusEpisodeNo: number;
   canActivateBonus: boolean;
   finishCode: Code;
@@ -26,11 +26,13 @@ export type State = {
   ruleLineNo?: number;
   numMovesMade: number;
   episodeNo: number;
+  numMovesLeft?: number;
+  stackMemoryDepth: number;
 };
 
 export const initialState: State = {
   board: {},
-  bonus: false,
+  isInBonus: false,
   bonusEpisodeNo: 0,
   canActivateBonus: false,
   finishCode: Code.NO_GAME,
@@ -54,6 +56,8 @@ export const initialState: State = {
   ruleLineNo: undefined,
   numMovesMade: 0,
   episodeNo: 0,
+  numMovesLeft: undefined,
+  stackMemoryDepth: 0,
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -68,7 +72,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
           }),
           {},
         ),
-        bonus: action.payload.bonus,
+        isInBonus: action.payload.bonus,
         bonusEpisodeNo: action.payload.bonusEpisodeNo,
         canActivateBonus: action.payload.canActivateBonus,
         finishCode: action.payload.finishCode,
@@ -91,6 +95,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         ruleLineNo: action.payload.ruleLineNo,
         numMovesMade: action.payload.numMovesMade,
         episodeNo: action.payload.episodeNo,
+        stackMemoryDepth: action.payload.stackMemoryDepth,
       };
 
     case getType(pause):

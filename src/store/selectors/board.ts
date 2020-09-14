@@ -19,10 +19,14 @@ export const showStackMemoryOrderSelector = (state: RootState) => state.board.sh
 
 export const bucketDropListSelector = (bucketPosition: BucketPosition) => (
   state: RootState,
-): BoardObject[] =>
-  state.board.transcript
+): BoardObject[] => {
+  const bucketDropList = state.board.transcript
     .filter(({ bucketNo, code }) => code === Code.ACCEPT && bucketNo === bucketPosition)
     .map(({ pieceId }) => state.board.board[pieceId]);
+  return bucketDropList.slice(
+    Math.max(0, state.board.transcript.length - state.board.stackMemoryDepth + 1),
+  );
+};
 
 export const moveNumByBoardObjectSelector = (
   state: RootState,
@@ -52,10 +56,14 @@ export const historyInfoSelector = (state: RootState) =>
 export const numMovesMadeSelector = (state: RootState) => state.board.numMovesMade;
 
 // TODO: Need to have numMovesLeft from server else compute on own
-export const numMovesLeftSelector = () => Infinity;
+export const numMovesLeftSelector = (state: RootState) => state.board.numMovesLeft;
 
 export const episodeNoSelector = (state: RootState) => state.board.episodeNo;
 
 export const totalRewardEarnedSelector = (state: RootState) => state.board.totalRewardEarned;
 
 export const totalBoardsPredictedSelector = (state: RootState) => state.board.totalBoardsPredicted;
+
+export const isInBonusSelector = (state: RootState) => state.board.isInBonus;
+
+export const canActivateBonusSelector = (state: RootState) => state.board.canActivateBonus;

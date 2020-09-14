@@ -17,9 +17,10 @@ const RATING_NUM_ATTRIBUTE_VALUE = 'rating-num';
 const GuessRuleForm: React.FunctionComponent = () => {
   const dispatch = useDispatch();
   const [ruleGuess, setRuleGuess] = useState('');
+  const [guessOpened, setGuessOpened] = useState(false);
 
   // Form type should accept generics for submit element and onChange parameter
-  return (
+  return guessOpened ? (
     <Box>
       <Box align="center" direction="row" flex="shrink">
         <FormField
@@ -78,7 +79,13 @@ const GuessRuleForm: React.FunctionComponent = () => {
             </Text>
           </Box>
         </Box>
-        <Box direction="row" gap="small" gridArea={GridArea.SCALE} justify="center">
+        <Box
+          direction="row"
+          gap="small"
+          gridArea={GridArea.SCALE}
+          justify="center"
+          pad={{ left: 'small', right: 'small' }}
+        >
           {range(1, scaleSize + 1).map((ratingNum) => (
             <Button
               disabled={ruleGuess.trim().length === 0}
@@ -112,6 +119,21 @@ const GuessRuleForm: React.FunctionComponent = () => {
           </Box>
         </Box>
       </Grid>
+    </Box>
+  ) : (
+    <Box width="20em">
+      <Button
+        size="large"
+        fill
+        label={
+          <Text weight="bold" size="xxlarge" color="white">
+            Guess the rule
+          </Text>
+        }
+        onClick={() => setGuessOpened(true)}
+        primary
+        color="deepskyblue"
+      />
     </Box>
   );
 };

@@ -80,3 +80,7 @@ export const invalidMove = createAction(
     bucket,
   }),
 )();
+
+export const skipGuess = createAction('board/NEXT')();
+
+export const loadNextBonus = createAction('board/LOAD_NEXT_BONUS')();

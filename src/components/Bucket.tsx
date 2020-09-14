@@ -7,7 +7,7 @@ import { BucketType } from '../@types';
 import ShapeObject from './ShapeObject';
 import { RootAction } from '../store/actions';
 import { BoardObject } from '../utils/api';
-import { isPausedSelector } from '../store/selectors/board';
+import { isGameCompletedSelector, isPausedSelector } from '../store/selectors/board';
 import { Shape } from '../constants/Shape';
 import { move } from '../store/actions/board';
 
@@ -24,6 +24,7 @@ const StyledBucket = styled(ShapeObject)<{ isOver: boolean }>`
 const Bucket = ({ className, shape, bucket }: BucketProps): JSX.Element => {
   const dispatch: Dispatch<RootAction> = useDispatch();
   const isPaused = useSelector(isPausedSelector);
+  const isGameCompleted = useSelector(isGameCompletedSelector);
 
   const [{ isOver }, ref] = useDrop({
     canDrop: () => !isPaused,
@@ -41,7 +42,7 @@ const Bucket = ({ className, shape, bucket }: BucketProps): JSX.Element => {
       isOver={isOver}
       shape={shape}
       shapeObjectId={bucket.id}
-      opacity={isPaused && shape === Shape.BUCKET ? 0.5 : 1}
+      opacity={(isGameCompleted || isPaused) && shape === Shape.BUCKET ? 0.5 : 1}
     />
   );
 };

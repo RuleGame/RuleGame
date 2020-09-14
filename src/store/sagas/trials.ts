@@ -6,9 +6,11 @@ import {
   guess,
   invalidMove,
   move,
+  skipGuess,
   setBoard,
   startTrials,
   validMove,
+  loadNextBonus,
 } from '../actions/board';
 import { goToPage } from '../actions/page';
 import { boardPositionToBxBy, FEEDBACK_DURATION } from '../../constants';
@@ -53,6 +55,8 @@ function* trials(playerId: string) {
     let activateBonusAction: ReturnType<typeof activateBonus> | undefined;
     let giveUpAction: ReturnType<typeof giveUp> | undefined;
     let guessAction: ReturnType<typeof guess> | undefined;
+    let skipGuessAction: ReturnType<typeof skipGuess> | undefined;
+    let loadNextBonusAction: ReturnType<typeof loadNextBonus> | undefined;
 
     do {
       const { data: display } = yield* apiResolve(
@@ -85,11 +89,19 @@ function* trials(playerId: string) {
         ),
       );
 
-      ({ moveAction, activateBonusAction, giveUpAction, guessAction } = yield* race({
+      ({
+        moveAction,
+        activateBonusAction,
+        giveUpAction,
+        guessAction,
+        skipGuessAction,
+      } = yield* race({
         moveAction: takeAction(move),
         activateBonusAction: takeAction(activateBonus),
         giveUpAction: takeAction(giveUp),
         guessAction: takeAction(guess),
+        skipGuessAction: takeAction(skipGuess),
+        loadNextBonusAction: takeAction(loadNextBonus),
       }));
 
       if (moveAction) {
@@ -144,7 +156,7 @@ function* trials(playerId: string) {
           {},
         );
       }
-    } while (!activateBonusAction && !giveUpAction && !guessAction);
+    } while (!activateBonusAction && !giveUpAction && !guessAction && !skipGuessAction);
 
     ({
       data: { alreadyFinished, episodeId, para },
