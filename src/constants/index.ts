@@ -3,6 +3,7 @@ import { BucketType } from '../@types';
 import { BucketPosition } from './BucketPosition';
 import { Color } from './Color';
 import { Shape } from './Shape';
+import { Page } from './Page';
 
 export const DEV = process.env.NODE_ENV !== 'production';
 
@@ -40,3 +41,13 @@ export const boardPositionToBxBy: {
   2: { bx: cols - 1, by: 0 },
   3: { bx: 0, by: 0 },
 };
+
+export const PAGE_ORDER: Page[] = [
+  Page.CONSENT,
+  Page.INTRODUCTION,
+  Page.LOADING_TRIALS,
+  Page.TRIALS,
+  Page.DEMOGRAPHICS_INSTRUCTIONS,
+  Page.DEMOGRAPHICS,
+  Page.DEBRIEFING,
+];

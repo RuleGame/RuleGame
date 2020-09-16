@@ -3,8 +3,7 @@ import { Box, Button, Heading, Paragraph } from 'grommet';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { RootAction } from '../store/actions';
-import { goToPage } from '../store/actions/page';
-import { Page } from '../constants/Page';
+import { nextPage } from '../store/actions/page';
 import { gamesSelector } from '../store/selectors/games';
 
 export default () => {
@@ -28,7 +27,7 @@ export default () => {
             chance to guess at the rule. Please be patient after you guess because we require human
             judges to review your guesses.
           </Paragraph>
-          <Button label="Next" primary onClick={() => dispatch(goToPage(Page.LOADING_TRIALS))} />
+          <Button label="Next" primary onClick={() => dispatch(nextPage())} />
         </Box>
       </Box>
     </Box>

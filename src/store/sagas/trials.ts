@@ -14,9 +14,8 @@ import {
   startTrials,
   validMove,
 } from '../actions/board';
-import { goToPage } from '../actions/page';
+import { nextPage } from '../actions/page';
 import { boardPositionToBxBy, FEEDBACK_DURATION } from '../../constants';
-import { Page } from '../../constants/Page';
 import { apiResolve, takeAction } from './utils/helpers';
 
 function* trials(playerId: string) {
@@ -44,7 +43,7 @@ function* trials(playerId: string) {
 
   let { alreadyFinished, episodeId, para } = data;
 
-  yield* put(goToPage(Page.TRIALS));
+  yield* put(nextPage());
 
   while (!alreadyFinished) {
     const {
@@ -160,7 +159,7 @@ function* trials(playerId: string) {
     ));
   }
 
-  yield* put(goToPage(Page.DEMOGRAPHICS_INSTRUCTIONS));
+  yield* put(nextPage());
 
   const {
     payload: { data: demographics },
@@ -177,7 +176,7 @@ function* trials(playerId: string) {
     {},
   );
 
-  yield* put(goToPage(Page.DEBRIEFING));
+  yield* put(nextPage());
 }
 
 function* activateBonusSaga(playerId: string) {

@@ -1,14 +1,17 @@
 import { getType } from 'typesafe-actions';
 import { RootAction } from '../actions';
-import { goToPage } from '../actions/page';
+import { goToPage, nextPage } from '../actions/page';
 import { Page } from '../../constants/Page';
+import { PAGE_ORDER } from '../../constants';
 
 type State = {
+  pageIndex: number;
   page: Page;
 };
 
 const initialState: State = {
-  page: Page.CONSENT,
+  pageIndex: 0,
+  page: PAGE_ORDER[0],
 };
 
 const reducer = (state = initialState, action: RootAction): State => {
@@ -17,6 +20,13 @@ const reducer = (state = initialState, action: RootAction): State => {
       return {
         ...state,
         page: action.payload.page,
+      };
+
+    case getType(nextPage):
+      return {
+        ...state,
+        pageIndex: state.pageIndex + 1,
+        page: PAGE_ORDER[state.pageIndex + 1],
       };
 
     default:
