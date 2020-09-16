@@ -8,6 +8,7 @@ import {
   invalidMove,
   loadNextBonus,
   move,
+  recordDemographics,
   setBoard,
   skipGuess,
   startTrials,
@@ -159,8 +160,24 @@ function* trials(playerId: string) {
     ));
   }
 
-  // 6.Proceed to end of game
   yield* put(goToPage(Page.DEMOGRAPHICS_INSTRUCTIONS));
+
+  const {
+    payload: { data: demographics },
+  } = yield* takeAction(recordDemographics);
+
+  yield* apiResolve(
+    '/w2020/game-data/GameService/writeFile',
+    METHOD.POST,
+    {
+      data: JSON.stringify(demographics),
+      dir: 'demographics',
+      file: `${playerId}.json`,
+    },
+    {},
+  );
+
+  yield* put(goToPage(Page.DEBRIEFING));
 }
 
 function* activateBonusSaga(playerId: string) {

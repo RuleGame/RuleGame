@@ -9,6 +9,7 @@ import { gamesSelector } from '../store/selectors/games';
 
 export default () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
+  // TODO: # of rules should be retrieved from the server
   const games = useSelector(gamesSelector);
 
   return (
@@ -27,7 +28,7 @@ export default () => {
             chance to guess at the rule. Please be patient after you guess because we require human
             judges to review your guesses.
           </Paragraph>
-          <Button label="Next" primary onClick={() => dispatch(goToPage(Page.LOADING_TRIALS))} />
+          <Button label="Next" primary onClick={() => dispatch(goToPage(Page.CONSENT))} />
         </Box>
       </Box>
     </Box>

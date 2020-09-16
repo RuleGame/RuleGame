@@ -11,6 +11,8 @@ import DemographicsInstructions from './pages/DemographicsInstructions';
 import { Page } from './constants/Page';
 import LoadingTrials from './pages/LoadingTrials';
 import { pageSelector } from './store/selectors/page';
+import Demographics from './pages/Demographics';
+import Debriefing from './pages/Debriefing';
 
 const App = () => {
   const page = useSelector(pageSelector);
@@ -27,6 +29,10 @@ const App = () => {
         <Trials />
       ) : page === Page.DEMOGRAPHICS_INSTRUCTIONS ? (
         <DemographicsInstructions />
+      ) : page === Page.DEMOGRAPHICS ? (
+        <Demographics />
+      ) : page === Page.DEBRIEFING ? (
+        <Debriefing />
       ) : (
         <Paragraph>Unknown page. Try reloading</Paragraph>
       )}
