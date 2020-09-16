@@ -96,6 +96,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         numMovesMade: action.payload.numMovesMade,
         episodeNo: action.payload.episodeNo,
         stackMemoryDepth: action.payload.stackMemoryDepth,
+        seriesNo: action.payload.seriesNo,
       };
 
     case getType(pause):
