@@ -3,8 +3,7 @@ import { Box, Button, Paragraph } from 'grommet';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from 'redux';
 import { RootAction } from '../store/actions';
-import { goToPage } from '../store/actions/page';
-import { Page } from '../constants/Page';
+import { nextPage } from '../store/actions/page';
 
 export default () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
@@ -16,7 +15,7 @@ export default () => {
           <Paragraph fill>
             {"Thank you! We'll now ask a few questions, and you'll be done!"}
           </Paragraph>
-          <Button label="Next" primary onClick={() => dispatch(goToPage(Page.DEMOGRAPHICS))} />
+          <Button label="Next" primary onClick={() => dispatch(nextPage())} />
         </Box>
       </Box>
     </Box>

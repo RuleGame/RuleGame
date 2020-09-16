@@ -3,8 +3,7 @@ import { Box, Button, CheckBox, Form, Paragraph, Text } from 'grommet';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from 'redux';
 import { RootAction } from '../store/actions';
-import { goToPage } from '../store/actions/page';
-import { Page } from '../constants/Page';
+import { nextPage } from '../store/actions/page';
 
 const Consent = () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
@@ -32,7 +31,7 @@ const Consent = () => {
             Science IRB Office at 608-263-2320. You are free to decline to participate or to end
             participation at any time for any reason.`}
           </Paragraph>
-          <Form onSubmit={() => dispatch(goToPage(Page.LOADING_TRIALS))}>
+          <Form onSubmit={() => dispatch(nextPage())}>
             <Box align="center" gap="small">
               <Text weight="bold">
                 By clicking this box, I consent to participate in this task.
