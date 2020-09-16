@@ -8,7 +8,7 @@ type State = {
 };
 
 const initialState: State = {
-  page: Page.INTRODUCTION,
+  page: Page.CONSENT,
 };
 
 const reducer = (state = initialState, action: RootAction): State => {

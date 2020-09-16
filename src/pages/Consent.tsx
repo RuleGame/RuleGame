@@ -32,7 +32,7 @@ const Consent = () => {
             Science IRB Office at 608-263-2320. You are free to decline to participate or to end
             participation at any time for any reason.`}
           </Paragraph>
-          <Form onSubmit={() => dispatch(goToPage(Page.LOADING_TRIALS))}>
+          <Form onSubmit={() => dispatch(goToPage(Page.INTRODUCTION))}>
             <Box align="center" gap="small">
               <Text weight="bold">
                 By clicking this box, I consent to participate in this task.

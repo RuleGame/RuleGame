@@ -28,7 +28,7 @@ export default () => {
             chance to guess at the rule. Please be patient after you guess because we require human
             judges to review your guesses.
           </Paragraph>
-          <Button label="Next" primary onClick={() => dispatch(goToPage(Page.CONSENT))} />
+          <Button label="Next" primary onClick={() => dispatch(goToPage(Page.LOADING_TRIALS))} />
         </Box>
       </Box>
     </Box>
