@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Box, Button, CheckBox, Form, FormField, Paragraph } from 'grommet';
+import { Box, Button, CheckBox, Form, Paragraph, Text } from 'grommet';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from 'redux';
 import { RootAction } from '../store/actions';
 import { goToPage } from '../store/actions/page';
 import { Page } from '../constants/Page';
 
-export default () => {
+const Consent = () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
   const [accept, setAccept] = useState(false);
 
@@ -23,7 +23,7 @@ export default () => {
             sequence of patterns, or indicate how vividly you see in your “mind’s eye."`}
             <strong>HIT instructions will be provided on the next screen. </strong>
           </Paragraph>
-          <Paragraph>
+          <Paragraph fill>
             {`This task has no anticipated risks nor direct benefits. If you have any questions or
             concerns about this HIT please contact the principal investigator: Dr. Gary Lupyan at
             lupyan@wisc.edu. If you are not satisfied with response of the research team, have more
@@ -32,14 +32,19 @@ export default () => {
             Science IRB Office at 608-263-2320. You are free to decline to participate or to end
             participation at any time for any reason.`}
           </Paragraph>
-          <Form onSubmit={() => dispatch(goToPage(Page.INTRODUCTION))}>
-            <FormField label=" By clicking this box, I consent to participate in this task.">
+          <Form onSubmit={() => dispatch(goToPage(Page.LOADING_TRIALS))}>
+            <Box align="center" gap="small">
+              <Text weight="bold">
+                By clicking this box, I consent to participate in this task.
+              </Text>
               <CheckBox onChange={(e) => setAccept(e.target.checked)} checked={accept} required />
-            </FormField>
-            <Button label="Start Experiment" primary type="submit" />
+              <Button label="Start Experiment" primary type="submit" />
+            </Box>
           </Form>
         </Box>
       </Box>
     </Box>
   );
 };
+
+export default Consent;

@@ -16,7 +16,7 @@ export default () => {
           <Paragraph fill>
             {"Thank you! We'll now ask a few questions, and you'll be done!"}
           </Paragraph>
-          <Button label="Next" primary onClick={() => dispatch(goToPage(Page.LOADING_TRIALS))} />
+          <Button label="Next" primary onClick={() => dispatch(goToPage(Page.DEMOGRAPHICS))} />
         </Box>
       </Box>
     </Box>

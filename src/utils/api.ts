@@ -123,7 +123,7 @@ export enum ErrorMsg {
 }
 
 export type Endpoints = {
-  '/w2020/game-data/GameService2/writeFile': {
+  '/w2020/game-data/GameService/writeFile': {
     [METHOD.POST]: RequestHandler<undefined, { dir: string; file: string; data: string }>;
   };
   '/w2020/game-data/GameService2/player': {
