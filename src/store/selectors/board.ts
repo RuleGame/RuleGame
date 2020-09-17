@@ -55,9 +55,6 @@ export const historyInfoSelector = (state: RootState) =>
 
 export const numMovesMadeSelector = (state: RootState) => state.board.numMovesMade;
 
-// TODO: Need to have numMovesLeft from server else compute on own
-export const numMovesLeftSelector = (state: RootState) => state.board.numMovesLeft;
-
 export const episodeNoSelector = (state: RootState) => state.board.episodeNo;
 
 export const totalRewardEarnedSelector = (state: RootState) => state.board.totalRewardEarned;
@@ -67,3 +64,6 @@ export const totalBoardsPredictedSelector = (state: RootState) => state.board.to
 export const isInBonusSelector = (state: RootState) => state.board.isInBonus;
 
 export const canActivateBonusSelector = (state: RootState) => state.board.canActivateBonus;
+
+export const movesLeftToStayInBonusSelector = (state: RootState) =>
+  state.board.movesLeftToStayInBonus;

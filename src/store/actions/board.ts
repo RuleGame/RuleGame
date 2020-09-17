@@ -30,6 +30,7 @@ export const setBoard = createAction(
     ruleLineNo: number,
     numMovesMade: number,
     episodeNo: number,
+    movesLeftToStayInBonus?: number,
   ) => ({
     board,
     bonus,
@@ -47,6 +48,7 @@ export const setBoard = createAction(
     ruleLineNo,
     numMovesMade,
     episodeNo,
+    movesLeftToStayInBonus,
   }),
 )();
 
