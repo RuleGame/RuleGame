@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Box, Grid, Text } from 'grommet';
 import {
   episodeNoSelector,
-  numMovesLeftSelector,
+  movesLeftToStayInBonusSelector,
   numMovesMadeSelector,
   totalBoardsPredictedSelector,
   totalRewardEarnedSelector,
@@ -21,7 +21,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
   const numMovesMade = useSelector(numMovesMadeSelector);
   const boardNum = useSelector(episodeNoSelector) + 1;
   const points = useSelector(totalRewardEarnedSelector);
-  const numMovesLeft = useSelector(numMovesLeftSelector);
+  const numMovesLeft = useSelector(movesLeftToStayInBonusSelector);
   const numBoardsLeft = useSelector(totalBoardsPredictedSelector);
 
   return (

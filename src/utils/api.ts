@@ -90,6 +90,7 @@ export type Display = {
     rows: string[];
   };
   ruleLineNo: number;
+  movesLeftToStayInBonus?: number;
 };
 
 type Para = {

@@ -26,8 +26,8 @@ export type State = {
   ruleLineNo?: number;
   numMovesMade: number;
   episodeNo: number;
-  numMovesLeft?: number;
   stackMemoryDepth: number;
+  movesLeftToStayInBonus?: number;
 };
 
 export const initialState: State = {
@@ -56,8 +56,8 @@ export const initialState: State = {
   ruleLineNo: undefined,
   numMovesMade: 0,
   episodeNo: 0,
-  numMovesLeft: undefined,
   stackMemoryDepth: 0,
+  movesLeftToStayInBonus: undefined,
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -97,6 +97,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         episodeNo: action.payload.episodeNo,
         stackMemoryDepth: action.payload.stackMemoryDepth,
         seriesNo: action.payload.seriesNo,
+        movesLeftToStayInBonus: action.payload.movesLeftToStayInBonus,
       };
 
     case getType(pause):
