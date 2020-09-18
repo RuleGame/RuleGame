@@ -39,6 +39,13 @@ export enum Code {
   JUST_A_DISPLAY = -8,
 }
 
+export type TransitionMap = {
+  MAIN?: 'DEFAULT';
+  BONUS?: 'DEFAULT' | 'ACTIVATE';
+  NEXT?: 'DEFAULT' | 'GIVE_UP';
+  END?: 'DEFAULT' | 'GIVE_UP';
+};
+
 type RequestHandler<
   ResponseBody = undefined,
   RequestBody = undefined,
@@ -91,6 +98,7 @@ export type Display = {
   };
   ruleLineNo: number;
   movesLeftToStayInBonus?: number;
+  transitionMap?: TransitionMap;
 };
 
 type Para = {

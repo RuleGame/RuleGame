@@ -11,6 +11,7 @@ import { activateBonus, giveUp, loadNextBonus, skipGuess } from '../store/action
 import {
   canActivateBonusSelector,
   episodeNoSelector,
+  hasMoreBonusRoundsSelector,
   historyInfoSelector,
   isGameCompletedSelector,
   isInBonusSelector,
@@ -44,6 +45,7 @@ const Game: React.FunctionComponent<{
   const isInBonus = useSelector(isInBonusSelector);
   const canActivateBonus = useSelector(canActivateBonusSelector);
   const episodeNo = useSelector(episodeNoSelector);
+  const hasMoreBonusRounds = useSelector(hasMoreBonusRoundsSelector);
   const [bonusActivated, setBonusActivated] = useState(false);
 
   useEffect(() => {
@@ -146,7 +148,7 @@ const Game: React.FunctionComponent<{
           {isGameCompleted && isInBonus && (
             <Box>
               <Button
-                label="Next Bonus Round"
+                label={hasMoreBonusRounds ? 'Next Bonus Round' : 'Next Rule (Bonus Completed)'}
                 icon={<Next />}
                 onClick={() => dispatch(loadNextBonus())}
               />
