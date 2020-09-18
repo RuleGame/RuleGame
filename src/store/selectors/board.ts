@@ -67,3 +67,7 @@ export const canActivateBonusSelector = (state: RootState) => state.board.canAct
 
 export const movesLeftToStayInBonusSelector = (state: RootState) =>
   state.board.movesLeftToStayInBonus;
+
+// The transitionMap will contain a BONUS -> DEFAULT if there are still bonus rounds
+export const hasMoreBonusRoundsSelector = (state: RootState): boolean =>
+  isInBonusSelector(state) && (state.board.transitionMap?.BONUS === 'DEFAULT' ?? false);

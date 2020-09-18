@@ -1,6 +1,6 @@
 import { getType } from 'typesafe-actions';
 import { RootAction } from '../actions';
-import { BoardObject, Code, Transcript } from '../../utils/api';
+import { BoardObject, Code, Transcript, TransitionMap } from '../../utils/api';
 import { invalidMove, pause, setBoard, setIsInBonus, unpause, validMove } from '../actions/board';
 import { BucketPosition } from '../../constants/BucketPosition';
 import { Shape } from '../../constants/Shape';
@@ -28,6 +28,7 @@ export type State = {
   episodeNo: number;
   stackMemoryDepth: number;
   movesLeftToStayInBonus?: number;
+  transitionMap?: TransitionMap;
 };
 
 export const initialState: State = {
@@ -58,6 +59,7 @@ export const initialState: State = {
   episodeNo: 0,
   stackMemoryDepth: 0,
   movesLeftToStayInBonus: undefined,
+  transitionMap: undefined,
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -98,6 +100,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         stackMemoryDepth: action.payload.stackMemoryDepth,
         seriesNo: action.payload.seriesNo,
         movesLeftToStayInBonus: action.payload.movesLeftToStayInBonus,
+        transitionMap: action.payload.transitionMap,
       };
 
     case getType(pause):
