@@ -2,15 +2,15 @@ import React from 'react';
 import { Box, Heading } from 'grommet';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from 'redux';
-import { useMount, useSearchParam } from 'react-use';
+import { useMount } from 'react-use';
 import { RootAction } from '../store/actions';
 import { startTrials } from '../store/actions/board';
-import { SEARCH_QUERY_KEYS } from '../constants';
 import Spinner from '../components/Spinner';
+import useWorkerId from '../utils/use-worker-id';
 
 export default () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
-  const workerId = useSearchParam(SEARCH_QUERY_KEYS.WORKER_ID) ?? 'testWorkerId';
+  const workerId = useWorkerId();
 
   useMount(async () => {
     dispatch(startTrials(workerId));

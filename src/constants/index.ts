@@ -51,3 +51,5 @@ export const PAGE_ORDER: Page[] = [
   Page.DEMOGRAPHICS,
   Page.DEBRIEFING,
 ];
+
+export const DEFAULT_WORKER_ID = 'testWorkerId';

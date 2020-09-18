@@ -1,15 +1,20 @@
 import React from 'react';
 import { Box, Button, Heading, Paragraph } from 'grommet';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Dispatch } from 'redux';
+import { useQuery } from 'react-query';
 import { RootAction } from '../store/actions';
 import { nextPage } from '../store/actions/page';
-import { gamesSelector } from '../store/selectors/games';
+import useWorkerId from '../utils/use-worker-id';
+import { api, METHOD } from '../utils/api';
 
 export default () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
-  // TODO: # of rules should be retrieved from the server
-  const games = useSelector(gamesSelector);
+  const workerId = useWorkerId();
+  const { data, isLoading } = useQuery(`${workerId}-INTRODUCTION`, () =>
+    api('/w2020/game-data/GameService2/player', METHOD.POST, { playerId: workerId }, {}),
+  );
+  const numRules = isLoading ? '...' : data?.data.trialList.length;
 
   return (
     <Box direction="column" align="center" gap="medium" pad="medium">
@@ -17,7 +22,7 @@ export default () => {
         <Box background="brand" fill align="center" pad="medium" justify="center">
           <Heading>RuleGame Challenge</Heading>
           <Paragraph fill>
-            Welcome to the RuleGame challenge. There are {games.length} different rules. Each rule
+            Welcome to the RuleGame challenge. There are {numRules} different rules. Each rule
             describes an allowed way of clearing some <b>colored objects</b> from a game board. To
             clear an object, you must grab it with the mouse, and drag it to the correct bucket.
             When you release it at the correct bucket, the bucket smiles, and the object’s place

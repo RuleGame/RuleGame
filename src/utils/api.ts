@@ -142,6 +142,7 @@ export type Endpoints = {
         error: boolean;
         newlyRegistered: boolean;
         trialListId: string;
+        trialList: Para[];
       },
       { playerId: string }
     >;
