@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Box, Grid, Text } from 'grommet';
+import { Box, Grid, Heading, Text } from 'grommet';
 import {
   episodeNoSelector,
   movesLeftToStayInBonusSelector,
@@ -59,47 +59,49 @@ const HUD: React.FunctionComponent = ({ children }) => {
       ]}
     >
       <Box gridArea={GridArea.NUM_MOVES_MADE} direction="row" align="start">
-        <Text>
-          <Text size="xxlarge" weight="bold">
+        <Heading level="2" margin="none">
+          <Text size="inherit" weight="bold">
             Number of moves made:&nbsp;
           </Text>
-          <Text size="2em" weight="bold" color="light-blue">
+          <Text size="inherit" weight="bold" color="light-blue">
             {numMovesMade}
           </Text>
-        </Text>
+        </Heading>
       </Box>
       {numMovesLeft !== undefined && (
         <Box gridArea={GridArea.NUM_MOVES_LEFT} direction="row" align="start" justify="end">
-          <Text>
-            <Text size="xxlarge" weight="bold">
+          <Heading level="2" margin="none">
+            <Text size="inherit" weight="bold">
               Number of moves left:&nbsp;
             </Text>
-            <Text size="2em" weight="bold" color="red">
+            <Text size="inherit" weight="bold" color="red">
               {numMovesLeft}
             </Text>
-          </Text>
+          </Heading>
         </Box>
       )}
-      <Box gridArea={GridArea.GAME}>{children}</Box>
+      <Box gridArea={GridArea.GAME} overflow="auto">
+        {children}
+      </Box>
       <Box gridArea={GridArea.BOARD_COUNT} direction="row" align="end">
-        <Text>
-          <Text size="xxlarge" weight="bold">
+        <Heading level="2" margin="none">
+          <Text size="inherit" weight="bold">
             Board&nbsp;
           </Text>
-          <Text size="2em" weight="bold">
+          <Text size="inherit" weight="bold">
             {boardNum} of {numBoardsLeft}
           </Text>
-        </Text>
+        </Heading>
       </Box>
       <Box gridArea={GridArea.POINTS} direction="row" align="end" justify="end">
-        <Text>
-          <Text size="xxlarge" weight="bold">
+        <Heading level="2" margin="none">
+          <Text weight="bold" size="inherit">
             Points:&nbsp;
           </Text>
-          <Text size="2em" color="green" weight="bold">
+          <Text color="green" weight="bold" size="inherit">
             {points}
           </Text>
-        </Text>
+        </Heading>
       </Box>
     </Grid>
   );

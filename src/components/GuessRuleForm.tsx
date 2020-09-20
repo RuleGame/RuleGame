@@ -26,17 +26,25 @@ const GuessRuleForm: React.FunctionComponent = () => {
       <Box align="center" direction="row" height={{ min: 'unset' }}>
         <FormField
           label={
-            <Text size="xxlarge" weight="bold">
+            <Heading level="3" margin="none">
               What is the rule?
-            </Text>
+            </Heading>
           }
           htmlFor={TEXT_INPUT_ID}
           component={Box}
-          style={{ flexDirection: 'row', width: '100%', height: '100%' }}
+          style={{
+            flexDirection: 'row',
+            width: '100%',
+            height: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
           contentProps={{
             flex: 'grow',
             border: { side: 'all', style: 'dashed', size: '0.3em', color: 'gray' },
             height: 'min-content',
+            justify: 'center',
+            align: 'center',
           }}
         >
           <TextInput
@@ -45,6 +53,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
             name="body"
             value={ruleGuess}
             onChange={({ target: { value } }) => setRuleGuess(value)}
+            style={{ padding: '0.5em' }}
           />
         </FormField>
       </Box>
@@ -72,12 +81,14 @@ const GuessRuleForm: React.FunctionComponent = () => {
         ]}
       >
         <Box align="center" gridArea={GridArea.PROMPT}>
-          <Heading>How sure are you?</Heading>
+          <Heading level="2">How sure are you?</Heading>
         </Box>
         <Box fill="vertical" gridArea={GridArea.LEAST} align="end">
           <Box width="min-content">
-            <Text size="large" weight="bold" textAlign="end">
-              Just guessing
+            <Text textAlign="end">
+              <Heading level="3" margin="none">
+                Just guessing
+              </Heading>
             </Text>
           </Box>
         </Box>
@@ -89,34 +100,37 @@ const GuessRuleForm: React.FunctionComponent = () => {
           pad={{ left: 'small', right: 'small' }}
         >
           {range(1, scaleSize + 1).map((ratingNum) => (
-            <Button
-              disabled={ruleGuess.trim().length === 0}
-              key={ratingNum}
-              rating-num={RATING_NUM_ATTRIBUTE_VALUE}
-              label={
-                <Box align="center">
-                  <Text size="large" weight="bold">
-                    {ratingNum}
-                  </Text>
-                </Box>
-              }
-              color="black"
-              size="medium"
-              style={{
-                borderRadius: '50%',
-                padding: 'none',
-                width: '3em',
-                height: '3em',
-                borderWidth: '0.25em',
-              }}
-              onClick={() => dispatch(guess(`${ratingNum}: ${ruleGuess}`))}
-            />
+            <Box justify="center" align="center">
+              <Button
+                disabled={ruleGuess.trim().length === 0}
+                key={ratingNum}
+                rating-num={RATING_NUM_ATTRIBUTE_VALUE}
+                label={
+                  <Box align="center" justify="center">
+                    <Heading level="3" margin="none">
+                      {ratingNum}
+                    </Heading>
+                  </Box>
+                }
+                color="black"
+                style={{
+                  borderRadius: '50%',
+                  padding: 'unset',
+                  width: '3em',
+                  height: '3em',
+                  borderWidth: '0.25em',
+                }}
+                onClick={() => dispatch(guess(`${ratingNum}: ${ruleGuess}`))}
+              />
+            </Box>
           ))}
         </Box>
         <Box fill="vertical" width="min-content" gridArea={GridArea.GREATEST}>
           <Box width="min-content">
-            <Text size="large" weight="bold" textAlign="start">
-              Completely sure
+            <Text textAlign="start">
+              <Heading level="3" margin="none">
+                Completely sure
+              </Heading>
             </Text>
           </Box>
         </Box>

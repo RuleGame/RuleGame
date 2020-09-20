@@ -82,8 +82,8 @@ const Game: React.FunctionComponent<{
           },
           {
             name: GridAreaName.FORM,
-            start: [1, 2],
-            end: [1, 2],
+            start: [0, 2],
+            end: [2, 2],
           },
         ]}
       >
