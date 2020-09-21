@@ -7,10 +7,11 @@ import Board from './Board';
 import { RootAction } from '../store/actions';
 import GuessRuleForm from './GuessRuleForm';
 import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
-import { activateBonus, giveUp, loadNextBonus, skipGuess } from '../store/actions/board';
+import { activateBonus, giveUp, loadNextBonus } from '../store/actions/board';
 import {
   canActivateBonusSelector,
   episodeNoSelector,
+  finishCodeSelector,
   hasMoreBonusRoundsSelector,
   historyInfoSelector,
   isGameCompletedSelector,
@@ -22,6 +23,7 @@ import {
 } from '../store/selectors/board';
 import { DEBUG_ENABLED } from '../constants/env';
 import { addLayer, removeLayer } from '../store/actions/layers';
+import { FinishCode } from '../utils/api';
 
 enum GridAreaName {
   HEADING = 'HEADING',
@@ -47,6 +49,7 @@ const Game: React.FunctionComponent<{
   const episodeNo = useSelector(episodeNoSelector);
   const hasMoreBonusRounds = useSelector(hasMoreBonusRoundsSelector);
   const [bonusActivated, setBonusActivated] = useState(false);
+  const finishCode = useSelector(finishCodeSelector);
 
   useEffect(() => {
     setBonusActivated(false);
@@ -82,8 +85,8 @@ const Game: React.FunctionComponent<{
           },
           {
             name: GridAreaName.FORM,
-            start: [1, 2],
-            end: [1, 2],
+            start: [0, 2],
+            end: [2, 2],
           },
         ]}
       >
@@ -93,15 +96,15 @@ const Game: React.FunctionComponent<{
         <Box gridArea={GridAreaName.BOARD} align="center" pad="medium">
           <Board className={className} paused={paused} />
         </Box>
-        <Box gridArea={GridAreaName.FORM} align="center">
+        <Box gridArea={GridAreaName.FORM} align="center" pad="small">
           {!isGameCompleted && (
             <Box gap="small">
               <Button
-                label="Give up rule"
+                label="Give up on this rule"
                 onClick={() =>
                   dispatch(
                     addLayer(
-                      'Give up rule',
+                      'Give up on this rule',
                       `Are you sure you want to give up ${ruleName} and advance to the next rule if any?`,
                       [
                         {
@@ -121,32 +124,30 @@ const Game: React.FunctionComponent<{
           )}
           {isGameCompleted && !isInBonus && (
             // FireFox needs height={{ min: 'unset' }} inside a grid
-            <Box height={{ min: 'unset' }} gap="large">
+            <Box
+              data-cy={CY_NO_MORE_MOVES}
+              height={{ min: 'unset' }}
+              gap="large"
+              pad={{ left: 'xlarge', right: 'xlarge' }}
+            >
               <GuessRuleForm />
-              <Box data-cy={CY_NO_MORE_MOVES} fill>
-                <Button
-                  label="Skip guess"
-                  icon={<Next />}
-                  onClick={() =>
-                    dispatch(
-                      addLayer('Skip guess', 'Do you want to proceed without making a guess?', [
-                        {
-                          label: 'Yes',
-                          action: [skipGuess(), (id) => removeLayer(id)],
-                        },
-                        {
-                          label: 'No',
-                          action: (id) => removeLayer(id),
-                        },
-                      ]),
-                    )
-                  }
-                />
-              </Box>
             </Box>
           )}
           {isGameCompleted && isInBonus && (
-            <Box>
+            <Box align="center">
+              <Heading>
+                {finishCode === FinishCode.FINISH ? (
+                  <Text size="inherit" color="blue">
+                    Board succesfully cleared!
+                  </Text>
+                ) : finishCode === FinishCode.STALEMATE || finishCode === FinishCode.LOST ? (
+                  <Text size="inherit" color="red">
+                    No more moves left!
+                  </Text>
+                ) : (
+                  ''
+                )}
+              </Heading>
               <Button
                 label={hasMoreBonusRounds ? 'Next Bonus Round' : 'Next Rule (Bonus Completed)'}
                 icon={<Next />}
@@ -180,8 +181,14 @@ const Game: React.FunctionComponent<{
               <Box fill="vertical" justify="center">
                 <Box>
                   {bonusActivated ? (
-                    <Box border="all" round pad="medium">
-                      <Text size="large">Bonus Activated!</Text>
+                    <Box
+                      border={{ side: 'all', style: 'dashed', size: 'medium' }}
+                      round
+                      pad="medium"
+                    >
+                      <Text size="large" textAlign="center">
+                        Bonus activated next round!
+                      </Text>
                     </Box>
                   ) : (
                     <Button

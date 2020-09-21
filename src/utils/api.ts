@@ -5,6 +5,14 @@ import { BucketPosition } from '../constants/BucketPosition';
 import { Color } from '../constants/Color';
 import { Shape } from '../constants/Shape';
 
+export enum FinishCode {
+  FINISH = 1,
+  GIVEN_UP = 3,
+  LOST = 4,
+  NO = 0,
+  STALEMATE = 2,
+}
+
 export enum Code {
   // move accepted and processed
   ACCEPT = 0,
@@ -81,7 +89,7 @@ export type Display = {
     id: number;
     value: Board;
   };
-  finishCode: Code;
+  finishCode: FinishCode;
   numMovesMade: number;
   bonus: boolean;
   bonusEpisodeNo: number;
@@ -143,6 +151,7 @@ export type Endpoints = {
         newlyRegistered: boolean;
         trialListId: string;
         trialList: Para[];
+        completionCode?: string;
       },
       { playerId: string }
     >;
@@ -157,6 +166,7 @@ export type Endpoints = {
         display: Display;
         episodeId: string;
         para: Para;
+        completionCode?: string;
       },
       {
         playerId: string;
@@ -173,6 +183,7 @@ export type Endpoints = {
         display: Display;
         episodeId: string;
         para: Para;
+        completionCode?: string;
       },
       {
         playerId: string;
@@ -195,7 +206,7 @@ export type Endpoints = {
         bonus: boolean;
         code: Code;
         errmsg: ErrorMsg; // There happens to be no error property here
-        finishCode: Code;
+        finishCode: FinishCode;
         numMovesMade: number;
         totalRewardEarned: number;
       },

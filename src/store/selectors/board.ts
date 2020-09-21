@@ -1,5 +1,5 @@
 import { RootState } from '../reducers';
-import { BoardObject, Code } from '../../utils/api';
+import { BoardObject, Code, FinishCode } from '../../utils/api';
 import { BucketPosition } from '../../constants/BucketPosition';
 
 export const isPausedSelector = (state: RootState) => state.board.isPaused;
@@ -8,10 +8,11 @@ export const bucketShapesSelector = (state: RootState) => state.board.bucketShap
 
 export const seriesNoSelector = (state: RootState) => state.board.seriesNo;
 
-// TODO: Ask for new code to check board is finished (or stalemate).
 export const isGameCompletedSelector = (state: RootState) =>
-  Object.values(state.board.board).every((boardObject) => boardObject.dropped !== undefined) ||
-  state.board.finishCode === Code.STALEMATE;
+  state.board.finishCode === FinishCode.STALEMATE ||
+  state.board.finishCode === FinishCode.LOST ||
+  state.board.finishCode === FinishCode.GIVEN_UP ||
+  state.board.finishCode === FinishCode.FINISH;
 
 export const showGridMemoryOrderSelector = (state: RootState) => state.board.showGridMemoryOrder;
 
@@ -71,3 +72,5 @@ export const movesLeftToStayInBonusSelector = (state: RootState) =>
 // The transitionMap will contain a BONUS -> DEFAULT if there are still bonus rounds
 export const hasMoreBonusRoundsSelector = (state: RootState): boolean =>
   isInBonusSelector(state) && (state.board.transitionMap?.BONUS === 'DEFAULT' ?? false);
+
+export const finishCodeSelector = (state: RootState) => state.board.finishCode;

@@ -11,7 +11,7 @@ import { cyBoardObject } from '../constants/data-cy-builders';
 import { BoardObject as BoardObjectType } from '../utils/api';
 import { Color } from '../constants/Color';
 import { Shape } from '../constants/Shape';
-import { showGridMemoryOrderSelector } from '../store/selectors/board';
+import { isGameCompletedSelector, showGridMemoryOrderSelector } from '../store/selectors/board';
 import { DEBUG_ENABLED } from '../constants/env';
 
 export type BoardObjectProps = {
@@ -36,8 +36,9 @@ const BoardObject = ({
   moveNum,
 }: BoardObjectProps): JSX.Element => {
   const hasBeenDropped = boardObject.dropped !== undefined;
+  const gameCompleted = useSelector(isGameCompletedSelector);
 
-  const canDrag = boardObject.buckets.length > 0;
+  const canDrag = boardObject.buckets.length > 0 && !gameCompleted;
   const [, ref] = useDrag({
     item: {
       ...boardObject,

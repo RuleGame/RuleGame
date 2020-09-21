@@ -1,6 +1,6 @@
 import { createAction } from 'typesafe-actions';
 // eslint-disable-next-line import/no-cycle
-import { Board, Code, Transcript, TransitionMap } from '../../utils/api';
+import { Board, FinishCode, Transcript, TransitionMap } from '../../utils/api';
 // eslint-disable-next-line import/no-cycle
 import { BucketPosition } from '../../constants/BucketPosition';
 
@@ -15,7 +15,7 @@ export const setBoard = createAction(
     bonus: boolean,
     bonusEpisodeNo: number,
     canActivateBonus: boolean,
-    finishCode: Code,
+    finishCode: FinishCode,
     totalRewardEarned: number,
     totalBoardsPredicted: number,
     showGridMemoryOrder: boolean,

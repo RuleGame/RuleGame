@@ -1,6 +1,6 @@
 import { getType } from 'typesafe-actions';
 import { RootAction } from '../actions';
-import { BoardObject, Code, Transcript, TransitionMap } from '../../utils/api';
+import { BoardObject, FinishCode, Transcript, TransitionMap } from '../../utils/api';
 import { invalidMove, pause, setBoard, setIsInBonus, unpause, validMove } from '../actions/board';
 import { BucketPosition } from '../../constants/BucketPosition';
 import { Shape } from '../../constants/Shape';
@@ -10,7 +10,7 @@ export type State = {
   isInBonus: boolean;
   bonusEpisodeNo: number;
   canActivateBonus: boolean;
-  finishCode: Code;
+  finishCode: FinishCode;
   totalRewardEarned: number;
   totalBoardsPredicted: number;
   showGridMemoryOrder: boolean;
@@ -36,7 +36,7 @@ export const initialState: State = {
   isInBonus: false,
   bonusEpisodeNo: 0,
   canActivateBonus: false,
-  finishCode: Code.NO_GAME,
+  finishCode: FinishCode.NO,
   totalRewardEarned: 0,
   totalBoardsPredicted: 0,
   showGridMemoryOrder: false,
