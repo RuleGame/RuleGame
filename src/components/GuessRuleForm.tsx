@@ -99,6 +99,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
                       }
                     }}
                     name="rule-description"
+                    placeholder={autofillButtonOver ? savedRuleGuess : ''}
                   />
                 </FormField>
                 <Button
