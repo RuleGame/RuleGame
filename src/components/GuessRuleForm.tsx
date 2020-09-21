@@ -117,6 +117,8 @@ const GuessRuleForm: React.FunctionComponent = () => {
                   // Disabled condition asserts savedRuleGuess is non-undefined
                   onClick={() => setRuleGuess(savedRuleGuess!)}
                   ref={autofillButtonRef}
+                  // Asserting isPrevSeriesRuleGuessSaved prevents unnecessarily opening the drop
+                  // between disabling and enabling this button
                   onMouseOver={() => isPrevSeriesRuleGuessSaved && setAutofillButtonOver(true)}
                   onMouseLeave={() => isPrevSeriesRuleGuessSaved && setAutofillButtonOver(false)}
                   onFocus={() => isPrevSeriesRuleGuessSaved && setAutofillButtonOver(true)}

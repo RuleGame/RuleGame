@@ -11,6 +11,7 @@ import { activateBonus, giveUp, loadNextBonus } from '../store/actions/board';
 import {
   canActivateBonusSelector,
   episodeNoSelector,
+  finishCodeSelector,
   hasMoreBonusRoundsSelector,
   historyInfoSelector,
   isGameCompletedSelector,
@@ -22,6 +23,7 @@ import {
 } from '../store/selectors/board';
 import { DEBUG_ENABLED } from '../constants/env';
 import { addLayer, removeLayer } from '../store/actions/layers';
+import { FinishCode } from '../utils/api';
 
 enum GridAreaName {
   HEADING = 'HEADING',
@@ -47,6 +49,7 @@ const Game: React.FunctionComponent<{
   const episodeNo = useSelector(episodeNoSelector);
   const hasMoreBonusRounds = useSelector(hasMoreBonusRoundsSelector);
   const [bonusActivated, setBonusActivated] = useState(false);
+  const finishCode = useSelector(finishCodeSelector);
 
   useEffect(() => {
     setBonusActivated(false);
@@ -131,7 +134,20 @@ const Game: React.FunctionComponent<{
             </Box>
           )}
           {isGameCompleted && isInBonus && (
-            <Box>
+            <Box align="center">
+              <Heading>
+                {finishCode === FinishCode.FINISH ? (
+                  <Text size="inherit" color="blue">
+                    Board succesfully cleared!
+                  </Text>
+                ) : finishCode === FinishCode.STALEMATE || finishCode === FinishCode.LOST ? (
+                  <Text size="inherit" color="red">
+                    No more moves left!
+                  </Text>
+                ) : (
+                  ''
+                )}
+              </Heading>
               <Button
                 label={hasMoreBonusRounds ? 'Next Bonus Round' : 'Next Rule (Bonus Completed)'}
                 icon={<Next />}
@@ -165,8 +181,14 @@ const Game: React.FunctionComponent<{
               <Box fill="vertical" justify="center">
                 <Box>
                   {bonusActivated ? (
-                    <Box border="all" round pad="medium">
-                      <Text size="large">Bonus Activated!</Text>
+                    <Box
+                      border={{ side: 'all', style: 'dashed', size: 'medium' }}
+                      round
+                      pad="medium"
+                    >
+                      <Text size="large" textAlign="center">
+                        Bonus activated next round!
+                      </Text>
                     </Box>
                   ) : (
                     <Button
