@@ -80,8 +80,16 @@ const HUD: React.FunctionComponent = ({ children }) => {
           </Heading>
         </Box>
       )}
-      <Box gridArea={GridArea.GAME} overflow="auto">
-        {children}
+      <Box gridArea={GridArea.GAME} justify="center" align="center">
+        <Box
+          width="max-content"
+          border={{ size: 'large', style: 'dashed' }}
+          justify="center"
+          align="center"
+          overflow="auto"
+        >
+          {children}
+        </Box>
       </Box>
       <Box gridArea={GridArea.BOARD_COUNT} direction="row" align="end">
         <Heading level="2" margin="none">

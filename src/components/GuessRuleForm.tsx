@@ -179,7 +179,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
     </Box>
   ) : (
     // FireFox needs height={{ min: 'unset' }} inside a grid
-    <Box width="20em" fill height={{ min: 'unset' }}>
+    <Box width="20em" fill height={{ min: 'unset' }} align="center">
       <Button
         size="large"
         label={
