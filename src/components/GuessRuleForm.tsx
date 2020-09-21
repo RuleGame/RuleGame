@@ -28,7 +28,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
   // FireFox needs height={{ min: 'unset' }} inside a grid
   return guessOpened ? (
     <Box height={{ min: 'unset' }}>
-      <Form onSubmit={(d) => setShowScale(true)}>
+      <Form onSubmit={() => setShowScale(true)}>
         <Box fill>
           <Box align="start" direction="row" justify="center" height={{ min: 'unset' }}>
             <Heading level="3" margin="none" style={{ width: '100%' }}>
