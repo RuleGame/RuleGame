@@ -151,6 +151,7 @@ export type Endpoints = {
         newlyRegistered: boolean;
         trialListId: string;
         trialList: Para[];
+        completionCode?: string;
       },
       { playerId: string }
     >;
@@ -165,6 +166,7 @@ export type Endpoints = {
         display: Display;
         episodeId: string;
         para: Para;
+        completionCode?: string;
       },
       {
         playerId: string;
@@ -181,6 +183,7 @@ export type Endpoints = {
         display: Display;
         episodeId: string;
         para: Para;
+        completionCode?: string;
       },
       {
         playerId: string;
