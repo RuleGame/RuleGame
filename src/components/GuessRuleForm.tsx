@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Box, Button, Form, FormField, Grid, Heading, Text } from 'grommet';
 import { useDispatch } from 'react-redux';
 import range from 'lodash/range';
 import { Next } from 'grommet-icons';
 import TextareaAutosize from 'react-textarea-autosize';
+import keycode from 'keycode';
 import { guess } from '../store/actions/board';
 
 const TEXT_INPUT_ID = 'guess-input';
@@ -21,12 +22,13 @@ const GuessRuleForm: React.FunctionComponent = () => {
   const [ruleGuess, setRuleGuess] = useState('');
   const [guessOpened, setGuessOpened] = useState(false);
   const [showScale, setShowScale] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   // Form type should accept generics for submit element and onChange parameter
   // FireFox needs height={{ min: 'unset' }} inside a grid
   return guessOpened ? (
     <Box height={{ min: 'unset' }}>
-      <Form onSubmit={() => setShowScale(true)}>
+      <Form onSubmit={(d) => setShowScale(true)}>
         <Box fill>
           <Box align="start" direction="row" justify="center" height={{ min: 'unset' }}>
             <Heading level="3" margin="none" style={{ width: '100%' }}>
@@ -52,10 +54,8 @@ const GuessRuleForm: React.FunctionComponent = () => {
                 {/* translate should be an optional prop in the type def */}
                 <TextareaAutosize
                   translate
-                  disabled={showScale}
                   id={TEXT_INPUT_ID}
                   required
-                  name="body"
                   value={ruleGuess}
                   onChange={({ target: { value } }) => setRuleGuess(value)}
                   style={{
@@ -65,11 +65,17 @@ const GuessRuleForm: React.FunctionComponent = () => {
                     border: '0.3em dashed gray',
                   }}
                   autoFocus
+                  onKeyDown={(e) => {
+                    if (e.keyCode === keycode.codes.enter && buttonRef.current !== null) {
+                      buttonRef.current.click();
+                      e.preventDefault();
+                    }
+                  }}
                 />
               </FormField>
             </Heading>
           </Box>
-          {!showScale && <Button icon={<Next />} type="submit" label="Next" />}
+          {!showScale && <Button icon={<Next />} type="submit" label="Next" ref={buttonRef} />}
         </Box>
       </Form>
       {showScale && (
