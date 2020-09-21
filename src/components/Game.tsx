@@ -121,7 +121,12 @@ const Game: React.FunctionComponent<{
           )}
           {isGameCompleted && !isInBonus && (
             // FireFox needs height={{ min: 'unset' }} inside a grid
-            <Box height={{ min: 'unset' }} gap="large">
+            <Box
+              height={{ min: 'unset' }}
+              gap="large"
+              fill
+              pad={{ left: 'xlarge', right: 'xlarge' }}
+            >
               <GuessRuleForm />
               <Box data-cy={CY_NO_MORE_MOVES} fill>
                 <Button

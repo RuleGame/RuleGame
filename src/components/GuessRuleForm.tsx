@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Box, Button, Form, FormField, Grid, Heading, Text, TextInput } from 'grommet';
+import { Box, Button, Form, FormField, Grid, Heading, Text } from 'grommet';
 import { useDispatch } from 'react-redux';
 import range from 'lodash/range';
 import { Next } from 'grommet-icons';
+import TextareaAutosize from 'react-textarea-autosize';
 import { guess } from '../store/actions/board';
 
 const TEXT_INPUT_ID = 'guess-input';
@@ -26,41 +27,47 @@ const GuessRuleForm: React.FunctionComponent = () => {
   return guessOpened ? (
     <Box height={{ min: 'unset' }}>
       <Form onSubmit={() => setShowScale(true)}>
-        <Box>
-          <Box align="center" direction="row" height={{ min: 'unset' }}>
-            <FormField
-              label={
-                <Heading level="3" margin="none">
-                  What is the rule?
-                </Heading>
-              }
-              htmlFor={TEXT_INPUT_ID}
-              component={Box}
-              style={{
-                flexDirection: 'row',
-                width: '100%',
-                height: '100%',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              contentProps={{
-                flex: 'grow',
-                border: { side: 'all', style: 'dashed', size: '0.3em', color: 'gray' },
-                height: 'min-content',
-                justify: 'center',
-                align: 'center',
-              }}
-            >
-              <TextInput
-                disabled={showScale}
-                id={TEXT_INPUT_ID}
-                required
-                name="body"
-                value={ruleGuess}
-                onChange={({ target: { value } }) => setRuleGuess(value)}
-                style={{ padding: '0.5em' }}
-              />
-            </FormField>
+        <Box fill>
+          <Box align="start" direction="row" justify="center" height={{ min: 'unset' }}>
+            <Heading level="3" margin="none" style={{ width: '100%' }}>
+              <FormField
+                label={
+                  <Heading level="3" margin="none">
+                    What is the rule?
+                  </Heading>
+                }
+                htmlFor={TEXT_INPUT_ID}
+                component={Box}
+                style={{
+                  flexDirection: 'row',
+                  width: '100%',
+                  height: '100%',
+                  justifyContent: 'center',
+                }}
+                contentProps={{
+                  flex: 'grow',
+                  border: 'top',
+                }}
+              >
+                {/* translate should be an optional prop in the type def */}
+                <TextareaAutosize
+                  translate
+                  disabled={showScale}
+                  id={TEXT_INPUT_ID}
+                  required
+                  name="body"
+                  value={ruleGuess}
+                  onChange={({ target: { value } }) => setRuleGuess(value)}
+                  style={{
+                    width: '100%',
+                    fontFamily: 'inherit',
+                    fontSize: 'inherit',
+                    border: '0.3em dashed gray',
+                  }}
+                  autoFocus
+                />
+              </FormField>
+            </Heading>
           </Box>
           {!showScale && <Button icon={<Next />} type="submit" label="Next" />}
         </Box>
