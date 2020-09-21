@@ -16,6 +16,7 @@ enum GridArea {
   GREATEST = 'GREATEST',
 }
 const RATING_NUM_ATTRIBUTE_VALUE = 'rating-num';
+const CUSTOM_VALIDITY = 'Please type in what you think the rule is';
 
 const GuessRuleForm: React.FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -53,11 +54,16 @@ const GuessRuleForm: React.FunctionComponent = () => {
               >
                 {/* translate should be an optional prop in the type def */}
                 <TextareaAutosize
-                  translate
+                  translate={undefined}
                   id={TEXT_INPUT_ID}
-                  required
+                  // required
                   value={ruleGuess}
-                  onChange={({ target: { value } }) => setRuleGuess(value)}
+                  onChange={({ target }) => {
+                    if ((target.value.trim().length ?? NaN) > 0) {
+                      target.setCustomValidity(CUSTOM_VALIDITY);
+                    }
+                    setRuleGuess(target.value);
+                  }}
                   style={{
                     width: '100%',
                     fontFamily: 'inherit',
@@ -66,16 +72,24 @@ const GuessRuleForm: React.FunctionComponent = () => {
                   }}
                   autoFocus
                   onKeyDown={(e) => {
-                    if (e.keyCode === keycode.codes.enter && buttonRef.current !== null) {
-                      buttonRef.current.click();
+                    if (e.keyCode === keycode.codes.enter) {
+                      // Don't allow entering new lines even after scale appears using enter key
                       e.preventDefault();
+                      if (buttonRef.current !== null) {
+                        buttonRef.current.click();
+                      }
                     }
                   }}
                   ref={(el) => {
                     if (el !== null) {
-                      el.setCustomValidity('Please type in what you think the rule is');
+                      if (el.value.trim().length > 0) {
+                        el.setCustomValidity('');
+                      } else {
+                        el.setCustomValidity(CUSTOM_VALIDITY);
+                      }
                     }
                   }}
+                  name="rule-description"
                 />
               </FormField>
             </Heading>
@@ -127,10 +141,9 @@ const GuessRuleForm: React.FunctionComponent = () => {
             pad={{ left: 'small', right: 'small' }}
           >
             {range(1, scaleSize + 1).map((ratingNum) => (
-              <Box justify="center" align="center">
+              <Box justify="center" align="center" key={ratingNum}>
                 <Button
                   disabled={ruleGuess.trim().length === 0}
-                  key={ratingNum}
                   rating-num={RATING_NUM_ATTRIBUTE_VALUE}
                   label={
                     <Box align="center" justify="center">
