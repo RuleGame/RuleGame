@@ -71,6 +71,11 @@ const GuessRuleForm: React.FunctionComponent = () => {
                       e.preventDefault();
                     }
                   }}
+                  ref={(el) => {
+                    if (el !== null) {
+                      el.setCustomValidity('Please type in what you think the rule is');
+                    }
+                  }}
                 />
               </FormField>
             </Heading>
