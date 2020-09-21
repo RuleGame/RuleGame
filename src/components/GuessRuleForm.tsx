@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Box, Button, Drop, Form, FormField, Grid, Heading, Text } from 'grommet';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import range from 'lodash/range';
 import { Next, Save } from 'grommet-icons';
 import TextareaAutosize from 'react-textarea-autosize';
@@ -8,6 +8,7 @@ import keycode from 'keycode';
 import { useLocalStorage } from 'react-use';
 import { guess } from '../store/actions/board';
 import { LOCAL_STORAGE_KEY } from '../constants';
+import { seriesNoSelector } from '../store/selectors/board';
 
 const TEXT_INPUT_ID = 'guess-input';
 const scaleSize = 7;
@@ -22,6 +23,8 @@ const CUSTOM_VALIDITY = 'Please type in what you think the rule is';
 
 const GuessRuleForm: React.FunctionComponent = () => {
   const dispatch = useDispatch();
+  const seriesNo = useSelector(seriesNoSelector);
+  const [savedSeriesNo, setSavedSeriesNo] = useLocalStorage(LOCAL_STORAGE_KEY.SERIES_NO, seriesNo);
   const [savedRuleGuess, setSavedRuleGuess] = useLocalStorage<string | undefined>(
     LOCAL_STORAGE_KEY.GUESS,
     undefined,
@@ -32,6 +35,8 @@ const GuessRuleForm: React.FunctionComponent = () => {
   const nextButtonRef = useRef<HTMLButtonElement | null>(null);
   const autofillButtonRef = useRef<HTMLButtonElement | null>(null);
   const [autofillButtonOver, setAutofillButtonOver] = useState(false);
+
+  const isPrevSeriesRuleGuessSaved = seriesNo === savedSeriesNo && savedRuleGuess !== undefined;
 
   // Form type should accept generics for submit element and onChange parameter
   // FireFox needs height={{ min: 'unset' }} inside a grid
@@ -99,21 +104,23 @@ const GuessRuleForm: React.FunctionComponent = () => {
                       }
                     }}
                     name="rule-description"
-                    placeholder={autofillButtonOver ? savedRuleGuess : ''}
+                    placeholder={
+                      isPrevSeriesRuleGuessSaved && autofillButtonOver ? savedRuleGuess : ''
+                    }
                   />
                 </FormField>
                 <Button
                   size="small"
                   icon={<Save size="small" />}
                   primary
-                  disabled={!savedRuleGuess}
+                  disabled={!isPrevSeriesRuleGuessSaved}
                   // Disabled condition asserts savedRuleGuess is non-undefined
                   onClick={() => setRuleGuess(savedRuleGuess!)}
                   ref={autofillButtonRef}
-                  onMouseOver={() => savedRuleGuess && setAutofillButtonOver(true)}
-                  onMouseLeave={() => savedRuleGuess && setAutofillButtonOver(false)}
-                  onFocus={() => savedRuleGuess && setAutofillButtonOver(true)}
-                  onBlur={() => savedRuleGuess && setAutofillButtonOver(false)}
+                  onMouseOver={() => isPrevSeriesRuleGuessSaved && setAutofillButtonOver(true)}
+                  onMouseLeave={() => isPrevSeriesRuleGuessSaved && setAutofillButtonOver(false)}
+                  onFocus={() => isPrevSeriesRuleGuessSaved && setAutofillButtonOver(true)}
+                  onBlur={() => isPrevSeriesRuleGuessSaved && setAutofillButtonOver(false)}
                 />
               </Box>
             </Heading>
@@ -188,6 +195,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
                   }}
                   onClick={() => {
                     setSavedRuleGuess(ruleGuess);
+                    setSavedSeriesNo(seriesNo);
                     dispatch(guess(`${ratingNum}: ${ruleGuess}`));
                   }}
                 />
@@ -205,7 +213,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
           </Box>
         </Grid>
       )}
-      {autofillButtonOver && autofillButtonRef.current !== null && savedRuleGuess && (
+      {autofillButtonOver && autofillButtonRef.current !== null && isPrevSeriesRuleGuessSaved && (
         <Drop
           align={{ bottom: 'top' }}
           target={autofillButtonRef.current}
