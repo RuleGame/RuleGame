@@ -97,11 +97,11 @@ const Game: React.FunctionComponent<{
           {!isGameCompleted && (
             <Box gap="small">
               <Button
-                label="Give up rule"
+                label="Give up on this rule"
                 onClick={() =>
                   dispatch(
                     addLayer(
-                      'Give up rule',
+                      'Give up on this rule',
                       `Are you sure you want to give up ${ruleName} and advance to the next rule if any?`,
                       [
                         {
