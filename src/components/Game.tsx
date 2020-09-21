@@ -7,7 +7,7 @@ import Board from './Board';
 import { RootAction } from '../store/actions';
 import GuessRuleForm from './GuessRuleForm';
 import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
-import { activateBonus, giveUp, loadNextBonus, skipGuess } from '../store/actions/board';
+import { activateBonus, giveUp, loadNextBonus } from '../store/actions/board';
 import {
   canActivateBonusSelector,
   episodeNoSelector,
@@ -93,7 +93,7 @@ const Game: React.FunctionComponent<{
         <Box gridArea={GridAreaName.BOARD} align="center" pad="medium">
           <Board className={className} paused={paused} />
         </Box>
-        <Box gridArea={GridAreaName.FORM} align="center">
+        <Box gridArea={GridAreaName.FORM} align="center" pad="small">
           {!isGameCompleted && (
             <Box gap="small">
               <Button
@@ -121,28 +121,13 @@ const Game: React.FunctionComponent<{
           )}
           {isGameCompleted && !isInBonus && (
             // FireFox needs height={{ min: 'unset' }} inside a grid
-            <Box height={{ min: 'unset' }} gap="large" pad={{ left: 'xlarge', right: 'xlarge' }}>
+            <Box
+              data-cy={CY_NO_MORE_MOVES}
+              height={{ min: 'unset' }}
+              gap="large"
+              pad={{ left: 'xlarge', right: 'xlarge' }}
+            >
               <GuessRuleForm />
-              <Box data-cy={CY_NO_MORE_MOVES} align="center">
-                <Button
-                  label="Skip guess"
-                  icon={<Next />}
-                  onClick={() =>
-                    dispatch(
-                      addLayer('Skip guess', 'Do you want to proceed without making a guess?', [
-                        {
-                          label: 'Yes',
-                          action: [skipGuess(), (id) => removeLayer(id)],
-                        },
-                        {
-                          label: 'No',
-                          action: (id) => removeLayer(id),
-                        },
-                      ]),
-                    )
-                  }
-                />
-              </Box>
             </Box>
           )}
           {isGameCompleted && isInBonus && (
