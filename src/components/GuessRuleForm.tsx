@@ -1,11 +1,13 @@
 import React, { useRef, useState } from 'react';
-import { Box, Button, Form, FormField, Grid, Heading, Text } from 'grommet';
+import { Box, Button, Drop, Form, FormField, Grid, Heading, Text } from 'grommet';
 import { useDispatch } from 'react-redux';
 import range from 'lodash/range';
-import { Next } from 'grommet-icons';
+import { Next, Save } from 'grommet-icons';
 import TextareaAutosize from 'react-textarea-autosize';
 import keycode from 'keycode';
+import { useLocalStorage } from 'react-use';
 import { guess } from '../store/actions/board';
+import { LOCAL_STORAGE_KEY } from '../constants';
 
 const TEXT_INPUT_ID = 'guess-input';
 const scaleSize = 7;
@@ -20,10 +22,16 @@ const CUSTOM_VALIDITY = 'Please type in what you think the rule is';
 
 const GuessRuleForm: React.FunctionComponent = () => {
   const dispatch = useDispatch();
+  const [savedRuleGuess, setSavedRuleGuess] = useLocalStorage<string | undefined>(
+    LOCAL_STORAGE_KEY.GUESS,
+    undefined,
+  );
   const [ruleGuess, setRuleGuess] = useState('');
   const [guessOpened, setGuessOpened] = useState(false);
   const [showScale, setShowScale] = useState(false);
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const nextButtonRef = useRef<HTMLButtonElement | null>(null);
+  const autofillButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [autofillButtonOver, setAutofillButtonOver] = useState(false);
 
   // Form type should accept generics for submit element and onChange parameter
   // FireFox needs height={{ min: 'unset' }} inside a grid
@@ -33,68 +41,85 @@ const GuessRuleForm: React.FunctionComponent = () => {
         <Box fill>
           <Box align="start" direction="row" justify="center" height={{ min: 'unset' }}>
             <Heading level="3" margin="none" style={{ width: '100%' }}>
-              <FormField
-                label={
-                  <Heading level="3" margin="none">
-                    What is the rule?
-                  </Heading>
-                }
-                htmlFor={TEXT_INPUT_ID}
-                component={Box}
-                style={{
-                  flexDirection: 'row',
-                  width: '100%',
-                  height: '100%',
-                  justifyContent: 'center',
-                }}
-                contentProps={{
-                  flex: 'grow',
-                  border: 'top',
-                }}
-              >
-                {/* translate should be an optional prop in the type def */}
-                <TextareaAutosize
-                  translate={undefined}
-                  id={TEXT_INPUT_ID}
-                  // required
-                  value={ruleGuess}
-                  onChange={({ target }) => {
-                    if ((target.value.trim().length ?? NaN) > 0) {
-                      target.setCustomValidity(CUSTOM_VALIDITY);
-                    }
-                    setRuleGuess(target.value);
-                  }}
+              <Box direction="row" gap="medium" align="baseline">
+                <FormField
+                  label={
+                    <Heading level="3" margin="none">
+                      What is the rule?
+                    </Heading>
+                  }
+                  htmlFor={TEXT_INPUT_ID}
+                  component={Box}
                   style={{
+                    flexDirection: 'row',
                     width: '100%',
-                    fontFamily: 'inherit',
-                    fontSize: 'inherit',
-                    border: '0.3em dashed gray',
+                    height: '100%',
+                    justifyContent: 'center',
                   }}
-                  autoFocus
-                  onKeyDown={(e) => {
-                    if (e.keyCode === keycode.codes.enter) {
-                      // Don't allow entering new lines even after scale appears using enter key
-                      e.preventDefault();
-                      if (buttonRef.current !== null) {
-                        buttonRef.current.click();
+                  contentProps={{
+                    flex: 'grow',
+                    border: 'top',
+                  }}
+                >
+                  {/* translate should be an optional prop in the type def */}
+                  <TextareaAutosize
+                    translate={undefined}
+                    id={TEXT_INPUT_ID}
+                    // required
+                    value={ruleGuess}
+                    onChange={({ target }) => {
+                      if ((target.value.trim().length ?? NaN) > 0) {
+                        target.setCustomValidity(CUSTOM_VALIDITY);
                       }
-                    }
-                  }}
-                  ref={(el) => {
-                    if (el !== null) {
-                      if (el.value.trim().length > 0) {
-                        el.setCustomValidity('');
-                      } else {
-                        el.setCustomValidity(CUSTOM_VALIDITY);
+                      setRuleGuess(target.value);
+                    }}
+                    style={{
+                      width: '100%',
+                      fontFamily: 'inherit',
+                      fontSize: 'inherit',
+                      border: '0.3em dashed gray',
+                    }}
+                    autoFocus
+                    onKeyDown={(e) => {
+                      if (e.keyCode === keycode.codes.enter) {
+                        // Don't allow entering new lines even after scale appears using enter key
+                        e.preventDefault();
+                        if (nextButtonRef.current !== null) {
+                          nextButtonRef.current.click();
+                        }
                       }
-                    }
-                  }}
-                  name="rule-description"
+                    }}
+                    ref={(el) => {
+                      if (el !== null) {
+                        if (el.value.trim().length > 0) {
+                          el.setCustomValidity('');
+                        } else {
+                          el.setCustomValidity(CUSTOM_VALIDITY);
+                        }
+                      }
+                    }}
+                    name="rule-description"
+                  />
+                </FormField>
+                <Button
+                  size="small"
+                  icon={<Save size="small" />}
+                  primary
+                  disabled={!savedRuleGuess}
+                  // Disabled condition asserts savedRuleGuess is non-undefined
+                  onClick={() => setRuleGuess(savedRuleGuess!)}
+                  ref={autofillButtonRef}
+                  onMouseOver={() => savedRuleGuess && setAutofillButtonOver(true)}
+                  onMouseLeave={() => savedRuleGuess && setAutofillButtonOver(false)}
+                  onFocus={() => savedRuleGuess && setAutofillButtonOver(true)}
+                  onBlur={() => savedRuleGuess && setAutofillButtonOver(false)}
                 />
-              </FormField>
+              </Box>
             </Heading>
           </Box>
-          {!showScale && <Button icon={<Next />} type="submit" label="Next" ref={buttonRef} />}
+          {!showScale && (
+            <Button icon={<Next />} type="submit" label="Next" ref={nextButtonRef} margin="small" />
+          )}
         </Box>
       </Form>
       {showScale && (
@@ -160,7 +185,10 @@ const GuessRuleForm: React.FunctionComponent = () => {
                     height: '3em',
                     borderWidth: '0.25em',
                   }}
-                  onClick={() => dispatch(guess(`${ratingNum}: ${ruleGuess}`))}
+                  onClick={() => {
+                    setSavedRuleGuess(ruleGuess);
+                    dispatch(guess(`${ratingNum}: ${ruleGuess}`));
+                  }}
                 />
               </Box>
             ))}
@@ -176,10 +204,23 @@ const GuessRuleForm: React.FunctionComponent = () => {
           </Box>
         </Grid>
       )}
+      {autofillButtonOver && autofillButtonRef.current !== null && savedRuleGuess && (
+        <Drop
+          align={{ bottom: 'top' }}
+          target={autofillButtonRef.current}
+          plain
+          // trapFocus set to false allows tabbing through
+          trapFocus={false}
+        >
+          <Box pad="small" background="gray">
+            <Text color="white">Autofill previous rule description</Text>
+          </Box>
+        </Drop>
+      )}
     </Box>
   ) : (
     // FireFox needs height={{ min: 'unset' }} inside a grid
-    <Box width="20em" fill height={{ min: 'unset' }} align="center">
+    <Box width="20em" fill height={{ min: 'unset' }} align="center" margin="small">
       <Button
         size="large"
         label={

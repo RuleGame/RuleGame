@@ -53,3 +53,7 @@ export const PAGE_ORDER: Page[] = [
 ];
 
 export const DEFAULT_WORKER_ID = 'testWorkerId';
+
+export enum LOCAL_STORAGE_KEY {
+  GUESS = 'GUESS',
+}
