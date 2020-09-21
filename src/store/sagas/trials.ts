@@ -1,5 +1,6 @@
 import { call, delay, put, race, takeEvery } from 'typed-redux-saga';
 import { getType } from 'typesafe-actions';
+import Papa from 'papaparse';
 import { Code, ErrorMsg, METHOD } from '../../utils/api';
 import {
   activateBonus,
@@ -167,13 +168,18 @@ function* trials(playerId: string) {
     payload: { data: demographics },
   } = yield* takeAction(recordDemographics);
 
+  const csvString = Papa.unparse({
+    fields: ['key', 'value'],
+    data: Object.entries(demographics),
+  });
+
   yield* apiResolve(
     '/w2020/game-data/GameService/writeFile',
     METHOD.POST,
     {
-      data: JSON.stringify(demographics),
+      data: csvString,
       dir: 'demographics',
-      file: `${playerId}.json`,
+      file: `${playerId}.csv`,
     },
     {},
   );
