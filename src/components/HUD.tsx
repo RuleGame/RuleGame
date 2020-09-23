@@ -91,6 +91,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
           justify="center"
           align="center"
           overflow="auto"
+          fill="vertical"
         >
           {children}
         </Box>
