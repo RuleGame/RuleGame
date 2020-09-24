@@ -76,3 +76,5 @@ export const hasMoreBonusRoundsSelector = (state: RootState): boolean =>
 export const finishCodeSelector = (state: RootState) => state.board.finishCode;
 
 export const episodeIdSelector = (state: RootState) => state.board.episodeId;
+
+export const maxPointsSelector = (state: RootState) => state.board.maxPoints;

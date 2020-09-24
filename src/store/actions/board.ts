@@ -31,6 +31,7 @@ export const setBoard = createAction(
     numMovesMade: number,
     episodeNo: number,
     episodeId: string,
+    maxPoints: number,
     movesLeftToStayInBonus?: number,
     transitionMap?: TransitionMap,
   ) => ({
@@ -53,6 +54,7 @@ export const setBoard = createAction(
     movesLeftToStayInBonus,
     transitionMap,
     episodeId,
+    maxPoints,
   }),
 )();
 
