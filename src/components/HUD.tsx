@@ -2,12 +2,14 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Box, Grid, Heading, Text } from 'grommet';
 import {
+  episodeIdSelector,
   episodeNoSelector,
   movesLeftToStayInBonusSelector,
   numMovesMadeSelector,
   totalBoardsPredictedSelector,
   totalRewardEarnedSelector,
 } from '../store/selectors/board';
+import { DEBUG_ENABLED } from '../constants/env';
 
 enum GridArea {
   NUM_MOVES_MADE = 'NUM_MOVES_MADE',
@@ -23,6 +25,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
   const points = useSelector(totalRewardEarnedSelector);
   const numMovesLeft = useSelector(movesLeftToStayInBonusSelector);
   const numBoardsLeft = useSelector(totalBoardsPredictedSelector);
+  const episodeId = useSelector(episodeIdSelector);
 
   return (
     <Grid
@@ -96,7 +99,17 @@ const HUD: React.FunctionComponent = ({ children }) => {
           {children}
         </Box>
       </Box>
-      <Box gridArea={GridArea.BOARD_COUNT} direction="row" align="end">
+      <Box gridArea={GridArea.BOARD_COUNT} justify="end">
+        {DEBUG_ENABLED && (
+          <>
+            <Heading level="3" margin="none">
+              Episode: {episodeId}
+            </Heading>
+            <Heading level="4" margin="none">
+              (for debugging)
+            </Heading>
+          </>
+        )}
         <Heading level="2" margin="none">
           <Box direction="row" align="baseline">
             <Text size="inherit" weight="bold">
