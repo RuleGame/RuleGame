@@ -87,6 +87,8 @@ function* trials(playerId: string) {
           display.ruleLineNo,
           display.numMovesMade,
           display.episodeNo,
+          episodeId,
+          para.max_points,
           display.movesLeftToStayInBonus,
           display.transitionMap,
         ),

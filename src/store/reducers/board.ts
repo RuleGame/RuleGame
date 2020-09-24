@@ -29,6 +29,8 @@ export type State = {
   stackMemoryDepth: number;
   movesLeftToStayInBonus?: number;
   transitionMap?: TransitionMap;
+  episodeId: string;
+  maxPoints: number;
 };
 
 export const initialState: State = {
@@ -60,6 +62,8 @@ export const initialState: State = {
   stackMemoryDepth: 0,
   movesLeftToStayInBonus: undefined,
   transitionMap: undefined,
+  episodeId: 'N/A',
+  maxPoints: 0,
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -101,6 +105,8 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         seriesNo: action.payload.seriesNo,
         movesLeftToStayInBonus: action.payload.movesLeftToStayInBonus,
         transitionMap: action.payload.transitionMap,
+        episodeId: action.payload.episodeId,
+        maxPoints: action.payload.maxPoints,
       };
 
     case getType(pause):

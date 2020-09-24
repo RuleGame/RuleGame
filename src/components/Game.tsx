@@ -58,187 +58,193 @@ const Game: React.FunctionComponent<{
   const ruleName = `Rule ${seriesNo + 1} ${isInBonus ? '(Bonus Round)' : ''}`;
 
   return (
-    <Box pad="small" data-cy={CY_GAME}>
-      <Grid
-        rows={['auto', 'min(50vh, 100vw)', 'auto']}
-        columns={['1fr', 'min(50vh, 100vw)', '1fr']}
-        areas={[
-          {
-            name: GridAreaName.HEADING,
-            start: [1, 0],
-            end: [1, 0],
-          },
-          {
-            name: GridAreaName.LEFT_OF_BOARD,
-            start: [0, 1],
-            end: [0, 1],
-          },
-          {
-            name: GridAreaName.BOARD,
-            start: [1, 1],
-            end: [1, 1],
-          },
-          {
-            name: GridAreaName.HISTORY,
-            start: [2, 1],
-            end: [2, 1],
-          },
-          {
-            name: GridAreaName.FORM,
-            start: [0, 2],
-            end: [2, 2],
-          },
-        ]}
+    <Grid
+      fill="vertical"
+      pad="small"
+      data-cy={CY_GAME}
+      rows={['auto', 'auto', 'auto']}
+      columns={['1fr', '3fr', '1fr']}
+      areas={[
+        {
+          name: GridAreaName.HEADING,
+          start: [1, 0],
+          end: [1, 0],
+        },
+        {
+          name: GridAreaName.LEFT_OF_BOARD,
+          start: [0, 1],
+          end: [0, 1],
+        },
+        {
+          name: GridAreaName.BOARD,
+          start: [1, 1],
+          end: [1, 1],
+        },
+        {
+          name: GridAreaName.HISTORY,
+          start: [2, 1],
+          end: [2, 1],
+        },
+        {
+          name: GridAreaName.FORM,
+          start: [0, 2],
+          end: [2, 2],
+        },
+      ]}
+    >
+      <Box gridArea={GridAreaName.HEADING} align="center">
+        <Heading margin="none">{ruleName}</Heading>
+      </Box>
+      <Box
+        gridArea={GridAreaName.BOARD}
+        align="center"
+        pad="medium"
+        alignSelf="center"
+        justify="center"
+        fill
       >
-        <Box gridArea={GridAreaName.HEADING} align="center">
-          <Heading margin="none">{ruleName}</Heading>
-        </Box>
-        <Box gridArea={GridAreaName.BOARD} align="center" pad="medium">
-          <Board className={className} paused={paused} />
-        </Box>
-        <Box gridArea={GridAreaName.FORM} align="center" pad="small">
-          {!isGameCompleted && (
-            <Box gap="small">
-              <Button
-                label="Give up on this rule"
-                onClick={() =>
-                  dispatch(
-                    addLayer(
-                      'Give up on this rule',
-                      `Are you sure you want to give up ${ruleName} and advance to the next rule if any?`,
-                      [
-                        {
-                          label: 'Yes',
-                          action: [giveUp(), (id) => removeLayer(id)],
-                        },
-                        {
-                          label: 'No',
-                          action: (id) => removeLayer(id),
-                        },
-                      ],
-                    ),
-                  )
-                }
-              />
-            </Box>
-          )}
-          {isGameCompleted && !isInBonus && (
-            // FireFox needs height={{ min: 'unset' }} inside a grid
-            <Box
-              data-cy={CY_NO_MORE_MOVES}
-              height={{ min: 'unset' }}
-              gap="large"
-              pad={{ left: 'xlarge', right: 'xlarge' }}
-            >
-              <GuessRuleForm />
-            </Box>
-          )}
-          {isGameCompleted && isInBonus && (
-            <Box align="center">
-              <Heading>
-                {finishCode === FinishCode.FINISH ? (
-                  <Text size="inherit" color="blue">
-                    Board succesfully cleared!
-                  </Text>
-                ) : finishCode === FinishCode.STALEMATE || finishCode === FinishCode.LOST ? (
-                  <Text size="inherit" color="red">
-                    No more moves left!
-                  </Text>
-                ) : (
-                  ''
-                )}
-              </Heading>
-              <Button
-                label={hasMoreBonusRounds ? 'Next Bonus Round' : 'Next Rule (Bonus Completed)'}
-                icon={<Next />}
-                onClick={() => dispatch(loadNextBonus())}
-              />
-            </Box>
-          )}
-        </Box>
-
-        {(DEBUG_ENABLED || canActivateBonus) && (
-          <Box gridArea={GridAreaName.LEFT_OF_BOARD} align="end">
-            {DEBUG_ENABLED && (
-              <Box>
-                <Box width="small" overflow="auto" margin={{ bottom: 'small' }}>
-                  <Text size="small">{String(ruleSrc.orders)}</Text>
-                </Box>
-                {ruleSrc.rows.map((rawAtom, i) => (
-                  <Box
-                    key={rawAtom}
-                    background={ruleLineNo === i && !isGameCompleted ? 'yellow' : 'none'}
-                  >
-                    <Text size="small">{rawAtom}</Text>
-                  </Box>
-                ))}
-                <Box background={isGameCompleted ? 'yellow' : 'end'}>
-                  <Text size="small">loop/end</Text>
-                </Box>
-              </Box>
-            )}
-            {canActivateBonus && isGameCompleted && !isInBonus && (
-              <Box fill="vertical" justify="center">
-                <Box>
-                  {bonusActivated ? (
-                    <Box
-                      border={{ side: 'all', style: 'dashed', size: 'medium' }}
-                      round
-                      pad="medium"
-                    >
-                      <Text size="large" textAlign="center">
-                        Bonus activated next round!
-                      </Text>
-                    </Box>
-                  ) : (
-                    <Button
-                      primary
-                      color="darkorange"
-                      label={
-                        <Text color="white" size="large" weight="bold">
-                          <Box>Think you got it?</Box>
-                          <Box>Activate bonus rounds!</Box>
-                        </Text>
-                      }
-                      onClick={() => {
-                        setBonusActivated(true);
-                        dispatch(activateBonus());
-                      }}
-                    />
-                  )}
-                </Box>
-              </Box>
-            )}
+        <Board className={className} paused={paused} />
+      </Box>
+      <Box gridArea={GridAreaName.FORM} align="center" pad="small">
+        {!isGameCompleted && (
+          <Box gap="small">
+            <Button
+              label="Give up on this rule"
+              onClick={() =>
+                dispatch(
+                  addLayer(
+                    'Give up on this rule',
+                    `Are you sure you want to give up ${ruleName} and advance to the next rule if any?`,
+                    [
+                      {
+                        label: 'Yes',
+                        action: [giveUp(), (id) => removeLayer(id)],
+                      },
+                      {
+                        label: 'No',
+                        action: (id) => removeLayer(id),
+                      },
+                    ],
+                  ),
+                )
+              }
+            />
           </Box>
         )}
+        {isGameCompleted && !isInBonus && (
+          // FireFox needs height={{ min: 'unset' }} inside a grid
+          <Box
+            data-cy={CY_NO_MORE_MOVES}
+            height={{ min: 'unset' }}
+            gap="large"
+            pad={{ left: 'xlarge', right: 'xlarge' }}
+            fill
+          >
+            <GuessRuleForm />
+          </Box>
+        )}
+        {isGameCompleted && isInBonus && (
+          <Box align="center">
+            <Heading>
+              {finishCode === FinishCode.FINISH ? (
+                <Text size="inherit" color="blue">
+                  Board succesfully cleared!
+                </Text>
+              ) : finishCode === FinishCode.STALEMATE || finishCode === FinishCode.LOST ? (
+                <Text size="inherit" color="red">
+                  No more moves left!
+                </Text>
+              ) : (
+                ''
+              )}
+            </Heading>
+            <Button
+              label={hasMoreBonusRounds ? 'Next Bonus Round' : 'Next Rule (Bonus Completed)'}
+              icon={<Next />}
+              onClick={() => dispatch(loadNextBonus())}
+            />
+          </Box>
+        )}
+      </Box>
 
-        {DEBUG_ENABLED && (
-          <Box gridArea={GridAreaName.HISTORY} overflow="auto">
-            History Log:
-            {/* eslint-disable react/no-array-index-key */}
-            {historyInfo.map((moveInfo, i) => (
-              <Box
-                key={i}
-                border={[
-                  { side: 'top', style: 'dotted' },
-                  { side: 'bottom', style: 'dotted' },
-                ]}
-                style={{ minHeight: 'unset' }}
-              >
-                {/* eslint-enable react/no-array-index-key */}
-                {Object.entries(moveInfo).map(([key, value]) => (
-                  <Box key={key} style={{ minHeight: 'unset' }}>
-                    <Text size="small">
-                      {key}: {value}
+      {(DEBUG_ENABLED || canActivateBonus) && (
+        <Box gridArea={GridAreaName.LEFT_OF_BOARD} align="end">
+          {DEBUG_ENABLED && (
+            <Box fill="vertical">
+              <Box width="small" overflow="auto" margin={{ bottom: 'small' }}>
+
+                <Text size="small">{String(ruleSrc.orders)}</Text>
+              </Box>
+              {ruleSrc.rows.map((rawAtom, i) => (
+                <Box
+                  key={rawAtom}
+                  background={ruleLineNo === i && !isGameCompleted ? 'yellow' : 'none'}
+                >
+                  <Text size="small">{rawAtom}</Text>
+                </Box>
+              ))}
+              <Box background={isGameCompleted ? 'yellow' : 'end'}>
+                <Text size="small">loop/end</Text>
+              </Box>
+            </Box>
+          )}
+          {canActivateBonus && isGameCompleted && !isInBonus && (
+            <Box fill="vertical" justify="center">
+              <Box>
+                {bonusActivated ? (
+                  <Box border={{ side: 'all', style: 'dashed', size: 'medium' }} round pad="medium">
+                    <Text size="large" textAlign="center">
+                      Bonus activated next round!
                     </Text>
                   </Box>
-                ))}
+                ) : (
+                  <Button
+                    primary
+                    color="darkorange"
+                    label={
+                      <Text color="white" size="large" weight="bold">
+                        <Box>Think you got it?</Box>
+                        <Box>Activate bonus rounds!</Box>
+                      </Text>
+                    }
+                    onClick={() => {
+                      setBonusActivated(true);
+                      dispatch(activateBonus());
+                    }}
+                  />
+                )}
               </Box>
-            ))}
-          </Box>
-        )}
-      </Grid>
-    </Box>
+            </Box>
+          )}
+        </Box>
+      )}
+
+      {DEBUG_ENABLED && (
+        <Box gridArea={GridAreaName.HISTORY} overflow="auto">
+          History Log:
+          {/* eslint-disable react/no-array-index-key */}
+          {historyInfo.map((moveInfo, i) => (
+            <Box
+              key={i}
+              border={[
+                { side: 'top', style: 'dotted' },
+                { side: 'bottom', style: 'dotted' },
+              ]}
+              style={{ minHeight: 'unset' }}
+            >
+              {/* eslint-enable react/no-array-index-key */}
+              {Object.entries(moveInfo).map(([key, value]) => (
+                <Box key={key} style={{ minHeight: 'unset' }}>
+                  <Text size="small">
+                    {key}: {value}
+                  </Text>
+                </Box>
+              ))}
+            </Box>
+          ))}
+        </Box>
+      )}
+    </Grid>
   );
 };
 

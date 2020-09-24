@@ -15,22 +15,20 @@
     "start": "react-app-rewired start",
     "test": "react-app-rewired test --env=jsdom"
   },
-  "husky ": {
+  "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged --quiet"
     }
   },
   "lint-staged": {
     "*.{ts,tsx}": [
       "prettier --write",
       "eslint --fix",
-      "stylelint --fix",
       "git add"
     ],
     "*.{js,jsx}": [
       "prettier --write",
       "eslint --fix",
-      "stylelint --fix",
       "git add"
     ],
     "*.{json,md}": [
@@ -135,8 +133,9 @@
     "eslint-plugin-react-hooks": "1.6.1",
     "eslint-plugin-switch-case": "1.1.2",
     "fs-extra": "8.1.0",
-    "husky": "^4.2.5",
+    "husky": "4.3.0",
     "install": "0.13.0",
+    "lint-staged": "10.4.0",
     "prettier": "2.1.1",
     "raw-loader": "4.0.0",
     "react-app-rewired": "2.1.3",

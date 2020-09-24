@@ -36,12 +36,17 @@ const GuessRuleForm: React.FunctionComponent = () => {
   const autofillButtonRef = useRef<HTMLButtonElement | null>(null);
   const [autofillButtonOver, setAutofillButtonOver] = useState(false);
 
-  const isPrevSeriesRuleGuessSaved = seriesNo === savedSeriesNo && savedRuleGuess !== undefined;
+  // Check only once whether rule guess is saved and check again when the form is remounted.
+  // This is so that the autofill button won't distractingly appear after saving the first guess
+  // and before the form is unrendered.
+  const isPrevSeriesRuleGuessSavedRef = useRef(
+    seriesNo === savedSeriesNo && savedRuleGuess !== undefined,
+  );
+  const isPrevSeriesRuleGuessSaved = isPrevSeriesRuleGuessSavedRef.current;
+  const isRuleGuessEmpty = ruleGuess.trim().length === 0;
 
-  // Form type should accept generics for submit element and onChange parameter
-  // FireFox needs height={{ min: 'unset' }} inside a grid
   return guessOpened ? (
-    <Box height={{ min: 'unset' }}>
+    <>
       <Form onSubmit={() => setShowScale(true)}>
         <Box fill>
           <Box align="start" direction="row" justify="center" height={{ min: 'unset' }}>
@@ -109,21 +114,20 @@ const GuessRuleForm: React.FunctionComponent = () => {
                     }
                   />
                 </FormField>
-                <Button
-                  size="small"
-                  icon={<Save size="small" />}
-                  primary
-                  disabled={!isPrevSeriesRuleGuessSaved}
-                  // Disabled condition asserts savedRuleGuess is non-undefined
-                  onClick={() => setRuleGuess(savedRuleGuess!)}
-                  ref={autofillButtonRef}
-                  // Asserting isPrevSeriesRuleGuessSaved prevents unnecessarily opening the drop
-                  // between disabling and enabling this button
-                  onMouseOver={() => isPrevSeriesRuleGuessSaved && setAutofillButtonOver(true)}
-                  onMouseLeave={() => isPrevSeriesRuleGuessSaved && setAutofillButtonOver(false)}
-                  onFocus={() => isPrevSeriesRuleGuessSaved && setAutofillButtonOver(true)}
-                  onBlur={() => isPrevSeriesRuleGuessSaved && setAutofillButtonOver(false)}
-                />
+                {isPrevSeriesRuleGuessSaved && (
+                  <Button
+                    size="small"
+                    icon={<Save size="small" />}
+                    primary
+                    // Hidden condition isPrevSeriesRuleGuessSaved asserts savedRuleGuess is non-undefined
+                    onClick={() => setRuleGuess(savedRuleGuess!)}
+                    ref={autofillButtonRef}
+                    onMouseOver={() => setAutofillButtonOver(true)}
+                    onMouseLeave={() => setAutofillButtonOver(false)}
+                    onFocus={() => setAutofillButtonOver(true)}
+                    onBlur={() => setAutofillButtonOver(false)}
+                  />
+                )}
               </Box>
             </Heading>
           </Box>
@@ -135,7 +139,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
       {showScale && (
         <Grid
           align="center"
-          columns={['auto', 'auto', 'auto']}
+          columns={['auto', 'min-content', 'auto']}
           rows={['auto', 'auto']}
           areas={[
             { name: GridArea.PROMPT, start: [1, 0], end: [1, 0] },
@@ -155,13 +159,16 @@ const GuessRuleForm: React.FunctionComponent = () => {
               end: [2, 1],
             },
           ]}
+          fill
         >
           <Box align="center" gridArea={GridArea.PROMPT}>
-            <Heading level="2">How sure are you?</Heading>
+            <Text color={isRuleGuessEmpty ? 'gray' : 'black'}>
+              <Heading level="2">How sure are you?</Heading>
+            </Text>
           </Box>
           <Box fill="vertical" gridArea={GridArea.LEAST} align="end">
             <Box width="min-content">
-              <Text textAlign="end">
+              <Text textAlign="end" color={isRuleGuessEmpty ? 'gray' : 'black'}>
                 <Heading level="3" margin="none">
                   Just guessing
                 </Heading>
@@ -178,7 +185,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
             {range(1, scaleSize + 1).map((ratingNum) => (
               <Box justify="center" align="center" key={ratingNum}>
                 <Button
-                  disabled={ruleGuess.trim().length === 0}
+                  disabled={isRuleGuessEmpty}
                   rating-num={RATING_NUM_ATTRIBUTE_VALUE}
                   label={
                     <Box align="center" justify="center">
@@ -206,7 +213,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
           </Box>
           <Box fill="vertical" width="min-content" gridArea={GridArea.GREATEST}>
             <Box width="min-content">
-              <Text textAlign="start">
+              <Text textAlign="start" color={isRuleGuessEmpty ? 'gray' : 'black'}>
                 <Heading level="3" margin="none">
                   Completely sure
                 </Heading>
@@ -228,7 +235,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
           </Box>
         </Drop>
       )}
-    </Box>
+    </>
   ) : (
     // FireFox needs height={{ min: 'unset' }} inside a grid
     <Box width="20em" fill height={{ min: 'unset' }} align="center" margin="small">

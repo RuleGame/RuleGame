@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { Box, Grid } from 'grommet';
+import { useMeasure } from 'react-use';
 import { BucketType } from '../@types';
 import { buckets, cols, rows } from '../constants';
 import BoardObject from './BoardObject';
@@ -58,75 +59,79 @@ const Board = ({ className }: BoardProps): JSX.Element => {
   const bucketShapes = useSelector(bucketShapesSelector);
   const boardObjects = useSelector(boardObjectsSelector);
   const showStackMemoryOrder = useSelector(showStackMemoryOrderSelector);
+  const [ref, { width, height }] = useMeasure();
 
   return (
-    <Grid
-      className={className}
-      fill
-      rows={['10%', '40%', '40%', '10%']}
-      columns={['10%', '80%', '10%']}
-      areas={[
-        {
-          name: GridAreaName.TL,
-          start: [0, 0],
-          end: [0, 1],
-        },
-        {
-          name: GridAreaName.TR,
-          start: [2, 0],
-          end: [2, 1],
-        },
-        {
-          name: GridAreaName.BL,
-          start: [0, 2],
-          end: [0, 3],
-        },
-        {
-          name: GridAreaName.BR,
-          start: [2, 2],
-          end: [2, 3],
-        },
-        {
-          name: GridAreaName.BOARD,
-          start: showStackMemoryOrder ? [1, 1] : [0, 0],
-          end: showStackMemoryOrder ? [1, 2] : [2, 3],
-        },
-      ]}
-    >
-      <Box gridArea={GridAreaName.TL} fill justify="center" align="center">
-        <BucketDropList bucket={BucketPosition.TL} />
-      </Box>
-      <Box gridArea={GridAreaName.TR} fill justify="center" align="center">
-        <BucketDropList bucket={BucketPosition.TR} />
-      </Box>
-      <Box gridArea={GridAreaName.BL} fill justify="center" align="center">
-        <BucketDropList bucket={BucketPosition.BL} />
-      </Box>
-      <Box gridArea={GridAreaName.BR} fill justify="center" align="center">
-        <BucketDropList bucket={BucketPosition.BR} />
-      </Box>
+    <Box justify="center" align="center" ref={ref} fill>
+      <Grid
+        // fill="vertical"
+        style={{ width: `${Math.min(width, height)}px`, height: `${Math.min(width, height)}px` }}
+        className={className}
+        rows={['10%', '40%', '40%', '10%']}
+        columns={['10%', '80%', '10%']}
+        areas={[
+          {
+            name: GridAreaName.TL,
+            start: [0, 0],
+            end: [0, 1],
+          },
+          {
+            name: GridAreaName.TR,
+            start: [2, 0],
+            end: [2, 1],
+          },
+          {
+            name: GridAreaName.BL,
+            start: [0, 2],
+            end: [0, 3],
+          },
+          {
+            name: GridAreaName.BR,
+            start: [2, 2],
+            end: [2, 3],
+          },
+          {
+            name: GridAreaName.BOARD,
+            start: showStackMemoryOrder ? [1, 1] : [0, 0],
+            end: showStackMemoryOrder ? [1, 2] : [2, 3],
+          },
+        ]}
+      >
+        <Box gridArea={GridAreaName.TL} fill justify="center" align="center">
+          <BucketDropList bucket={BucketPosition.TL} />
+        </Box>
+        <Box gridArea={GridAreaName.TR} fill justify="center" align="center">
+          <BucketDropList bucket={BucketPosition.TR} />
+        </Box>
+        <Box gridArea={GridAreaName.BL} fill justify="center" align="center">
+          <BucketDropList bucket={BucketPosition.BL} />
+        </Box>
+        <Box gridArea={GridAreaName.BR} fill justify="center" align="center">
+          <BucketDropList bucket={BucketPosition.BR} />
+        </Box>
 
-      <Box gridArea={GridAreaName.BOARD}>
-        <StyledBoard>
-          {boardObjects.map((boardObject) => (
-            <StyledBoardObject
-              {...boardObject}
-              key={boardObject.id}
-              moveNum={moveNumByBoardObject[boardObject.id]}
-              boardObject={boardObject}
-            />
-          ))}
-          {buckets.map((bucket) => (
-            <StyledBucket
-              {...bucket}
-              key={`${bucket.x}-${bucket.y}`}
-              shape={bucketShapes[bucket.pos]}
-              bucket={bucket}
-            />
-          ))}
-        </StyledBoard>
-      </Box>
-    </Grid>
+        <Box gridArea={GridAreaName.BOARD}>
+          <StyledBoard>
+            {boardObjects.map((boardObject) => (
+              <StyledBoardObject
+                {...boardObject}
+                key={boardObject.id}
+                moveNum={moveNumByBoardObject[boardObject.id]}
+                boardObject={boardObject}
+              />
+            ))}
+            {buckets.map((bucket) => (
+              <StyledBucket
+                {...bucket}
+                key={`${bucket.x}-${bucket.y}`}
+                shape={bucketShapes[bucket.pos]}
+                bucket={bucket}
+              />
+            ))}
+          </StyledBoard>
+        </Box>
+      </Grid>
+    </Box>
   );
 };
 
