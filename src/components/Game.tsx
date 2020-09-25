@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Button, Grid, Heading, Text } from 'grommet';
+import { Box, Button, CheckBox, Grid, Heading, Text } from 'grommet';
 import { Dispatch } from 'redux';
 import { Next } from 'grommet-icons';
 import Board from './Board';
@@ -21,9 +21,11 @@ import {
   ruleSrcSelector,
   seriesNoSelector,
 } from '../store/selectors/board';
-import { DEBUG_ENABLED } from '../constants/env';
 import { addLayer, removeLayer } from '../store/actions/layers';
 import { FinishCode } from '../utils/api';
+import { debugModeSelector } from '../store/selectors/debug-mode';
+import { setDebugMode } from '../store/actions/debug-mode';
+import { DEBUG_ENABLED } from '../constants/env';
 
 enum GridAreaName {
   HEADING = 'HEADING',
@@ -50,6 +52,7 @@ const Game: React.FunctionComponent<{
   const hasMoreBonusRounds = useSelector(hasMoreBonusRoundsSelector);
   const [bonusActivated, setBonusActivated] = useState(false);
   const finishCode = useSelector(finishCodeSelector);
+  const debugMode = useSelector(debugModeSelector);
 
   useEffect(() => {
     setBonusActivated(false);
@@ -63,7 +66,7 @@ const Game: React.FunctionComponent<{
       pad="small"
       data-cy={CY_GAME}
       rows={['auto', 'auto', 'auto']}
-      columns={['1fr', '3fr', '1fr']}
+      columns={['1fr', 'auto', '1fr']}
       areas={[
         {
           name: GridAreaName.HEADING,
@@ -92,8 +95,15 @@ const Game: React.FunctionComponent<{
         },
       ]}
     >
-      <Box gridArea={GridAreaName.HEADING} align="center">
+      <Box gridArea={GridAreaName.HEADING} align="center" gap="small">
         <Heading margin="none">{ruleName}</Heading>
+        {DEBUG_ENABLED && (
+          <CheckBox
+            checked={debugMode}
+            label="Debug Mode"
+            onChange={({ target: { checked } }) => dispatch(setDebugMode(checked))}
+          />
+        )}
       </Box>
       <Box
         gridArea={GridAreaName.BOARD}
@@ -167,12 +177,11 @@ const Game: React.FunctionComponent<{
         )}
       </Box>
 
-      {(DEBUG_ENABLED || canActivateBonus) && (
+      {(debugMode || canActivateBonus) && (
         <Box gridArea={GridAreaName.LEFT_OF_BOARD} align="end">
-          {DEBUG_ENABLED && (
+          {debugMode && (
             <Box fill="vertical">
               <Box width="small" overflow="auto" margin={{ bottom: 'small' }}>
-
                 <Text size="small">{String(ruleSrc.orders)}</Text>
               </Box>
               {ruleSrc.rows.map((rawAtom, i) => (
@@ -219,7 +228,7 @@ const Game: React.FunctionComponent<{
         </Box>
       )}
 
-      {DEBUG_ENABLED && (
+      {debugMode && (
         <Box gridArea={GridAreaName.HISTORY} overflow="auto">
           History Log:
           {/* eslint-disable react/no-array-index-key */}

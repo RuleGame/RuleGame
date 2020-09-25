@@ -139,7 +139,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
       {showScale && (
         <Grid
           align="center"
-          columns={['auto', 'min-content', 'auto']}
+          columns={['1fr', 'min-content', '1fr']}
           rows={['auto', 'auto']}
           areas={[
             { name: GridArea.PROMPT, start: [1, 0], end: [1, 0] },
