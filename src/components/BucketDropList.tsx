@@ -30,7 +30,7 @@ const BucketDropList: React.FunctionComponent<{
             <ShapeObject shape={boardObject.shape} color={boardObject.color} />
           </Box>
           {showStackMemoryOrder && boardObject.id in moveNumByBoardObject && (
-            <Text>{moveNumByBoardObject[boardObject.id]}</Text>
+            <Text size="xsmall">{moveNumByBoardObject[boardObject.id]}</Text>
           )}
         </Box>
       ))}
