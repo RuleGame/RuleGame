@@ -231,7 +231,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
           trapFocus={false}
         >
           <Box pad="small" background="gray">
-            <Text color="white">Autofill previous rule description</Text>
+            <Text color="white">Fill with previous response</Text>
           </Box>
         </Drop>
       )}
