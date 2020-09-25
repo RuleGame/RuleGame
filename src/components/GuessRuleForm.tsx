@@ -5,10 +5,9 @@ import range from 'lodash/range';
 import { Next, Save } from 'grommet-icons';
 import TextareaAutosize from 'react-textarea-autosize';
 import keycode from 'keycode';
-import { useLocalStorage } from 'react-use';
 import { guess } from '../store/actions/board';
-import { LOCAL_STORAGE_KEY } from '../constants';
 import { seriesNoSelector } from '../store/selectors/board';
+import useWorkerLocalStorage from '../utils/use-worker-local-storage';
 
 const TEXT_INPUT_ID = 'guess-input';
 const scaleSize = 7;
@@ -24,11 +23,7 @@ const CUSTOM_VALIDITY = 'Please type in what you think the rule is';
 const GuessRuleForm: React.FunctionComponent = () => {
   const dispatch = useDispatch();
   const seriesNo = useSelector(seriesNoSelector);
-  const [savedSeriesNo, setSavedSeriesNo] = useLocalStorage(LOCAL_STORAGE_KEY.SERIES_NO, seriesNo);
-  const [savedRuleGuess, setSavedRuleGuess] = useLocalStorage<string | undefined>(
-    LOCAL_STORAGE_KEY.GUESS,
-    undefined,
-  );
+  const [workerLocalStorage, setWorkerLocalStorage] = useWorkerLocalStorage();
   const [ruleGuess, setRuleGuess] = useState('');
   const [guessOpened, setGuessOpened] = useState(false);
   const [showScale, setShowScale] = useState(false);
@@ -40,7 +35,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
   // This is so that the autofill button won't distractingly appear after saving the first guess
   // and before the form is unrendered.
   const isPrevSeriesRuleGuessSavedRef = useRef(
-    seriesNo === savedSeriesNo && savedRuleGuess !== undefined,
+    seriesNo === workerLocalStorage.seriesNo && workerLocalStorage.savedRuleGuess !== undefined,
   );
   const isPrevSeriesRuleGuessSaved = isPrevSeriesRuleGuessSavedRef.current;
   const isRuleGuessEmpty = ruleGuess.trim().length === 0;
@@ -110,7 +105,9 @@ const GuessRuleForm: React.FunctionComponent = () => {
                     }}
                     name="rule-description"
                     placeholder={
-                      isPrevSeriesRuleGuessSaved && autofillButtonOver ? savedRuleGuess : ''
+                      isPrevSeriesRuleGuessSaved && autofillButtonOver
+                        ? workerLocalStorage.savedRuleGuess
+                        : ''
                     }
                   />
                 </FormField>
@@ -120,7 +117,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
                     icon={<Save size="small" />}
                     primary
                     // Hidden condition isPrevSeriesRuleGuessSaved asserts savedRuleGuess is non-undefined
-                    onClick={() => setRuleGuess(savedRuleGuess!)}
+                    onClick={() => setRuleGuess(workerLocalStorage.savedRuleGuess!)}
                     ref={autofillButtonRef}
                     onMouseOver={() => setAutofillButtonOver(true)}
                     onMouseLeave={() => setAutofillButtonOver(false)}
@@ -203,8 +200,10 @@ const GuessRuleForm: React.FunctionComponent = () => {
                     borderWidth: '0.25em',
                   }}
                   onClick={() => {
-                    setSavedRuleGuess(ruleGuess);
-                    setSavedSeriesNo(seriesNo);
+                    setWorkerLocalStorage({
+                      savedRuleGuess: ruleGuess,
+                      seriesNo,
+                    });
                     dispatch(guess(`${ratingNum}: ${ruleGuess}`));
                   }}
                 />
