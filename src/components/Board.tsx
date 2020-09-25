@@ -97,18 +97,22 @@ const Board = ({ className }: BoardProps): JSX.Element => {
           },
         ]}
       >
-        <Box gridArea={GridAreaName.TL} fill justify="center" align="center">
-          <BucketDropList bucket={BucketPosition.TL} />
-        </Box>
-        <Box gridArea={GridAreaName.TR} fill justify="center" align="center">
-          <BucketDropList bucket={BucketPosition.TR} />
-        </Box>
-        <Box gridArea={GridAreaName.BL} fill justify="center" align="center">
-          <BucketDropList bucket={BucketPosition.BL} />
-        </Box>
-        <Box gridArea={GridAreaName.BR} fill justify="center" align="center">
-          <BucketDropList bucket={BucketPosition.BR} />
-        </Box>
+        {showStackMemoryOrder && (
+          <>
+            <Box gridArea={GridAreaName.TL} fill justify="center" align="center">
+              <BucketDropList bucket={BucketPosition.TL} />
+            </Box>
+            <Box gridArea={GridAreaName.TR} fill justify="center" align="center">
+              <BucketDropList bucket={BucketPosition.TR} />
+            </Box>
+            <Box gridArea={GridAreaName.BL} fill justify="center" align="center">
+              <BucketDropList bucket={BucketPosition.BL} />
+            </Box>
+            <Box gridArea={GridAreaName.BR} fill justify="center" align="center">
+              <BucketDropList bucket={BucketPosition.BR} />
+            </Box>
+          </>
+        )}
 
         <Box gridArea={GridAreaName.BOARD}>
           <StyledBoard>
