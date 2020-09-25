@@ -22,6 +22,8 @@ const BucketDropList: React.FunctionComponent<{
       justify="start"
       width="750%"
       height="90%"
+      pad="xsmall"
+      round={{ corner: 'bottom' }}
       border={[{ side: 'bottom' }, { side: 'left' }, { side: 'right' }]}
     >
       {bucketDropList.map((boardObject) => (
