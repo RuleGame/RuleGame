@@ -20,8 +20,10 @@ const BucketDropList: React.FunctionComponent<{
     <Box
       direction="column-reverse"
       justify="start"
-      width="50%"
+      width="750%"
       height="90%"
+      pad="xsmall"
+      round={{ corner: 'bottom' }}
       border={[{ side: 'bottom' }, { side: 'left' }, { side: 'right' }]}
     >
       {bucketDropList.map((boardObject) => (

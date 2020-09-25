@@ -57,4 +57,5 @@ export const DEFAULT_WORKER_ID = 'testWorkerId';
 export enum LOCAL_STORAGE_KEY {
   GUESS = 'GUESS',
   SERIES_NO = 'SERIES_NO',
+  WORKER_ID = 'WORKER_ID',
 }

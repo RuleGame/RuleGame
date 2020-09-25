@@ -11,8 +11,12 @@ import { cyBoardObject } from '../constants/data-cy-builders';
 import { BoardObject as BoardObjectType } from '../utils/api';
 import { Color } from '../constants/Color';
 import { Shape } from '../constants/Shape';
-import { isGameCompletedSelector, showGridMemoryOrderSelector } from '../store/selectors/board';
-import { DEBUG_ENABLED } from '../constants/env';
+import {
+  isGameCompletedSelector,
+  isPausedSelector,
+  showGridMemoryOrderSelector,
+} from '../store/selectors/board';
+import { debugModeSelector } from '../store/selectors/debug-mode';
 
 export type BoardObjectProps = {
   className?: string;
@@ -37,8 +41,10 @@ const BoardObject = ({
 }: BoardObjectProps): JSX.Element => {
   const hasBeenDropped = boardObject.dropped !== undefined;
   const gameCompleted = useSelector(isGameCompletedSelector);
+  const debugMode = useSelector(debugModeSelector);
+  const isPaused = useSelector(isPausedSelector);
 
-  const canDrag = boardObject.buckets.length > 0 && !gameCompleted;
+  const canDrag = boardObject.buckets.length > 0 && !gameCompleted && !isPaused;
   const [, ref] = useDrag({
     item: {
       ...boardObject,
@@ -74,10 +80,10 @@ const BoardObject = ({
         ref={ref}
         canDrag={canDrag}
         shapeObjectId={boardObject.id}
-        debugInfo={DEBUG_ENABLED ? debugInfo : undefined}
+        debugInfo={debugMode ? debugInfo : undefined}
       />
       {hasBeenDropped && <FiCheck color="green" size="100%" />}
-      {!hasBeenDropped && !canDrag && VALID_SHAPES.has(shape) && (
+      {!hasBeenDropped && boardObject.buckets.length === 0 && VALID_SHAPES.has(shape) && (
         <Close size="100%" color="black" />
       )}
       {showGridMemoryOrder && moveNum !== undefined && (

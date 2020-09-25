@@ -11,6 +11,7 @@ import * as boardObjectsArrays from './board-objects-arrays';
 import * as games from './games';
 import * as notifications from './notifications';
 import * as board from './board';
+import * as debugMode from './debug-mode';
 /* eslint-enable import/no-cycle */
 
 export const actions = {
@@ -21,6 +22,7 @@ export const actions = {
   games,
   notifications,
   board,
+  debugMode,
 };
 
 export type RootAction = ActionType<typeof actions>;

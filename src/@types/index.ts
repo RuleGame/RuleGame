@@ -100,3 +100,8 @@ export type HistoryLog = {
     dropAttempts: (DropAttempt & { time: number })[];
   }[];
 };
+
+export type LocalStorageWorkerIdKey = {
+  seriesNo?: number;
+  savedRuleGuess?: string;
+};

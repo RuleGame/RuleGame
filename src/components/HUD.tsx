@@ -11,7 +11,7 @@ import {
   totalBoardsPredictedSelector,
   totalRewardEarnedSelector,
 } from '../store/selectors/board';
-import { DEBUG_ENABLED } from '../constants/env';
+import { debugModeSelector } from '../store/selectors/debug-mode';
 
 enum GridArea {
   NUM_MOVES_MADE = 'NUM_MOVES_MADE',
@@ -31,13 +31,14 @@ const HUD: React.FunctionComponent = ({ children }) => {
   const numBoardsLeft = useSelector(totalBoardsPredictedSelector);
   const episodeId = useSelector(episodeIdSelector);
   const maxPoints = useSelector(maxPointsSelector);
+  const debugMode = useSelector(debugModeSelector);
 
   return (
     <Grid
       fill
       pad="small"
-      rows={['auto', 'auto', 'auto']}
-      columns={['auto', 'auto']}
+      rows={['min-content', 'auto', 'min-content']}
+      columns={['1fr', '1fr']}
       areas={[
         {
           name: GridArea.NUM_MOVES_MADE,
@@ -106,7 +107,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
         </Box>
       </Box>
       <Box gridArea={GridArea.BOARD_COUNT} justify="end">
-        {DEBUG_ENABLED && (
+        {debugMode && (
           <>
             <Heading level="3" margin="none">
               Episode: {episodeId}
@@ -128,7 +129,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
         </Heading>
       </Box>
       <Box gridArea={GridArea.POINTS} direction="row" align="end" justify="end">
-        <Box align="baseline" direction="row" gap="small">
+        <Box align="end" direction="row" gap="small">
           <Heading level="2" margin="none">
             <Box direction="row" align="baseline">
               <Text weight="bold" size="inherit">
