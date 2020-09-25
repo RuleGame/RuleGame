@@ -20,7 +20,7 @@ const BucketDropList: React.FunctionComponent<{
     <Box
       direction="column-reverse"
       justify="start"
-      width="50%"
+      width="750%"
       height="90%"
       border={[{ side: 'bottom' }, { side: 'left' }, { side: 'right' }]}
     >
@@ -30,7 +30,7 @@ const BucketDropList: React.FunctionComponent<{
             <ShapeObject shape={boardObject.shape} color={boardObject.color} />
           </Box>
           {showStackMemoryOrder && boardObject.id in moveNumByBoardObject && (
-            <Text size="xsmall">{moveNumByBoardObject[boardObject.id]}</Text>
+            <Text>{moveNumByBoardObject[boardObject.id]}</Text>
           )}
         </Box>
       ))}
