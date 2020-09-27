@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Heading, Paragraph, Text } from 'grommet';
 import { useQuery } from 'react-query';
 import { api, METHOD } from '../utils/api';
-import useWorkerId from '../utils/use-worker-id';
+import { useWorkerId } from '../utils/hooks';
 
 const Debriefing = () => {
   const workerId = useWorkerId();

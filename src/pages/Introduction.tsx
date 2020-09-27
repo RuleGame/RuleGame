@@ -5,8 +5,8 @@ import { Dispatch } from 'redux';
 import { useQuery } from 'react-query';
 import { RootAction } from '../store/actions';
 import { nextPage } from '../store/actions/page';
-import useWorkerId from '../utils/use-worker-id';
 import { api, METHOD } from '../utils/api';
+import { useWorkerId } from '../utils/hooks';
 
 export default () => {
   const dispatch: Dispatch<RootAction> = useDispatch();

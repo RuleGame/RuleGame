@@ -7,7 +7,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import keycode from 'keycode';
 import { guess } from '../store/actions/board';
 import { seriesNoSelector } from '../store/selectors/board';
-import useWorkerLocalStorage from '../utils/use-worker-local-storage';
+import { useWorkerLocalStorage } from '../utils/hooks';
 
 const TEXT_INPUT_ID = 'guess-input';
 const scaleSize = 7;
