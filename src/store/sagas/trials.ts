@@ -19,8 +19,8 @@ import { nextPage } from '../actions/page';
 import { boardPositionToBxBy, FEEDBACK_DURATION } from '../../constants';
 import { apiResolve, takeAction } from './utils/helpers';
 
-function* trials(playerId: string) {
-  yield* apiResolve('/w2020/game-data/GameService2/player', METHOD.POST, { playerId }, {});
+function* trials(playerId: string, exp?: string) {
+  yield* apiResolve('/w2020/game-data/GameService2/player', METHOD.POST, { playerId, exp }, {});
 
   let {
     // eslint-disable-next-line prefer-const
@@ -195,8 +195,8 @@ function* activateBonusSaga(playerId: string) {
 
 export default function* () {
   const {
-    payload: { playerId },
+    payload: { playerId, exp },
   } = yield* takeAction(startTrials);
   yield* takeEvery(getType(activateBonus), activateBonusSaga, playerId);
-  yield* call(trials, playerId);
+  yield* call(trials, playerId, exp);
 }

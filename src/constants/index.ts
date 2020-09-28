@@ -30,6 +30,7 @@ export const FEEDBACK_DURATION = window.Cypress ? 100 : 1000;
 
 export enum SEARCH_QUERY_KEYS {
   WORKER_ID = 'workerId',
+  EXPERIMENT_PLAN = 'exp',
 }
 export const API_HOST_ORIGIN = process.env.REACT_APP_APP_API_HOST_ORIGIN;
 

@@ -6,14 +6,15 @@ import { useMount } from 'react-use';
 import { RootAction } from '../store/actions';
 import { startTrials } from '../store/actions/board';
 import Spinner from '../components/Spinner';
-import { useWorkerId } from '../utils/hooks';
+import { useExperimentPlan, useWorkerId } from '../utils/hooks';
 
 export default () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
   const workerId = useWorkerId();
+  const exp = useExperimentPlan();
 
   useMount(async () => {
-    dispatch(startTrials(workerId));
+    dispatch(startTrials(workerId, exp));
   });
 
   return (

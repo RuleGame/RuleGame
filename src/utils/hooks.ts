@@ -11,3 +11,5 @@ export const useWorkerLocalStorage = () =>
     seriesNo: undefined,
     savedRuleGuess: undefined,
   });
+
+export const useExperimentPlan = () => useSearchParam(SEARCH_QUERY_KEYS.EXPERIMENT_PLAN) ?? '';

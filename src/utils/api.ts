@@ -153,7 +153,7 @@ export type Endpoints = {
         trialList: Para[];
         completionCode?: string;
       },
-      { playerId: string }
+      { playerId: string; exp?: string }
     >;
   };
 
