@@ -148,7 +148,11 @@ function* trials(playerId: string, exp?: string) {
         yield* apiResolve(
           '/w2020/game-data/GameService2/guess',
           METHOD.POST,
-          { episode: episodeId, data: guessAction.payload.data },
+          {
+            episode: episodeId,
+            data: guessAction.payload.data,
+            confidence: guessAction.payload.confidence,
+          },
           {},
         );
       }

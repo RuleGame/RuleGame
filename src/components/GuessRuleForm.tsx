@@ -207,7 +207,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
                       seriesNo,
                     });
                     // TODO: Include ratingNum in confidence param instead of data
-                    dispatch(guess(`${ratingNum}: ${ruleGuess}`));
+                    dispatch(guess(ruleGuess, ratingNum));
                   }}
                 />
               </Box>

@@ -72,7 +72,10 @@ export const activateBonus = createAction('board/ACTIVATE_BONUS')();
 
 export const giveUp = createAction('board/GIVE_UP')();
 
-export const guess = createAction('board/GUESS', (data: string) => ({ data }))();
+export const guess = createAction('board/GUESS', (data: string, confidence: number) => ({
+  data,
+  confidence,
+}))();
 
 export const validMove = createAction(
   'board/VALID_MOVE',
