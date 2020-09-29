@@ -6,15 +6,16 @@ import { useQuery } from 'react-query';
 import { RootAction } from '../store/actions';
 import { nextPage } from '../store/actions/page';
 import { api, METHOD } from '../utils/api';
-import { useWorkerId } from '../utils/hooks';
+import { useExperimentPlan, useWorkerId } from '../utils/hooks';
 import texts from '../constants/texts';
 import { Page } from '../constants/Page';
 
 export default () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
   const workerId = useWorkerId();
+  const exp = useExperimentPlan();
   const { data, isLoading } = useQuery(`${workerId}-INTRODUCTION`, () =>
-    api('/w2020/game-data/GameService2/player', METHOD.POST, { playerId: workerId }, {}),
+    api('/w2020/game-data/GameService2/player', METHOD.POST, { playerId: workerId, exp }, {}),
   );
   const numRules = isLoading ? '...' : data?.data.trialList.length ?? '?';
 
