@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Box, Grid, Heading, Stack, Text } from 'grommet';
-import { range } from 'lodash';
+import range from 'lodash/range';
 import {
   episodeIdSelector,
   episodeNoSelector,
@@ -12,6 +12,8 @@ import {
   totalRewardEarnedSelector,
 } from '../store/selectors/board';
 import { debugModeSelector } from '../store/selectors/debug-mode';
+import texts from '../constants/texts';
+import { Page } from '../constants/Page';
 
 enum GridArea {
   NUM_MOVES_MADE = 'NUM_MOVES_MADE',
@@ -71,7 +73,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
         <Heading level="2" margin="none">
           <Box direction="row" align="baseline">
             <Text size="inherit" weight="bold">
-              Number of moves made:&nbsp;
+              {texts[Page.TRIALS].numMovesMadePreText}&nbsp;
             </Text>
             <Text size="2em" weight="bold" color="light-blue">
               {numMovesMade}
@@ -84,7 +86,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
           <Heading level="2" margin="none">
             <Box direction="row" align="baseline">
               <Text size="inherit" weight="bold">
-                Number of moves left:&nbsp;
+                {texts[Page.TRIALS].numMovesLeftPreText}&nbsp;
               </Text>
               <Text size="2em" weight="bold" color="red">
                 {numMovesLeft}
@@ -119,12 +121,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
         )}
         <Heading level="2" margin="none">
           <Box direction="row" align="baseline">
-            <Text size="inherit" weight="bold">
-              Board&nbsp;
-            </Text>
-            <Text size="2em" weight="bold">
-              {boardNum} of {numBoardsLeft}
-            </Text>
+            {texts[Page.TRIALS].boardNumText(boardNum, numBoardsLeft)}
           </Box>
         </Heading>
       </Box>
@@ -133,7 +130,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
           <Heading level="2" margin="none">
             <Box direction="row" align="baseline">
               <Text weight="bold" size="inherit">
-                Points:&nbsp;
+                {texts[Page.TRIALS].pointsPreText}&nbsp;
               </Text>
               <Text color="green" weight="bold" size="2em">
                 {points}
