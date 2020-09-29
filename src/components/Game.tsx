@@ -26,6 +26,8 @@ import { FinishCode } from '../utils/api';
 import { debugModeSelector } from '../store/selectors/debug-mode';
 import { setDebugMode } from '../store/actions/debug-mode';
 import { DEBUG_ENABLED } from '../constants/env';
+import texts from '../constants/texts';
+import { Page } from '../constants/Page';
 
 enum GridAreaName {
   HEADING = 'HEADING',
@@ -58,7 +60,10 @@ const Game: React.FunctionComponent<{
     setBonusActivated(false);
   }, [episodeNo]);
 
-  const ruleName = `Rule ${seriesNo + 1} ${isInBonus ? '(Bonus Round)' : ''}`;
+  const ruleNum = seriesNo + 1;
+  const ruleName = isInBonus
+    ? texts[Page.TRIALS].bonusTitle(ruleNum)
+    : texts[Page.TRIALS].ruleTitle(ruleNum);
 
   return (
     <Grid
@@ -119,19 +124,19 @@ const Game: React.FunctionComponent<{
         {!isGameCompleted && (
           <Box gap="small">
             <Button
-              label="Give up on this rule"
+              label={texts[Page.TRIALS].giveUpButtonLabel}
               onClick={() =>
                 dispatch(
                   addLayer(
-                    'Give up on this rule',
-                    `Are you sure you want to give up ${ruleName} and advance to the next rule if any?`,
+                    texts[Page.TRIALS].giveUpButtonLabel,
+                    texts[Page.TRIALS].giveUpConfirmationWarning(ruleNum),
                     [
                       {
-                        label: 'Yes',
+                        label: texts[Page.TRIALS].giveUpYesConfirmationLabel,
                         action: [giveUp(), (id) => removeLayer(id)],
                       },
                       {
-                        label: 'No',
+                        label: texts[Page.TRIALS].giveUpNoConfirmationLabel,
                         action: (id) => removeLayer(id),
                       },
                     ],
@@ -158,18 +163,22 @@ const Game: React.FunctionComponent<{
             <Heading>
               {finishCode === FinishCode.FINISH ? (
                 <Text size="inherit" color="blue">
-                  Board succesfully cleared!
+                  {texts[Page.TRIALS].bonusSuccessMessage}
                 </Text>
               ) : finishCode === FinishCode.STALEMATE || finishCode === FinishCode.LOST ? (
                 <Text size="inherit" color="red">
-                  No more moves left!
+                  {texts[Page.TRIALS].bonusFailureMessage}
                 </Text>
               ) : (
                 ''
               )}
             </Heading>
             <Button
-              label={hasMoreBonusRounds ? 'Next Bonus Round' : 'Next Rule (Bonus Completed)'}
+              label={
+                hasMoreBonusRounds
+                  ? texts[Page.TRIALS].nextBonusRoundButtonLabel
+                  : texts[Page.TRIALS].lastBonusRoundButtonLabel
+              }
               icon={<Next />}
               onClick={() => dispatch(loadNextBonus())}
             />
@@ -203,19 +212,14 @@ const Game: React.FunctionComponent<{
                 {bonusActivated ? (
                   <Box border={{ side: 'all', style: 'dashed', size: 'medium' }} round pad="medium">
                     <Text size="large" textAlign="center">
-                      Bonus activated next round!
+                      {texts[Page.TRIALS].bonusRoundsActivatedMessage}
                     </Text>
                   </Box>
                 ) : (
                   <Button
                     primary
                     color="darkorange"
-                    label={
-                      <Text color="white" size="large" weight="bold">
-                        <Box>Think you got it?</Box>
-                        <Box>Activate bonus rounds!</Box>
-                      </Text>
-                    }
+                    label={texts[Page.TRIALS].activateBonusRoundsButtonLabel}
                     onClick={() => {
                       setBonusActivated(true);
                       dispatch(activateBonus());

@@ -4,8 +4,9 @@ import { Board, FinishCode, Transcript, TransitionMap } from '../../utils/api';
 // eslint-disable-next-line import/no-cycle
 import { BucketPosition } from '../../constants/BucketPosition';
 
-export const startTrials = createAction('board/START_TRIALS', (playerId: string) => ({
+export const startTrials = createAction('board/START_TRIALS', (playerId: string, exp?: string) => ({
   playerId,
+  exp,
 }))();
 
 export const setBoard = createAction(
@@ -71,7 +72,10 @@ export const activateBonus = createAction('board/ACTIVATE_BONUS')();
 
 export const giveUp = createAction('board/GIVE_UP')();
 
-export const guess = createAction('board/GUESS', (data: string) => ({ data }))();
+export const guess = createAction('board/GUESS', (data: string, confidence: number) => ({
+  data,
+  confidence,
+}))();
 
 export const validMove = createAction(
   'board/VALID_MOVE',

@@ -7,7 +7,9 @@ import TextareaAutosize from 'react-textarea-autosize';
 import keycode from 'keycode';
 import { guess } from '../store/actions/board';
 import { seriesNoSelector } from '../store/selectors/board';
-import useWorkerLocalStorage from '../utils/use-worker-local-storage';
+import { useWorkerLocalStorage } from '../utils/hooks';
+import texts from '../constants/texts';
+import { Page } from '../constants/Page';
 
 const TEXT_INPUT_ID = 'guess-input';
 const scaleSize = 7;
@@ -50,7 +52,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
                 <FormField
                   label={
                     <Heading level="3" margin="none">
-                      What is the rule?
+                      {texts[Page.TRIALS].guessRulePrompt}
                     </Heading>
                   }
                   htmlFor={TEXT_INPUT_ID}
@@ -160,14 +162,14 @@ const GuessRuleForm: React.FunctionComponent = () => {
         >
           <Box align="center" gridArea={GridArea.PROMPT}>
             <Text color={isRuleGuessEmpty ? 'gray' : 'black'}>
-              <Heading level="2">How sure are you?</Heading>
+              <Heading level="2">{texts[Page.TRIALS].confidenceScalePrompt}</Heading>
             </Text>
           </Box>
           <Box fill="vertical" gridArea={GridArea.LEAST} align="end">
             <Box width="min-content">
               <Text textAlign="end" color={isRuleGuessEmpty ? 'gray' : 'black'}>
                 <Heading level="3" margin="none">
-                  Just guessing
+                  {texts[Page.TRIALS].leastConfidentLabel}
                 </Heading>
               </Text>
             </Box>
@@ -204,7 +206,8 @@ const GuessRuleForm: React.FunctionComponent = () => {
                       savedRuleGuess: ruleGuess,
                       seriesNo,
                     });
-                    dispatch(guess(`${ratingNum}: ${ruleGuess}`));
+                    // TODO: Include ratingNum in confidence param instead of data
+                    dispatch(guess(ruleGuess, ratingNum));
                   }}
                 />
               </Box>
@@ -214,7 +217,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
             <Box width="min-content">
               <Text textAlign="start" color={isRuleGuessEmpty ? 'gray' : 'black'}>
                 <Heading level="3" margin="none">
-                  Completely sure
+                  {texts[Page.TRIALS].greatestConfidentLabel}
                 </Heading>
               </Text>
             </Box>
@@ -230,7 +233,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
           trapFocus={false}
         >
           <Box pad="small" background="gray">
-            <Text color="white">Fill with previous response</Text>
+            <Text color="white">{texts[Page.TRIALS].reusePreviousResponseLabel}</Text>
           </Box>
         </Drop>
       )}
@@ -242,7 +245,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
         size="large"
         label={
           <Text weight="bold" size="xxlarge" color="white">
-            Guess the rule
+            {texts[Page.TRIALS].guessButtonLabel}
           </Text>
         }
         onClick={() => setGuessOpened(true)}
