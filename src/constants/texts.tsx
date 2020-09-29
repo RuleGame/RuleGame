@@ -127,4 +127,8 @@ export default {
       </>
     ),
   },
+
+  // Large prompt displayed when browser is not in fullscreen
+  fullscreenPrompt: 'Fullscreen is required',
+  fullscreenButtonLabel: 'Enter fullscreen',
 };

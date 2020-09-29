@@ -17,6 +17,7 @@ import { pageSelector } from './store/selectors/page';
 import Demographics from './pages/Demographics';
 import Debriefing from './pages/Debriefing';
 import { SEARCH_QUERY_KEYS } from './constants';
+import texts from './constants/texts';
 
 const App = () => {
   const page = useSelector(pageSelector);
@@ -55,11 +56,11 @@ const App = () => {
         ) : (
           <Box margin="xlarge" align="center">
             <Expand />
-            <Heading>Fullscreen is required</Heading>
+            <Heading>{texts.fullscreenPrompt}</Heading>
             <Button
               onClick={() => document.documentElement.requestFullscreen()}
               primary
-              label="Enter fullscreen"
+              label={texts.fullscreenButtonLabel}
               icon={<MdFullscreen />}
             />
           </Box>
