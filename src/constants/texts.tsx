@@ -1,11 +1,15 @@
 import React from 'react';
-import { Box, Heading, Paragraph, Text } from 'grommet';
+import { Box, Heading, Image, Paragraph, Text } from 'grommet';
 import { Page } from './Page';
+import HappyFace from '../assets/smiley-face.png';
 
 export default {
   [Page.CONSENT]: {
     text: (
       <>
+        <Box width="small" height="small">
+          <Image src={HappyFace} fill />
+        </Box>
         <Paragraph fill>
           {`The HIT you are about to do is sponsored by University of Wisconsin-Madison. It is part
             of a protocol titled “Language and Human Cognition”. The task you are asked to do
