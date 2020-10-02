@@ -39,7 +39,7 @@ export default {
           {`which will allow you to make a request anonymously.
 
             If you have any questions or concerns about this task please contact the principal investigator: 
-            Prof. Vicki Bier at`}
+            Prof. Vicki Bier at `}
           <a href="vicki.bier@wisc.edu">vicki.bier@wisc.edu</a>
           {`.
             If you are not satisfied with response of the research team, have more questions, or want to talk 
