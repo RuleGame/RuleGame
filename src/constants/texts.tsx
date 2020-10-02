@@ -26,15 +26,15 @@ export default {
             the length of the study. The responses you submit as part of this task will be stored on a 
             secure server and accessible only to researchers who have been approved by UW-Madison. 
             Processed data with all identifiers removed could be used for future research studies or 
-            distributed to another investigator for future research studies
-            without additional informed consent from the subject or the legally authorized representative.
+            distributed to another investigator for future research studies without additional informed 
+            consent from the subject or the legally authorized representative.
 
             You are free to decline to participate, to end participation at any time for any reason, or 
             to refuse to answer any individual question without penalty or loss of earned compensation. 
             We will not retain data from partial responses. If you would like to withdraw your data after 
             participating, you may send an email `}
           <a href="mailto:lupyan@wisc.edu">lupyan@wisc.edu</a>
-          {`or complete `} 
+          {` or complete `} 
           <a href="mailto:http://tinyurl.com/withdrawdata-lupyanlab"> this form </a> 
           {`which will allow you to make a request anonymously.
 
