@@ -33,14 +33,14 @@ export default {
             to refuse to answer any individual question without penalty or loss of earned compensation. 
             We will not retain data from partial responses. If you would like to withdraw your data after 
             participating, you may send an email `}
-          <a href="lupyan@wisc.edu"> lupyan@wisc.edu</a>
+          <a href="mailto:lupyan@wisc.edu"> lupyan@wisc.edu</a>
           {`or complete `} 
           <a href="mailto:http://tinyurl.com/withdrawdata-lupyanlab"> this form </a> 
           {` which will allow you to make a request anonymously.
 
             If you have any questions or concerns about this task please contact the principal investigator: 
             Prof. Vicki Bier at `}
-          <a href="vicki.bier@wisc.edu"> vicki.bier@wisc.edu</a>
+          <a href="mailto:vicki.bier@wisc.edu"> vicki.bier@wisc.edu</a>
           {`.
             If you are not satisfied with response of the research team, have more questions, or want to talk 
             with someone about your rights as a research participant, you should contact University of Wisconsin’s 
