@@ -23,7 +23,7 @@ enum GridArea {
   POINTS = 'POINTS',
 }
 
-const NUM_TICKS = 10;
+const NUM_TICKS = 7;
 
 const HUD: React.FunctionComponent = ({ children }) => {
   const numMovesMade = useSelector(numMovesMadeSelector);
@@ -98,7 +98,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
       <Box gridArea={GridArea.GAME} justify="center" align="center">
         <Box
           width="max-content"
-          border={{ size: 'large', style: 'dashed' }}
+          border={{ size: 'medium', style: 'dashed' }}
           justify="center"
           align="center"
           overflow="auto"
@@ -142,7 +142,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
             justify="end"
             direction="column"
             width="2em"
-            height="10em"
+            height="5em"
             round="xsmall"
             overflow="hidden"
           >
