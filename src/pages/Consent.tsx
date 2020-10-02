@@ -20,7 +20,7 @@ const Consent = () => {
             <Box align="center" gap="small">
               <Text weight="bold">{texts[Page.CONSENT].checkBoxLabel}</Text>
               <CheckBox onChange={(e) => setAccept(e.target.checked)} checked={accept} required />
-              <Button label={texts[Page.CONSENT].buttonLabel} primary type="submit" />
+              <Button label={texts[Page.CONSENT].nextButtonLabel} primary type="submit" />
             </Box>
           </Form>
         </Box>
