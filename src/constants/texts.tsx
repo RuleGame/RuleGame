@@ -11,22 +11,35 @@ export default {
           <Image src={HappyFace} fill />
         </Box>
         <Paragraph fill>
-          {`The HIT you are about to do is sponsored by University of Wisconsin-Madison. It is part
-            of a protocol titled “Language and Human Cognition”. The task you are asked to do
-            involves making simple responses to images, text, and/or sounds. For example, you may be
-            asked how typical a picture of a dog is of dogs in general, to name a drawing, decide
-            what word a sound makes you think of, to choose which visual pattern best completes a
-            sequence of patterns, or indicate how vividly you see in your “mind’s eye."`}
-          <strong>HIT instructions will be provided on the next screen. </strong>
+          {`The task you are about to do is sponsored by University of Wisconsin-Madison. It is 
+            part of a protocol titled “Human and Machine Learning: The Search for Anomalies”
+
+            The purpose of this work is to compare reasoning biases in human and machine learners 
+            by testing what reasoning problems are relatively easier or more difficult for people, and 
+            for machines.`}
+          <strong>More detailed instructions for this specific task will be provided on the next screen. </strong>
         </Paragraph>
         <Paragraph fill>
-          {`This task has no anticipated risks nor direct benefits. If you have any questions or
-            concerns about this HIT please contact the principal investigator: Dr. Gary Lupyan at
-            lupyan@wisc.edu. If you are not satisfied with response of the research team, have more
-            questions, or want to talk with someone about your rights as a research participant, you
-            should contact University of Wisconsin’s Education Research and Social & Behavioral
-            Science IRB Office at 608-263-2320. You are free to decline to participate or to end
-            participation at any time for any reason.`}
+          {`This task has no direct benefits. We do not anticipate any psychosocial risks. There is a 
+            risk of a confidentiality breach. Participants may become fatigued or frustrated due to 
+            the length of the study. The responses you submit as part of this task will be stored on a 
+            secure server and accessible only to researchers who have been approved by UW-Madison. 
+            Processed data with all identifiers removed could be used for future research studies or 
+            distributed to another investigator for future research studies
+            without additional informed consent from the subject or the legally authorized representative.
+
+            You are free to decline to participate, to end participation at any time for any reason, or 
+            to refuse to answer any individual question without penalty or loss of earned compensation. 
+            We will not retain data from partial responses. If you would like to withdraw your data after 
+            participating, you may send an email lupyan@wisc.edu or complete this form which will allow you 
+            to make a request anonymously.
+
+            If you have any questions or concerns about this task please contact the principal investigator: 
+            Prof. Vicki Bier at vicki.bier@wisc.edu.
+
+            If you are not satisfied with response of the research team, have more questions, or want to talk 
+            with someone about your rights as a research participant, you should contact University of Wisconsin’s 
+            Education Research and Social & Behavioral Science IRB Office at 608-263-2320.`}
         </Paragraph>
       </>
     ),
