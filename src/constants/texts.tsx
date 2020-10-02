@@ -36,7 +36,7 @@ export default {
           <a href="lupyan@wisc.edu"> lupyan@wisc.edu</a>
           {`or complete `} 
           <a href="mailto:http://tinyurl.com/withdrawdata-lupyanlab"> this form </a> 
-          {`which will allow you to make a request anonymously.
+          {` which will allow you to make a request anonymously.
 
             If you have any questions or concerns about this task please contact the principal investigator: 
             Prof. Vicki Bier at `}
