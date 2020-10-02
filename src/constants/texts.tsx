@@ -11,13 +11,13 @@ export default {
           <Image src={HappyFace} fill />
         </Box>
         <Paragraph fill>
-          {`The task you are about to do is sponsored by`}
+          {`The task you are about to do is sponsored by `}
           <strong>University of Wisconsin-Madison </strong>
           {`. It is part of a protocol titled “Human and Machine Learning: The Search for Anomalies”
 
             The purpose of this work is to compare reasoning biases in human and machine learners 
             by testing what reasoning problems are relatively easier or more difficult for people, and 
-            for machines.`}
+            for machines. `}
           <strong>More detailed instructions for this specific task will be provided on the next screen. </strong>
         </Paragraph>
         <Paragraph fill>
@@ -34,8 +34,8 @@ export default {
             We will not retain data from partial responses. If you would like to withdraw your data after 
             participating, you may send an email `}
           <a href="lupyan@wisc.edu">lupyan@wisc.edu</a>
-          {`or complete`} 
-          <a href="mailto:http://tinyurl.com/withdrawdata-lupyanlab">this form</a> 
+          {`or complete `} 
+          <a href="mailto:http://tinyurl.com/withdrawdata-lupyanlab">this form </a> 
           {`which will allow you to make a request anonymously.
 
             If you have any questions or concerns about this task please contact the principal investigator: 
