@@ -11,8 +11,9 @@ export default {
           <Image src={HappyFace} fill />
         </Box>
         <Paragraph fill>
-          {`The task you are about to do is sponsored by University of Wisconsin-Madison. It is 
-            part of a protocol titled “Human and Machine Learning: The Search for Anomalies”
+          {`The task you are about to do is sponsored by`}
+          <strong>University of Wisconsin-Madison </strong>
+          {`. It is part of a protocol titled “Human and Machine Learning: The Search for Anomalies”
 
             The purpose of this work is to compare reasoning biases in human and machine learners 
             by testing what reasoning problems are relatively easier or more difficult for people, and 
@@ -31,12 +32,16 @@ export default {
             You are free to decline to participate, to end participation at any time for any reason, or 
             to refuse to answer any individual question without penalty or loss of earned compensation. 
             We will not retain data from partial responses. If you would like to withdraw your data after 
-            participating, you may send an email lupyan@wisc.edu or complete this form which will allow you 
-            to make a request anonymously.
+            participating, you may send an email `}
+          <a href="lupyan@wisc.edu">lupyan@wisc.edu</a>
+          {`or complete`} 
+          <a href="mailto:http://tinyurl.com/withdrawdata-lupyanlab">this form</a> 
+          {`which will allow you to make a request anonymously.
 
             If you have any questions or concerns about this task please contact the principal investigator: 
-            Prof. Vicki Bier at vicki.bier@wisc.edu.
-
+            Prof. Vicki Bier at`}
+          <a href="vicki.bier@wisc.edu">vicki.bier@wisc.edu</a>
+          {`.
             If you are not satisfied with response of the research team, have more questions, or want to talk 
             with someone about your rights as a research participant, you should contact University of Wisconsin’s 
             Education Research and Social & Behavioral Science IRB Office at 608-263-2320.`}
