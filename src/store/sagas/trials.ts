@@ -1,7 +1,7 @@
 import { call, delay, put, race, takeEvery } from 'typed-redux-saga';
 import { getType } from 'typesafe-actions';
 import Papa from 'papaparse';
-import { Code, ErrorMsg, METHOD } from '../../utils/api';
+import { Code, ErrorMsg, FinishCode, METHOD } from '../../utils/api';
 import {
   activateBonus,
   giveUp,
@@ -59,6 +59,7 @@ function* trials(playerId: string, exp?: string) {
     let skipGuessAction: ReturnType<typeof skipGuess> | undefined;
     let loadNextBonusAction: ReturnType<typeof loadNextBonus> | undefined;
 
+    // Encompasses a single episode. Exiting from the loop will result in a new episode if any.
     do {
       const { data: display } = yield* apiResolve(
         '/w2020/game-data/GameService2/display',
@@ -69,92 +70,94 @@ function* trials(playerId: string, exp?: string) {
         },
       );
 
-      yield* put(
-        setBoard(
-          display.board.value,
-          display.bonus,
-          display.bonusEpisodeNo,
-          display.canActivateBonus,
-          display.finishCode,
-          display.totalRewardEarned,
-          display.totalBoardsPredicted,
-          gridMemoryShowOrder,
-          stackMemoryShowOrder,
-          stackMemoryDepth,
-          display.seriesNo,
-          display.transcript,
-          display.rulesSrc,
-          display.ruleLineNo,
-          display.numMovesMade,
-          display.episodeNo,
-          episodeId,
-          para.max_points,
-          display.movesLeftToStayInBonus,
-          display.transitionMap,
-        ),
-      );
-
-      ({
-        moveAction,
-        giveUpAction,
-        guessAction,
-        skipGuessAction,
-        loadNextBonusAction,
-      } = yield* race({
-        moveAction: takeAction(move),
-        giveUpAction: takeAction(giveUp),
-        guessAction: takeAction(guess),
-        skipGuessAction: takeAction(skipGuess),
-        loadNextBonusAction: takeAction(loadNextBonus),
-      }));
-
-      if (moveAction) {
-        const boardObject = display.board.value.find(
-          // eslint-disable-next-line no-loop-func
-          (boardObject) => boardObject.id === moveAction!.payload.boardObjectId,
-        )!;
-
-        const {
-          data: { code },
-        } = yield* apiResolve(
-          '/w2020/game-data/GameService2/move',
-          METHOD.POST,
-          {
-            episode: episodeId,
-            x: boardObject.x,
-            bx: boardPositionToBxBy[moveAction.payload.bucket].bx,
-            by: boardPositionToBxBy[moveAction.payload.bucket].by,
-            y: boardObject.y,
-            cnt: display.numMovesMade,
-          },
-          {},
+      if (display.finishCode !== FinishCode.GIVEN_UP) {
+        yield* put(
+          setBoard(
+            display.board.value,
+            display.bonus,
+            display.bonusEpisodeNo,
+            display.canActivateBonus,
+            display.finishCode,
+            display.totalRewardEarned,
+            display.totalBoardsPredicted,
+            gridMemoryShowOrder,
+            stackMemoryShowOrder,
+            stackMemoryDepth,
+            display.seriesNo,
+            display.transcript,
+            display.rulesSrc,
+            display.ruleLineNo,
+            display.numMovesMade,
+            display.episodeNo,
+            episodeId,
+            para.max_points,
+            display.movesLeftToStayInBonus,
+            display.transitionMap,
+          ),
         );
 
-        if (code === Code.ACCEPT) {
-          yield* put(validMove(moveAction.payload.boardObjectId, moveAction.payload.bucket));
-        } else if (code === Code.DENY) {
-          yield* put(invalidMove(moveAction.payload.boardObjectId, moveAction.payload.bucket));
+        ({
+          moveAction,
+          giveUpAction,
+          guessAction,
+          skipGuessAction,
+          loadNextBonusAction,
+        } = yield* race({
+          moveAction: takeAction(move),
+          giveUpAction: takeAction(giveUp),
+          guessAction: takeAction(guess),
+          skipGuessAction: takeAction(skipGuess),
+          loadNextBonusAction: takeAction(loadNextBonus),
+        }));
+
+        if (moveAction) {
+          const boardObject = display.board.value.find(
+            // eslint-disable-next-line no-loop-func
+            (boardObject) => boardObject.id === moveAction!.payload.boardObjectId,
+          )!;
+
+          const {
+            data: { code },
+          } = yield* apiResolve(
+            '/w2020/game-data/GameService2/move',
+            METHOD.POST,
+            {
+              episode: episodeId,
+              x: boardObject.x,
+              bx: boardPositionToBxBy[moveAction.payload.bucket].bx,
+              by: boardPositionToBxBy[moveAction.payload.bucket].by,
+              y: boardObject.y,
+              cnt: display.numMovesMade,
+            },
+            {},
+          );
+
+          if (code === Code.ACCEPT) {
+            yield* put(validMove(moveAction.payload.boardObjectId, moveAction.payload.bucket));
+          } else if (code === Code.DENY) {
+            yield* put(invalidMove(moveAction.payload.boardObjectId, moveAction.payload.bucket));
+          }
+
+          yield* delay(FEEDBACK_DURATION);
+        } else if (giveUpAction) {
+          yield* apiResolve(
+            '/w2020/game-data/GameService2/giveUp',
+            METHOD.POST,
+            { playerId, seriesNo: display.seriesNo },
+            {},
+          );
+        } else if (guessAction) {
+          yield* apiResolve(
+            '/w2020/game-data/GameService2/guess',
+            METHOD.POST,
+            {
+              episode: episodeId,
+              data: guessAction.payload.data,
+              confidence: guessAction.payload.confidence,
+            },
+            {},
+          );
         }
-
-        yield* delay(FEEDBACK_DURATION);
-      } else if (giveUpAction) {
-        yield* apiResolve(
-          '/w2020/game-data/GameService2/giveUp',
-          METHOD.POST,
-          { playerId, seriesNo: display.seriesNo },
-          {},
-        );
-      } else if (guessAction) {
-        yield* apiResolve(
-          '/w2020/game-data/GameService2/guess',
-          METHOD.POST,
-          {
-            episode: episodeId,
-            data: guessAction.payload.data,
-            confidence: guessAction.payload.confidence,
-          },
-          {},
-        );
       }
     } while (!giveUpAction && !guessAction && !skipGuessAction && !loadNextBonusAction);
 
