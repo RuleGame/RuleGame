@@ -1,7 +1,7 @@
 import { call, delay, put, race, takeEvery } from 'typed-redux-saga';
 import { getType } from 'typesafe-actions';
 import Papa from 'papaparse';
-import { Code, ErrorMsg, METHOD } from '../../utils/api';
+import { Code, ErrorMsg, FinishCode, METHOD } from '../../utils/api';
 import {
   activateBonus,
   giveUp,
@@ -59,6 +59,7 @@ function* trials(playerId: string, exp?: string) {
     let skipGuessAction: ReturnType<typeof skipGuess> | undefined;
     let loadNextBonusAction: ReturnType<typeof loadNextBonus> | undefined;
 
+    // Encompasses a single episode. Exiting from the loop will result in a new episode if any.
     do {
       const { data: display } = yield* apiResolve(
         '/w2020/game-data/GameService2/display',
@@ -68,6 +69,11 @@ function* trials(playerId: string, exp?: string) {
           episode: episodeId,
         },
       );
+
+      if (display.finishCode === FinishCode.GIVEN_UP) {
+        // Exit current episode and retrieve a new episode if any.
+        break;
+      }
 
       yield* put(
         setBoard(
