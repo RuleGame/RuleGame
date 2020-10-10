@@ -24,9 +24,7 @@ export const bucketDropListSelector = (bucketPosition: BucketPosition) => (
   const bucketDropList = state.board.transcript
     .filter(({ bucketNo, code }) => code === Code.ACCEPT && bucketNo === bucketPosition)
     .map(({ pieceId }) => state.board.board[pieceId]);
-  return bucketDropList.slice(
-    Math.max(0, bucketDropList.length - state.board.stackMemoryDepth + 1),
-  );
+  return bucketDropList.slice(Math.max(0, bucketDropList.length - state.board.stackMemoryDepth));
 };
 
 export const moveNumByBoardObjectSelector = (
