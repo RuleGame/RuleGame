@@ -25,7 +25,7 @@ export const bucketDropListSelector = (bucketPosition: BucketPosition) => (
     .filter(({ bucketNo, code }) => code === Code.ACCEPT && bucketNo === bucketPosition)
     .map(({ pieceId }) => state.board.board[pieceId]);
   return bucketDropList.slice(
-    Math.max(0, state.board.transcript.length - state.board.stackMemoryDepth + 1),
+    Math.max(0, bucketDropList.length - state.board.stackMemoryDepth + 1),
   );
 };
 
