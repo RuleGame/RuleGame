@@ -33,7 +33,7 @@ const shapesMapping: (color?: string) => { [shape in Shape]: JSX.Element | null 
   SQUARE: <FiSquare size="100%" color={color?.toLowerCase()} />,
   TRIANGLE: <FiTriangle size="100%" color={color?.toLowerCase()} />,
   HAPPY: <img src={HappyFace} alt="happy-face" height="100%" />,
-  BUCKET: <img src={bucketSvg} alt="bucket" height="100%" />,
+  BUCKET: <img draggable={false} src={bucketSvg} alt="bucket" height="100%" />,
   NOTHING: null,
   '*': <div>*</div>,
   UNHAPPY: <img src={unhappyFace} alt="unhappy-face" height="100%" />,
