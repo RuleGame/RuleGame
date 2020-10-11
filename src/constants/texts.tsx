@@ -107,7 +107,8 @@ export default {
 
     // Button below the board after the board has no more moves.
     nextBonusRoundButtonLabel: 'Next Bonus Round',
-    lastBonusRoundButtonLabel: 'Next Rule (Bonus Completed)',
+    lastBonusRoundButtonWonLabel: 'Next Rule (Bonus Completed)',
+    lastBonusRoundButtonLostLabel: 'Next Rule (Bonus Lost)',
 
     activateBonusRoundsButtonLabel: (
       <Text color="white" size="large" weight="bold">
