@@ -177,7 +177,9 @@ const Game: React.FunctionComponent<{
               label={
                 hasMoreBonusRounds
                   ? texts[Page.TRIALS].nextBonusRoundButtonLabel
-                  : texts[Page.TRIALS].lastBonusRoundButtonLabel
+                  : finishCode === FinishCode.LOST
+                  ? texts[Page.TRIALS].lastBonusRoundButtonLostLabel
+                  : texts[Page.TRIALS].lastBonusRoundButtonWonLabel
               }
               icon={<Next />}
               onClick={() => dispatch(loadNextBonus())}
