@@ -126,7 +126,7 @@ export default {
         <Text size="inherit" weight="bold">
           Board&nbsp;
         </Text>
-        <Text size="2em" weight="bold">
+        <Text size="1.25em" weight="bold">
           {boardNum} of {numBoardsLeft}
         </Text>
       </>

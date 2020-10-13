@@ -162,7 +162,9 @@ const GuessRuleForm: React.FunctionComponent = () => {
         >
           <Box align="center" gridArea={GridArea.PROMPT}>
             <Text color={isRuleGuessEmpty ? 'gray' : 'black'}>
-              <Heading level="2">{texts[Page.TRIALS].confidenceScalePrompt}</Heading>
+              <Heading level="2" margin="small">
+                {texts[Page.TRIALS].confidenceScalePrompt}
+              </Heading>
             </Text>
           </Box>
           <Box fill="vertical" gridArea={GridArea.LEAST} align="end">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Box, Text } from 'grommet';
+import { Box, Stack, Text } from 'grommet';
 import ShapeObject from './ShapeObject';
 import { BucketPosition } from '../constants/BucketPosition';
 import {
@@ -20,21 +20,31 @@ const BucketDropList: React.FunctionComponent<{
     <Box
       direction="column-reverse"
       justify="start"
-      width="750%"
+      width="100%"
       height="90%"
-      pad="xsmall"
+      pad="xxsmall"
       round={{ corner: 'bottom' }}
       border={[{ side: 'bottom' }, { side: 'left' }, { side: 'right' }]}
     >
       {bucketDropList.map((boardObject) => (
-        <Box direction="row" key={boardObject.id}>
-          <Box fill="horizontal" height="min-content">
+        <Stack key={boardObject.id} anchor="top-left">
+          <Box fill="horizontal" height="min-content" width="medium">
             <ShapeObject shape={boardObject.shape} color={boardObject.color} />
           </Box>
           {showStackMemoryOrder && boardObject.id in moveNumByBoardObject && (
-            <Text>{moveNumByBoardObject[boardObject.id]}</Text>
+            <Box
+              background="white"
+              border={{ side: 'all', style: 'solid', color: 'black', size: 'small' }}
+              round
+              width="min-content"
+              pad={{ left: 'xxsmall', right: 'xxsmall' }}
+            >
+              <Text size="xsmall" weight="bold">
+                {moveNumByBoardObject[boardObject.id]}
+              </Text>
+            </Box>
           )}
-        </Box>
+        </Stack>
       ))}
     </Box>
   );

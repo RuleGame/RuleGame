@@ -92,9 +92,11 @@ const BoardObject = ({
           border={{ side: 'all', style: 'solid', color: 'black', size: 'small' }}
           round
           width="min-content"
-          pad="xxsmall"
+          pad={{ left: 'xxsmall', right: 'xxsmall' }}
         >
-          <Text weight="bold">{moveNum}</Text>
+          <Text weight="bold" size="xsmall">
+            {moveNum}
+          </Text>
         </Box>
       )}
     </Stack>

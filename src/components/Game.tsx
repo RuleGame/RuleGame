@@ -120,7 +120,7 @@ const Game: React.FunctionComponent<{
       >
         <Board className={className} paused={paused} />
       </Box>
-      <Box gridArea={GridAreaName.FORM} align="center" pad="small">
+      <Box gridArea={GridAreaName.FORM} align="center">
         {!isGameCompleted && (
           <Box gap="small">
             <Button
