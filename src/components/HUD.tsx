@@ -24,6 +24,7 @@ enum GridArea {
 }
 
 const NUM_TICKS = 7;
+const NUM_FONT_SIZE = '1.25em;';
 
 const HUD: React.FunctionComponent = ({ children }) => {
   const numMovesMade = useSelector(numMovesMadeSelector);
@@ -75,7 +76,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
             <Text size="inherit" weight="bold">
               {texts[Page.TRIALS].numMovesMadePreText}&nbsp;
             </Text>
-            <Text size="2em" weight="bold" color="light-blue">
+            <Text size={NUM_FONT_SIZE} weight="bold" color="light-blue">
               {numMovesMade}
             </Text>
           </Box>
@@ -88,7 +89,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
               <Text size="inherit" weight="bold">
                 {texts[Page.TRIALS].numMovesLeftPreText}&nbsp;
               </Text>
-              <Text size="2em" weight="bold" color="red">
+              <Text size={NUM_FONT_SIZE} weight="bold" color="red">
                 {numMovesLeft}
               </Text>
             </Box>
@@ -132,7 +133,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
               <Text weight="bold" size="inherit">
                 {texts[Page.TRIALS].pointsPreText}&nbsp;
               </Text>
-              <Text color="green" weight="bold" size="2em">
+              <Text color="green" weight="bold" size={NUM_FONT_SIZE}>
                 {points}
               </Text>
             </Box>
@@ -141,7 +142,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
             border="all"
             justify="end"
             direction="column"
-            width="2em"
+            width={NUM_FONT_SIZE}
             height="5em"
             round="xsmall"
             overflow="hidden"
