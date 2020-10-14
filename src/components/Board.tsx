@@ -12,7 +12,6 @@ import {
   boardObjectsSelector,
   bucketShapesSelector,
   moveNumByBoardObjectSelector,
-  showStackMemoryOrderSelector,
 } from '../store/selectors/board';
 import { BoardObject as BoardObjectType } from '../utils/api';
 import { BucketPosition } from '../constants/BucketPosition';
