@@ -12,7 +12,6 @@ import {
   boardObjectsSelector,
   bucketShapesSelector,
   moveNumByBoardObjectSelector,
-  showStackMemoryOrderSelector,
 } from '../store/selectors/board';
 import { BoardObject as BoardObjectType } from '../utils/api';
 import { BucketPosition } from '../constants/BucketPosition';
@@ -58,7 +57,6 @@ const Board = ({ className }: BoardProps): JSX.Element => {
   const moveNumByBoardObject = useSelector(moveNumByBoardObjectSelector);
   const bucketShapes = useSelector(bucketShapesSelector);
   const boardObjects = useSelector(boardObjectsSelector);
-  const showStackMemoryOrder = useSelector(showStackMemoryOrderSelector);
   const [ref, { height }] = useMeasure();
 
   return (
@@ -92,29 +90,25 @@ const Board = ({ className }: BoardProps): JSX.Element => {
           },
           {
             name: GridAreaName.BOARD,
-            start: showStackMemoryOrder ? [1, 1] : [0, 0],
-            end: showStackMemoryOrder ? [1, 2] : [2, 3],
+            start: [1, 1],
+            end: [1, 2],
           },
         ]}
       >
-        {showStackMemoryOrder && (
-          <>
-            <Box gridArea={GridAreaName.TL} fill justify="center" align="center">
-              <BucketDropList bucket={BucketPosition.TL} />
-            </Box>
-            <Box gridArea={GridAreaName.TR} fill justify="center" align="center">
-              <BucketDropList bucket={BucketPosition.TR} />
-            </Box>
-            <Box gridArea={GridAreaName.BL} fill justify="center" align="center">
-              <BucketDropList bucket={BucketPosition.BL} />
-            </Box>
-            <Box gridArea={GridAreaName.BR} fill justify="center" align="center">
-              <BucketDropList bucket={BucketPosition.BR} />
-            </Box>
-          </>
-        )}
+        <Box gridArea={GridAreaName.TL} fill justify="center" align="center">
+          <BucketDropList bucket={BucketPosition.TL} />
+        </Box>
+        <Box gridArea={GridAreaName.TR} fill justify="center" align="center">
+          <BucketDropList bucket={BucketPosition.TR} />
+        </Box>
+        <Box gridArea={GridAreaName.BL} fill justify="center" align="center">
+          <BucketDropList bucket={BucketPosition.BL} />
+        </Box>
+        <Box gridArea={GridAreaName.BR} fill justify="center" align="center">
+          <BucketDropList bucket={BucketPosition.BR} />
+        </Box>
 
-        <Box gridArea={GridAreaName.BOARD}>
+        <Box gridArea={GridAreaName.BOARD} pad="xxsmall">
           <StyledBoard>
             {boardObjects.map((boardObject) => (
               <StyledBoardObject
