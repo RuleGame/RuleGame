@@ -7,9 +7,6 @@ export default {
   [Page.CONSENT]: {
     text: (
       <>
-        <Box width="small" height="small">
-          <Image src={HappyFace} fill />
-        </Box>
         <Paragraph fill>
           {`The task you are about to do is sponsored by `}
           <strong>University of Wisconsin-Madison</strong>
