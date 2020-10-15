@@ -92,51 +92,147 @@ export default {
           <Box width="large" height="large">
             <Image src={I1} fill />
           </Box>
+          
+        </>,
+
+        // Page 3
+        <>
+          <Heading>RuleGame Challenge</Heading>
           <Box width="large" height="large">
             <Image src={I2} fill />
           </Box>
+          
+        </>,
+
+        // Page 4
+        <>
+          <Heading>RuleGame Challenge</Heading>
           <Box width="large" height="large">
             <Image src={I3} fill />
           </Box>
+          
+        </>,
+
+        // Page 5
+        <>
+          <Heading>RuleGame Challenge</Heading>
           <Box width="large" height="large">
             <Image src={I4} fill />
           </Box>
+          
+        </>,
+
+        // Page 6
+        <>
+          <Heading>RuleGame Challenge</Heading>
           <Box width="large" height="large">
             <Image src={I5} fill />
           </Box>
+          
+        </>,
+
+        // Page 7
+        <>
+          <Heading>RuleGame Challenge</Heading>
           <Box width="large" height="large">
             <Image src={I6} fill />
           </Box>
+          
+        </>,
+
+        // Page 8
+        <>
+          <Heading>RuleGame Challenge</Heading>
           <Box width="large" height="large">
             <Image src={I7} fill />
           </Box>
+          
+        </>,
+
+        // Page 9
+        <>
+          <Heading>RuleGame Challenge</Heading>
           <Box width="large" height="large">
             <Image src={I8} fill />
           </Box>
+          
+        </>,
+
+        // Page 10
+        <>
+          <Heading>RuleGame Challenge</Heading>
           <Box width="large" height="large">
             <Image src={I9} fill />
           </Box>
+          
+        </>,
+
+        // Page 11
+        <>
+          <Heading>RuleGame Challenge</Heading>
           <Box width="large" height="large">
             <Image src={I10} fill />
           </Box>
+          
+        </>,
+
+        // Page 12
+        <>
+          <Heading>RuleGame Challenge</Heading>
           <Box width="large" height="large">
             <Image src={I11} fill />
           </Box>
+          
+        </>,
+
+        // Page 13
+        <>
+          <Heading>RuleGame Challenge</Heading>
           <Box width="large" height="large">
             <Image src={I12} fill />
           </Box>
+          
+        </>,
+
+        // Page 14
+        <>
+          <Heading>RuleGame Challenge</Heading>
           <Box width="large" height="large">
             <Image src={I13} fill />
           </Box>
+          
+        </>,
+
+        // Page 15
+        <>
+          <Heading>RuleGame Challenge</Heading>
           <Box width="large" height="large">
             <Image src={I14} fill />
           </Box>
+          
+        </>,
+
+        // Page 16
+        <>
+          <Heading>RuleGame Challenge</Heading>
           <Box width="large" height="large">
             <Image src={I15} fill />
           </Box>
+          
+        </>,
+
+        // Page 17
+        <>
+          <Heading>RuleGame Challenge</Heading>
           <Box width="large" height="large">
             <Image src={I16} fill />
           </Box>
+          
+        </>,
+
+        // Page 18
+        <>
+          <Heading>RuleGame Challenge</Heading>
           <Box width="large" height="large">
             <Image src={I17} fill />
           </Box>
