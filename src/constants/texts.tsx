@@ -1,7 +1,23 @@
 import React from 'react';
 import { Box, Heading, Image, Paragraph, Text } from 'grommet';
 import { Page } from './Page';
-import HappyFace from '../assets/smiley-face.png';
+import I1 from '../assets/instructions/instructions_final.001.jpeg';
+import I2 from '../assets/instructions/instructions_final.002.jpeg';
+import I3 from '../assets/instructions/instructions_final.003.jpeg';
+import I4 from '../assets/instructions/instructions_final.004.jpeg';
+import I5 from '../assets/instructions/instructions_final.005.jpeg';
+import I6 from '../assets/instructions/instructions_final.006.jpeg';
+import I7 from '../assets/instructions/instructions_final.007.jpeg';
+import I8 from '../assets/instructions/instructions_final.008.jpeg';
+import I9 from '../assets/instructions/instructions_final.009.jpeg';
+import I10 from '../assets/instructions/instructions_final.0010.jpeg';
+import I11 from '../assets/instructions/instructions_final.0011.jpeg';
+import I12 from '../assets/instructions/instructions_final.0012.jpeg';
+import I13 from '../assets/instructions/instructions_final.0013.jpeg';
+import I14 from '../assets/instructions/instructions_final.0014.jpeg';
+import I15 from '../assets/instructions/instructions_final.0015.jpeg';
+import I16 from '../assets/instructions/instructions_final.0016.jpeg';
+import I17 from '../assets/instructions/instructions_final.0017.jpeg';
 
 export default {
   [Page.CONSENT]: {
@@ -73,7 +89,9 @@ export default {
         // Page 2
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Paragraph fill>Instruction page 2</Paragraph>
+          <Box width="large" height="large">
+            <Image src={I1} fill />
+          </Box>
         </>,
       ],
     backButtonLabel: 'Back',
