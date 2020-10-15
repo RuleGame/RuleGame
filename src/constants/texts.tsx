@@ -92,6 +92,54 @@ export default {
           <Box width="large" height="large">
             <Image src={I1} fill />
           </Box>
+          <Box width="large" height="large">
+            <Image src={I2} fill />
+          </Box>
+          <Box width="large" height="large">
+            <Image src={I3} fill />
+          </Box>
+          <Box width="large" height="large">
+            <Image src={I4} fill />
+          </Box>
+          <Box width="large" height="large">
+            <Image src={I5} fill />
+          </Box>
+          <Box width="large" height="large">
+            <Image src={I6} fill />
+          </Box>
+          <Box width="large" height="large">
+            <Image src={I7} fill />
+          </Box>
+          <Box width="large" height="large">
+            <Image src={I8} fill />
+          </Box>
+          <Box width="large" height="large">
+            <Image src={I9} fill />
+          </Box>
+          <Box width="large" height="large">
+            <Image src={I10} fill />
+          </Box>
+          <Box width="large" height="large">
+            <Image src={I11} fill />
+          </Box>
+          <Box width="large" height="large">
+            <Image src={I12} fill />
+          </Box>
+          <Box width="large" height="large">
+            <Image src={I13} fill />
+          </Box>
+          <Box width="large" height="large">
+            <Image src={I14} fill />
+          </Box>
+          <Box width="large" height="large">
+            <Image src={I15} fill />
+          </Box>
+          <Box width="large" height="large">
+            <Image src={I16} fill />
+          </Box>
+          <Box width="large" height="large">
+            <Image src={I17} fill />
+          </Box>
         </>,
       ],
     backButtonLabel: 'Back',
