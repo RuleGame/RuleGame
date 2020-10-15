@@ -10,14 +10,14 @@ import I6 from '../assets/instructions/instructions_final.006.jpeg';
 import I7 from '../assets/instructions/instructions_final.007.jpeg';
 import I8 from '../assets/instructions/instructions_final.008.jpeg';
 import I9 from '../assets/instructions/instructions_final.009.jpeg';
-import I10 from '../assets/instructions/instructions_final.0010.jpeg';
-import I11 from '../assets/instructions/instructions_final.0011.jpeg';
-import I12 from '../assets/instructions/instructions_final.0012.jpeg';
-import I13 from '../assets/instructions/instructions_final.0013.jpeg';
-import I14 from '../assets/instructions/instructions_final.0014.jpeg';
-import I15 from '../assets/instructions/instructions_final.0015.jpeg';
-import I16 from '../assets/instructions/instructions_final.0016.jpeg';
-import I17 from '../assets/instructions/instructions_final.0017.jpeg';
+import I10 from '../assets/instructions/instructions_final.010.jpeg';
+import I11 from '../assets/instructions/instructions_final.011.jpeg';
+import I12 from '../assets/instructions/instructions_final.012.jpeg';
+import I13 from '../assets/instructions/instructions_final.013.jpeg';
+import I14 from '../assets/instructions/instructions_final.014.jpeg';
+import I15 from '../assets/instructions/instructions_final.015.jpeg';
+import I16 from '../assets/instructions/instructions_final.016.jpeg';
+import I17 from '../assets/instructions/instructions_final.017.jpeg';
 
 export default {
   [Page.CONSENT]: {
