@@ -88,7 +88,6 @@ export default {
 
         // Page 2
         <>
-          <Heading>RuleGame Challenge</Heading>
           <Box width="large">
             <Image src={I1} fill />
           </Box>
@@ -97,7 +96,6 @@ export default {
 
         // Page 3
         <>
-          <Heading>RuleGame Challenge</Heading>
           <Box width="large">
             <Image src={I2} fill />
           </Box>
@@ -106,7 +104,6 @@ export default {
 
         // Page 4
         <>
-          <Heading>RuleGame Challenge</Heading>
           <Box width="large">
             <Image src={I3} fill />
           </Box>
@@ -115,7 +112,6 @@ export default {
 
         // Page 5
         <>
-          <Heading>RuleGame Challenge</Heading>
           <Box width="large">
             <Image src={I4} fill />
           </Box>
@@ -124,7 +120,6 @@ export default {
 
         // Page 6
         <>
-          <Heading>RuleGame Challenge</Heading>
           <Box width="large">
             <Image src={I5} fill />
           </Box>
@@ -133,7 +128,6 @@ export default {
 
         // Page 7
         <>
-          <Heading>RuleGame Challenge</Heading>
           <Box width="large">
             <Image src={I6} fill />
           </Box>
@@ -142,7 +136,6 @@ export default {
 
         // Page 8
         <>
-          <Heading>RuleGame Challenge</Heading>
           <Box width="large">
             <Image src={I7} fill />
           </Box>
@@ -151,7 +144,6 @@ export default {
 
         // Page 9
         <>
-          <Heading>RuleGame Challenge</Heading>
           <Box width="large">
             <Image src={I8} fill />
           </Box>
@@ -160,7 +152,6 @@ export default {
 
         // Page 10
         <>
-          <Heading>RuleGame Challenge</Heading>
           <Box width="large">
             <Image src={I9} fill />
           </Box>
@@ -169,7 +160,6 @@ export default {
 
         // Page 11
         <>
-          <Heading>RuleGame Challenge</Heading>
           <Box width="large">
             <Image src={I10} fill />
           </Box>
@@ -178,7 +168,6 @@ export default {
 
         // Page 12
         <>
-          <Heading>RuleGame Challenge</Heading>
           <Box width="large">
             <Image src={I11} fill />
           </Box>
@@ -187,7 +176,6 @@ export default {
 
         // Page 13
         <>
-          <Heading>RuleGame Challenge</Heading>
           <Box width="large">
             <Image src={I12} fill />
           </Box>
@@ -196,7 +184,6 @@ export default {
 
         // Page 14
         <>
-          <Heading>RuleGame Challenge</Heading>
           <Box width="large">
             <Image src={I13} fill />
           </Box>
@@ -205,7 +192,6 @@ export default {
 
         // Page 15
         <>
-          <Heading>RuleGame Challenge</Heading>
           <Box width="large">
             <Image src={I14} fill />
           </Box>
@@ -214,7 +200,6 @@ export default {
 
         // Page 16
         <>
-          <Heading>RuleGame Challenge</Heading>
           <Box width="large">
             <Image src={I15} fill />
           </Box>
@@ -223,7 +208,6 @@ export default {
 
         // Page 17
         <>
-          <Heading>RuleGame Challenge</Heading>
           <Box width="large">
             <Image src={I16} fill />
           </Box>
@@ -232,7 +216,6 @@ export default {
 
         // Page 18
         <>
-          <Heading>RuleGame Challenge</Heading>
           <Box width="large">
             <Image src={I17} fill />
           </Box>
