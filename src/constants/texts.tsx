@@ -4,7 +4,7 @@ import { Page } from './Page';
 import I1 from '../assets/instructions/instructions_final.001.jpeg';
 import I2 from '../assets/instructions/instructions_final.002.jpeg';
 import I3 from '../assets/instructions/instructions_final.003.jpeg';
-import I4 from '../assets/instructions/instructions_final.004.jpeg';
+import I4 from '../assets/instructions/instructions_final.004M.jpeg';
 import I5 from '../assets/instructions/instructions_final.005.jpeg';
 import I6 from '../assets/instructions/instructions_final.006.jpeg';
 import I7 from '../assets/instructions/instructions_final.007.jpeg';
