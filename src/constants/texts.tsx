@@ -89,7 +89,9 @@ export default {
         // Page 2
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Image src={I1} width="600" align="center" />
+          <Box width="large" align="center">
+            <Image src={I1} width="600" />
+          </Box>
         </>,
 
         // Page 3
