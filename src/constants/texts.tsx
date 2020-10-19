@@ -89,7 +89,7 @@ export default {
         // Page 2
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Box>
+          <Box width="large">
             <Image src={I1} fill />
           </Box>
           
