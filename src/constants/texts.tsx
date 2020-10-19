@@ -97,7 +97,7 @@ export default {
         // Page 3
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Box width="large">
+          <Box width="large" align="center">
             <Image src={I2} width="600" />
           </Box>
           
@@ -106,7 +106,7 @@ export default {
         // Page 4
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Box width="large">
+          <Box width="large" align="center">
             <Image src={I3} width="600" />
           </Box>
           
@@ -115,7 +115,7 @@ export default {
         // Page 5
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Box width="large">
+          <Box width="large" align="center">
             <Image src={I4} width="600" />
           </Box>
           
@@ -124,7 +124,7 @@ export default {
         // Page 6
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Box width="large">
+          <Box width="large" align="center">
             <Image src={I5} width="600" />
           </Box>
           
@@ -133,7 +133,7 @@ export default {
         // Page 7
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Box width="large">
+          <Box width="large" align="center">
             <Image src={I6} width="600" />
           </Box>
           
@@ -142,7 +142,7 @@ export default {
         // Page 8
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Box width="large">
+          <Box width="large" align="center">
             <Image src={I7} width="600" />
           </Box>
           
@@ -151,7 +151,7 @@ export default {
         // Page 9
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Box width="large">
+          <Box width="large" align="center">
             <Image src={I8} width="600" />
           </Box>
           
@@ -160,7 +160,7 @@ export default {
         // Page 10
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Box width="large">
+          <Box width="large" align="center">
             <Image src={I9} width="600" />
           </Box>
           
@@ -169,7 +169,7 @@ export default {
         // Page 11
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Box width="large">
+          <Box width="large" align="center">
             <Image src={I10} width="600" />
           </Box>
           
@@ -178,7 +178,7 @@ export default {
         // Page 12
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Box width="large">
+          <Box width="large" align="center">
             <Image src={I11} width="600" />
           </Box>
           
@@ -187,7 +187,7 @@ export default {
         // Page 13
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Box width="large">
+          <Box width="large" align="center">
             <Image src={I12} width="600" />
           </Box>
           
@@ -196,7 +196,7 @@ export default {
         // Page 14
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Box width="large">
+          <Box width="large" align="center">
             <Image src={I13} width="600" />
           </Box>
           
@@ -205,7 +205,7 @@ export default {
         // Page 15
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Box width="large">
+          <Box width="large" align="center">
             <Image src={I14} width="600" />
           </Box>
           
@@ -214,7 +214,7 @@ export default {
         // Page 16
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Box width="large">
+          <Box width="large" align="center">
             <Image src={I15} width="600" />
           </Box>
           
@@ -223,7 +223,7 @@ export default {
         // Page 17
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Box width="large">
+          <Box width="large" align="center">
             <Image src={I16} width="600" />
           </Box>
           
@@ -232,7 +232,7 @@ export default {
         // Page 18
         <>
           <Heading>RuleGame Challenge</Heading>
-          <Box width="large">
+          <Box width="large" align="center">
             <Image src={I17} width="600" />
           </Box>
         </>,
