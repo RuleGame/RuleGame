@@ -90,7 +90,7 @@ export default {
         <>
           <Heading>RuleGame Challenge</Heading>
           <Box width="large">
-            <Image src={I1} width="300" />
+            <Image src={I1} width="700" align=center />
           </Box>
           
         </>,
@@ -99,7 +99,7 @@ export default {
         <>
           <Heading>RuleGame Challenge</Heading>
           <Box width="large">
-            <Image src={I2} fill />
+            <Image src={I2} width="700" align=center />
           </Box>
           
         </>,
@@ -108,7 +108,7 @@ export default {
         <>
           <Heading>RuleGame Challenge</Heading>
           <Box width="large">
-            <Image src={I3} fill />
+            <Image src={I3} width="700" align=center />
           </Box>
           
         </>,
@@ -117,7 +117,7 @@ export default {
         <>
           <Heading>RuleGame Challenge</Heading>
           <Box width="large">
-            <Image src={I4} fill />
+            <Image src={I4} width="700" align=center />
           </Box>
           
         </>,
@@ -126,7 +126,7 @@ export default {
         <>
           <Heading>RuleGame Challenge</Heading>
           <Box width="large">
-            <Image src={I5} fill />
+            <Image src={I5} width="700" align=center />
           </Box>
           
         </>,
@@ -135,7 +135,7 @@ export default {
         <>
           <Heading>RuleGame Challenge</Heading>
           <Box width="large">
-            <Image src={I6} fill />
+            <Image src={I6} width="700" align=center />
           </Box>
           
         </>,
@@ -144,7 +144,7 @@ export default {
         <>
           <Heading>RuleGame Challenge</Heading>
           <Box width="large">
-            <Image src={I7} fill />
+            <Image src={I7} width="700" align=center />
           </Box>
           
         </>,
@@ -153,7 +153,7 @@ export default {
         <>
           <Heading>RuleGame Challenge</Heading>
           <Box width="large">
-            <Image src={I8} fill />
+            <Image src={I8} width="700" align=center />
           </Box>
           
         </>,
@@ -162,7 +162,7 @@ export default {
         <>
           <Heading>RuleGame Challenge</Heading>
           <Box width="large">
-            <Image src={I9} fill />
+            <Image src={I9} width="700" align=center />
           </Box>
           
         </>,
@@ -171,7 +171,7 @@ export default {
         <>
           <Heading>RuleGame Challenge</Heading>
           <Box width="large">
-            <Image src={I10} fill />
+            <Image src={I10} width="700" align=center />
           </Box>
           
         </>,
@@ -180,7 +180,7 @@ export default {
         <>
           <Heading>RuleGame Challenge</Heading>
           <Box width="large">
-            <Image src={I11} fill />
+            <Image src={I11} width="700" align=center />
           </Box>
           
         </>,
@@ -189,7 +189,7 @@ export default {
         <>
           <Heading>RuleGame Challenge</Heading>
           <Box width="large">
-            <Image src={I12} fill />
+            <Image src={I12} width="700" align=center />
           </Box>
           
         </>,
@@ -198,7 +198,7 @@ export default {
         <>
           <Heading>RuleGame Challenge</Heading>
           <Box width="large">
-            <Image src={I13} fill />
+            <Image src={I13} width="700" align=center />
           </Box>
           
         </>,
@@ -207,7 +207,7 @@ export default {
         <>
           <Heading>RuleGame Challenge</Heading>
           <Box width="large">
-            <Image src={I14} fill />
+            <Image src={I14} width="700" align=center />
           </Box>
           
         </>,
@@ -216,7 +216,7 @@ export default {
         <>
           <Heading>RuleGame Challenge</Heading>
           <Box width="large">
-            <Image src={I15} fill />
+            <Image src={I15} width="700" align=center />
           </Box>
           
         </>,
@@ -225,7 +225,7 @@ export default {
         <>
           <Heading>RuleGame Challenge</Heading>
           <Box width="large">
-            <Image src={I16} fill />
+            <Image src={I16} width="700" align=center />
           </Box>
           
         </>,
@@ -234,7 +234,7 @@ export default {
         <>
           <Heading>RuleGame Challenge</Heading>
           <Box width="large">
-            <Image src={I17} fill />
+            <Image src={I17} width="700" align=center />
           </Box>
         </>,
       ],
