@@ -312,7 +312,8 @@ export default {
           Your completion code is <Text weight="bold">{completionCode}</Text>. Please paste the code
           into the mTurk Box.
         </Paragraph>
-        <Paragraph fill>The purpose of this HIT is to... TODO Placeholder</Paragraph>
+        <Paragraph fill>We’re using this task to better understand what kinds of rules are easy and hard 
+          for people compared to machine learning algorithms.</Paragraph>
         <Paragraph fill>You may now close this window.</Paragraph>
       </>
     ),
