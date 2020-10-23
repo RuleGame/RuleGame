@@ -48,7 +48,7 @@ export default {
             participating, you may send an email `}
           <a href="mailto:lupyan@wisc.edu">lupyan@wisc.edu</a>
           {` or complete `} 
-          <a href="mailto:http://tinyurl.com/withdrawdata-lupyanlab"> this form </a> 
+          <a href="http://tinyurl.com/withdrawdata-lupyanlab"> this form </a> 
           {`which will allow you to make a request anonymously.
 
             If you have any questions or concerns about this task please contact the principal investigator: 
