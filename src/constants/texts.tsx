@@ -7,7 +7,7 @@ import I3 from '../assets/instructions/instructions_final.003.jpeg';
 import I4 from '../assets/instructions/instructions_final.004M.jpeg';
 import I5 from '../assets/instructions/instructions_final.005.jpeg';
 import I6 from '../assets/instructions/instructions_final.006.jpeg';
-import I7 from '../assets/instructions/instructions_final.007.jpeg';
+import I7 from '../assets/instructions/instructions_final.007M.jpeg';
 import I8 from '../assets/instructions/instructions_final.008.jpeg';
 import I9 from '../assets/instructions/instructions_final.009.jpeg';
 import I10 from '../assets/instructions/instructions_final.010.jpeg';
