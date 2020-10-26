@@ -220,6 +220,14 @@ export default {
             <Image src={I17} width="600" />
           </Box>
         </>,
+        
+        // Page 19
+        <>
+        <Heading>RuleGame Challenge</Heading>
+        <Paragraph fill>
+          {`Please type in proper guesses or your data will be rejected! Your guesses will be manually checked.`}
+          </Paragraph>
+        </>,
       ],
     backButtonLabel: 'Back',
     nextButtonLabel: 'Next',
