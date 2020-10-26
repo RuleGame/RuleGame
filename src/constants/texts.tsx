@@ -225,7 +225,7 @@ export default {
         <>
         <Heading>RuleGame Challenge</Heading>
         <Paragraph fill>
-          {`Please type in proper guesses or your data will be rejected! Your guesses will be manually checked.`}
+          {`Please try your best when entering your guesses. We may reject your work if you make uninformative responses.`}
           </Paragraph>
         </>,
       ],
