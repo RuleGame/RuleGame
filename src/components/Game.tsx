@@ -9,6 +9,7 @@ import GuessRuleForm from './GuessRuleForm';
 import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
 import { activateBonus, giveUp, loadNextBonus } from '../store/actions/board';
 import {
+  allowGiveUpOptionSelector,
   canActivateBonusSelector,
   episodeNoSelector,
   finishCodeSelector,
@@ -55,6 +56,7 @@ const Game: React.FunctionComponent<{
   const [bonusActivated, setBonusActivated] = useState(false);
   const finishCode = useSelector(finishCodeSelector);
   const debugMode = useSelector(debugModeSelector);
+  const allowGiveUpOption = useSelector(allowGiveUpOptionSelector);
 
   useEffect(() => {
     setBonusActivated(false);
@@ -121,7 +123,7 @@ const Game: React.FunctionComponent<{
         <Board className={className} paused={paused} />
       </Box>
       <Box gridArea={GridAreaName.FORM} align="center">
-        {!isGameCompleted && (
+        {!isGameCompleted && allowGiveUpOption && (
           <Box gap="small">
             <Button
               label={texts[Page.TRIALS].giveUpButtonLabel}
