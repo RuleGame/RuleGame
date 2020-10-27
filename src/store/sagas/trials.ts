@@ -18,9 +18,15 @@ import {
 import { nextPage } from '../actions/page';
 import { boardPositionToBxBy, FEEDBACK_DURATION } from '../../constants';
 import { apiResolve, takeAction } from './utils/helpers';
+import { addLayer } from '../actions/layers';
 
 function* trials(playerId: string, exp?: string) {
-  yield* apiResolve('/w2020/game-data/GameService2/player', METHOD.POST, { playerId, exp }, {});
+  const {
+    data: { error: playerError, errmsg: playerErrmsg },
+  } = yield* apiResolve('/w2020/game-data/GameService2/player', METHOD.POST, { playerId, exp }, {});
+  if (playerError) {
+    yield* put(addLayer('An Error Ocurred', playerErrmsg, []));
+  }
 
   let {
     // eslint-disable-next-line prefer-const
@@ -34,12 +40,20 @@ function* trials(playerId: string, exp?: string) {
 
   const noEpisodeStarted = error && errmsg === ErrorMsg.FAILED_TO_FIND_ANY_EPISODE;
   if (noEpisodeStarted) {
-    ({ data } = yield* apiResolve(
+    const { data: newEpisodeData } = yield* apiResolve(
       '/w2020/game-data/GameService2/newEpisode',
       METHOD.POST,
       { playerId },
       {},
-    ));
+    );
+
+    data = newEpisodeData;
+
+    if (newEpisodeData.error) {
+      yield* put(
+        addLayer('An Error Ocurred', newEpisodeData.errmsg, [], undefined, undefined, false),
+      );
+    }
   }
 
   let { alreadyFinished, episodeId, para } = data;
