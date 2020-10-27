@@ -65,6 +65,7 @@ function* trials(playerId: string, exp?: string) {
       grid_memory_show_order: gridMemoryShowOrder,
       stack_memory_show_order: stackMemoryShowOrder,
       stack_memory_depth: stackMemoryDepth,
+      give_up_at: giveUpAt,
     } = para;
 
     let moveAction: ReturnType<typeof move> | undefined;
@@ -111,6 +112,7 @@ function* trials(playerId: string, exp?: string) {
           para.max_points,
           display.movesLeftToStayInBonus,
           display.transitionMap,
+          giveUpAt,
         ),
       );
 

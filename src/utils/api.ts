@@ -132,6 +132,7 @@ type Para = {
   stack_memory_depth: number;
   max_boards: number;
   activate_bonus_at: number;
+  give_up_at?: number;
 };
 
 export enum ErrorMsg {

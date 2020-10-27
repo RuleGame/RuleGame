@@ -31,6 +31,7 @@ export type State = {
   transitionMap?: TransitionMap;
   episodeId: string;
   maxPoints: number;
+  giveUpAt?: number;
 };
 
 export const initialState: State = {
@@ -107,6 +108,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         transitionMap: action.payload.transitionMap,
         episodeId: action.payload.episodeId,
         maxPoints: action.payload.maxPoints,
+        giveUpAt: action.payload.giveUpAt,
       };
 
     case getType(pause):
