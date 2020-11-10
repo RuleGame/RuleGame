@@ -79,3 +79,6 @@ export const maxPointsSelector = (state: RootState) => state.board.maxPoints;
 
 export const allowGiveUpOptionSelector = (state: RootState) =>
   state.board.giveUpAt !== undefined && state.board.episodeNo >= state.board.giveUpAt;
+
+export const displayBucketDropListsSelector = (state: RootState) =>
+  state.board.stackMemoryDepth > 0;
