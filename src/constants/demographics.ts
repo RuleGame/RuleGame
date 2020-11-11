@@ -46,6 +46,20 @@ export default [
     ],
   },
   {
+    type: 'radiogroup',
+    name: 'fun',
+    isRequired: true,
+    title:
+      'How fun was this game?',
+    choices: [
+      '1|Not fun at all',
+      '2|Not that much',
+      '3|Just so so',
+      "4|Kind of fun",
+      "5|Really fun",
+    ],
+  },
+  {
     type: 'text',
     name: 'comments',
     isRequired: false,
