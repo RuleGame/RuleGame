@@ -1,6 +1,10 @@
 import React from 'react';
 import { Box, Heading, Image, Paragraph, Text } from 'grommet';
 import { Page } from './Page';
+
+var BIN = 0;
+
+if (BIN === 1){
 import I1 from '../assets/instructions/instructions_final.001.jpeg';
 import I2 from '../assets/instructions/instructions_final.002.jpeg';
 import I3 from '../assets/instructions/instructions_final.003.jpeg';
@@ -17,7 +21,26 @@ import I13 from '../assets/instructions/instructions_final.013.jpeg';
 import I14 from '../assets/instructions/instructions_final.014.jpeg';
 import I15 from '../assets/instructions/instructions_final.015.jpeg';
 import I16 from '../assets/instructions/instructions_final.016.jpeg';
-import I17 from '../assets/instructions/instructions_final.017.jpeg';
+} else {
+import I1 from '../assets/instructions_NOBINS/instructions_final.001.jpeg';
+import I2 from '../assets/instructions_NOBINS/instructions_final.002.jpeg';
+import I3 from '../assets/instructions_NOBINS/instructions_final.003.jpeg';
+import I4 from '../assets/instructions_NOBINS/instructions_final.005.jpeg';
+import I5 from '../assets/instructions_NOBINS/instructions_final.006.jpeg';
+import I6 from '../assets/instructions_NOBINS/instructions_final.007.jpeg';
+import I7 from '../assets/instructions_NOBINS/instructions_final.008.jpeg';
+import I8 from '../assets/instructions_NOBINS/instructions_final.009.jpeg';
+import I9 from '../assets/instructions_NOBINS/instructions_final.010.jpeg';
+import I10 from '../assets/instructions_NOBINS/instructions_final.011.jpeg';
+import I11 from '../assets/instructions_NOBINS/instructions_final.012.jpeg';
+import I12 from '../assets/instructions_NOBINS/instructions_final.013.jpeg';
+import I13 from '../assets/instructions_NOBINS/instructions_final.014.jpeg';
+import I14 from '../assets/instructions_NOBINS/instructions_final.015.jpeg';
+import I15 from '../assets/instructions_NOBINS/instructions_final.016.jpeg';
+import I16 from '../assets/instructions_NOBINS/instructions_final.017.jpeg';
+}
+
+
 
 export default {
   [Page.CONSENT]: {
@@ -214,14 +237,6 @@ export default {
         </>,
 
         // Page 18
-        <>
-          <Heading>RuleGame Challenge</Heading>
-          <Box width="large" align="center">
-            <Image src={I17} width="600" />
-          </Box>
-        </>,
-        
-        // Page 19
         <>
         <Heading>RuleGame Challenge</Heading>
         <Paragraph fill>
