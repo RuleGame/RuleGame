@@ -30,35 +30,37 @@ export default {
           <strong>University of Wisconsin-Madison</strong>
           {`. It is part of a protocol titled “Human and Machine Learning: The Search for Anomalies”.
 
-            The purpose of this work is to compare reasoning biases in human and machine learners 
-            by testing what reasoning problems are relatively easier or more difficult for people, and 
+            The purpose of this work is to compare reasoning biases in human and machine learners
+            by testing what reasoning problems are relatively easier or more difficult for people, and
             for machines. `}
-          <strong>More detailed instructions for this specific task will be provided on the next screen. </strong>
+          <strong>
+            More detailed instructions for this specific task will be provided on the next screen.{' '}
+          </strong>
         </Paragraph>
         <Paragraph fill>
-          {`This task has no direct benefits. We do not anticipate any psychosocial risks. There is a 
-            risk of a confidentiality breach. Participants may become fatigued or frustrated due to 
-            the length of the study. The responses you submit as part of this task will be stored on a 
-            secure server and accessible only to researchers who have been approved by UW-Madison. 
-            Processed data with all identifiers removed could be used for future research studies or 
-            distributed to another investigator for future research studies without additional informed 
+          {`This task has no direct benefits. We do not anticipate any psychosocial risks. There is a
+            risk of a confidentiality breach. Participants may become fatigued or frustrated due to
+            the length of the study. The responses you submit as part of this task will be stored on a
+            secure server and accessible only to researchers who have been approved by UW-Madison.
+            Processed data with all identifiers removed could be used for future research studies or
+            distributed to another investigator for future research studies without additional informed
             consent from the subject or the legally authorized representative.
 
-            You are free to decline to participate, to end participation at any time for any reason, or 
-            to refuse to answer any individual question without penalty or loss of earned compensation. 
-            We will not retain data from partial responses. If you would like to withdraw your data after 
+            You are free to decline to participate, to end participation at any time for any reason, or
+            to refuse to answer any individual question without penalty or loss of earned compensation.
+            We will not retain data from partial responses. If you would like to withdraw your data after
             participating, you may send an email `}
           <a href="mailto:lupyan@wisc.edu">lupyan@wisc.edu</a>
-          {` or complete `} 
-          <a href="http://tinyurl.com/withdrawdata-lupyanlab"> this form </a> 
+          {` or complete `}
+          <a href="http://tinyurl.com/withdrawdata-lupyanlab"> this form </a>
           {`which will allow you to make a request anonymously.
 
-            If you have any questions or concerns about this task please contact the principal investigator: 
+            If you have any questions or concerns about this task please contact the principal investigator:
             Prof. Vicki Bier at `}
           <a href="mailto:vicki.bier@wisc.edu">vicki.bier@wisc.edu</a>
           {`.
-            If you are not satisfied with response of the research team, have more questions, or want to talk 
-            with someone about your rights as a research participant, you should contact University of Wisconsin’s 
+            If you are not satisfied with response of the research team, have more questions, or want to talk
+            with someone about your rights as a research participant, you should contact University of Wisconsin’s
             Education Research and Social & Behavioral Science IRB Office at 608-263-2320.`}
         </Paragraph>
       </>
@@ -86,7 +88,6 @@ export default {
           <Box width="large" align="center">
             <Image src={I2} width="600" />
           </Box>
-          
         </>,
 
         // Page 4
@@ -95,7 +96,6 @@ export default {
           <Box width="large" align="center">
             <Image src={I3} width="600" />
           </Box>
-          
         </>,
 
         // Page 5
@@ -104,7 +104,6 @@ export default {
           <Box width="large" align="center">
             <Image src={I4} width="600" />
           </Box>
-          
         </>,
 
         // Page 6
@@ -113,7 +112,6 @@ export default {
           <Box width="large" align="center">
             <Image src={I5} width="600" />
           </Box>
-          
         </>,
 
         // Page 7
@@ -122,7 +120,6 @@ export default {
           <Box width="large" align="center">
             <Image src={I6} width="600" />
           </Box>
-          
         </>,
 
         // Page 8
@@ -131,7 +128,6 @@ export default {
           <Box width="large" align="center">
             <Image src={I7} width="600" />
           </Box>
-          
         </>,
 
         // Page 9
@@ -140,7 +136,6 @@ export default {
           <Box width="large" align="center">
             <Image src={I8} width="600" />
           </Box>
-          
         </>,
 
         // Page 10
@@ -149,7 +144,6 @@ export default {
           <Box width="large" align="center">
             <Image src={I9} width="600" />
           </Box>
-          
         </>,
 
         // Page 11
@@ -158,7 +152,6 @@ export default {
           <Box width="large" align="center">
             <Image src={I10} width="600" />
           </Box>
-          
         </>,
 
         // Page 12
@@ -167,7 +160,6 @@ export default {
           <Box width="large" align="center">
             <Image src={I11} width="600" />
           </Box>
-          
         </>,
 
         // Page 13
@@ -176,7 +168,6 @@ export default {
           <Box width="large" align="center">
             <Image src={I12} width="600" />
           </Box>
-          
         </>,
 
         // Page 14
@@ -185,7 +176,6 @@ export default {
           <Box width="large" align="center">
             <Image src={I13} width="600" />
           </Box>
-          
         </>,
 
         // Page 15
@@ -194,7 +184,6 @@ export default {
           <Box width="large" align="center">
             <Image src={I14} width="600" />
           </Box>
-          
         </>,
 
         // Page 16
@@ -203,7 +192,6 @@ export default {
           <Box width="large" align="center">
             <Image src={I15} width="600" />
           </Box>
-          
         </>,
 
         // Page 17
@@ -212,7 +200,6 @@ export default {
           <Box width="large" align="center">
             <Image src={I16} width="600" />
           </Box>
-          
         </>,
 
         // Page 18
@@ -284,6 +271,8 @@ export default {
 
     // Reuse label shown on hovering over the button.
     reusePreviousResponseLabel: 'Fill with previous response',
+
+    instructionsButtonLabel: 'Open instructions in a new tab',
   },
 
   [Page.DEMOGRAPHICS_INSTRUCTIONS]: {
@@ -298,8 +287,10 @@ export default {
           Your completion code is <Text weight="bold">{completionCode}</Text>. Please paste the code
           into the mTurk Box.
         </Paragraph>
-        <Paragraph fill>We’re using this task to better understand what kinds of rules are easy and hard 
-          for people compared to machine learning algorithms.</Paragraph>
+        <Paragraph fill>
+          We’re using this task to better understand what kinds of rules are easy and hard for
+          people compared to machine learning algorithms.
+        </Paragraph>
         <Paragraph fill>You may now close this window.</Paragraph>
       </>
     ),

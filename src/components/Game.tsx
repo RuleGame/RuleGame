@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Button, CheckBox, Grid, Heading, Text } from 'grommet';
+import { Box, Button, CheckBox, Drop, Grid, Heading, Text } from 'grommet';
 import { Dispatch } from 'redux';
-import { Next } from 'grommet-icons';
+import { Help, Next } from 'grommet-icons';
 import Board from './Board';
 import { RootAction } from '../store/actions';
 import GuessRuleForm from './GuessRuleForm';
@@ -42,6 +42,7 @@ const Game: React.FunctionComponent<{
   className?: string;
 }> = ({ className }) => {
   const dispatch: Dispatch<RootAction> = useDispatch();
+  const instructionsButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const paused = useSelector(pausedSelector);
   const isGameCompleted = useSelector(isGameCompletedSelector);
@@ -57,6 +58,7 @@ const Game: React.FunctionComponent<{
   const finishCode = useSelector(finishCodeSelector);
   const debugMode = useSelector(debugModeSelector);
   const allowGiveUpOption = useSelector(allowGiveUpOptionSelector);
+  const [instructionsButtonOver, setInstructionsButtonOver] = useState(false);
 
   useEffect(() => {
     setBonusActivated(false);
@@ -102,15 +104,43 @@ const Game: React.FunctionComponent<{
         },
       ]}
     >
-      <Box gridArea={GridAreaName.HEADING} align="center" gap="small">
-        <Heading margin="none">{ruleName}</Heading>
-        {DEBUG_ENABLED && (
-          <CheckBox
-            checked={debugMode}
-            label="Debug Mode"
-            onChange={({ target: { checked } }) => dispatch(setDebugMode(checked))}
+      <Box gridArea={GridAreaName.HEADING}>
+        <Box style={{ position: 'relative', display: 'block' }}>
+          <Box align="center" gap="small">
+            <Heading margin="none">{ruleName}</Heading>
+            {DEBUG_ENABLED && (
+              <CheckBox
+                checked={debugMode}
+                label="Debug Mode"
+                onChange={({ target: { checked } }) => dispatch(setDebugMode(checked))}
+              />
+            )}
+          </Box>
+          {instructionsButtonOver && instructionsButtonRef.current !== null && (
+            <Drop
+              align={{ bottom: 'top' }}
+              target={instructionsButtonRef.current}
+              plain
+              // trapFocus set to false allows tabbing through
+              trapFocus={false}
+            >
+              <Box pad="small" background="gray">
+                <Text color="white">{texts[Page.TRIALS].instructionsButtonLabel}</Text>
+              </Box>
+            </Drop>
+          )}
+          <Button
+            style={{ position: 'absolute', right: 0, top: 0 }}
+            primary
+            size="small"
+            icon={<Help size="small" />}
+            onMouseOver={() => setInstructionsButtonOver(true)}
+            onMouseLeave={() => setInstructionsButtonOver(false)}
+            onFocus={() => setInstructionsButtonOver(true)}
+            onBlur={() => setInstructionsButtonOver(false)}
+            ref={instructionsButtonRef}
           />
-        )}
+        </Box>
       </Box>
       <Box
         gridArea={GridAreaName.BOARD}
