@@ -32,6 +32,7 @@ export enum SEARCH_QUERY_KEYS {
   WORKER_ID = 'workerId',
   EXPERIMENT_PLAN = 'exp',
   FULLSCREEN = 'fullscreen',
+  HELP = 'help',
 }
 export const API_HOST_ORIGIN = process.env.REACT_APP_APP_API_HOST_ORIGIN;
 

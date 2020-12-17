@@ -139,6 +139,9 @@ const Game: React.FunctionComponent<{
             onFocus={() => setInstructionsButtonOver(true)}
             onBlur={() => setInstructionsButtonOver(false)}
             ref={instructionsButtonRef}
+            onClick={() =>
+              window.open(`${window.location.origin}${window.location.pathname}/?help=true`)
+            }
           />
         </Box>
       </Box>

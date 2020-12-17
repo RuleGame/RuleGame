@@ -18,11 +18,14 @@ import Demographics from './pages/Demographics';
 import Debriefing from './pages/Debriefing';
 import { SEARCH_QUERY_KEYS } from './constants';
 import texts from './constants/texts';
+import Help from './pages/Help';
 
 const App = () => {
   const page = useSelector(pageSelector);
   const ref = useRef<HTMLDivElement>(null);
   const requireFullscreen = useSearchParam(SEARCH_QUERY_KEYS.FULLSCREEN)?.toLowerCase() === 'true';
+  // Show instructions if help is true
+  const help = useSearchParam(SEARCH_QUERY_KEYS.HELP)?.toLowerCase() === 'true';
   const [fullscreen, setFullscreen] = useState(false);
   useEvent('fullscreenchange', () => {
     if (document.fullscreenElement !== null) {
@@ -35,35 +38,41 @@ const App = () => {
   return (
     <Grommet full plain>
       <Box ref={ref} fill>
-        {!requireFullscreen || (requireFullscreen && fullscreen) ? (
-          page === Page.INTRODUCTION ? (
-            <Introduction />
-          ) : page === Page.CONSENT ? (
-            <Consent />
-          ) : page === Page.LOADING_TRIALS ? (
-            <LoadingTrials />
-          ) : page === Page.TRIALS ? (
-            <Trials />
-          ) : page === Page.DEMOGRAPHICS_INSTRUCTIONS ? (
-            <DemographicsInstructions />
-          ) : page === Page.DEMOGRAPHICS ? (
-            <Demographics />
-          ) : page === Page.DEBRIEFING ? (
-            <Debriefing />
-          ) : (
-            <Paragraph>Unknown page. Try reloading</Paragraph>
-          )
+        {help ? (
+          <Help />
         ) : (
-          <Box margin="xlarge" align="center">
-            <Expand />
-            <Heading>{texts.fullscreenPrompt}</Heading>
-            <Button
-              onClick={() => document.documentElement.requestFullscreen()}
-              primary
-              label={texts.fullscreenButtonLabel}
-              icon={<MdFullscreen />}
-            />
-          </Box>
+          <>
+            {!requireFullscreen || (requireFullscreen && fullscreen) ? (
+              page === Page.INTRODUCTION ? (
+                <Introduction />
+              ) : page === Page.CONSENT ? (
+                <Consent />
+              ) : page === Page.LOADING_TRIALS ? (
+                <LoadingTrials />
+              ) : page === Page.TRIALS ? (
+                <Trials />
+              ) : page === Page.DEMOGRAPHICS_INSTRUCTIONS ? (
+                <DemographicsInstructions />
+              ) : page === Page.DEMOGRAPHICS ? (
+                <Demographics />
+              ) : page === Page.DEBRIEFING ? (
+                <Debriefing />
+              ) : (
+                <Paragraph>Unknown page. Try reloading</Paragraph>
+              )
+            ) : (
+              <Box margin="xlarge" align="center">
+                <Expand />
+                <Heading>{texts.fullscreenPrompt}</Heading>
+                <Button
+                  onClick={() => document.documentElement.requestFullscreen()}
+                  primary
+                  label={texts.fullscreenButtonLabel}
+                  icon={<MdFullscreen />}
+                />
+              </Box>
+            )}
+          </>
         )}
 
         <Layers />

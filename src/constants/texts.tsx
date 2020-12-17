@@ -214,6 +214,8 @@ export default {
     nextButtonLabel: 'Next',
     // Replaces the next button label for the very last instruction page
     startExperimentButtonLabel: 'Start',
+    // For the help page that opens in another tab via clicking the help button
+    helpMessage: 'When you are done reading, please close this tab to return to the Rule Game.',
   },
 
   [Page.LOADING_TRIALS]: {
