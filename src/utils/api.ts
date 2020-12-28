@@ -141,10 +141,10 @@ export enum ErrorMsg {
 }
 
 export type Endpoints = {
-  '/w2020/game-data/GameService/writeFile': {
+  '/game-data/GameService/writeFile': {
     [METHOD.POST]: RequestHandler<undefined, { dir: string; file: string; data: string }>;
   };
-  '/w2020/game-data/GameService2/player': {
+  '/game-data/GameService2/player': {
     [METHOD.POST]: RequestHandler<
       {
         errmsg: ErrorMsg;
@@ -158,7 +158,7 @@ export type Endpoints = {
     >;
   };
 
-  '/w2020/game-data/GameService2/mostRecentEpisode': {
+  '/game-data/GameService2/mostRecentEpisode': {
     [METHOD.POST]: RequestHandler<
       {
         errmsg?: ErrorMsg;
@@ -175,7 +175,7 @@ export type Endpoints = {
     >;
   };
 
-  '/w2020/game-data/GameService2/newEpisode': {
+  '/game-data/GameService2/newEpisode': {
     [METHOD.POST]: RequestHandler<
       {
         errmsg?: ErrorMsg;
@@ -192,11 +192,11 @@ export type Endpoints = {
     >;
   };
 
-  '/w2020/game-data/GameService2/display': {
+  '/game-data/GameService2/display': {
     [METHOD.GET]: RequestHandler<Display, undefined, { episode: string }>;
   };
 
-  '/w2020/game-data/GameService2/move': {
+  '/game-data/GameService2/move': {
     [METHOD.POST]: RequestHandler<
       {
         board: {
@@ -222,7 +222,7 @@ export type Endpoints = {
     >;
   };
 
-  '/w2020/game-data/GameService2/activateBonus': {
+  '/game-data/GameService2/activateBonus': {
     [METHOD.POST]: RequestHandler<
       {
         errmsg: ErrorMsg;
@@ -232,7 +232,7 @@ export type Endpoints = {
     >;
   };
 
-  '/w2020/game-data/GameService2/giveUp': {
+  '/game-data/GameService2/giveUp': {
     [METHOD.POST]: RequestHandler<
       {
         errmsg: ErrorMsg;
@@ -242,7 +242,7 @@ export type Endpoints = {
     >;
   };
 
-  '/w2020/game-data/GameService2/guess': {
+  '/game-data/GameService2/guess': {
     [METHOD.POST]: RequestHandler<
       {
         errmsg: ErrorMsg;

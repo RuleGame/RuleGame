@@ -11,7 +11,7 @@ export default () => {
   const exp = useExperimentPlan();
   const [step, setStep] = useState(0);
   const { data, isLoading } = useQuery(`${workerId}-INTRODUCTION`, () =>
-    api('/w2020/game-data/GameService2/player', METHOD.POST, { playerId: workerId, exp }, {}),
+    api('/game-data/GameService2/player', METHOD.POST, { playerId: workerId, exp }, {}),
   );
   const numRules = isLoading ? '...' : data?.data.trialList.length ?? '?';
   const instructions = texts[Page.INTRODUCTION].text(numRules);
