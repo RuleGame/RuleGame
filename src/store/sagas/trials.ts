@@ -9,6 +9,7 @@ import {
   invalidMove,
   loadNextBonus,
   move,
+  pick,
   recordDemographics,
   setBoard,
   skipGuess,
@@ -68,6 +69,7 @@ function* trials(playerId: string, exp?: string) {
     let guessAction: ReturnType<typeof guess> | undefined;
     let skipGuessAction: ReturnType<typeof skipGuess> | undefined;
     let loadNextBonusAction: ReturnType<typeof loadNextBonus> | undefined;
+    let pickAction: ReturnType<typeof pick> | undefined;
 
     // Encompasses a single episode. Exiting from the loop will result in a new episode if any.
     do {
@@ -117,12 +119,14 @@ function* trials(playerId: string, exp?: string) {
         guessAction,
         skipGuessAction,
         loadNextBonusAction,
+        pickAction,
       } = yield* race({
         moveAction: takeAction(move),
         giveUpAction: takeAction(giveUp),
         guessAction: takeAction(guess),
         skipGuessAction: takeAction(skipGuess),
         loadNextBonusAction: takeAction(loadNextBonus),
+        pickAction: takeAction(pick),
       }));
 
       if (moveAction) {
@@ -154,6 +158,23 @@ function* trials(playerId: string, exp?: string) {
         }
 
         yield* delay(FEEDBACK_DURATION);
+      } else if (pickAction) {
+        const boardObject = display.board.value.find(
+          // eslint-disable-next-line no-loop-func
+          (boardObject) => boardObject.id === pickAction!.payload.boardObjectId,
+        )!;
+
+        yield* apiResolve(
+          '/game-data/GameService2/pick',
+          METHOD.POST,
+          {
+            episode: episodeId,
+            x: boardObject.x,
+            y: boardObject.y,
+            cnt: display.numMovesMade,
+          },
+          {},
+        );
       } else if (giveUpAction) {
         yield* apiResolve(
           '/game-data/GameService2/giveUp',

@@ -4,7 +4,8 @@ import styled from 'styled-components';
 import { Box, Stack, Text } from 'grommet';
 import { Close } from 'grommet-icons';
 import { FiCheck } from 'react-icons/fi';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { Dispatch } from 'redux';
 import { VALID_SHAPES } from '../@types';
 import ShapeObject from './ShapeObject';
 import { cyBoardObject } from '../constants/data-cy-builders';
@@ -17,6 +18,8 @@ import {
   showGridMemoryOrderSelector,
 } from '../store/selectors/board';
 import { debugModeSelector } from '../store/selectors/debug-mode';
+import { RootAction } from '../store/actions';
+import { pick } from '../store/actions/board';
 
 export type BoardObjectProps = {
   className?: string;
@@ -39,6 +42,7 @@ const BoardObject = ({
   color,
   moveNum,
 }: BoardObjectProps): JSX.Element => {
+  const dispatch: Dispatch<RootAction> = useDispatch();
   const hasBeenDropped = boardObject.dropped !== undefined;
   const gameCompleted = useSelector(isGameCompletedSelector);
   const debugMode = useSelector(debugModeSelector);
@@ -73,6 +77,7 @@ const BoardObject = ({
       className={className}
       data-cy={cyBoardObject(boardObject.id)}
       data-cy-checked={hasBeenDropped}
+      onMouseDown={() => dispatch(pick(boardObject.id))}
     >
       <StyledShapeObject
         shape={shape}

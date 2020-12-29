@@ -46,8 +46,8 @@ export const boardPositionToBxBy: {
 };
 
 export const PAGE_ORDER: Page[] = [
-  Page.CONSENT,
-  Page.INTRODUCTION,
+  // Page.CONSENT,
+  // Page.INTRODUCTION,
   Page.LOADING_TRIALS,
   Page.TRIALS,
   Page.DEMOGRAPHICS_INSTRUCTIONS,
