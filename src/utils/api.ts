@@ -288,6 +288,16 @@ export type Endpoints = {
       }
     >;
   };
+
+  '/admin/getSvg.jsp': {
+    [METHOD.GET]: RequestHandler<
+      string,
+      undefined,
+      {
+        shape: string;
+      }
+    >;
+  };
 };
 
 export type ResBody<

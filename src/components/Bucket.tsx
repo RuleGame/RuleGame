@@ -10,6 +10,7 @@ import { BoardObject } from '../utils/api';
 import { isGameCompletedSelector, isPausedSelector } from '../store/selectors/board';
 import { Shape } from '../constants/Shape';
 import { move } from '../store/actions/board';
+import { SpecialShape } from '../constants';
 
 export type BucketProps = {
   className?: string;
@@ -42,7 +43,7 @@ const Bucket = ({ className, shape, bucket }: BucketProps): JSX.Element => {
       isOver={isOver}
       shape={shape}
       shapeObjectId={bucket.id}
-      opacity={(isGameCompleted || isPaused) && shape === Shape.BUCKET ? 0.5 : 1}
+      opacity={(isGameCompleted || isPaused) && shape === SpecialShape.BUCKET ? 0.5 : 1}
     />
   );
 };

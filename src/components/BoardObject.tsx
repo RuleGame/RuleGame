@@ -6,7 +6,6 @@ import { Close } from 'grommet-icons';
 import { FiCheck } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
-import { VALID_SHAPES } from '../@types';
 import ShapeObject from './ShapeObject';
 import { cyBoardObject } from '../constants/data-cy-builders';
 import { BoardObject as BoardObjectType } from '../utils/api';
@@ -81,6 +80,7 @@ const BoardObject = ({
       data-cy={cyBoardObject(boardObject.id)}
       data-cy-checked={hasBeenDropped}
       onMouseDown={() => dispatch(pick(boardObject.id))}
+      fill
     >
       <StyledShapeObject
         shape={shape}
@@ -92,9 +92,7 @@ const BoardObject = ({
         debugInfo={debugMode ? debugInfo : undefined}
       />
       {hasBeenDropped && <FiCheck color="green" size="100%" />}
-      {!hasBeenDropped && boardObject.buckets.length === 0 && VALID_SHAPES.has(shape) && (
-        <Close size="100%" color="black" />
-      )}
+      {!hasBeenDropped && boardObject.buckets.length === 0 && <Close size="100%" color="black" />}
       {showGridMemoryOrder && moveNum !== undefined && (
         <Box
           background="white"

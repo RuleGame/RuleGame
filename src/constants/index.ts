@@ -1,7 +1,6 @@
 // eslint-disable-next-line import/no-cycle
 import { BucketType } from '../@types';
 import { BucketPosition } from './BucketPosition';
-import { Shape } from './Shape';
 import { Page } from './Page';
 
 export const DEV = process.env.NODE_ENV !== 'production';
@@ -16,13 +15,7 @@ export const buckets: BucketType[] = [
   { pos: BucketPosition.TR, x: cols - 1, y: rows - 1, id: `bucket-${BucketPosition.TR}` },
 ];
 
-export const shapes: Shape[] = [Shape.SQUARE, Shape.TRIANGLE, Shape.STAR, Shape.CIRCLE];
-
-export const borderWidth = 1;
 export const borderHeight = 1;
-
-export const FILE_VERSION = '0.0.0';
-
 export const FEEDBACK_DURATION = window.Cypress ? 100 : 1000;
 
 export enum SEARCH_QUERY_KEYS {
@@ -58,4 +51,12 @@ export enum LOCAL_STORAGE_KEY {
   GUESS = 'GUESS',
   SERIES_NO = 'SERIES_NO',
   WORKER_ID = 'WORKER_ID',
+}
+
+export const SHAPES_URL_PREFIX = `${API_HOST_ORIGIN}/admin/getSvg.jsp?shape=`;
+
+export enum SpecialShape {
+  HAPPY = 'happy',
+  UNHAPPY = 'unhappy',
+  BUCKET = 'bucket',
 }
