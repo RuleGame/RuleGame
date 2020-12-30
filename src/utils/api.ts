@@ -277,6 +277,17 @@ export type Endpoints = {
       { episode: string; data: string; confidence: number }
     >;
   };
+
+  '/game-data/GameService2/colorMap': {
+    [METHOD.GET]: RequestHandler<
+      {
+        [color: string]: [number, number, number];
+      } & {
+        errmsg: ErrorMsg;
+        error?: boolean;
+      }
+    >;
+  };
 };
 
 export type ResBody<

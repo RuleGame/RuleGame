@@ -20,13 +20,6 @@ export type ShapeProps = {
   opacity?: number;
 };
 
-const colorMapping: Partial<{ [key in Color]: string }> = {
-  [Color.BLUE]: 'rgb(30,90,210)',
-  [Color.RED]: 'rgb(220,20,0)',
-  [Color.YELLOW]: 'rgb(250,240,0)',
-  [Color.BLACK]: 'rgb(0,0,0)',
-};
-
 const shapesMapping: (color?: string) => { [shape in Shape]: JSX.Element | null } = (color) => ({
   STAR: <FiStar size="100%" color={color?.toLowerCase()} />,
   CIRCLE: <FiCircle size="100%" color={color?.toLowerCase()} />,
@@ -62,7 +55,7 @@ const ShapeObject = React.forwardRef<HTMLDivElement, ShapeProps>(
           }}
           data-shape={shape}
         >
-          {shapesMapping(color === undefined ? undefined : colorMapping[color])[shape]}
+          {shapesMapping(color === undefined ? undefined : color)[shape]}
         </div>
         {debugInfo && (
           <ReactTooltip id={`${dataForPrefix}${shapeObjectId}`} type="error">

@@ -1,7 +1,6 @@
 // eslint-disable-next-line import/no-cycle
 import { BucketType } from '../@types';
 import { BucketPosition } from './BucketPosition';
-import { Color } from './Color';
 import { Shape } from './Shape';
 import { Page } from './Page';
 
@@ -16,8 +15,6 @@ export const buckets: BucketType[] = [
   { pos: BucketPosition.BR, x: cols - 1, y: 0, id: `bucket-${BucketPosition.BR}` },
   { pos: BucketPosition.TR, x: cols - 1, y: rows - 1, id: `bucket-${BucketPosition.TR}` },
 ];
-
-export const colors: Color[] = [Color.RED, Color.BLUE, Color.BLACK, Color.YELLOW];
 
 export const shapes: Shape[] = [Shape.SQUARE, Shape.TRIANGLE, Shape.STAR, Shape.CIRCLE];
 
@@ -46,8 +43,8 @@ export const boardPositionToBxBy: {
 };
 
 export const PAGE_ORDER: Page[] = [
-  // Page.CONSENT,
-  // Page.INTRODUCTION,
+  Page.CONSENT,
+  Page.INTRODUCTION,
   Page.LOADING_TRIALS,
   Page.TRIALS,
   Page.DEMOGRAPHICS_INSTRUCTIONS,
