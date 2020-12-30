@@ -84,7 +84,7 @@ const BoardObject = ({
     >
       <StyledShapeObject
         shape={shape}
-        // Default to transparent until we get the RGB format from the api call.
+        // Default to transparent until useQuery gets the RGB format from the api call.
         color={colorRgb ?? 'transparent'}
         ref={ref}
         canDrag={canDrag}

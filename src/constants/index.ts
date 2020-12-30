@@ -52,9 +52,6 @@ export enum LOCAL_STORAGE_KEY {
   SERIES_NO = 'SERIES_NO',
   WORKER_ID = 'WORKER_ID',
 }
-
-export const SHAPES_URL_PREFIX = `${API_HOST_ORIGIN}/admin/getSvg.jsp?shape=`;
-
 export enum SpecialShape {
   HAPPY = 'happy',
   UNHAPPY = 'unhappy',
