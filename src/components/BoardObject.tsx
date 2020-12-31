@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { Box, Stack, Text } from 'grommet';
 import { Close } from 'grommet-icons';
 import { FiCheck } from 'react-icons/fi';
-import { useSelector } from 'react-redux';
-import { VALID_SHAPES } from '../@types';
+import { useDispatch, useSelector } from 'react-redux';
+import { Dispatch } from 'redux';
 import ShapeObject from './ShapeObject';
 import { cyBoardObject } from '../constants/data-cy-builders';
 import { BoardObject as BoardObjectType } from '../utils/api';
@@ -17,6 +17,8 @@ import {
   showGridMemoryOrderSelector,
 } from '../store/selectors/board';
 import { debugModeSelector } from '../store/selectors/debug-mode';
+import { RootAction } from '../store/actions';
+import { pick } from '../store/actions/board';
 
 export type BoardObjectProps = {
   className?: string;
@@ -39,6 +41,7 @@ const BoardObject = ({
   color,
   moveNum,
 }: BoardObjectProps): JSX.Element => {
+  const dispatch: Dispatch<RootAction> = useDispatch();
   const hasBeenDropped = boardObject.dropped !== undefined;
   const gameCompleted = useSelector(isGameCompletedSelector);
   const debugMode = useSelector(debugModeSelector);
@@ -73,9 +76,12 @@ const BoardObject = ({
       className={className}
       data-cy={cyBoardObject(boardObject.id)}
       data-cy-checked={hasBeenDropped}
+      onMouseDown={() => dispatch(pick(boardObject.id))}
+      fill
     >
       <StyledShapeObject
         shape={shape}
+        // Default to transparent until useQuery gets the RGB format from the api call.
         color={color}
         ref={ref}
         canDrag={canDrag}
@@ -83,9 +89,7 @@ const BoardObject = ({
         debugInfo={debugMode ? debugInfo : undefined}
       />
       {hasBeenDropped && <FiCheck color="green" size="100%" />}
-      {!hasBeenDropped && boardObject.buckets.length === 0 && VALID_SHAPES.has(shape) && (
-        <Close size="100%" color="black" />
-      )}
+      {!hasBeenDropped && boardObject.buckets.length === 0 && <Close size="100%" color="black" />}
       {showGridMemoryOrder && moveNum !== undefined && (
         <Box
           background="white"

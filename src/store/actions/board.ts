@@ -106,3 +106,7 @@ export const setIsInBonus = createAction('board/SET_IS_IN_BONUS', (isInBonus: bo
 export const recordDemographics = createAction('board/RECORD_DEMOGRAPHICS', (data: object) => ({
   data,
 }))();
+
+export const pick = createAction('board/PICK', (boardObjectId: number) => ({
+  boardObjectId,
+}))();
