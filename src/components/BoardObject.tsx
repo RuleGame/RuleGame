@@ -19,7 +19,6 @@ import {
 import { debugModeSelector } from '../store/selectors/debug-mode';
 import { RootAction } from '../store/actions';
 import { pick } from '../store/actions/board';
-import { useColorRgb } from '../utils/hooks';
 
 export type BoardObjectProps = {
   className?: string;
@@ -72,8 +71,6 @@ const BoardObject = ({
     [boardObject],
   );
 
-  const colorRgb = useColorRgb(color);
-
   return (
     <Stack
       className={className}
@@ -85,7 +82,7 @@ const BoardObject = ({
       <StyledShapeObject
         shape={shape}
         // Default to transparent until useQuery gets the RGB format from the api call.
-        color={colorRgb ?? 'transparent'}
+        color={color}
         ref={ref}
         canDrag={canDrag}
         shapeObjectId={boardObject.id}

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Color } from '../constants/Color';
 import { Shape } from '../constants/Shape';
 import { api, METHOD } from '../utils/api';
+import { useColorRgb } from '../utils/hooks';
 
 export type ShapeProps = {
   ref: React.Ref<HTMLDivElement>;
@@ -39,6 +40,9 @@ const ShapeObject = React.forwardRef<HTMLDivElement, ShapeProps>(
     const { data: svgString } = useQuery(`ShapeObject-${shape}`, () =>
       api('/admin/getSvg.jsp', METHOD.GET, undefined, { shape }).then((response) => response.data),
     );
+
+    const colorRgb = useColorRgb(color);
+
     // noinspection HtmlUnknownBooleanAttribute
     return (
       <>
@@ -50,7 +54,7 @@ const ShapeObject = React.forwardRef<HTMLDivElement, ShapeProps>(
           onClick={onClick}
           data-shape={shape}
           dangerouslySetInnerHTML={{ __html: svgString ?? '' }}
-          color={color}
+          color={colorRgb}
           opacity={opacity}
         />
         {debugInfo && (

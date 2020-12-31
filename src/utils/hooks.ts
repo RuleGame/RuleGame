@@ -18,7 +18,7 @@ export const useWorkerLocalStorage = () =>
 
 export const useExperimentPlan = () => useSearchParam(SEARCH_QUERY_KEYS.EXPERIMENT_PLAN) ?? '';
 
-export const useColorRgb = (color: Color) => {
+export const useColorRgb = (color?: Color) => {
   const { data: colorMapping } = useQuery(`COLOR-MAPPING`, () =>
     api('/game-data/GameService2/colorMap', METHOD.GET, undefined, {}).then((response) => {
       if (response.data.error) {
@@ -29,7 +29,7 @@ export const useColorRgb = (color: Color) => {
     }),
   );
 
-  if (colorMapping) {
+  if (colorMapping && color) {
     const [r, g, b] = colorMapping[color];
     return rgb(r, g, b);
   }
