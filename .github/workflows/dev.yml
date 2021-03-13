@@ -40,6 +40,7 @@ jobs:
           REACT_APP_DEBUG_MODE_ENABLED: true
           REACT_APP_EDIT_GAMES_ENABLED: true
           REACT_APP_APP_API_HOST_ORIGIN: 'http://sapir.psych.wisc.edu:7150/w2020-dev'
+          REACT_APP_VERSION: dev-${{ github.sha }}
 
       - name: Rename build folder
         run: mv build dev
