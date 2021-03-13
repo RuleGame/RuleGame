@@ -298,6 +298,10 @@ export type Endpoints = {
       }
     >;
   };
+
+  '/game-data/GameService2/getVersion': {
+    [METHOD.GET]: RequestHandler<number>;
+  };
 };
 
 export type ResBody<
