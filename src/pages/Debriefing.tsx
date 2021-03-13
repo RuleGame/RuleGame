@@ -10,7 +10,7 @@ const Debriefing = () => {
   const workerId = useWorkerId();
   const exp = useExperimentPlan();
   const { data, isLoading } = useQuery(`${workerId}-INTRODUCTION`, () =>
-    api('/w2020/game-data/GameService2/player', METHOD.POST, { playerId: workerId, exp }, {}),
+    api('/game-data/GameService2/player', METHOD.POST, { playerId: workerId, exp }, {}),
   );
   const completionCode = isLoading ? '<loading...>' : data?.data.completionCode ?? '?';
 

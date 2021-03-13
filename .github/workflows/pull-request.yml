@@ -38,7 +38,8 @@ jobs:
         env:
           REACT_APP_DEBUG_MODE_ENABLED: true
           REACT_APP_EDIT_GAMES_ENABLED: true
-          REACT_APP_APP_API_HOST_ORIGIN: 'http://sapir.psych.wisc.edu:7150'
+          REACT_APP_APP_API_HOST_ORIGIN: 'http://sapir.psych.wisc.edu:7150/w2020'
+          REACT_APP_VERSION: preview-${{ github.sha }}
 
       - name: Rename build folder
         run: mv build preview-${{ github.head_ref }}

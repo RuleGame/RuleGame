@@ -23,7 +23,7 @@ import { addLayer } from '../actions/layers';
 function* trials(playerId: string, exp?: string) {
   const {
     data: { error: playerError, errmsg: playerErrmsg },
-  } = yield* apiResolve('/w2020/game-data/GameService2/player', METHOD.POST, { playerId, exp }, {});
+  } = yield* apiResolve('/game-data/GameService2/player', METHOD.POST, { playerId, exp }, {});
   if (playerError) {
     yield* put(addLayer('An Error Ocurred', playerErrmsg, []));
   }
@@ -31,17 +31,12 @@ function* trials(playerId: string, exp?: string) {
   let {
     // eslint-disable-next-line prefer-const
     data: { errmsg, error, ...data },
-  } = yield* apiResolve(
-    '/w2020/game-data/GameService2/mostRecentEpisode',
-    METHOD.POST,
-    { playerId },
-    {},
-  );
+  } = yield* apiResolve('/game-data/GameService2/mostRecentEpisode', METHOD.POST, { playerId }, {});
 
   const noEpisodeStarted = error && errmsg === ErrorMsg.FAILED_TO_FIND_ANY_EPISODE;
   if (noEpisodeStarted) {
     const { data: newEpisodeData } = yield* apiResolve(
-      '/w2020/game-data/GameService2/newEpisode',
+      '/game-data/GameService2/newEpisode',
       METHOD.POST,
       { playerId },
       {},
@@ -77,7 +72,7 @@ function* trials(playerId: string, exp?: string) {
     // Encompasses a single episode. Exiting from the loop will result in a new episode if any.
     do {
       const { data: display } = yield* apiResolve(
-        '/w2020/game-data/GameService2/display',
+        '/game-data/GameService2/display',
         METHOD.GET,
         undefined,
         {
@@ -139,7 +134,7 @@ function* trials(playerId: string, exp?: string) {
         const {
           data: { code },
         } = yield* apiResolve(
-          '/w2020/game-data/GameService2/move',
+          '/game-data/GameService2/move',
           METHOD.POST,
           {
             episode: episodeId,
@@ -161,14 +156,14 @@ function* trials(playerId: string, exp?: string) {
         yield* delay(FEEDBACK_DURATION);
       } else if (giveUpAction) {
         yield* apiResolve(
-          '/w2020/game-data/GameService2/giveUp',
+          '/game-data/GameService2/giveUp',
           METHOD.POST,
           { playerId, seriesNo: display.seriesNo },
           {},
         );
       } else if (guessAction) {
         yield* apiResolve(
-          '/w2020/game-data/GameService2/guess',
+          '/game-data/GameService2/guess',
           METHOD.POST,
           {
             episode: episodeId,
@@ -182,12 +177,7 @@ function* trials(playerId: string, exp?: string) {
 
     ({
       data: { alreadyFinished, episodeId, para },
-    } = yield* apiResolve(
-      '/w2020/game-data/GameService2/newEpisode',
-      METHOD.POST,
-      { playerId },
-      {},
-    ));
+    } = yield* apiResolve('/game-data/GameService2/newEpisode', METHOD.POST, { playerId }, {}));
   }
 
   yield* put(nextPage());
@@ -202,7 +192,7 @@ function* trials(playerId: string, exp?: string) {
   });
 
   yield* apiResolve(
-    '/w2020/game-data/GameService/writeFile',
+    '/game-data/GameService/writeFile',
     METHOD.POST,
     {
       data: csvString,
@@ -216,7 +206,7 @@ function* trials(playerId: string, exp?: string) {
 }
 
 function* activateBonusSaga(playerId: string) {
-  yield* apiResolve('/w2020/game-data/GameService2/activateBonus', METHOD.POST, { playerId }, {});
+  yield* apiResolve('/game-data/GameService2/activateBonus', METHOD.POST, { playerId }, {});
 }
 
 export default function* () {

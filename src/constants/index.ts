@@ -32,8 +32,11 @@ export enum SEARCH_QUERY_KEYS {
   WORKER_ID = 'workerId',
   EXPERIMENT_PLAN = 'exp',
   FULLSCREEN = 'fullscreen',
+  VERSION = 'version',
 }
 export const API_HOST_ORIGIN = process.env.REACT_APP_APP_API_HOST_ORIGIN;
+
+export const VERSION = process.env.REACT_APP_VERSION;
 
 export const boardPositionToBxBy: {
   [boardPosition in BucketPosition]: { bx: number; by: number };
