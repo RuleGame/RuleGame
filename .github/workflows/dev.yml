@@ -54,6 +54,7 @@ jobs:
           source: dev
           target: ~/rule-game-temp
           overwrite: true
+          use_insecure_cipher: true
 
       - name: Copy Build to Sapir
         uses: appleboy/ssh-action@master
