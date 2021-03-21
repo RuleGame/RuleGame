@@ -24,6 +24,7 @@ export enum SEARCH_QUERY_KEYS {
   FULLSCREEN = 'fullscreen',
   HELP = 'help',
   VERSION = 'version',
+  INTRO = 'intro',
 }
 export const API_HOST_ORIGIN = process.env.REACT_APP_APP_API_HOST_ORIGIN;
 

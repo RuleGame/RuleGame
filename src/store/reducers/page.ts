@@ -19,6 +19,7 @@ const reducer = (state = initialState, action: RootAction): State => {
     case getType(goToPage):
       return {
         ...state,
+        pageIndex: PAGE_ORDER.indexOf(action.payload.page),
         page: action.payload.page,
       };
 
