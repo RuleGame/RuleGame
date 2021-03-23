@@ -50,3 +50,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.<br>
 You will also see any lint errors in the console.
+
+## GitHub Actions
+
+Currently, there is a GitHub Actions server (Private Repo: https://github.com/kmui2/github-actions-server) in the `/var/www/rule-game/github-actions-server` folder which allows new frontend builds to be uploaded directly from GitHub Actions. Backups of older builds are stored in `/var/www/rule-game/github-actions-server/backups` and may be manually deleted.

@@ -1,7 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Box, Button, Grommet, Heading, Paragraph, Text } from 'grommet';
 import { hot } from 'react-hot-loader/root';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEvent, useSearchParam } from 'react-use';
 import { MdFullscreen } from 'react-icons/all';
 import { Expand } from 'grommet-icons';
@@ -22,8 +22,10 @@ import texts from './constants/texts';
 import Help from './pages/Help';
 import { api, METHOD } from './utils/api';
 import Spinner from './components/Spinner';
+import { goToPage } from './store/actions/page';
 
 const App = () => {
+  const dispatch = useDispatch();
   const page = useSelector(pageSelector);
   const ref = useRef<HTMLDivElement>(null);
   const requireFullscreen = useSearchParam(SEARCH_QUERY_KEYS.FULLSCREEN)?.toLowerCase() === 'true';
@@ -31,6 +33,7 @@ const App = () => {
   const help = useSearchParam(SEARCH_QUERY_KEYS.HELP)?.toLowerCase() === 'true';
   const versionPage = useSearchParam(SEARCH_QUERY_KEYS.VERSION)?.toLowerCase() === 'true';
   const [fullscreen, setFullscreen] = useState(false);
+  const intro = (useSearchParam(SEARCH_QUERY_KEYS.INTRO)?.toLowerCase() ?? 'true') === 'true';
   useEvent('fullscreenchange', () => {
     if (document.fullscreenElement !== null) {
       setFullscreen(true);
@@ -44,6 +47,12 @@ const App = () => {
     () => api('/game-data/GameService2/getVersion', METHOD.GET, undefined, {}),
     { enabled: versionPage, retry: false },
   );
+
+  useEffect(() => {
+    if (!intro) {
+      dispatch(goToPage(Page.LOADING_TRIALS));
+    }
+  }, [intro, dispatch]);
 
   return (
     <Grommet full plain>
