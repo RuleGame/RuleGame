@@ -43,27 +43,11 @@ jobs:
           REACT_APP_APP_API_HOST_ORIGIN: 'http://sapir.psych.wisc.edu:7150/w2020-dev'
           REACT_APP_VERSION: preview-${{ github.sha }}
 
-      - name: Rename build folder
-        run: mv build preview-${{ github.head_ref }}
+      - name: Zip build folder
+        run: zip -r preview-${{ github.head_ref }}.zip build
 
-      - name: Copy Build to CS Host
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.CS_HOST }}
-          username: ${{ secrets.CS_USERNAME }}
-          password: ${{ secrets.CS_PASSWORD }}
-          source: preview-${{ github.head_ref }}
-          target: ~/rule-game-temp
-          overwrite: true
-          use_insecure_cipher: true
-
-      - name: Copy Build to Sapir
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.CS_HOST }}
-          username: ${{ secrets.CS_USERNAME }}
-          password: ${{ secrets.CS_PASSWORD }}
-          script: scp -r ~/rule-game-temp/preview-${{ github.head_ref }} sapir:/var/www/rule-game
+      - name: Upload build
+        run: curl -k -F "secret=${{ secrets.UPLOAD_SECRET }}" -F "build=@preview-${{ github.head_ref }}.zip" "${{ secrets.UPLOAD_URL }}"
 
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@master
