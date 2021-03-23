@@ -44,7 +44,7 @@ jobs:
           REACT_APP_VERSION: preview-${{ github.sha }}
 
       - name: Zip build folder
-        run: zip -r preview-${{ github.head_ref }}.zip build
+        run: cd build && zip -r ../preview-${{ github.head_ref }}.zip *
 
       - name: Upload build
         run: curl -k -F "secret=${{ secrets.UPLOAD_SECRET }}" -F "build=@preview-${{ github.head_ref }}.zip" "${{ secrets.UPLOAD_URL }}"

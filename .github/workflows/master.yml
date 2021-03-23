@@ -43,7 +43,7 @@ jobs:
           REACT_APP_VERSION: prod-${{ github.sha }}
 
       - name: Zip build folder
-        run: zip -r prod.zip build
+        run: cd build && zip -r ../prod.zip *
 
       - name: Upload build
         run: curl -k -F "secret=${{ secrets.UPLOAD_SECRET }}" -F "build=@prod.zip" "${{ secrets.UPLOAD_URL }}"
