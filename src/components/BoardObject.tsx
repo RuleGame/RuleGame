@@ -60,6 +60,12 @@ const BoardObject = ({
       type: 'object',
     },
     canDrag,
+    // Make a pick call whenever an object is dragged but not dropped
+    end(item, monitor) {
+      if (!monitor.didDrop()) {
+        dispatch(pick(boardObject.id));
+      }
+    },
   });
   const showGridMemoryOrder = useSelector(showGridMemoryOrderSelector);
   const debugInfo = useMemo(
@@ -82,9 +88,8 @@ const BoardObject = ({
       className={className}
       data-cy={cyBoardObject(boardObject.id)}
       data-cy-checked={hasBeenDropped}
-      onMouseDown={() =>
-        feedbackSwitches === FeedbackSwitches.FREE && !canDrag && dispatch(pick(boardObject.id))
-      }
+      // Make a pick call for nonmovable objects
+      onMouseDown={() => !canDrag && dispatch(pick(boardObject.id))}
       fill
     >
       <StyledShapeObject
