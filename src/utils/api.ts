@@ -54,6 +54,13 @@ export type TransitionMap = {
   END?: 'DEFAULT' | 'GIVE_UP';
 };
 
+export enum FeedbackSwitches {
+  FIXED = 'fixed',
+  FREE = 'free',
+  NEW_DISPLAY_TRIGGER = 'new_display_trigger',
+  FREE_TRIGGER = 'free_trigger',
+}
+
 type RequestHandler<
   ResponseBody = undefined,
   RequestBody = undefined,
@@ -116,7 +123,7 @@ type Para = {
   min_points: number;
   max_colors: number;
   f: number;
-  feedback_switches: string;
+  feedback_switches: FeedbackSwitches;
   min_objects: number;
   m: number;
   n: number;

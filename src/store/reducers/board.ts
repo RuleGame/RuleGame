@@ -1,6 +1,12 @@
 import { getType } from 'typesafe-actions';
 import { RootAction } from '../actions';
-import { BoardObject, FinishCode, Transcript, TransitionMap } from '../../utils/api';
+import {
+  BoardObject,
+  FeedbackSwitches,
+  FinishCode,
+  Transcript,
+  TransitionMap,
+} from '../../utils/api';
 import { invalidMove, pause, setBoard, setIsInBonus, unpause, validMove } from '../actions/board';
 import { BucketPosition } from '../../constants/BucketPosition';
 import { Shape } from '../../constants/Shape';
@@ -33,6 +39,7 @@ export type State = {
   episodeId: string;
   maxPoints: number;
   giveUpAt?: number;
+  feedbackSwitches: FeedbackSwitches;
 };
 
 export const initialState: State = {
@@ -66,6 +73,7 @@ export const initialState: State = {
   transitionMap: undefined,
   episodeId: 'N/A',
   maxPoints: 0,
+  feedbackSwitches: FeedbackSwitches.FIXED,
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -110,6 +118,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         episodeId: action.payload.episodeId,
         maxPoints: action.payload.maxPoints,
         giveUpAt: action.payload.giveUpAt,
+        feedbackSwitches: action.payload.feedbackSwitches,
       };
 
     case getType(pause):
