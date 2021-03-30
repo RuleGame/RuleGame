@@ -29,6 +29,8 @@ import { setDebugMode } from '../store/actions/debug-mode';
 import { DEBUG_ENABLED } from '../constants/env';
 import texts from '../constants/texts';
 import { Page } from '../constants/Page';
+import { SearchQueryKey } from '../constants';
+import { useExperimentPlan, useWorkerId } from '../utils/hooks';
 
 enum GridAreaName {
   HEADING = 'HEADING',
@@ -59,6 +61,8 @@ const Game: React.FunctionComponent<{
   const debugMode = useSelector(debugModeSelector);
   const allowGiveUpOption = useSelector(allowGiveUpOptionSelector);
   const [instructionsButtonOver, setInstructionsButtonOver] = useState(false);
+  const workerId = useWorkerId();
+  const exp = useExperimentPlan();
 
   useEffect(() => {
     setBonusActivated(false);
@@ -140,7 +144,9 @@ const Game: React.FunctionComponent<{
             onBlur={() => setInstructionsButtonOver(false)}
             ref={instructionsButtonRef}
             onClick={() =>
-              window.open(`${window.location.origin}${window.location.pathname}/?help=true`)
+              window.open(
+                `${window.location.origin}${window.location.pathname}/?${SearchQueryKey.HELP}=true&${SearchQueryKey.WORKER_ID}=${workerId}&${SearchQueryKey.EXPERIMENT_PLAN}=${exp}`,
+              )
             }
           />
         </Box>

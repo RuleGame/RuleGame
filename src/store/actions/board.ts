@@ -1,6 +1,6 @@
 import { createAction } from 'typesafe-actions';
 // eslint-disable-next-line import/no-cycle
-import { Board, FinishCode, Transcript, TransitionMap } from '../../utils/api';
+import { Board, FeedbackSwitches, FinishCode, Transcript, TransitionMap } from '../../utils/api';
 // eslint-disable-next-line import/no-cycle
 import { BucketPosition } from '../../constants/BucketPosition';
 
@@ -33,6 +33,7 @@ export const setBoard = createAction(
     episodeNo: number,
     episodeId: string,
     maxPoints: number,
+    feedbackSwitches: FeedbackSwitches,
     movesLeftToStayInBonus?: number,
     transitionMap?: TransitionMap,
     giveUpAt?: number,
@@ -58,6 +59,7 @@ export const setBoard = createAction(
     episodeId,
     maxPoints,
     giveUpAt,
+    feedbackSwitches,
   }),
 )();
 

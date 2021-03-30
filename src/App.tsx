@@ -17,7 +17,7 @@ import LoadingTrials from './pages/LoadingTrials';
 import { pageSelector } from './store/selectors/page';
 import Demographics from './pages/Demographics';
 import Debriefing from './pages/Debriefing';
-import { API_HOST_ORIGIN, SEARCH_QUERY_KEYS, VERSION } from './constants';
+import { API_HOST_ORIGIN, SearchQueryKey, VERSION } from './constants';
 import texts from './constants/texts';
 import Help from './pages/Help';
 import { api, METHOD } from './utils/api';
@@ -28,12 +28,12 @@ const App = () => {
   const dispatch = useDispatch();
   const page = useSelector(pageSelector);
   const ref = useRef<HTMLDivElement>(null);
-  const requireFullscreen = useSearchParam(SEARCH_QUERY_KEYS.FULLSCREEN)?.toLowerCase() === 'true';
+  const requireFullscreen = useSearchParam(SearchQueryKey.FULLSCREEN)?.toLowerCase() === 'true';
   // Show instructions if help is true
-  const help = useSearchParam(SEARCH_QUERY_KEYS.HELP)?.toLowerCase() === 'true';
-  const versionPage = useSearchParam(SEARCH_QUERY_KEYS.VERSION)?.toLowerCase() === 'true';
+  const help = useSearchParam(SearchQueryKey.HELP)?.toLowerCase() === 'true';
+  const versionPage = useSearchParam(SearchQueryKey.VERSION)?.toLowerCase() === 'true';
   const [fullscreen, setFullscreen] = useState(false);
-  const intro = (useSearchParam(SEARCH_QUERY_KEYS.INTRO)?.toLowerCase() ?? 'true') === 'true';
+  const intro = (useSearchParam(SearchQueryKey.INTRO)?.toLowerCase() ?? 'true') === 'true';
   useEvent('fullscreenchange', () => {
     if (document.fullscreenElement !== null) {
       setFullscreen(true);

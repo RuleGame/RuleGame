@@ -18,7 +18,7 @@ export const buckets: BucketType[] = [
 export const borderHeight = 1;
 export const FEEDBACK_DURATION = window.Cypress ? 100 : 1000;
 
-export enum SEARCH_QUERY_KEYS {
+export enum SearchQueryKey {
   WORKER_ID = 'workerId',
   EXPERIMENT_PLAN = 'exp',
   FULLSCREEN = 'fullscreen',

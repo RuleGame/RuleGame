@@ -8,10 +8,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import ShapeObject from './ShapeObject';
 import { cyBoardObject } from '../constants/data-cy-builders';
-import { BoardObject as BoardObjectType } from '../utils/api';
+import { BoardObject as BoardObjectType, FeedbackSwitches } from '../utils/api';
 import { Color } from '../constants/Color';
 import { Shape } from '../constants/Shape';
 import {
+  feedbackSwitchesSelector,
   isGameCompletedSelector,
   isPausedSelector,
   showGridMemoryOrderSelector,
@@ -28,10 +29,14 @@ export type BoardObjectProps = {
   moveNum?: number;
 };
 
-const StyledShapeObject = styled(ShapeObject)<{ canDrag: boolean }>`
+const StyledShapeObject = styled(ShapeObject)<{
+  canDrag: boolean;
+  feedbackSwitches: FeedbackSwitches;
+}>`
   width: 100%;
   height: 100%;
-  cursor: ${({ canDrag }) => (canDrag ? 'grab' : 'unset')};
+  cursor: ${({ canDrag, feedbackSwitches }) =>
+    canDrag || feedbackSwitches === FeedbackSwitches.FREE ? 'grab' : 'unset'};
 `;
 
 const BoardObject = ({
@@ -46,6 +51,7 @@ const BoardObject = ({
   const gameCompleted = useSelector(isGameCompletedSelector);
   const debugMode = useSelector(debugModeSelector);
   const isPaused = useSelector(isPausedSelector);
+  const feedbackSwitches = useSelector(feedbackSwitchesSelector);
 
   const canDrag = boardObject.buckets.length > 0 && !gameCompleted && !isPaused;
   const [, ref] = useDrag({
@@ -54,6 +60,12 @@ const BoardObject = ({
       type: 'object',
     },
     canDrag,
+    // Make a pick call whenever an object is dragged but not dropped
+    end(item, monitor) {
+      if (!monitor.didDrop()) {
+        dispatch(pick(boardObject.id));
+      }
+    },
   });
   const showGridMemoryOrder = useSelector(showGridMemoryOrderSelector);
   const debugInfo = useMemo(
@@ -76,7 +88,8 @@ const BoardObject = ({
       className={className}
       data-cy={cyBoardObject(boardObject.id)}
       data-cy-checked={hasBeenDropped}
-      onMouseDown={() => dispatch(pick(boardObject.id))}
+      // Make a pick call for nonmovable objects
+      onMouseDown={() => !canDrag && dispatch(pick(boardObject.id))}
       fill
     >
       <StyledShapeObject
@@ -85,11 +98,14 @@ const BoardObject = ({
         color={color}
         ref={ref}
         canDrag={canDrag}
+        feedbackSwitches={feedbackSwitches}
         shapeObjectId={boardObject.id}
         debugInfo={debugMode ? debugInfo : undefined}
       />
       {hasBeenDropped && <FiCheck color="green" size="100%" />}
-      {!hasBeenDropped && boardObject.buckets.length === 0 && <Close size="100%" color="black" />}
+      {!hasBeenDropped &&
+        boardObject.buckets.length === 0 &&
+        feedbackSwitches !== FeedbackSwitches.FREE && <Close size="100%" color="black" />}
       {showGridMemoryOrder && moveNum !== undefined && (
         <Box
           background="white"

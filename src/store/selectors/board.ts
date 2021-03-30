@@ -87,3 +87,5 @@ export const allowGiveUpOptionSelector = (state: RootState) =>
 
 export const displayBucketDropListsSelector = (state: RootState) =>
   state.board.stackMemoryDepth > 0;
+
+export const feedbackSwitchesSelector = (state: RootState) => state.board.feedbackSwitches;
