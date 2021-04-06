@@ -1,7 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Box, Button, Grommet, Heading, Paragraph, Text } from 'grommet';
 import { hot } from 'react-hot-loader/root';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEvent, useSearchParam } from 'react-use';
 import { MdFullscreen } from 'react-icons/all';
 import { Expand } from 'grommet-icons';
@@ -17,17 +17,23 @@ import LoadingTrials from './pages/LoadingTrials';
 import { pageSelector } from './store/selectors/page';
 import Demographics from './pages/Demographics';
 import Debriefing from './pages/Debriefing';
-import { API_HOST_ORIGIN, SEARCH_QUERY_KEYS, VERSION } from './constants';
+import { API_HOST_ORIGIN, SearchQueryKey, VERSION } from './constants';
 import texts from './constants/texts';
+import Help from './pages/Help';
 import { api, METHOD } from './utils/api';
 import Spinner from './components/Spinner';
+import { goToPage } from './store/actions/page';
 
 const App = () => {
+  const dispatch = useDispatch();
   const page = useSelector(pageSelector);
   const ref = useRef<HTMLDivElement>(null);
-  const requireFullscreen = useSearchParam(SEARCH_QUERY_KEYS.FULLSCREEN)?.toLowerCase() === 'true';
-  const versionPage = useSearchParam(SEARCH_QUERY_KEYS.VERSION)?.toLowerCase() === 'true';
+  const requireFullscreen = useSearchParam(SearchQueryKey.FULLSCREEN)?.toLowerCase() === 'true';
+  // Show instructions if help is true
+  const help = useSearchParam(SearchQueryKey.HELP)?.toLowerCase() === 'true';
+  const versionPage = useSearchParam(SearchQueryKey.VERSION)?.toLowerCase() === 'true';
   const [fullscreen, setFullscreen] = useState(false);
+  const intro = (useSearchParam(SearchQueryKey.INTRO)?.toLowerCase() ?? 'true') === 'true';
   useEvent('fullscreenchange', () => {
     if (document.fullscreenElement !== null) {
       setFullscreen(true);
@@ -42,10 +48,18 @@ const App = () => {
     { enabled: versionPage, retry: false },
   );
 
+  useEffect(() => {
+    if (!intro) {
+      dispatch(goToPage(Page.LOADING_TRIALS));
+    }
+  }, [intro, dispatch]);
+
   return (
     <Grommet full plain>
       <Box ref={ref} fill>
-        {versionPage ? (
+        {help ? (
+          <Help />
+        ) : versionPage ? (
           <Box>
             <Text>
               Client Version [environment-commitHash]:{' '}
@@ -65,35 +79,39 @@ const App = () => {
               </Text>
             </Text>
           </Box>
-        ) : !requireFullscreen || (requireFullscreen && fullscreen) ? (
-          page === Page.INTRODUCTION ? (
-            <Introduction />
-          ) : page === Page.CONSENT ? (
-            <Consent />
-          ) : page === Page.LOADING_TRIALS ? (
-            <LoadingTrials />
-          ) : page === Page.TRIALS ? (
-            <Trials />
-          ) : page === Page.DEMOGRAPHICS_INSTRUCTIONS ? (
-            <DemographicsInstructions />
-          ) : page === Page.DEMOGRAPHICS ? (
-            <Demographics />
-          ) : page === Page.DEBRIEFING ? (
-            <Debriefing />
-          ) : (
-            <Paragraph>Unknown page. Try reloading</Paragraph>
-          )
         ) : (
-          <Box margin="xlarge" align="center">
-            <Expand />
-            <Heading>{texts.fullscreenPrompt}</Heading>
-            <Button
-              onClick={() => document.documentElement.requestFullscreen()}
-              primary
-              label={texts.fullscreenButtonLabel}
-              icon={<MdFullscreen />}
-            />
-          </Box>
+          <>
+            {!requireFullscreen || (requireFullscreen && fullscreen) ? (
+              page === Page.INTRODUCTION ? (
+                <Introduction />
+              ) : page === Page.CONSENT ? (
+                <Consent />
+              ) : page === Page.LOADING_TRIALS ? (
+                <LoadingTrials />
+              ) : page === Page.TRIALS ? (
+                <Trials />
+              ) : page === Page.DEMOGRAPHICS_INSTRUCTIONS ? (
+                <DemographicsInstructions />
+              ) : page === Page.DEMOGRAPHICS ? (
+                <Demographics />
+              ) : page === Page.DEBRIEFING ? (
+                <Debriefing />
+              ) : (
+                <Paragraph>Unknown page. Try reloading</Paragraph>
+              )
+            ) : (
+              <Box margin="xlarge" align="center">
+                <Expand />
+                <Heading>{texts.fullscreenPrompt}</Heading>
+                <Button
+                  onClick={() => document.documentElement.requestFullscreen()}
+                  primary
+                  label={texts.fullscreenButtonLabel}
+                  icon={<MdFullscreen />}
+                />
+              </Box>
+            )}
+          </>
         )}
 
         <Layers />

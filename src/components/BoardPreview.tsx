@@ -1,14 +1,13 @@
 import React, { useMemo } from 'react';
-import { Grid, Box, BoxProps, Text, Button } from 'grommet';
+import { Box, BoxProps, Button, Grid, Text } from 'grommet';
 import range from 'lodash/range';
 import stringify from 'json-stringify-pretty-compact';
 import { useDispatch } from 'react-redux';
-import { rows, cols } from '../constants';
+import { cols, rows, SpecialShape } from '../constants';
 import ShapeObject from './ShapeObject';
 import { BoardObjectType } from '../@types';
 import { xYToPosition } from '../utils/atom-match';
 import { addLayer } from '../store/actions/layers';
-import { Shape } from '../constants/Shape';
 
 const indexToPos = (index: number) =>
   (rows - 2) * (cols - 2) -
@@ -58,7 +57,7 @@ const BoardPreview: React.FunctionComponent<{
               </Grid>
             ) : j % 2 === 0 ? (
               <Box fill border key={j}>
-                <ShapeObject shape={Shape.BUCKET} />
+                <ShapeObject shape={SpecialShape.BUCKET} />
               </Box>
             ) : (
               <Box fill border key={j} />

@@ -1,12 +1,11 @@
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
-import { FiCircle, FiSquare, FiStar, FiTriangle } from 'react-icons/fi';
-import HappyFace from '../assets/smiley-face.png';
-import bucketSvg from '../assets/bucket.svg';
-import unhappyFace from '../assets/unhappy-face.svg';
-import { VALID_SHAPES } from '../@types';
+import { useQuery } from 'react-query';
+import styled from 'styled-components';
 import { Color } from '../constants/Color';
 import { Shape } from '../constants/Shape';
+import { api, METHOD } from '../utils/api';
+import { useColorRgb } from '../utils/hooks';
 
 export type ShapeProps = {
   ref: React.Ref<HTMLDivElement>;
@@ -20,50 +19,44 @@ export type ShapeProps = {
   opacity?: number;
 };
 
-const colorMapping: Partial<{ [key in Color]: string }> = {
-  [Color.BLUE]: 'rgb(30,90,210)',
-  [Color.RED]: 'rgb(220,20,0)',
-  [Color.YELLOW]: 'rgb(250,240,0)',
-  [Color.BLACK]: 'rgb(0,0,0)',
-};
+const StyledBoardObject = styled.div<Pick<ShapeProps, 'opacity' | 'canDrag' | 'onClick' | 'color'>>`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  opacity: ${({ opacity }) => opacity};
+  cursor: ${({ onClick, canDrag }) => (onClick && !canDrag ? 'not-allowed' : undefined)};
 
-const shapesMapping: (color?: string) => { [shape in Shape]: JSX.Element | null } = (color) => ({
-  STAR: <FiStar size="100%" color={color?.toLowerCase()} />,
-  CIRCLE: <FiCircle size="100%" color={color?.toLowerCase()} />,
-  SQUARE: <FiSquare size="100%" color={color?.toLowerCase()} />,
-  TRIANGLE: <FiTriangle size="100%" color={color?.toLowerCase()} />,
-  HAPPY: <img src={HappyFace} alt="happy-face" height="100%" />,
-  BUCKET: <img draggable={false} src={bucketSvg} alt="bucket" height="100%" />,
-  NOTHING: null,
-  '*': <div>*</div>,
-  UNHAPPY: <img src={unhappyFace} alt="unhappy-face" height="100%" />,
-});
-
+  svg {
+    width: 100%;
+    height: 100%;
+    color: ${({ color }) => color};
+  }
+`;
 const dataForPrefix = 'shape-object-';
 
 const ShapeObject = React.forwardRef<HTMLDivElement, ShapeProps>(
-  ({ opacity = 1, shape, className, shapeObjectId, onClick, debugInfo, color, canDrag }, ref) => {
+  ({ opacity = 1, shape, className, shapeObjectId, onClick, debugInfo, color }, ref) => {
+    const { data: svgString } = useQuery(`ShapeObject-${shape}`, () =>
+      api('/admin/getSvg.jsp', METHOD.GET, undefined, { shape }).then((response) => response.data),
+    );
+
+    const colorRgb = useColorRgb(color);
+
     // noinspection HtmlUnknownBooleanAttribute
     return (
       <>
-        <div
+        <StyledBoardObject
           data-tip
           data-for={`${dataForPrefix}${shapeObjectId}`}
           className={className}
           ref={ref}
           onClick={onClick}
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            width: '100%',
-            height: '100%',
-            opacity,
-            cursor: onClick && !canDrag && VALID_SHAPES.has(shape) ? 'not-allowed' : undefined,
-          }}
           data-shape={shape}
-        >
-          {shapesMapping(color === undefined ? undefined : colorMapping[color])[shape]}
-        </div>
+          dangerouslySetInnerHTML={{ __html: svgString ?? '' }}
+          color={colorRgb}
+          opacity={opacity}
+        />
         {debugInfo && (
           <ReactTooltip id={`${dataForPrefix}${shapeObjectId}`} type="error">
             <div>

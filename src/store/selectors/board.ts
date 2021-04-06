@@ -22,7 +22,10 @@ export const bucketDropListSelector = (bucketPosition: BucketPosition) => (
   state: RootState,
 ): BoardObject[] => {
   const bucketDropList = state.board.transcript
-    .filter(({ bucketNo, code }) => code === Code.ACCEPT && bucketNo === bucketPosition)
+    .filter(
+      ({ bucketNo, code }) =>
+        bucketNo !== undefined && code === Code.ACCEPT && bucketNo === bucketPosition,
+    )
     .map(({ pieceId }) => state.board.board[pieceId]);
   return bucketDropList.slice(Math.max(0, bucketDropList.length - state.board.stackMemoryDepth));
 };
@@ -31,7 +34,7 @@ export const moveNumByBoardObjectSelector = (
   state: RootState,
 ): { [boardObjectId: string]: number } =>
   state.board.transcript
-    .filter(({ code }) => code === Code.ACCEPT)
+    .filter(({ code, bucketNo }) => bucketNo !== undefined && code === Code.ACCEPT)
     .reduce((acc, { pieceId }, index) => ({ ...acc, [pieceId]: index + 1 }), {});
 
 export const pausedSelector = (state: RootState) => state.board.isPaused;
@@ -43,14 +46,16 @@ export const ruleSrcSelector = (state: RootState) => state.board.rulesSrc;
 export const ruleLineNoSelector = (state: RootState) => state.board.ruleLineNo;
 
 export const historyInfoSelector = (state: RootState) =>
-  state.board.transcript.map(({ pieceId, code, bucketNo }) => ({
-    code: code === Code.ACCEPT ? 'ACCEPT' : code === Code.DENY ? 'DENY' : code,
-    x: state.board.board[pieceId].x,
-    y: state.board.board[pieceId].y,
-    color: state.board.board[pieceId].color,
-    shape: state.board.board[pieceId].shape,
-    bucketNo,
-  }));
+  state.board.transcript
+    .filter(({ bucketNo }) => bucketNo !== undefined)
+    .map(({ pieceId, code, bucketNo }) => ({
+      code: code === Code.ACCEPT ? 'ACCEPT' : code === Code.DENY ? 'DENY' : code,
+      x: state.board.board[pieceId].x,
+      y: state.board.board[pieceId].y,
+      color: state.board.board[pieceId].color,
+      shape: state.board.board[pieceId].shape,
+      bucketNo,
+    }));
 
 export const numMovesMadeSelector = (state: RootState) => state.board.numMovesMade;
 
@@ -82,3 +87,5 @@ export const allowGiveUpOptionSelector = (state: RootState) =>
 
 export const displayBucketDropListsSelector = (state: RootState) =>
   state.board.stackMemoryDepth > 0;
+
+export const feedbackSwitchesSelector = (state: RootState) => state.board.feedbackSwitches;

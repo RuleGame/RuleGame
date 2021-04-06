@@ -18,22 +18,6 @@ export type BucketType = { pos: BucketPosition; x: number; y: number; id: string
 
 export type DropAttempt = { dragged: string; dropped: BucketPosition; successful?: boolean };
 
-export const VALID_SHAPES = new Set<Shape>([
-  Shape.ANY,
-  Shape.SQUARE,
-  Shape.TRIANGLE,
-  Shape.STAR,
-  Shape.CIRCLE,
-]);
-
-export const VALID_COLORS = new Set<Color>([
-  Color.ANY,
-  Color.RED,
-  Color.BLUE,
-  Color.BLACK,
-  Color.YELLOW,
-]);
-
 export type AtomFn = (
   boardObjectId: BoardObjectId,
   totalMoveHistory: DropAttempt[],
@@ -79,16 +63,6 @@ export type Game = {
   numDisplaysLimit?: number;
   showStackMemoryOrder?: boolean;
   showGridMemoryOrder?: boolean;
-};
-
-export type ExportedFile = {
-  id: string;
-  version: string;
-  games: { [id: string]: Game };
-  ruleArrays: { [id: string]: { id: string; name: string; stringified: string; order?: number[] } };
-  boardObjectsArrays: {
-    [id: string]: { id: string; name: string; value: BoardObjectType[] };
-  };
 };
 
 export type HistoryLog = {

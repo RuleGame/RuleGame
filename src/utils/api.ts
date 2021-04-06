@@ -54,6 +54,13 @@ export type TransitionMap = {
   END?: 'DEFAULT' | 'GIVE_UP';
 };
 
+export enum FeedbackSwitches {
+  FIXED = 'fixed',
+  FREE = 'free',
+  NEW_DISPLAY_TRIGGER = 'new_display_trigger',
+  FREE_TRIGGER = 'free_trigger',
+}
+
 type RequestHandler<
   ResponseBody = undefined,
   RequestBody = undefined,
@@ -81,7 +88,7 @@ export type BoardObject = {
 
 export type Board = BoardObject[];
 
-export type Transcript = { pos: number; bucketNo: BucketPosition; code: Code; pieceId: number }[];
+export type Transcript = { pos: number; bucketNo?: BucketPosition; code: Code; pieceId: number }[];
 
 export type Display = {
   board: {
@@ -116,7 +123,7 @@ type Para = {
   min_points: number;
   max_colors: number;
   f: number;
-  feedback_switches: string;
+  feedback_switches: FeedbackSwitches;
   min_objects: number;
   m: number;
   n: number;
@@ -222,6 +229,30 @@ export type Endpoints = {
     >;
   };
 
+  '/game-data/GameService2/pick': {
+    [METHOD.POST]: RequestHandler<
+      {
+        board: {
+          longId: number;
+          id: number;
+          value: Board;
+        };
+        bonus: boolean;
+        code: Code;
+        errmsg: ErrorMsg; // There happens to be no error property here
+        finishCode: FinishCode;
+        numMovesMade: number;
+        totalRewardEarned: number;
+      },
+      {
+        episode: string;
+        x: number;
+        y: number;
+        cnt: number;
+      }
+    >;
+  };
+
   '/game-data/GameService2/activateBonus': {
     [METHOD.POST]: RequestHandler<
       {
@@ -251,6 +282,27 @@ export type Endpoints = {
         path: string;
       },
       { episode: string; data: string; confidence: number }
+    >;
+  };
+
+  '/game-data/GameService2/colorMap': {
+    [METHOD.GET]: RequestHandler<
+      {
+        [color: string]: [number, number, number];
+      } & {
+        errmsg: ErrorMsg;
+        error?: boolean;
+      }
+    >;
+  };
+
+  '/admin/getSvg.jsp': {
+    [METHOD.GET]: RequestHandler<
+      string,
+      undefined,
+      {
+        shape: string;
+      }
     >;
   };
 

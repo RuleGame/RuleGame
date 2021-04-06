@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
 import { Box, Button } from 'grommet';
-import { useDispatch } from 'react-redux';
-import { Dispatch } from 'redux';
 import { useQuery } from 'react-query';
-import { RootAction } from '../store/actions';
 import { api, METHOD } from '../utils/api';
 import { useExperimentPlan, useWorkerId } from '../utils/hooks';
 import texts from '../constants/texts';
 import { Page } from '../constants/Page';
-import { nextPage } from '../store/actions/page';
 
 export default () => {
-  const dispatch: Dispatch<RootAction> = useDispatch();
   const workerId = useWorkerId();
   const exp = useExperimentPlan();
   const [step, setStep] = useState(0);
@@ -33,21 +28,13 @@ export default () => {
               onClick={() => setStep((step) => step - 1)}
             />
             <Button
-              label={
-                step === instructions.length - 1
-                  ? texts[Page.INTRODUCTION].startExperimentButtonLabel
-                  : texts[Page.INTRODUCTION].nextButtonLabel
-              }
+              label={texts[Page.INTRODUCTION].nextButtonLabel}
               primary
-              onClick={() => {
-                if (step === instructions.length - 1) {
-                  dispatch(nextPage());
-                } else {
-                  setStep((step) => step + 1);
-                }
-              }}
+              disabled={step === instructions.length - 1}
+              onClick={() => setStep((step) => step + 1)}
             />
           </Box>
+          <Box margin={{ top: 'small' }}>{texts[Page.INTRODUCTION].helpMessage}</Box>
         </Box>
       </Box>
     </Box>
