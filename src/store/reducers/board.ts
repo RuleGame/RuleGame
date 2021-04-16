@@ -40,6 +40,8 @@ export type State = {
   maxPoints: number;
   giveUpAt?: number;
   feedbackSwitches: FeedbackSwitches;
+  ruleSetName: string;
+  trialListId: string;
 };
 
 export const initialState: State = {
@@ -74,6 +76,8 @@ export const initialState: State = {
   episodeId: 'N/A',
   maxPoints: 0,
   feedbackSwitches: FeedbackSwitches.FIXED,
+  ruleSetName: 'N/A',
+  trialListId: 'N/A',
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -119,6 +123,8 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         maxPoints: action.payload.maxPoints,
         giveUpAt: action.payload.giveUpAt,
         feedbackSwitches: action.payload.feedbackSwitches,
+        ruleSetName: action.payload.ruleSetName,
+        trialListId: action.payload.trialListId,
       };
 
     case getType(pause):

@@ -8,8 +8,10 @@ import {
   maxPointsSelector,
   movesLeftToStayInBonusSelector,
   numMovesMadeSelector,
+  ruleSetNameSelector,
   totalBoardsPredictedSelector,
   totalRewardEarnedSelector,
+  trialListIdSelector,
 } from '../store/selectors/board';
 import { debugModeSelector } from '../store/selectors/debug-mode';
 import texts from '../constants/texts';
@@ -35,6 +37,8 @@ const HUD: React.FunctionComponent = ({ children }) => {
   const episodeId = useSelector(episodeIdSelector);
   const maxPoints = useSelector(maxPointsSelector);
   const debugMode = useSelector(debugModeSelector);
+  const ruleSetName = useSelector(ruleSetNameSelector);
+  const trialListId = useSelector(trialListIdSelector);
 
   return (
     <Grid
@@ -113,10 +117,8 @@ const HUD: React.FunctionComponent = ({ children }) => {
         {debugMode && (
           <>
             <Heading level="3" margin="none">
-              Episode: {episodeId}
-            </Heading>
-            <Heading level="4" margin="none">
-              (for debugging)
+              Episode: {episodeId} <br /> Trial List Id: {trialListId} <br /> Rule Set Name:{' '}
+              {ruleSetName}
             </Heading>
           </>
         )}

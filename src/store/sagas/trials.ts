@@ -109,6 +109,8 @@ function* trials(playerId: string, exp?: string) {
           episodeId,
           para.max_points,
           feedbackSwitches,
+          display.ruleSetName,
+          display.trialListId,
           display.movesLeftToStayInBonus,
           display.transitionMap,
           giveUpAt,
