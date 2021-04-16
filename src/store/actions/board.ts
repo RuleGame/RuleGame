@@ -34,6 +34,8 @@ export const setBoard = createAction(
     episodeId: string,
     maxPoints: number,
     feedbackSwitches: FeedbackSwitches,
+    ruleSetName: string,
+    trialListId: string,
     movesLeftToStayInBonus?: number,
     transitionMap?: TransitionMap,
     giveUpAt?: number,
@@ -60,6 +62,8 @@ export const setBoard = createAction(
     maxPoints,
     giveUpAt,
     feedbackSwitches,
+    ruleSetName,
+    trialListId,
   }),
 )();
 

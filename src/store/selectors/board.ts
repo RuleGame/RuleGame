@@ -89,3 +89,7 @@ export const displayBucketDropListsSelector = (state: RootState) =>
   state.board.stackMemoryDepth > 0;
 
 export const feedbackSwitchesSelector = (state: RootState) => state.board.feedbackSwitches;
+
+export const ruleSetNameSelector = (state: RootState) => state.board.ruleSetName;
+
+export const trialListIdSelector = (state: RootState) => state.board.trialListId;

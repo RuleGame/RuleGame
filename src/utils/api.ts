@@ -114,6 +114,8 @@ export type Display = {
   ruleLineNo: number;
   movesLeftToStayInBonus?: number;
   transitionMap?: TransitionMap;
+  ruleSetName: string;
+  trialListId: string;
 };
 
 type Para = {
@@ -189,6 +191,8 @@ export type Endpoints = {
         error: boolean;
         alreadyFinished: boolean;
         display: Display;
+        ruleSetName: string;
+        trialListId: string;
         episodeId: string;
         para: Para;
         completionCode?: string;
