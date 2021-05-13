@@ -27,7 +27,7 @@ function* trials(playerId: string, exp?: string) {
       data: { error: playerError, errmsg: playerErrmsg },
     } = yield* apiResolve('/game-data/GameService2/player', METHOD.POST, { playerId, exp }, {});
     if (playerError) {
-      yield* put(addLayer('An Error Ocurred', playerErrmsg, []));
+      throw Error(`Error on /player: ${playerErrmsg}`);
     }
 
     let {
@@ -52,10 +52,10 @@ function* trials(playerId: string, exp?: string) {
       data = newEpisodeData;
 
       if (newEpisodeData.error) {
-        yield* put(
-          addLayer('An Error Ocurred', newEpisodeData.errmsg, [], undefined, undefined, false),
-        );
+        throw Error(`Error on /newEpisdoe: ${newEpisodeData.errmsg}`);
       }
+    } else if (error) {
+      throw Error(`Error on /mostRecentEpisode ${errmsg}`);
     }
 
     let { alreadyFinished, episodeId, para } = data;
@@ -161,6 +161,12 @@ function* trials(playerId: string, exp?: string) {
             {},
           );
 
+          // Cannot tell if errmsg is a real error or just debug info
+          // Would be easy to know whether there is an error flag in the /move response.
+          // if (errmsg) {
+          //   throw Error(`Error on /move: ${errmsg}`);
+          // }
+
           if (code === Code.ACCEPT) {
             yield* put(validMove(moveAction.payload.boardObjectId, moveAction.payload.bucket));
           } else if (code === Code.DENY) {
@@ -185,15 +191,28 @@ function* trials(playerId: string, exp?: string) {
             },
             {},
           );
+
+          // Cannot tell if errmsg is a real error or just debug info
+          // Would be easy to know whether there is an error flag in the /pick response.
+          // if (errmsg) {
+          //   throw Error(`Error on /pick: ${errmsg}`);
+          // }
         } else if (giveUpAction) {
-          yield* apiResolve(
+          const {
+            data: { error, errmsg },
+          } = yield* apiResolve(
             '/game-data/GameService2/giveUp',
             METHOD.POST,
             { playerId, seriesNo: display.seriesNo },
             {},
           );
+          if (error) {
+            throw Error(`Error on /giveUp: ${errmsg}`);
+          }
         } else if (guessAction) {
-          yield* apiResolve(
+          const {
+            data: { error, errmsg },
+          } = yield* apiResolve(
             '/game-data/GameService2/guess',
             METHOD.POST,
             {
@@ -203,12 +222,20 @@ function* trials(playerId: string, exp?: string) {
             },
             {},
           );
+
+          if (error) {
+            throw Error(`Error on /guess: ${errmsg}`);
+          }
         }
       } while (!giveUpAction && !guessAction && !skipGuessAction && !loadNextBonusAction);
 
       ({
-        data: { alreadyFinished, episodeId, para },
+        data: { alreadyFinished, episodeId, para, errmsg, error },
       } = yield* apiResolve('/game-data/GameService2/newEpisode', METHOD.POST, { playerId }, {}));
+
+      if (error) {
+        throw Error(`Error on /newEpisode: ${errmsg}`);
+      }
     }
 
     yield* put(nextPage());
