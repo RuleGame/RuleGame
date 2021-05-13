@@ -52,8 +52,9 @@ export const historyInfoSelector = (state: RootState) =>
       code: code === Code.ACCEPT ? 'ACCEPT' : code === Code.DENY ? 'DENY' : code,
       x: state.board.board[pieceId].x,
       y: state.board.board[pieceId].y,
-      color: state.board.board[pieceId].color,
-      shape: state.board.board[pieceId].shape,
+      ...(state.board.board[pieceId].color && { color: state.board.board[pieceId].color }),
+      ...(state.board.board[pieceId].shape && { shape: state.board.board[pieceId].shape }),
+      ...(state.board.board[pieceId].image && { image: state.board.board[pieceId].image }),
       bucketNo,
     }));
 
