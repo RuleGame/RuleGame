@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 // eslint-disable-next-line import/no-cycle
-import { API_HOST_ORIGIN } from '../constants';
+import { API_HOST_ORIGIN, IMAGE_BASE_URL } from '../constants';
 import { BucketPosition } from '../constants/BucketPosition';
 import { Color } from '../constants/Color';
 import { Shape } from '../constants/Shape';
@@ -76,15 +76,29 @@ export enum METHOD {
   POST = 'post',
 }
 
-export type BoardObject = {
-  buckets: BucketPosition[];
-  color: Color;
-  dropped?: number;
-  id: number;
-  shape: Shape;
-  x: number;
-  y: number;
-};
+export type BoardObject =
+  | // SVG
+  {
+      image: undefined;
+      buckets: BucketPosition[];
+      color: Color;
+      dropped?: number;
+      id: number;
+      shape: Shape;
+      x: number;
+      y: number;
+    }
+  // Image properties based
+  | {
+      image: string;
+      buckets: BucketPosition[];
+      color: undefined;
+      dropped?: number;
+      id: number;
+      shape: undefined;
+      x: number;
+      y: number;
+    };
 
 export type Board = BoardObject[];
 
@@ -354,3 +368,5 @@ export function api<T extends keyof Endpoints, U extends keyof Endpoints[T]>(
     params: query,
   }) as Promise<AxiosResponse<ResBody<T, U>>>;
 }
+
+export const getImageUrl = (image: string) => `${IMAGE_BASE_URL}?image=${image}`;

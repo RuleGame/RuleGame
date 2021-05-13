@@ -31,9 +31,9 @@ const StyledBoard = styled.div<{}>`
   }
 `;
 
-const StyledBoardObject = styled(BoardObject)<BoardObjectType>`
-  grid-column: ${(boardObject) => boardObject.x + 1};
-  grid-row: ${(boardObject) => rows - boardObject.y};
+const StyledBoardObject = styled(BoardObject)<{ boardObject: BoardObjectType }>`
+  grid-column: ${({ boardObject }) => boardObject.x + 1};
+  grid-row: ${({ boardObject }) => rows - boardObject.y};
 `;
 
 const StyledBucket = styled(Bucket)<BucketType>`
@@ -118,7 +118,6 @@ const Board = ({ className }: BoardProps): JSX.Element => {
           <StyledBoard>
             {boardObjects.map((boardObject) => (
               <StyledBoardObject
-                {...boardObject}
                 key={boardObject.id}
                 moveNum={moveNumByBoardObject[boardObject.id]}
                 boardObject={boardObject}
