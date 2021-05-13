@@ -9,8 +9,6 @@ import { Dispatch } from 'redux';
 import ShapeObject from './ShapeObject';
 import { cyBoardObject } from '../constants/data-cy-builders';
 import { BoardObject as BoardObjectType, FeedbackSwitches } from '../utils/api';
-import { Color } from '../constants/Color';
-import { Shape } from '../constants/Shape';
 import {
   feedbackSwitchesSelector,
   isGameCompletedSelector,
@@ -20,12 +18,11 @@ import {
 import { debugModeSelector } from '../store/selectors/debug-mode';
 import { RootAction } from '../store/actions';
 import { pick } from '../store/actions/board';
+import ImageShapeObject from './ImageShapeObject';
 
 export type BoardObjectProps = {
   className?: string;
   boardObject: BoardObjectType;
-  shape: Shape;
-  color: Color;
   moveNum?: number;
 };
 
@@ -39,13 +36,17 @@ const StyledShapeObject = styled(ShapeObject)<{
     canDrag || feedbackSwitches === FeedbackSwitches.FREE ? 'grab' : 'unset'};
 `;
 
-const BoardObject = ({
-  className,
-  boardObject,
-  shape,
-  color,
-  moveNum,
-}: BoardObjectProps): JSX.Element => {
+const ImageStyledShapeObject = styled(ImageShapeObject)<{
+  canDrag: boolean;
+  feedbackSwitches: FeedbackSwitches;
+}>`
+  width: 100%;
+  height: 100%;
+  cursor: ${({ canDrag, feedbackSwitches }) =>
+    canDrag || feedbackSwitches === FeedbackSwitches.FREE ? 'grab' : 'unset'};
+`;
+
+const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX.Element => {
   const dispatch: Dispatch<RootAction> = useDispatch();
   const hasBeenDropped = boardObject.dropped !== undefined;
   const gameCompleted = useSelector(isGameCompletedSelector);
@@ -72,8 +73,9 @@ const BoardObject = ({
     () =>
       `${Object.entries({
         id: boardObject.id,
-        color: boardObject.color,
-        shape: boardObject.shape,
+        ...(boardObject.color && { color: boardObject.color }),
+        ...(boardObject.shape && { shape: boardObject.shape }),
+        ...(boardObject.image && { image: boardObject.image }),
         x: boardObject.x,
         y: boardObject.y,
       }).reduce(
@@ -92,16 +94,27 @@ const BoardObject = ({
       onMouseDown={() => !canDrag && dispatch(pick(boardObject.id))}
       fill
     >
-      <StyledShapeObject
-        shape={shape}
-        // Default to transparent until useQuery gets the RGB format from the api call.
-        color={color}
-        ref={ref}
-        canDrag={canDrag}
-        feedbackSwitches={feedbackSwitches}
-        shapeObjectId={boardObject.id}
-        debugInfo={debugMode ? debugInfo : undefined}
-      />
+      {boardObject.image !== undefined ? (
+        <ImageStyledShapeObject
+          ref={ref}
+          image={boardObject.image}
+          canDrag={canDrag}
+          feedbackSwitches={feedbackSwitches}
+          shapeObjectId={boardObject.id}
+          debugInfo={debugMode ? debugInfo : undefined}
+        />
+      ) : (
+        <StyledShapeObject
+          shape={boardObject.shape}
+          // Default to transparent until useQuery gets the RGB format from the api call.
+          color={boardObject.color}
+          ref={ref}
+          canDrag={canDrag}
+          feedbackSwitches={feedbackSwitches}
+          shapeObjectId={boardObject.id}
+          debugInfo={debugMode ? debugInfo : undefined}
+        />
+      )}
       {hasBeenDropped && <FiCheck color="green" size="100%" />}
       {!hasBeenDropped &&
         boardObject.buckets.length === 0 &&
