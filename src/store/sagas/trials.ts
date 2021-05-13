@@ -146,7 +146,7 @@ function* trials(playerId: string, exp?: string) {
           )!;
 
           const {
-            data: { code },
+            data: { code, error, errmsg },
           } = yield* apiResolve(
             '/game-data/GameService2/move',
             METHOD.POST,
@@ -163,9 +163,9 @@ function* trials(playerId: string, exp?: string) {
 
           // Cannot tell if errmsg is a real error or just debug info
           // Would be easy to know whether there is an error flag in the /move response.
-          // if (errmsg) {
-          //   throw Error(`Error on /move: ${errmsg}`);
-          // }
+          if (error) {
+            throw Error(`Error on /move: ${errmsg}`);
+          }
 
           if (code === Code.ACCEPT) {
             yield* put(validMove(moveAction.payload.boardObjectId, moveAction.payload.bucket));
@@ -180,7 +180,9 @@ function* trials(playerId: string, exp?: string) {
             (boardObject) => boardObject.id === pickAction!.payload.boardObjectId,
           )!;
 
-          yield* apiResolve(
+          const {
+            data: { errmsg, error },
+          } = yield* apiResolve(
             '/game-data/GameService2/pick',
             METHOD.POST,
             {
@@ -194,9 +196,9 @@ function* trials(playerId: string, exp?: string) {
 
           // Cannot tell if errmsg is a real error or just debug info
           // Would be easy to know whether there is an error flag in the /pick response.
-          // if (errmsg) {
-          //   throw Error(`Error on /pick: ${errmsg}`);
-          // }
+          if (error) {
+            throw Error(`Error on /pick: ${errmsg}`);
+          }
         } else if (giveUpAction) {
           const {
             data: { error, errmsg },

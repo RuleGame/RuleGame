@@ -231,7 +231,8 @@ export type Endpoints = {
         };
         bonus: boolean;
         code: Code;
-        errmsg: ErrorMsg; // There happens to be no error property here
+        errmsg: ErrorMsg;
+        error?: boolean;
         finishCode: FinishCode;
         numMovesMade: number;
         totalRewardEarned: number;
@@ -257,7 +258,8 @@ export type Endpoints = {
         };
         bonus: boolean;
         code: Code;
-        errmsg: ErrorMsg; // There happens to be no error property here
+        errmsg: ErrorMsg;
+        error?: boolean;
         finishCode: FinishCode;
         numMovesMade: number;
         totalRewardEarned: number;
