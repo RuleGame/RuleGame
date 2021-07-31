@@ -20,6 +20,7 @@ export type BucketProps = {
 
 const StyledBucket = styled(ShapeObject)<{ isOver: boolean }>`
   filter: grayscale(${(props) => (props.isOver ? 0.5 : 0)});
+  transform: scale(${(props) => (props.isOver ? 2 : 1)});
 `;
 
 const Bucket = ({ className, shape, bucket }: BucketProps): JSX.Element => {
