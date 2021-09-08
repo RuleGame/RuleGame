@@ -50,7 +50,7 @@ jobs:
         run: curl -k -F "secret=${{ secrets.UPLOAD_SECRET }}" -F "build=@preview-${{ github.head_ref }}.zip" "${{ secrets.UPLOAD_URL }}"
 
       - name: Comment PR
-        uses: thollander/actions-comment-pull-request@master
+        uses: thollander/actions-comment-pull-request@main
         with:
           message: Successfully deployed to http://sapir.psych.wisc.edu/rule-game/preview-${{ github.head_ref }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
