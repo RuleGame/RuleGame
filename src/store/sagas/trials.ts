@@ -9,11 +9,13 @@ import {
   invalidMove,
   loadNextBonus,
   move,
+  pause,
   pick,
   recordDemographics,
   setBoard,
   skipGuess,
   startTrials,
+  unpause,
   validMove,
 } from '../actions/board';
 import { nextPage } from '../actions/page';
@@ -94,6 +96,8 @@ function* trials(playerId: string, exp?: string) {
           break;
         }
 
+        yield* put(unpause());
+
         yield* put(
           setBoard(
             display.board.value,
@@ -144,6 +148,8 @@ function* trials(playerId: string, exp?: string) {
             // eslint-disable-next-line no-loop-func
             (boardObject) => boardObject.id === moveAction!.payload.boardObjectId,
           )!;
+
+          yield* put(pause());
 
           const {
             data: { code, error, errmsg },
