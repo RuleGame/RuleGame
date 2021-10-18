@@ -77,8 +77,7 @@ export enum METHOD {
 }
 
 export type BoardObject =
-  | // SVG
-  {
+  | {
       image: undefined;
       buckets: BucketPosition[];
       color: Color;
