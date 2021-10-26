@@ -52,8 +52,9 @@ export const historyInfoSelector = (state: RootState) =>
       code: code === Code.ACCEPT ? 'ACCEPT' : code === Code.DENY ? 'DENY' : code,
       x: state.board.board[pieceId].x,
       y: state.board.board[pieceId].y,
-      color: state.board.board[pieceId].color,
-      shape: state.board.board[pieceId].shape,
+      ...(state.board.board[pieceId].color && { color: state.board.board[pieceId].color }),
+      ...(state.board.board[pieceId].shape && { shape: state.board.board[pieceId].shape }),
+      ...(state.board.board[pieceId].image && { image: state.board.board[pieceId].image }),
       bucketNo,
     }));
 
@@ -89,3 +90,7 @@ export const displayBucketDropListsSelector = (state: RootState) =>
   state.board.stackMemoryDepth > 0;
 
 export const feedbackSwitchesSelector = (state: RootState) => state.board.feedbackSwitches;
+
+export const ruleSetNameSelector = (state: RootState) => state.board.ruleSetName;
+
+export const trialListIdSelector = (state: RootState) => state.board.trialListId;

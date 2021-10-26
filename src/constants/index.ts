@@ -25,8 +25,14 @@ export enum SearchQueryKey {
   HELP = 'help',
   VERSION = 'version',
   INTRO = 'intro',
+  SERVER = 'server',
 }
-export const API_HOST_ORIGIN = process.env.REACT_APP_APP_API_HOST_ORIGIN;
+
+export const API_HOST_ORIGIN =
+  new URLSearchParams(window.location.search).get(SearchQueryKey.SERVER) ??
+  process.env.REACT_APP_APP_API_HOST_ORIGIN;
+
+export const IMAGE_BASE_URL = `${API_HOST_ORIGIN}/GetImageServlet`;
 
 export const VERSION = process.env.REACT_APP_VERSION;
 
