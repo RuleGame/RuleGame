@@ -1,4 +1,4 @@
-import { call, delay, put, race, takeEvery } from 'typed-redux-saga';
+import { call, delay, put, race, select, takeEvery } from 'typed-redux-saga';
 import { getType } from 'typesafe-actions';
 import Papa from 'papaparse';
 import { Code, ErrorMsg, FinishCode, METHOD } from '../../utils/api';
@@ -13,6 +13,7 @@ import {
   pick,
   recordDemographics,
   setBoard,
+  setWorkerId,
   skipGuess,
   startTrials,
   unpause,
@@ -22,15 +23,24 @@ import { nextPage } from '../actions/page';
 import { boardPositionToBxBy, FEEDBACK_DURATION } from '../../constants';
 import { apiResolve, takeAction } from './utils/helpers';
 import { addLayer } from '../actions/layers';
+import { workerIdSelector } from '../selectors/board';
 
-function* trials(playerId: string, exp?: string) {
+function* trials(playerId?: string, exp?: string, uid?: number) {
   try {
     const {
-      data: { error: playerError, errmsg: playerErrmsg },
-    } = yield* apiResolve('/game-data/GameService2/player', METHOD.POST, { playerId, exp }, {});
+      data: { error: playerError, errmsg: playerErrmsg, playerId: playerIdResponse },
+    } = yield* apiResolve(
+      '/game-data/GameService2/player',
+      METHOD.POST,
+      { exp, ...(uid !== undefined && { uid }), ...(playerId !== undefined && { playerId }) },
+      {},
+    );
     if (playerError) {
       throw Error(`Error on /player: ${playerErrmsg}`);
     }
+
+    playerId = playerIdResponse;
+    yield* put(setWorkerId(playerId));
 
     let {
       // eslint-disable-next-line prefer-const
@@ -276,14 +286,20 @@ function* trials(playerId: string, exp?: string) {
   }
 }
 
-function* activateBonusSaga(playerId: string) {
-  yield* apiResolve('/game-data/GameService2/activateBonus', METHOD.POST, { playerId }, {});
+function* activateBonusSaga() {
+  const workerId = (yield* select(workerIdSelector))!;
+  yield* apiResolve(
+    '/game-data/GameService2/activateBonus',
+    METHOD.POST,
+    { playerId: workerId },
+    {},
+  );
 }
 
 export default function* () {
   const {
-    payload: { playerId, exp },
+    payload: { playerId, exp, uid },
   } = yield* takeAction(startTrials);
-  yield* takeEvery(getType(activateBonus), activateBonusSaga, playerId);
-  yield* call(trials, playerId, exp);
+  yield* takeEvery(getType(activateBonus), activateBonusSaga);
+  yield* call(trials, playerId, exp, uid);
 }

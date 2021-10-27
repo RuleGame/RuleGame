@@ -94,3 +94,5 @@ export const feedbackSwitchesSelector = (state: RootState) => state.board.feedba
 export const ruleSetNameSelector = (state: RootState) => state.board.ruleSetName;
 
 export const trialListIdSelector = (state: RootState) => state.board.trialListId;
+
+export const workerIdSelector = (state: RootState) => state.board.workerId;

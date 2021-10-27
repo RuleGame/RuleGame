@@ -1,22 +1,26 @@
-import React from 'react';
 import { Box, Heading } from 'grommet';
+import React from 'react';
 import { useDispatch } from 'react-redux';
+import { useMount, useSearchParam } from 'react-use';
 import { Dispatch } from 'redux';
-import { useMount } from 'react-use';
+import Spinner from '../components/Spinner';
+import { SearchQueryKey } from '../constants';
+import { Page } from '../constants/Page';
+import texts from '../constants/texts';
 import { RootAction } from '../store/actions';
 import { startTrials } from '../store/actions/board';
-import Spinner from '../components/Spinner';
-import { useExperimentPlan, useWorkerId } from '../utils/hooks';
-import texts from '../constants/texts';
-import { Page } from '../constants/Page';
+import { useExperimentPlan } from '../utils/hooks';
 
 export default () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
-  const workerId = useWorkerId();
+  const uid = useSearchParam(SearchQueryKey.UID) ?? undefined;
+  const workerId = useSearchParam(SearchQueryKey.WORKER_ID) ?? undefined;
   const exp = useExperimentPlan();
 
   useMount(async () => {
-    dispatch(startTrials(workerId, exp));
+    dispatch(
+      startTrials({ uid: uid !== undefined ? Number(uid) : undefined, playerId: workerId, exp }),
+    );
   });
 
   return (

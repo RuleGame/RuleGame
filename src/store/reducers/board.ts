@@ -1,5 +1,7 @@
 import { getType } from 'typesafe-actions';
-import { RootAction } from '../actions';
+import { SpecialShape } from '../../constants';
+import { BucketPosition } from '../../constants/BucketPosition';
+import { Shape } from '../../constants/Shape';
 import {
   BoardObject,
   FeedbackSwitches,
@@ -7,12 +9,19 @@ import {
   Transcript,
   TransitionMap,
 } from '../../utils/api';
-import { invalidMove, pause, setBoard, setIsInBonus, unpause, validMove } from '../actions/board';
-import { BucketPosition } from '../../constants/BucketPosition';
-import { Shape } from '../../constants/Shape';
-import { SpecialShape } from '../../constants';
+import { RootAction } from '../actions';
+import {
+  invalidMove,
+  pause,
+  setBoard,
+  setIsInBonus,
+  setWorkerId,
+  unpause,
+  validMove,
+} from '../actions/board';
 
 export type State = {
+  workerId?: string;
   board: { [boardObjectId: number]: BoardObject };
   isInBonus: boolean;
   bonusEpisodeNo: number;
@@ -45,6 +54,7 @@ export type State = {
 };
 
 export const initialState: State = {
+  workerId: undefined,
   board: {},
   isInBonus: false,
   bonusEpisodeNo: 0,
@@ -163,6 +173,12 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       return {
         ...state,
         isInBonus: action.payload.isInBonus,
+      };
+
+    case getType(setWorkerId):
+      return {
+        ...state,
+        workerId: action.payload.workerId,
       };
 
     default:

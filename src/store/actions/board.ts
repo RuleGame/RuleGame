@@ -4,10 +4,14 @@ import { Board, FeedbackSwitches, FinishCode, Transcript, TransitionMap } from '
 // eslint-disable-next-line import/no-cycle
 import { BucketPosition } from '../../constants/BucketPosition';
 
-export const startTrials = createAction('board/START_TRIALS', (playerId: string, exp?: string) => ({
-  playerId,
-  exp,
-}))();
+export const startTrials = createAction(
+  'board/START_TRIALS',
+  ({ uid, playerId, exp }: { uid?: number; playerId?: string; exp?: string }) => ({
+    uid,
+    playerId,
+    exp,
+  }),
+)();
 
 export const setBoard = createAction(
   'board/SET_BOARD',
@@ -115,4 +119,8 @@ export const recordDemographics = createAction('board/RECORD_DEMOGRAPHICS', (dat
 
 export const pick = createAction('board/PICK', (boardObjectId: number) => ({
   boardObjectId,
+}))();
+
+export const setWorkerId = createAction('board/SET_WORKER_ID', (workerId?: string) => ({
+  workerId,
 }))();

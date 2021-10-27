@@ -1,28 +1,29 @@
-import React, { useEffect, useRef, useState } from 'react';
 import { Box, Button, Grommet, Heading, Paragraph, Text } from 'grommet';
-import { hot } from 'react-hot-loader/root';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEvent, useSearchParam } from 'react-use';
-import { MdFullscreen } from 'react-icons/all';
 import { Expand } from 'grommet-icons';
+import React, { useRef, useState } from 'react';
+import { hot } from 'react-hot-loader/root';
+import { MdFullscreen } from 'react-icons/all';
 import { useQuery } from 'react-query';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEvent, useMount, useSearchParam } from 'react-use';
 import Layers from './components/Layers';
 import Notifications from './components/Notifications';
-import Introduction from './pages/Introduction';
-import Consent from './pages/Consent';
-import Trials from './pages/Trials';
-import DemographicsInstructions from './pages/DemographicsInstructions';
-import { Page } from './constants/Page';
-import LoadingTrials from './pages/LoadingTrials';
-import { pageSelector } from './store/selectors/page';
-import Demographics from './pages/Demographics';
-import Debriefing from './pages/Debriefing';
-import { API_HOST_ORIGIN, SearchQueryKey, VERSION } from './constants';
-import texts from './constants/texts';
-import Help from './pages/Help';
-import { api, METHOD } from './utils/api';
 import Spinner from './components/Spinner';
+import { API_HOST_ORIGIN, SearchQueryKey, VERSION } from './constants';
+import { Page } from './constants/Page';
+import texts from './constants/texts';
+import Consent from './pages/Consent';
+import Debriefing from './pages/Debriefing';
+import Demographics from './pages/Demographics';
+import DemographicsInstructions from './pages/DemographicsInstructions';
+import Help from './pages/Help';
+import Introduction from './pages/Introduction';
+import LoadingTrials from './pages/LoadingTrials';
+import Trials from './pages/Trials';
+import { setWorkerId } from './store/actions/board';
 import { goToPage } from './store/actions/page';
+import { pageSelector } from './store/selectors/page';
+import { api, METHOD } from './utils/api';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -34,6 +35,16 @@ const App = () => {
   const versionPage = useSearchParam(SearchQueryKey.VERSION)?.toLowerCase() === 'true';
   const [fullscreen, setFullscreen] = useState(false);
   const intro = (useSearchParam(SearchQueryKey.INTRO)?.toLowerCase() ?? 'true') === 'true';
+  const workerId = useSearchParam(SearchQueryKey.WORKER_ID) ?? undefined;
+  useMount(() => {
+    if (workerId !== undefined) {
+      dispatch(setWorkerId(workerId));
+    }
+    if (!intro) {
+      dispatch(goToPage(Page.LOADING_TRIALS));
+    }
+  });
+
   useEvent('fullscreenchange', () => {
     if (document.fullscreenElement !== null) {
       setFullscreen(true);
@@ -47,12 +58,6 @@ const App = () => {
     () => api('/game-data/GameService2/getVersion', METHOD.GET, undefined, {}),
     { enabled: versionPage, retry: false },
   );
-
-  useEffect(() => {
-    if (!intro) {
-      dispatch(goToPage(Page.LOADING_TRIALS));
-    }
-  }, [intro, dispatch]);
 
   return (
     <Grommet full plain>

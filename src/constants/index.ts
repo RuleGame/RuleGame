@@ -26,6 +26,7 @@ export enum SearchQueryKey {
   VERSION = 'version',
   INTRO = 'intro',
   SERVER = 'server',
+  UID = 'uid',
 }
 
 export const API_HOST_ORIGIN =
