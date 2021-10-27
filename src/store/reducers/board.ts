@@ -1,5 +1,7 @@
 import { getType } from 'typesafe-actions';
-import { RootAction } from '../actions';
+import { SpecialShape } from '../../constants';
+import { BucketPosition } from '../../constants/BucketPosition';
+import { Shape } from '../../constants/Shape';
 import {
   BoardObject,
   FeedbackSwitches,
@@ -7,6 +9,7 @@ import {
   Transcript,
   TransitionMap,
 } from '../../utils/api';
+import { RootAction } from '../actions';
 import {
   invalidMove,
   pause,
@@ -16,9 +19,6 @@ import {
   unpause,
   validMove,
 } from '../actions/board';
-import { BucketPosition } from '../../constants/BucketPosition';
-import { Shape } from '../../constants/Shape';
-import { DEFAULT_WORKER_ID, SpecialShape } from '../../constants';
 
 export type State = {
   workerId?: string;

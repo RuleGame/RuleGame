@@ -1,9 +1,9 @@
-import { useLocalStorage, useSearchParam } from 'react-use';
 import { useQuery } from 'react-query';
-import { DEFAULT_WORKER_ID, LOCAL_STORAGE_KEY, SearchQueryKey } from '../constants';
+import { useLocalStorage, useSearchParam } from 'react-use';
 import { LocalStorageWorkerIdKey } from '../@types';
-import { api, METHOD } from './api';
+import { LOCAL_STORAGE_KEY, SearchQueryKey } from '../constants';
 import { Color } from '../constants/Color';
+import { api, METHOD } from './api';
 import rgb from './rgb';
 
 export const useWorkerLocalStorage = () =>
