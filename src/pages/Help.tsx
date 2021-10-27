@@ -1,17 +1,31 @@
-import React, { useState } from 'react';
 import { Box, Button } from 'grommet';
+import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import { api, METHOD } from '../utils/api';
-import { useExperimentPlan, useWorkerId } from '../utils/hooks';
-import texts from '../constants/texts';
+import { useSelector } from 'react-redux';
+import { useSearchParam } from 'react-use';
+import { SearchQueryKey } from '../constants';
 import { Page } from '../constants/Page';
+import texts from '../constants/texts';
+import { workerIdSelector } from '../store/selectors/board';
+import { api, METHOD } from '../utils/api';
+import { useExperimentPlan } from '../utils/hooks';
 
 export default () => {
-  const workerId = useWorkerId();
+  const workerId = useSelector(workerIdSelector);
   const exp = useExperimentPlan();
   const [step, setStep] = useState(0);
-  const { data, isLoading } = useQuery(`${workerId}-INTRODUCTION`, () =>
-    api('/game-data/GameService2/player', METHOD.POST, { playerId: workerId, exp }, {}),
+  const uid = useSearchParam(SearchQueryKey.UID) ?? undefined;
+  const { data, isLoading } = useQuery(`${workerId}-HELP`, () =>
+    api(
+      '/game-data/GameService2/player',
+      METHOD.POST,
+      {
+        exp,
+        ...(uid !== undefined && { uid: Number(uid) }),
+        ...(workerId !== undefined && { playerId: workerId }),
+      },
+      {},
+    ),
   );
   const numRules = isLoading ? '...' : data?.data.trialList.length ?? '?';
   const instructions = texts[Page.INTRODUCTION].text(numRules);

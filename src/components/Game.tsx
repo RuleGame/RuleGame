@@ -1,13 +1,17 @@
+import { Box, Button, CheckBox, Drop, Grid, Heading, Text } from 'grommet';
+import { Help, Next } from 'grommet-icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Button, CheckBox, Drop, Grid, Heading, Text } from 'grommet';
 import { Dispatch } from 'redux';
-import { Help, Next } from 'grommet-icons';
-import Board from './Board';
-import { RootAction } from '../store/actions';
-import GuessRuleForm from './GuessRuleForm';
+import { SearchQueryKey } from '../constants';
 import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
+import { DEBUG_ENABLED } from '../constants/env';
+import { Page } from '../constants/Page';
+import texts from '../constants/texts';
+import { RootAction } from '../store/actions';
 import { activateBonus, giveUp, loadNextBonus } from '../store/actions/board';
+import { setDebugMode } from '../store/actions/debug-mode';
+import { addLayer, removeLayer } from '../store/actions/layers';
 import {
   allowGiveUpOptionSelector,
   canActivateBonusSelector,
@@ -21,16 +25,13 @@ import {
   ruleLineNoSelector,
   ruleSrcSelector,
   seriesNoSelector,
+  workerIdSelector,
 } from '../store/selectors/board';
-import { addLayer, removeLayer } from '../store/actions/layers';
-import { FinishCode } from '../utils/api';
 import { debugModeSelector } from '../store/selectors/debug-mode';
-import { setDebugMode } from '../store/actions/debug-mode';
-import { DEBUG_ENABLED } from '../constants/env';
-import texts from '../constants/texts';
-import { Page } from '../constants/Page';
-import { SearchQueryKey } from '../constants';
-import { useExperimentPlan, useWorkerId } from '../utils/hooks';
+import { FinishCode } from '../utils/api';
+import { useExperimentPlan } from '../utils/hooks';
+import Board from './Board';
+import GuessRuleForm from './GuessRuleForm';
 
 enum GridAreaName {
   HEADING = 'HEADING',
@@ -61,7 +62,7 @@ const Game: React.FunctionComponent<{
   const debugMode = useSelector(debugModeSelector);
   const allowGiveUpOption = useSelector(allowGiveUpOptionSelector);
   const [instructionsButtonOver, setInstructionsButtonOver] = useState(false);
-  const workerId = useWorkerId();
+  const workerId = useSelector(workerIdSelector);
   const exp = useExperimentPlan();
 
   useEffect(() => {

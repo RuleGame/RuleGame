@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
 import { Box, Button } from 'grommet';
-import { useDispatch } from 'react-redux';
-import { Dispatch } from 'redux';
+import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import { RootAction } from '../store/actions';
-import { api, METHOD } from '../utils/api';
-import { useExperimentPlan, useWorkerId } from '../utils/hooks';
-import texts from '../constants/texts';
+import { useDispatch, useSelector } from 'react-redux';
+import { Dispatch } from 'redux';
 import { Page } from '../constants/Page';
+import texts from '../constants/texts';
+import { RootAction } from '../store/actions';
 import { nextPage } from '../store/actions/page';
+import { workerIdSelector } from '../store/selectors/board';
+import { api, METHOD } from '../utils/api';
+import { useExperimentPlan } from '../utils/hooks';
 
 export default () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
-  const workerId = useWorkerId();
+  const workerId = useSelector(workerIdSelector);
   const exp = useExperimentPlan();
   const [step, setStep] = useState(0);
   const { data, isLoading } = useQuery(`${workerId}-INTRODUCTION`, () =>

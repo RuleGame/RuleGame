@@ -6,10 +6,6 @@ import { api, METHOD } from './api';
 import { Color } from '../constants/Color';
 import rgb from './rgb';
 
-export const useWorkerId = () => {
-  return useSearchParam(SearchQueryKey.WORKER_ID) ?? DEFAULT_WORKER_ID;
-};
-
 export const useWorkerLocalStorage = () =>
   useLocalStorage<LocalStorageWorkerIdKey>(LOCAL_STORAGE_KEY.WORKER_ID, {
     seriesNo: undefined,
