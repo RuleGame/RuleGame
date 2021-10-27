@@ -172,11 +172,12 @@ export type Endpoints = {
         errmsg: ErrorMsg;
         error: boolean;
         newlyRegistered: boolean;
+        playerId: string;
         trialListId: string;
         trialList: Para[];
         completionCode?: string;
       },
-      { playerId: string; exp?: string }
+      { playerId?: string; exp?: string; uid?: number }
     >;
   };
 
@@ -327,6 +328,27 @@ export type Endpoints = {
 
   '/game-data/GameService2/getVersion': {
     [METHOD.GET]: RequestHandler<number>;
+  };
+
+  '/game-data/GameService2/registerUser': {
+    [METHOD.POST]: RequestHandler<
+      {
+        error: boolean;
+        newlyRegistered: boolean;
+        user: {
+          date: string;
+          email: string;
+          id: number;
+          idCode: string;
+          nickname: string;
+        };
+      },
+      {
+        email: string;
+        nickname: string;
+        anon?: boolean;
+      }
+    >;
   };
 };
 
