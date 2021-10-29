@@ -106,11 +106,6 @@ const GuessRuleForm: React.FunctionComponent = () => {
                       }
                     }}
                     name="rule-description"
-                    placeholder={
-                      isPrevSeriesRuleGuessSaved && autofillButtonOver
-                        ? workerLocalStorage.savedRuleGuess
-                        : ''
-                    }
                   />
                 </FormField>
                 {isPrevSeriesRuleGuessSaved && (
@@ -227,17 +222,26 @@ const GuessRuleForm: React.FunctionComponent = () => {
         </Grid>
       )}
       {autofillButtonOver && autofillButtonRef.current !== null && isPrevSeriesRuleGuessSaved && (
-        <Drop
-          align={{ bottom: 'top' }}
-          target={autofillButtonRef.current}
-          plain
-          // trapFocus set to false allows tabbing through
-          trapFocus={false}
-        >
-          <Box pad="small" background="gray">
-            <Text color="white">{texts[Page.TRIALS].reusePreviousResponseLabel}</Text>
-          </Box>
-        </Drop>
+        <>
+          <Drop
+            align={{ bottom: 'top' }}
+            target={autofillButtonRef.current}
+            plain
+            // trapFocus set to false allows tabbing through
+            trapFocus={false}
+          >
+            <Box
+              pad="small"
+              background="gray"
+              justify="center"
+              align="center"
+              width={{ max: 'large' }}
+            >
+              <Text color="white">{texts[Page.TRIALS].reusePreviousResponseLabel}</Text>
+              <Text color="white">({workerLocalStorage.savedRuleGuess})</Text>
+            </Box>
+          </Drop>
+        </>
       )}
     </>
   ) : (
