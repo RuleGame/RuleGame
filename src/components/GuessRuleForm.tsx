@@ -48,16 +48,13 @@ const GuessRuleForm: React.FunctionComponent = () => {
         <Box fill>
           <Box align="start" direction="row" justify="center" height={{ min: 'unset' }}>
             <Heading level="3" margin="none" style={{ width: '100%' }}>
-              <Box direction="row" gap="medium" align="end" margin={{ bottom: 'small' }}>
+              <Box direction="row" gap="medium" align="baseline">
                 <FormField
                   label={
-                    <Box justify="end" fill="vertical">
-                      <Heading level="3" margin="none" style={{ height: '1.5em' }}>
-                        {texts[Page.TRIALS].guessRulePrompt}
-                      </Heading>
-                    </Box>
+                    <Heading level="3" margin="none">
+                      {texts[Page.TRIALS].guessRulePrompt}
+                    </Heading>
                   }
-                  margin="none"
                   htmlFor={TEXT_INPUT_ID}
                   component={Box}
                   style={{
@@ -118,7 +115,6 @@ const GuessRuleForm: React.FunctionComponent = () => {
                 </FormField>
                 {isPrevSeriesRuleGuessSaved && (
                   <Button
-                    margin={{ bottom: 'small' }}
                     size="small"
                     icon={<Save size="small" />}
                     primary
