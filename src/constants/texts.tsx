@@ -1,7 +1,6 @@
 import React from 'react';
-import { Box, Heading, Image, Paragraph, Text } from 'grommet';
+import { Box, Button, Heading, Image, Paragraph, Text } from 'grommet';
 import { Page } from './Page';
-
 
 import I1 from '../assets/instructions_NOBINS/instructions_final.001.jpeg';
 import I2 from '../assets/instructions_NOBINS/instructions_final.002.jpeg';
@@ -19,7 +18,7 @@ import I13 from '../assets/instructions_NOBINS/instructions_final.013.jpeg';
 import I14 from '../assets/instructions_NOBINS/instructions_final.014.jpeg';
 import I15 from '../assets/instructions_NOBINS/instructions_final.015.jpeg';
 import I16 from '../assets/instructions_NOBINS/instructions_final.016.jpeg';
-
+import { HAS_UID } from '.';
 
 export default {
   [Page.CONSENT]: {
@@ -204,9 +203,9 @@ export default {
 
         // Page 18
         <>
-        <Heading>RuleGame Challenge</Heading>
-        <Paragraph fill>
-          {`Please try your best when entering your guesses. We may reject your work if you make uninformative responses.`}
+          <Heading>RuleGame Challenge</Heading>
+          <Paragraph fill>
+            {`Please try your best when entering your guesses. We may reject your work if you make uninformative responses.`}
           </Paragraph>
         </>,
       ],
@@ -293,7 +292,16 @@ export default {
           We’re using this task to better understand what kinds of rules are easy and hard for
           people compared to machine learning algorithms.
         </Paragraph>
-        <Paragraph fill>You may now close this window.</Paragraph>
+        {!HAS_UID ? (
+          <Paragraph fill>You may now close this window.</Paragraph>
+        ) : (
+          <Box>
+            <Paragraph>
+              {"You've done a good job, now click on this button to go back to the launch page."}
+            </Paragraph>
+            <Button primary onClick={() => window.history.back()} label="Return" />
+          </Box>
+        )}
       </>
     ),
   },

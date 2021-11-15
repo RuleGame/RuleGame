@@ -46,13 +46,14 @@ export const boardPositionToBxBy: {
   3: { bx: 0, by: 0 },
 };
 
+export const HAS_UID = new URLSearchParams(window.location.search).get(SearchQueryKey.UID) !== null;
+
 export const PAGE_ORDER: Page[] = [
   Page.CONSENT,
   Page.INTRODUCTION,
   Page.LOADING_TRIALS,
   Page.TRIALS,
-  Page.DEMOGRAPHICS_INSTRUCTIONS,
-  Page.DEMOGRAPHICS,
+  ...(!HAS_UID ? [Page.DEMOGRAPHICS_INSTRUCTIONS, Page.DEMOGRAPHICS] : []),
   Page.DEBRIEFING,
 ];
 
