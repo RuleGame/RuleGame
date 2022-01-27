@@ -58,7 +58,9 @@ export const historyInfoSelector = (state: RootState) =>
       bucketNo,
     }));
 
-export const numMovesMadeSelector = (state: RootState) => state.board.numMovesMade;
+export const numMovesMadeSelector = (state: RootState) => state.board.faces?.length;
+export const numGoodMovesMadeSelector = (state: RootState) =>
+  state.board.faces?.reduce((acc, curr) => (curr ? acc + 1 : acc), 0);
 
 export const episodeNoSelector = (state: RootState) => state.board.episodeNo;
 
@@ -96,3 +98,22 @@ export const ruleSetNameSelector = (state: RootState) => state.board.ruleSetName
 export const trialListIdSelector = (state: RootState) => state.board.trialListId;
 
 export const workerIdSelector = (state: RootState) => state.board.workerId;
+
+export const incentiveSelector = (state: RootState) => state.board.incentive;
+export const rewardsAndFactorsPerSeriesSelector = (state: RootState) =>
+  state.board.rewardsAndFactorsPerSeries;
+export const factorAchievedSelector = (state: RootState) => state.board.factorAchieved;
+export const factorPromisedSelector = (state: RootState) => state.board.factorPromised;
+export const justReachedX2Selector = (state: RootState) => state.board.justReachedX2;
+export const justReachedX4Selector = (state: RootState) => state.board.justReachedX4;
+export const lastStretchSelector = (state: RootState) => state.board.lastStretch;
+
+export const goodBadMovesSelector = (state: RootState) =>
+  state.board.transcript
+    .filter((t) => (t.code === Code.ACCEPT || t.code === Code.DENY) && t.bucketNo !== undefined)
+    .map((t) => t.code === Code.ACCEPT);
+
+export const x2AfterSelector = (state: RootState) => state.board.x2After;
+export const x4AfterSelector = (state: RootState) => state.board.x4After;
+
+export const facesSelector = (state: RootState) => state.board.faces;

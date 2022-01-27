@@ -254,14 +254,14 @@ export default {
     numMovesLeftPreText: 'Number of moves left:',
     pointsPreText: 'Points:',
     boardNumText: (boardNum: number, numBoardsLeft: number) => (
-      <>
+      <Box wrap direction="row" align="baseline">
         <Text size="inherit" weight="bold">
           Board&nbsp;
         </Text>
         <Text size="1.25em" weight="bold">
           {boardNum} of {numBoardsLeft}
         </Text>
-      </>
+      </Box>
     ),
 
     guessButtonLabel: 'Guess the rule',
