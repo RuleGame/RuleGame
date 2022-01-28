@@ -16,6 +16,7 @@ import {
   setWorkerId,
   skipGuess,
   startTrials,
+  submitDetails,
   unpause,
   validMove,
 } from '../actions/board';
@@ -63,7 +64,8 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
 
       data = newEpisodeData;
 
-      if (newEpisodeData.error) {
+      // Allow normal flow if board is alreadyFinished
+      if (newEpisodeData.error && newEpisodeData.alreadyFinished !== true) {
         throw Error(`Error on /newEpisdoe: ${newEpisodeData.errmsg}`);
       }
     } else if (error) {
@@ -81,6 +83,8 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
         stack_memory_depth: stackMemoryDepth,
         give_up_at: giveUpAt,
         feedback_switches: feedbackSwitches,
+        x2_after: x2After,
+        x4_after: x4After,
       } = para;
 
       let moveAction: ReturnType<typeof move> | undefined;
@@ -89,6 +93,7 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
       let skipGuessAction: ReturnType<typeof skipGuess> | undefined;
       let loadNextBonusAction: ReturnType<typeof loadNextBonus> | undefined;
       let pickAction: ReturnType<typeof pick> | undefined;
+      let submitDetailsAction: ReturnType<typeof submitDetails> | undefined;
 
       // Encompasses a single episode. Exiting from the loop will result in a new episode if any.
       do {
@@ -106,35 +111,54 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
           break;
         }
 
+        // TODO: Temporarily allow the player to clear the board after the factorPromised is at 4.
+        // Eventually, disallow it to continue once the API can auto complete the board.
+        // if (display.factorPromised !== 4) {
         yield* put(unpause());
+        // }
 
         yield* put(
-          setBoard(
-            display.board.value,
-            display.bonus,
-            display.bonusEpisodeNo,
-            display.canActivateBonus,
-            display.finishCode,
-            display.totalRewardEarned,
-            display.totalBoardsPredicted,
-            gridMemoryShowOrder,
-            stackMemoryShowOrder,
+          setBoard({
+            board: display.board.value,
+            bonus: display.bonus,
+            bonusEpisodeNo: display.bonusEpisodeNo,
+            canActivateBonus: display.canActivateBonus,
+            finishCode: display.finishCode,
+            totalRewardEarned: display.totalRewardEarned,
+            totalBoardsPredicted: display.totalBoardsPredicted,
+            showGridMemoryOrder: gridMemoryShowOrder,
+            showStackMemoryOrder: stackMemoryShowOrder,
             stackMemoryDepth,
-            display.seriesNo,
-            display.transcript,
-            display.rulesSrc,
-            display.ruleLineNo,
-            display.numMovesMade,
-            display.episodeNo,
+            seriesNo: display.seriesNo,
+            transcript: display.transcript,
+            rulesSrc: display.rulesSrc,
+            ruleLineNo: display.ruleLineNo,
+            numMovesMade: display.numMovesMade,
+            episodeNo: display.episodeNo,
             episodeId,
-            para.max_points,
+            maxPoints: para.max_points,
             feedbackSwitches,
-            display.ruleSetName,
-            display.trialListId,
-            display.movesLeftToStayInBonus,
-            display.transitionMap,
+            ruleSetName: display.ruleSetName,
+            trialListId: display.trialListId,
+            movesLeftToStayInBonus: display.movesLeftToStayInBonus,
+            transitionMap: display.transitionMap,
             giveUpAt,
-          ),
+            incentive: display.incentive,
+            lastStretch: display.lastStretch,
+            rewardsAndFactorsPerSeries: display.rewardsAndFactorsPerSeries,
+            factorAchieved: display.factorAchieved,
+            factorPromised: display.factorPromised,
+            justReachedX2: display.justReachedX2,
+            justReachedX4: display.justReachedX4,
+            x2After,
+            x4After,
+            // TODO: Temporarily allow the player to clear the board after the factorPromised is at 4.
+            // Eventually, disallow it to continue once the API can auto complete the board.
+            // if (display.factorPromised !== 4) {
+            // isPaused: display.factorPromised === 4,
+            isPaused: false,
+            faces: display.faces,
+          }),
         );
 
         ({
@@ -144,6 +168,7 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
           skipGuessAction,
           loadNextBonusAction,
           pickAction,
+          submitDetailsAction,
         } = yield* race({
           moveAction: takeAction(move),
           giveUpAction: takeAction(giveUp),
@@ -151,6 +176,7 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
           skipGuessAction: takeAction(skipGuess),
           loadNextBonusAction: takeAction(loadNextBonus),
           pickAction: takeAction(pick),
+          submitDetailsAction: takeAction(submitDetails),
         }));
 
         if (moveAction) {
@@ -245,7 +271,13 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
             throw Error(`Error on /guess: ${errmsg}`);
           }
         }
-      } while (!giveUpAction && !guessAction && !skipGuessAction && !loadNextBonusAction);
+      } while (
+        !submitDetailsAction &&
+        !giveUpAction &&
+        !guessAction &&
+        !skipGuessAction &&
+        !loadNextBonusAction
+      );
 
       ({
         data: { alreadyFinished, episodeId, para, errmsg, error },

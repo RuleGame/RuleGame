@@ -4,15 +4,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMeasure } from 'react-use';
 import { Dispatch } from 'redux';
-import { SearchQueryKey } from '../constants';
-import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
-import { DEBUG_ENABLED } from '../constants/env';
-import { Page } from '../constants/Page';
-import texts from '../constants/texts';
-import { RootAction } from '../store/actions';
-import { activateBonus, giveUp, loadNextBonus } from '../store/actions/board';
-import { setDebugMode } from '../store/actions/debug-mode';
-import { addLayer, removeLayer } from '../store/actions/layers';
+import { SearchQueryKey } from '../../constants';
+import { CY_GAME, CY_NO_MORE_MOVES } from '../../constants/data-cy';
+import { DEBUG_ENABLED } from '../../constants/env';
+import { Page } from '../../constants/Page';
+import texts from '../../constants/texts';
+import { RootAction } from '../../store/actions';
+import { activateBonus, giveUp, loadNextBonus } from '../../store/actions/board';
+import { setDebugMode } from '../../store/actions/debug-mode';
+import { addLayer, removeLayer } from '../../store/actions/layers';
 import {
   allowGiveUpOptionSelector,
   canActivateBonusSelector,
@@ -28,12 +28,12 @@ import {
   ruleSrcSelector,
   seriesNoSelector,
   workerIdSelector,
-} from '../store/selectors/board';
-import { debugModeSelector } from '../store/selectors/debug-mode';
-import { FinishCode } from '../utils/api';
-import { useExperimentPlan } from '../utils/hooks';
+} from '../../store/selectors/board';
+import { debugModeSelector } from '../../store/selectors/debug-mode';
+import { FinishCode } from '../../utils/api';
+import { useExperimentPlan } from '../../utils/hooks';
 import Board from './Board';
-import GuessRuleForm from './GuessRuleForm';
+import GuessRuleForm from '../GuessRuleForm';
 
 enum GridAreaName {
   HEADING = 'HEADING',

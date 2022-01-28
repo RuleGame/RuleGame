@@ -1,6 +1,13 @@
 import { createAction } from 'typesafe-actions';
 // eslint-disable-next-line import/no-cycle
-import { Board, FeedbackSwitches, FinishCode, Transcript, TransitionMap } from '../../utils/api';
+import {
+  Board,
+  FeedbackSwitches,
+  FinishCode,
+  Incentive,
+  Transcript,
+  TransitionMap,
+} from '../../utils/api';
 // eslint-disable-next-line import/no-cycle
 import { BucketPosition } from '../../constants/BucketPosition';
 
@@ -15,35 +22,82 @@ export const startTrials = createAction(
 
 export const setBoard = createAction(
   'board/SET_BOARD',
-  (
-    board: Board,
-    bonus: boolean,
-    bonusEpisodeNo: number,
-    canActivateBonus: boolean,
-    finishCode: FinishCode,
-    totalRewardEarned: number,
-    totalBoardsPredicted: number,
-    showGridMemoryOrder: boolean,
-    showStackMemoryOrder: boolean,
-    stackMemoryDepth: number,
-    seriesNo: number,
-    transcript: Transcript,
+  ({
+    board,
+    bonus,
+    bonusEpisodeNo,
+    canActivateBonus,
+    finishCode,
+    totalRewardEarned,
+    totalBoardsPredicted,
+    showGridMemoryOrder,
+    showStackMemoryOrder,
+    stackMemoryDepth,
+    seriesNo,
+    transcript,
+    rulesSrc,
+    ruleLineNo,
+    numMovesMade,
+    episodeNo,
+    episodeId,
+    maxPoints,
+    feedbackSwitches,
+    ruleSetName,
+    trialListId,
+    movesLeftToStayInBonus,
+    transitionMap,
+    giveUpAt,
+    incentive,
+    lastStretch,
+    rewardsAndFactorsPerSeries,
+    factorAchieved,
+    factorPromised,
+    justReachedX2,
+    justReachedX4,
+    x2After,
+    x4After,
+    isPaused = false,
+    faces,
+  }: {
+    board: Board;
+    bonus: boolean;
+    bonusEpisodeNo: number;
+    canActivateBonus: boolean;
+    finishCode: FinishCode;
+    totalRewardEarned: number;
+    totalBoardsPredicted: number;
+    showGridMemoryOrder: boolean;
+    showStackMemoryOrder: boolean;
+    stackMemoryDepth: number;
+    seriesNo: number;
+    transcript: Transcript;
     rulesSrc: {
       orders: number[];
       rows: string[];
-    },
-    ruleLineNo: number,
-    numMovesMade: number,
-    episodeNo: number,
-    episodeId: string,
-    maxPoints: number,
-    feedbackSwitches: FeedbackSwitches,
-    ruleSetName: string,
-    trialListId: string,
-    movesLeftToStayInBonus?: number,
-    transitionMap?: TransitionMap,
-    giveUpAt?: number,
-  ) => ({
+    };
+    ruleLineNo: number;
+    numMovesMade: number;
+    episodeNo: number;
+    episodeId: string;
+    maxPoints: number;
+    feedbackSwitches: FeedbackSwitches;
+    ruleSetName: string;
+    trialListId: string;
+    movesLeftToStayInBonus?: number;
+    transitionMap?: TransitionMap;
+    giveUpAt?: number;
+    incentive?: Incentive;
+    lastStretch: number;
+    rewardsAndFactorsPerSeries: [number, number][];
+    factorAchieved?: number;
+    factorPromised?: number;
+    justReachedX2?: boolean;
+    justReachedX4?: boolean;
+    x2After?: number;
+    x4After?: number;
+    isPaused?: boolean;
+    faces?: boolean[];
+  }) => ({
     board,
     bonus,
     bonusEpisodeNo,
@@ -68,6 +122,17 @@ export const setBoard = createAction(
     feedbackSwitches,
     ruleSetName,
     trialListId,
+    incentive,
+    lastStretch,
+    rewardsAndFactorsPerSeries,
+    factorAchieved,
+    factorPromised,
+    justReachedX2,
+    justReachedX4,
+    x2After,
+    x4After,
+    isPaused,
+    faces,
   }),
 )();
 
@@ -124,3 +189,5 @@ export const pick = createAction('board/PICK', (boardObjectId: number) => ({
 export const setWorkerId = createAction('board/SET_WORKER_ID', (workerId?: string) => ({
   workerId,
 }))();
+
+export const submitDetails = createAction('board/SUBMIT_DETAILS')();

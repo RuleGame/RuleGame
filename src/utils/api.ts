@@ -61,6 +61,11 @@ export enum FeedbackSwitches {
   FREE_TRIGGER = 'free_trigger',
 }
 
+export enum Incentive {
+  DOUBLING = 'DOUBLING',
+  BONUS = 'BONUS',
+}
+
 type RequestHandler<
   ResponseBody = undefined,
   RequestBody = undefined,
@@ -129,6 +134,14 @@ export type Display = {
   transitionMap?: TransitionMap;
   ruleSetName: string;
   trialListId: string;
+  incentive?: Incentive;
+  lastStretch: number;
+  rewardsAndFactorsPerSeries: [number, number][];
+  factorAchieved?: number;
+  factorPromised?: number;
+  justReachedX2?: boolean;
+  justReachedX4?: boolean;
+  faces: boolean[];
 };
 
 type Para = {
@@ -155,6 +168,8 @@ type Para = {
   max_boards: number;
   activate_bonus_at: number;
   give_up_at?: number;
+  x2_after?: number;
+  x4_after?: number;
 };
 
 export enum ErrorMsg {
