@@ -1,7 +1,9 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
 import { Box, Grid, Heading, Stack, Text } from 'grommet';
 import range from 'lodash/range';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Page } from '../constants/Page';
+import texts from '../constants/texts';
 import {
   episodeIdSelector,
   episodeNoSelector,
@@ -14,8 +16,6 @@ import {
   trialListIdSelector,
 } from '../store/selectors/board';
 import { debugModeSelector } from '../store/selectors/debug-mode';
-import texts from '../constants/texts';
-import { Page } from '../constants/Page';
 
 enum GridArea {
   NUM_MOVES_MADE = 'NUM_MOVES_MADE',

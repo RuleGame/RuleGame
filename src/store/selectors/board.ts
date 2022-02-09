@@ -1,6 +1,7 @@
-import { RootState } from '../reducers';
-import { BoardObject, Code, FinishCode } from '../../utils/api';
+import { createSelector } from 'reselect';
 import { BucketPosition } from '../../constants/BucketPosition';
+import { BoardObject, Code, FinishCode } from '../../utils/api';
+import { RootState } from '../reducers';
 
 export const isPausedSelector = (state: RootState) => state.board.isPaused;
 
@@ -117,3 +118,66 @@ export const x2AfterSelector = (state: RootState) => state.board.x2After;
 export const x4AfterSelector = (state: RootState) => state.board.x4After;
 
 export const facesSelector = (state: RootState) => state.board.faces;
+
+export const numGoodMovesSelector = createSelector([facesSelector], (faces) =>
+  faces?.reduce((acc, curr) => (curr ? acc + 1 : acc), 0),
+);
+
+export const numGoodMovesInARowSelector = createSelector([facesSelector], (faces) => {
+  let correctCounter = 0;
+  if (faces !== undefined) {
+    for (let i = faces.length - 1; i >= 0; i--) {
+      if (faces[i]) {
+        correctCounter++;
+      } else {
+        return correctCounter;
+      }
+    }
+  }
+  return correctCounter;
+});
+
+export const isOnStreakSelector = createSelector(
+  [numGoodMovesInARowSelector, x2AfterSelector],
+  (numGoodMovesInARow, x2After) => x2After !== undefined && numGoodMovesInARow >= x2After,
+);
+// state.board.faces?.reduce((acc, curr) => (curr ? acc + 1 : 0), 0);
+
+// export const lostStreakSelector = (state: RootState) =>
+//   state.board.faces?.[state.board.faces.length - 2] === true &&
+//   state.board.faces?.[state.board.faces.length - 1] === false;
+
+export const lastDoublingStreakCountSelector = createSelector(
+  [facesSelector, x2AfterSelector, numGoodMovesInARowSelector],
+  (faces, x2After, numGoodMovesInARow) => {
+    let correctCounter = 0;
+    if (faces !== undefined && x2After !== undefined) {
+      for (let i = faces.length - 1 - numGoodMovesInARow; i >= 0; i--) {
+        if (faces[i]) {
+          correctCounter++;
+        } else {
+          if (correctCounter >= x2After) {
+            return correctCounter;
+          }
+          correctCounter = 0;
+        }
+      }
+      if (correctCounter >= x2After) {
+        return correctCounter;
+      }
+    }
+  },
+);
+
+export const isSecondOrMoreTimeDoublingSelector = createSelector(
+  [lastDoublingStreakCountSelector, numGoodMovesInARowSelector, x2AfterSelector],
+  (lastDoublingStreakCount, numGoodMovesInARow, x2After) =>
+    x2After !== undefined && lastDoublingStreakCount !== undefined && numGoodMovesInARow >= x2After,
+);
+
+export const lostStreakSelector = createSelector(
+  [isSecondOrMoreTimeDoublingSelector, numGoodMovesInARowSelector],
+  (isSecondOrMoreTimeDoubling, numGoodMovesInARow) => {
+    return !isSecondOrMoreTimeDoubling && numGoodMovesInARow === 0;
+  },
+);
