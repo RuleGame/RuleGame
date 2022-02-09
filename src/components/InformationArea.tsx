@@ -7,9 +7,14 @@ import {
   facesSelector,
   factorAchievedSelector,
   factorPromisedSelector,
+  isSecondOrMoreTimeDoublingSelector,
+  lastDoublingStreakCountSelector,
   lastStretchSelector,
+  lostStreakSelector,
+  numGoodMovesInARowSelector,
   numGoodMovesMadeSelector,
   numMovesMadeSelector,
+  x2AfterSelector,
   x4AfterSelector,
 } from '../store/selectors/board';
 import ShapeObject from './ShapeObject';
@@ -20,13 +25,17 @@ const InformationArea: React.FunctionComponent = () => {
   const numMoves = useSelector(numMovesMadeSelector);
   const goodBadMoves = useSelector(facesSelector)!;
   const lastStretch = useSelector(lastStretchSelector);
-  // TODO: Handle if not a DOUBLING incentive (i.e. BONUS incentive)
   const x4After = useSelector(x4AfterSelector)!;
   const factorAchieved = useSelector(factorAchievedSelector);
   const factorPromised = useSelector(factorPromisedSelector);
   const [showDetailsForm, setShowDetailsForm] = useState(false);
   const [idea, setIdea] = useState('');
   const [how, setHow] = useState('');
+  const numGoodMovesInARow = useSelector(numGoodMovesInARowSelector);
+  const lostStreak = useSelector(lostStreakSelector);
+  const isSecondOrMoreTimeDoubling = useSelector(isSecondOrMoreTimeDoublingSelector);
+  const lastDoublingStreakCount = useSelector(lastDoublingStreakCountSelector);
+  const x2After = useSelector(x2AfterSelector);
 
   useEffect(() => {
     if (factorPromised === 4) {
@@ -39,7 +48,7 @@ const InformationArea: React.FunctionComponent = () => {
   }, [dispatch, factorPromised]);
 
   return (
-    <Box background="steelblue" pad="medium" height="70%" border={{ color: 'black' }}>
+    <Box background="steelblue" pad="medium" fill="vertical" border={{ color: 'black' }}>
       <Box background="darkseagreen" pad="xxsmall" border={{ color: 'black' }} style={{ flex: 1 }}>
         <Box margin={{ bottom: 'medium' }}>
           <Box margin={{ bottom: 'medium' }}>
@@ -74,14 +83,25 @@ const InformationArea: React.FunctionComponent = () => {
       <Box background="beige" pad="xxsmall" border={{ color: 'black' }} style={{ flex: 1 }}>
         {factorPromised === 4 ? (
           <Text>
-            Your {numGoodMoves} good moves has <Text weight="bold">re-doubled</Text> your score.
-            Tell us below how you did it.
+            Your {numGoodMovesInARow} good moves in a row has <Text weight="bold">re-doubled</Text>{' '}
+            your score. Tell us below how you did it.
           </Text>
-        ) : factorAchieved === 2 || factorPromised === 2 ? (
+        ) : isSecondOrMoreTimeDoubling ? (
           <Text>
-            Your {numGoodMoves} good moves has <Text weight="bold">doubled</Text> your score. Now
-            add <Text weight="bold">{x4After - lastStretch} more</Text> good moves to{' '}
-            <Text weight="bold">double it again</Text>.
+            Great. You did make <Text weight="bold">{lastDoublingStreakCount}</Text> good moves in a
+            row before. Now that you&apos;ve got <Text weight="bold">{numGoodMovesInARow}</Text> in
+            a row again, see if you can extend it to <Text weight="bold">{x4After}</Text> this time.
+          </Text>
+        ) : lostStreak ? (
+          <Text>Too bad... please keep trying!</Text>
+        ) : x2After !== undefined &&
+          (factorAchieved === 2 || factorPromised === 2) &&
+          numGoodMovesInARow > x2After ? (
+          // eslint-disable-next-line react/jsx-indent
+          <Text>
+            Your {numGoodMovesInARow} good moves in a row has <Text weight="bold">doubled</Text>{' '}
+            your score. Now add <Text weight="bold">{x4After - lastStretch} more</Text> good moves
+            to <Text weight="bold">double it again</Text>.
           </Text>
         ) : (
           ''
