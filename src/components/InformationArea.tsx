@@ -1,5 +1,5 @@
 import { Box, Button, Form, Text, TextArea } from 'grommet';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { SpecialShape } from '../constants';
 import { submitDetails } from '../store/actions/board';
@@ -14,6 +14,7 @@ import {
   numGoodMovesInARowSelector,
   numGoodMovesMadeSelector,
   numMovesMadeSelector,
+  seriesNoSelector,
   x2AfterSelector,
   x4AfterSelector,
 } from '../store/selectors/board';
@@ -36,6 +37,11 @@ const InformationArea: React.FunctionComponent = () => {
   const isSecondOrMoreTimeDoubling = useSelector(isSecondOrMoreTimeDoublingSelector);
   const lastDoublingStreakCount = useSelector(lastDoublingStreakCountSelector);
   const x2After = useSelector(x2AfterSelector);
+  const lastFaceRef = useRef<HTMLDivElement | null>(null);
+  const seriesNo = useSelector(seriesNoSelector);
+  useEffect(() => {
+    lastFaceRef.current?.scrollIntoView();
+  }, [goodBadMoves]);
 
   useEffect(() => {
     if (factorPromised === 4) {
@@ -67,8 +73,16 @@ const InformationArea: React.FunctionComponent = () => {
           </Box>
         </Box>
         <Box direction="row" wrap overflow="auto">
-          {goodBadMoves.map((move) => (
-            <Box width="xxsmall">
+          {goodBadMoves.map((move, index) => (
+            <Box
+              width="xxsmall"
+              ref={index === goodBadMoves.length - 1 ? lastFaceRef : null}
+              key={
+                // There's no id but only the series and index to go off from.
+                // eslint-disable-next-line react/no-array-index-key
+                `${seriesNo}-${index}`
+              }
+            >
               {move ? (
                 <ShapeObject shape={SpecialShape.HAPPY} />
               ) : (
