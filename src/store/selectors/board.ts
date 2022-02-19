@@ -67,6 +67,12 @@ export const episodeNoSelector = (state: RootState) => state.board.episodeNo;
 
 export const totalRewardEarnedSelector = (state: RootState) => state.board.totalRewardEarned;
 
+export const totalRewardsAndFactorsPerSeriesSelector = (state: RootState) =>
+  state.board.rewardsAndFactorsPerSeries.reduce(
+    (acc, [reward, incentiveFactor]) => acc + reward * incentiveFactor,
+    0,
+  );
+
 export const totalBoardsPredictedSelector = (state: RootState) => state.board.totalBoardsPredicted;
 
 export const isInBonusSelector = (state: RootState) => state.board.isInBonus;
