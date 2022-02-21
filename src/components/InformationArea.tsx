@@ -5,7 +5,6 @@ import { SpecialShape } from '../constants';
 import { submitDetails } from '../store/actions/board';
 import {
   facesSelector,
-  factorAchievedSelector,
   factorPromisedSelector,
   isSecondOrMoreTimeDoublingSelector,
   lastDoublingStreakCountSelector,
@@ -27,7 +26,6 @@ const InformationArea: React.FunctionComponent = () => {
   const goodBadMoves = useSelector(facesSelector)!;
   const lastStretch = useSelector(lastStretchSelector);
   const x4After = useSelector(x4AfterSelector)!;
-  const factorAchieved = useSelector(factorAchievedSelector);
   const factorPromised = useSelector(factorPromisedSelector);
   const [showDetailsForm, setShowDetailsForm] = useState(false);
   const [idea, setIdea] = useState('');
