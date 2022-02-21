@@ -1,22 +1,31 @@
+import {
+  Box,
+  Grid,
+  Heading,
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+  Text,
+} from 'grommet';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Box, Grid, Heading, Stack, Text } from 'grommet';
-import range from 'lodash/range';
 import { useMeasure } from 'react-use';
+import { Page } from '../../constants/Page';
+import texts from '../../constants/texts';
 import {
   episodeIdSelector,
   episodeNoSelector,
-  maxPointsSelector,
   movesLeftToStayInBonusSelector,
   numMovesMadeSelector,
+  rewardsAndFactorsPerSeriesSelector,
   ruleSetNameSelector,
   totalBoardsPredictedSelector,
-  totalRewardEarnedSelector,
+  totalRewardsAndFactorsPerSeriesSelector,
   trialListIdSelector,
 } from '../../store/selectors/board';
 import { debugModeSelector } from '../../store/selectors/debug-mode';
-import texts from '../../constants/texts';
-import { Page } from '../../constants/Page';
 import InformationArea from '../InformationArea';
 
 enum GridArea {
@@ -27,20 +36,19 @@ enum GridArea {
   INFORMATION_AREA = 'INFORMATION_AREA',
 }
 
-const NUM_TICKS = 7;
 const NUM_FONT_SIZE = '1.25em;';
 
 const HUD: React.FunctionComponent = ({ children }) => {
   const numMovesMade = useSelector(numMovesMadeSelector);
   const boardNum = useSelector(episodeNoSelector) + 1;
-  const points = useSelector(totalRewardEarnedSelector);
   const numMovesLeft = useSelector(movesLeftToStayInBonusSelector);
   const numBoardsLeft = useSelector(totalBoardsPredictedSelector);
   const episodeId = useSelector(episodeIdSelector);
-  const maxPoints = useSelector(maxPointsSelector);
   const debugMode = useSelector(debugModeSelector);
   const ruleSetName = useSelector(ruleSetNameSelector);
   const trialListId = useSelector(trialListIdSelector);
+  const rewardsAndFactorsPerSeries = useSelector(rewardsAndFactorsPerSeriesSelector);
+  const totalReward = useSelector(totalRewardsAndFactorsPerSeriesSelector);
   const [ref, { height, width }] = useMeasure();
 
   return (
@@ -110,46 +118,46 @@ const HUD: React.FunctionComponent = ({ children }) => {
             </Heading>
           </Box>
           <Box gridArea={GridArea.POINTS} align="end" justify="end">
+            {rewardsAndFactorsPerSeries.filter(([reward]) => reward > 0).length > 0 && (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableCell scope="col" border="bottom" verticalAlign="bottom">
+                      Rule
+                    </TableCell>
+                    <TableCell scope="col" border="bottom">
+                      Reward <br />
+                      (Points x Factor)
+                    </TableCell>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {rewardsAndFactorsPerSeries
+                    .filter(([reward]) => reward > 0)
+                    .map(([reward, incentiveFactor], index) => (
+                      <TableRow>
+                        <TableCell scope="row">
+                          <strong>{index + 1}</strong>
+                        </TableCell>
+                        <TableCell>
+                          {reward} x {incentiveFactor} = {reward * incentiveFactor}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            )}
             <Box align="end" direction="row" gap="small">
               <Heading level="3" margin="none">
                 <Box direction="row" align="baseline">
                   <Text weight="bold" size="inherit">
-                    {texts[Page.TRIALS].pointsPreText}&nbsp;
+                    Total Reward:&nbsp;
                   </Text>
                   <Text color="green" weight="bold" size={NUM_FONT_SIZE}>
-                    {points}
+                    {totalReward}
                   </Text>
                 </Box>
               </Heading>
-              <Box
-                border="all"
-                justify="end"
-                direction="column"
-                width={NUM_FONT_SIZE}
-                height="5em"
-                round="xsmall"
-                overflow="hidden"
-              >
-                <Stack fill>
-                  <Box justify="end" fill>
-                    <Box
-                      fill="horizontal"
-                      height={`${Math.min(1, points / maxPoints) * 100}%`}
-                      background="green"
-                    />
-                  </Box>
-                  <Box justify="end" fill>
-                    {range(NUM_TICKS).map((i) => (
-                      <Box
-                        key={i}
-                        width="50%"
-                        height={`${(1 / NUM_TICKS) * 100}%`}
-                        border={{ side: 'top', size: 'small' }}
-                      />
-                    ))}
-                  </Box>
-                </Stack>
-              </Box>
             </Box>
           </Box>
           <Box gridArea={GridArea.INFORMATION_AREA} justify="center" height="max-content" fill>

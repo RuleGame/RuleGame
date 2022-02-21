@@ -1,11 +1,10 @@
 import { Box, Button, Form, Text, TextArea } from 'grommet';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { SpecialShape } from '../constants';
 import { submitDetails } from '../store/actions/board';
 import {
   facesSelector,
-  factorAchievedSelector,
   factorPromisedSelector,
   isSecondOrMoreTimeDoublingSelector,
   lastDoublingStreakCountSelector,
@@ -14,6 +13,7 @@ import {
   numGoodMovesInARowSelector,
   numGoodMovesMadeSelector,
   numMovesMadeSelector,
+  seriesNoSelector,
   x2AfterSelector,
   x4AfterSelector,
 } from '../store/selectors/board';
@@ -26,7 +26,6 @@ const InformationArea: React.FunctionComponent = () => {
   const goodBadMoves = useSelector(facesSelector)!;
   const lastStretch = useSelector(lastStretchSelector);
   const x4After = useSelector(x4AfterSelector)!;
-  const factorAchieved = useSelector(factorAchievedSelector);
   const factorPromised = useSelector(factorPromisedSelector);
   const [showDetailsForm, setShowDetailsForm] = useState(false);
   const [idea, setIdea] = useState('');
@@ -36,6 +35,11 @@ const InformationArea: React.FunctionComponent = () => {
   const isSecondOrMoreTimeDoubling = useSelector(isSecondOrMoreTimeDoublingSelector);
   const lastDoublingStreakCount = useSelector(lastDoublingStreakCountSelector);
   const x2After = useSelector(x2AfterSelector);
+  const lastFaceRef = useRef<HTMLDivElement | null>(null);
+  const seriesNo = useSelector(seriesNoSelector);
+  useEffect(() => {
+    lastFaceRef.current?.scrollIntoView();
+  }, [goodBadMoves]);
 
   useEffect(() => {
     if (factorPromised === 4) {
@@ -67,8 +71,16 @@ const InformationArea: React.FunctionComponent = () => {
           </Box>
         </Box>
         <Box direction="row" wrap overflow="auto">
-          {goodBadMoves.map((move) => (
-            <Box width="xxsmall">
+          {goodBadMoves.map((move, index) => (
+            <Box
+              width="xxsmall"
+              ref={index === goodBadMoves.length - 1 ? lastFaceRef : null}
+              key={
+                // There's no id but only the series and index to go off from.
+                // eslint-disable-next-line react/no-array-index-key
+                `${seriesNo}-${index}`
+              }
+            >
               {move ? (
                 <ShapeObject shape={SpecialShape.HAPPY} />
               ) : (
@@ -94,9 +106,7 @@ const InformationArea: React.FunctionComponent = () => {
           </Text>
         ) : lostStreak ? (
           <Text>Too bad... please keep trying!</Text>
-        ) : x2After !== undefined &&
-          (factorAchieved === 2 || factorPromised === 2) &&
-          numGoodMovesInARow > x2After ? (
+        ) : x2After !== undefined && numGoodMovesInARow >= x2After ? (
           // eslint-disable-next-line react/jsx-indent
           <Text>
             Your {numGoodMovesInARow} good moves in a row has <Text weight="bold">doubled</Text>{' '}

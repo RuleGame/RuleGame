@@ -67,6 +67,12 @@ export const episodeNoSelector = (state: RootState) => state.board.episodeNo;
 
 export const totalRewardEarnedSelector = (state: RootState) => state.board.totalRewardEarned;
 
+export const totalRewardsAndFactorsPerSeriesSelector = (state: RootState) =>
+  state.board.rewardsAndFactorsPerSeries.reduce(
+    (acc, [reward, incentiveFactor]) => acc + reward * incentiveFactor,
+    0,
+  );
+
 export const totalBoardsPredictedSelector = (state: RootState) => state.board.totalBoardsPredicted;
 
 export const isInBonusSelector = (state: RootState) => state.board.isInBonus;
@@ -141,11 +147,6 @@ export const isOnStreakSelector = createSelector(
   [numGoodMovesInARowSelector, x2AfterSelector],
   (numGoodMovesInARow, x2After) => x2After !== undefined && numGoodMovesInARow >= x2After,
 );
-// state.board.faces?.reduce((acc, curr) => (curr ? acc + 1 : 0), 0);
-
-// export const lostStreakSelector = (state: RootState) =>
-//   state.board.faces?.[state.board.faces.length - 2] === true &&
-//   state.board.faces?.[state.board.faces.length - 1] === false;
 
 export const lastDoublingStreakCountSelector = createSelector(
   [facesSelector, x2AfterSelector, numGoodMovesInARowSelector],

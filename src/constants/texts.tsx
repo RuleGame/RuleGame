@@ -69,6 +69,7 @@ export default {
   },
 
   [Page.INTRODUCTION]: {
+    // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
     text: (numRules: number | string) =>
       // A list of JSX (HTML). One per instruction page.
       // Players can navigate through them via back and next buttons.
