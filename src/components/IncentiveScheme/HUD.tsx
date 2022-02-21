@@ -118,31 +118,35 @@ const HUD: React.FunctionComponent = ({ children }) => {
             </Heading>
           </Box>
           <Box gridArea={GridArea.POINTS} align="end" justify="end">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableCell scope="col" border="bottom" verticalAlign="bottom">
-                    Rule
-                  </TableCell>
-                  <TableCell scope="col" border="bottom">
-                    Reward <br />
-                    (Points x Factor)
-                  </TableCell>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {rewardsAndFactorsPerSeries.map(([reward, incentiveFactor], index) => (
+            {rewardsAndFactorsPerSeries.filter(([reward]) => reward > 0).length > 0 && (
+              <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell scope="row">
-                      <strong>{index + 1}</strong>
+                    <TableCell scope="col" border="bottom" verticalAlign="bottom">
+                      Rule
                     </TableCell>
-                    <TableCell>
-                      {reward} x {incentiveFactor} = {reward * incentiveFactor}
+                    <TableCell scope="col" border="bottom">
+                      Reward <br />
+                      (Points x Factor)
                     </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {rewardsAndFactorsPerSeries
+                    .filter(([reward]) => reward > 0)
+                    .map(([reward, incentiveFactor], index) => (
+                      <TableRow>
+                        <TableCell scope="row">
+                          <strong>{index + 1}</strong>
+                        </TableCell>
+                        <TableCell>
+                          {reward} x {incentiveFactor} = {reward * incentiveFactor}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            )}
             <Box align="end" direction="row" gap="small">
               <Heading level="3" margin="none">
                 <Box direction="row" align="baseline">
