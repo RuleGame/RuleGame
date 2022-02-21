@@ -108,9 +108,7 @@ const InformationArea: React.FunctionComponent = () => {
           </Text>
         ) : lostStreak ? (
           <Text>Too bad... please keep trying!</Text>
-        ) : x2After !== undefined &&
-          (factorAchieved === 2 || factorPromised === 2) &&
-          numGoodMovesInARow > x2After ? (
+        ) : x2After !== undefined && numGoodMovesInARow >= x2After ? (
           // eslint-disable-next-line react/jsx-indent
           <Text>
             Your {numGoodMovesInARow} good moves in a row has <Text weight="bold">doubled</Text>{' '}

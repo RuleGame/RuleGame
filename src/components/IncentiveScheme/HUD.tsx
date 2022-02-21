@@ -121,11 +121,12 @@ const HUD: React.FunctionComponent = ({ children }) => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableCell scope="col" border="bottom">
+                  <TableCell scope="col" border="bottom" verticalAlign="bottom">
                     Rule
                   </TableCell>
                   <TableCell scope="col" border="bottom">
-                    Reward
+                    Reward <br />
+                    (Points x Factor)
                   </TableCell>
                 </TableRow>
               </TableHeader>
