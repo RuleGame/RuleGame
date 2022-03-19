@@ -63,10 +63,10 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
 
       data = newEpisodeData;
 
-      if (newEpisodeData.error) {
+      if (newEpisodeData.alreadyFinished !== true && newEpisodeData.error) {
         throw Error(`Error on /newEpisdoe: ${newEpisodeData.errmsg}`);
       }
-    } else if (error) {
+    } else if (data.alreadyFinished !== true && error) {
       throw Error(`Error on /mostRecentEpisode ${errmsg}`);
     }
 
@@ -251,7 +251,7 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
         data: { alreadyFinished, episodeId, para, errmsg, error },
       } = yield* apiResolve('/game-data/GameService2/newEpisode', METHOD.POST, { playerId }, {}));
 
-      if (error) {
+      if (alreadyFinished !== true && error) {
         throw Error(`Error on /newEpisode: ${errmsg}`);
       }
     }
