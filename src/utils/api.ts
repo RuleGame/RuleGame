@@ -155,6 +155,7 @@ type Para = {
   max_boards: number;
   activate_bonus_at: number;
   give_up_at?: number;
+  init: number;
 };
 
 export enum ErrorMsg {
