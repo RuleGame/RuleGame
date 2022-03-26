@@ -193,10 +193,12 @@ const Game: React.FunctionComponent<{
           <Box
             data-cy={CY_NO_MORE_MOVES}
             height={{ min: 'unset' }}
-            gap="large"
             pad={{ left: 'xlarge', right: 'xlarge' }}
             fill
           >
+            {finishCode === FinishCode.STALEMATE && (
+              <Text>{texts[Page.TRIALS].stalematePrompt}</Text>
+            )}
             <GuessRuleForm />
           </Box>
         )}

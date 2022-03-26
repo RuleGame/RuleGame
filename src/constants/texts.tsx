@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Heading, Image, Paragraph, Text } from 'grommet';
 import { Page } from './Page';
 
-
 import I1 from '../assets/instructions_NOBINS/instructions_final.001.jpeg';
 import I2 from '../assets/instructions_NOBINS/instructions_final.002.jpeg';
 import I3 from '../assets/instructions_NOBINS/instructions_final.003.jpeg';
@@ -19,7 +18,6 @@ import I13 from '../assets/instructions_NOBINS/instructions_final.013.jpeg';
 import I14 from '../assets/instructions_NOBINS/instructions_final.014.jpeg';
 import I15 from '../assets/instructions_NOBINS/instructions_final.015.jpeg';
 import I16 from '../assets/instructions_NOBINS/instructions_final.016.jpeg';
-
 
 export default {
   [Page.CONSENT]: {
@@ -70,6 +68,7 @@ export default {
   },
 
   [Page.INTRODUCTION]: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
     text: (numRules: number | string) =>
       // A list of JSX (HTML). One per instruction page.
       // Players can navigate through them via back and next buttons.
@@ -204,9 +203,9 @@ export default {
 
         // Page 18
         <>
-        <Heading>RuleGame Challenge</Heading>
-        <Paragraph fill>
-          {`Please try your best when entering your guesses. We may reject your work if you make uninformative responses.`}
+          <Heading>RuleGame Challenge</Heading>
+          <Paragraph fill>
+            {`Please try your best when entering your guesses. We may reject your work if you make uninformative responses.`}
           </Paragraph>
         </>,
       ],
@@ -275,6 +274,9 @@ export default {
     reusePreviousResponseLabel: 'Fill with previous response',
 
     instructionsButtonLabel: 'Open instructions in a new tab',
+
+    stalematePrompt:
+      'You have cleared all the pieces this rule requires. Please enter your guess to continue',
   },
 
   [Page.DEMOGRAPHICS_INSTRUCTIONS]: {
