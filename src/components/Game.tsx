@@ -196,9 +196,11 @@ const Game: React.FunctionComponent<{
             pad={{ left: 'xlarge', right: 'xlarge' }}
             fill
           >
-            {finishCode === FinishCode.STALEMATE && (
+            <Box fill="horizontal" align="center" justify="center" margin="small">
+              {/* {finishCode === FinishCode.STALEMATE && ( */}
               <Text>{texts[Page.TRIALS].stalematePrompt}</Text>
-            )}
+              {/* )} */}
+            </Box>
             <GuessRuleForm />
           </Box>
         )}
