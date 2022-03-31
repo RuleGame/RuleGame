@@ -211,7 +211,11 @@ const Game: React.FunctionComponent<{
                 <Text size="inherit" color="blue">
                   {texts[Page.TRIALS].bonusSuccessMessage}
                 </Text>
-              ) : finishCode === FinishCode.STALEMATE || finishCode === FinishCode.LOST ? (
+              ) : finishCode === FinishCode.STALEMATE ? (
+                <Text size="inherit" color="red">
+                  {texts[Page.TRIALS].bonusSuccessMessage}
+                </Text>
+              ) : finishCode === FinishCode.LOST ? (
                 <Text size="inherit" color="red">
                   {texts[Page.TRIALS].bonusFailureMessage}
                 </Text>
