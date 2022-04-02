@@ -207,12 +207,8 @@ const Game: React.FunctionComponent<{
         {isGameCompleted && isInBonus && (
           <Box align="center">
             <Heading>
-              {finishCode === FinishCode.FINISH ? (
+              {finishCode === FinishCode.FINISH || finishCode === FinishCode.STALEMATE ? (
                 <Text size="inherit" color="blue">
-                  {texts[Page.TRIALS].bonusSuccessMessage}
-                </Text>
-              ) : finishCode === FinishCode.STALEMATE ? (
-                <Text size="inherit" color="red">
                   {texts[Page.TRIALS].bonusSuccessMessage}
                 </Text>
               ) : finishCode === FinishCode.LOST ? (

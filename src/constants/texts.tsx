@@ -331,7 +331,7 @@ export default {
     giveUpNoConfirmationLabel: 'No',
 
     // Bonus only: Displayed below the board after board has no more moves.
-    bonusSuccessMessage: 'Board succesfully cleared!',
+    bonusSuccessMessage: 'Board successfully cleared!',
     bonusFailureMessage: 'No more moves left!',
 
     // Button below the board after the board has no more moves.
