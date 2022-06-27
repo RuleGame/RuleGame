@@ -67,11 +67,11 @@ export const episodeNoSelector = (state: RootState) => state.board.episodeNo;
 
 export const totalRewardEarnedSelector = (state: RootState) => state.board.totalRewardEarned;
 
-export const totalRewardsAndFactorsPerSeriesSelector = (state: RootState) =>
-  state.board.rewardsAndFactorsPerSeries.reduce(
-    (acc, [reward, incentiveFactor]) => acc + reward * incentiveFactor,
-    0,
-  );
+export const totalRewardsAndFactorsPerSeriesSelector = (state: RootState) => {
+  return state.board.rewardsAndFactorsPerSeries
+    .filter((e) => e !== null)
+    .reduce((acc, [reward, incentiveFactor]) => acc + reward * incentiveFactor, 0);
+};
 
 export const totalBoardsPredictedSelector = (state: RootState) => state.board.totalBoardsPredicted;
 
@@ -108,7 +108,7 @@ export const workerIdSelector = (state: RootState) => state.board.workerId;
 
 export const incentiveSelector = (state: RootState) => state.board.incentive;
 export const rewardsAndFactorsPerSeriesSelector = (state: RootState) =>
-  state.board.rewardsAndFactorsPerSeries;
+  state.board.rewardsAndFactorsPerSeries.filter((e) => e !== null);
 export const factorAchievedSelector = (state: RootState) => state.board.factorAchieved;
 export const factorPromisedSelector = (state: RootState) => state.board.factorPromised;
 export const justReachedX2Selector = (state: RootState) => state.board.justReachedX2;
@@ -172,13 +172,23 @@ export const lastDoublingStreakCountSelector = createSelector(
 
 export const isSecondOrMoreTimeDoublingSelector = createSelector(
   [lastDoublingStreakCountSelector, numGoodMovesInARowSelector, x2AfterSelector],
-  (lastDoublingStreakCount, numGoodMovesInARow, x2After) =>
-    x2After !== undefined && lastDoublingStreakCount !== undefined && numGoodMovesInARow >= x2After,
+  (lastDoublingStreakCount, numGoodMovesInARow, x2After) => {
+    return (
+      x2After !== undefined &&
+      lastDoublingStreakCount !== undefined &&
+      numGoodMovesInARow >= x2After
+    );
+  },
 );
 
 export const lostStreakSelector = createSelector(
-  [isSecondOrMoreTimeDoublingSelector, numGoodMovesInARowSelector],
-  (isSecondOrMoreTimeDoubling, numGoodMovesInARow) => {
-    return !isSecondOrMoreTimeDoubling && numGoodMovesInARow === 0;
+  [isSecondOrMoreTimeDoublingSelector, numGoodMovesInARowSelector, numGoodMovesMadeSelector],
+  (isSecondOrMoreTimeDoubling, numGoodMovesInARow, numGoodMovesMade) => {
+    return (
+      !isSecondOrMoreTimeDoubling &&
+      numGoodMovesMade !== undefined &&
+      numGoodMovesMade > 0 &&
+      numGoodMovesInARow === 0
+    );
   },
 );

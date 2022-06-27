@@ -11,6 +11,7 @@ export enum FinishCode {
   LOST = 4,
   NO = 0,
   STALEMATE = 2,
+  EARLY_WIN = 5,
 }
 
 export enum Code {
@@ -142,6 +143,7 @@ export type Display = {
   justReachedX2?: boolean;
   justReachedX4?: boolean;
   faces: boolean[];
+  rewardRange?: [number, number];
 };
 
 type Para = {

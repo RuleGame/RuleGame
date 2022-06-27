@@ -270,6 +270,24 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
           if (error) {
             throw Error(`Error on /guess: ${errmsg}`);
           }
+        } else if (submitDetailsAction) {
+          const { how, idea } = submitDetailsAction.payload;
+          const {
+            data: { error, errmsg },
+          } = yield* apiResolve(
+            '/game-data/GameService2/guess',
+            METHOD.POST,
+            {
+              episode: episodeId,
+              data: `How:\n${how}\nIdea:\n${idea}`,
+              confidence: -1,
+            },
+            {},
+          );
+
+          if (error) {
+            throw Error(`Error on /guess: ${errmsg}`);
+          }
         }
       } while (
         !submitDetailsAction &&
