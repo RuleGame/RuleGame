@@ -29,7 +29,6 @@ const InformationArea: React.FunctionComponent = () => {
   const lastStretch = useSelector(lastStretchSelector);
   const x4After = useSelector(x4AfterSelector)!;
   const factorPromised = useSelector(factorPromisedSelector);
-  const [showDetailsForm, setShowDetailsForm] = useState(false);
   const [idea, setIdea] = useState('');
   const [how, setHow] = useState('');
   const numGoodMovesInARow = useSelector(numGoodMovesInARowSelector);
