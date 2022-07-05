@@ -49,6 +49,8 @@ const InformationArea: React.FunctionComponent = () => {
     if (isAchieved) {
       // Disallow the player to continue for the server to auto complete the board.
       dispatch(pause());
+      setIdea('');
+      setHow('');
     }
   }, [dispatch, factorPromised, finishCode, isAchieved]);
 
