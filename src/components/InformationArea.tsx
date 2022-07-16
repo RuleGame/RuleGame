@@ -132,7 +132,7 @@ const InformationArea: React.FunctionComponent = () => {
                 onChange={(event) => setIdea(event.target.value)}
               />
               <TextArea
-                placeholder="(Optional) How did you figure it out?"
+                placeholder="How did you figure it out?"
                 value={how}
                 onChange={(event) => setHow(event.target.value)}
               />
