@@ -274,7 +274,7 @@ const INSTRUCTIONS_11 = [
   <>
     <Heading>RuleGame Challenge</Heading>
     <Box width="xlarge" align="center">
-      <Image src={src} width="100%" />
+      <Image src={src} width="100%" height="100%" style={{ objectFit: 'contain' }} />
     </Box>
   </>
 ));
