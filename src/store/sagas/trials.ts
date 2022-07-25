@@ -210,7 +210,7 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
 
           if (code === Code.ACCEPT) {
             yield* put(validMove(moveAction.payload.boardObjectId, moveAction.payload.bucket));
-          } else if (code === Code.DENY) {
+          } else if (code === Code.DENY || code === Code.IMMOVABLE) {
             yield* put(invalidMove(moveAction.payload.boardObjectId, moveAction.payload.bucket));
           }
 

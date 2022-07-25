@@ -29,6 +29,10 @@ export enum Code {
   EXIT = 5,
   // New game requested
   NEW_GAME = 6,
+  // Move rejected, because no destination is allowed for this
+  // game piece. (Similar to DENY, but with extra info that the
+  // piece cannot be moved to any bucket)
+  IMMOVABLE = 7,
 
   INVALID_COMMAND = -1,
   INVALID_ARGUMENTS = -2,
