@@ -37,6 +37,12 @@ describe('moveNumByBoardObjectSelector', () => {
             pieceId: 3,
             pos: 31,
           },
+          {
+            bucketNo: 3,
+            code: Code.IMMOVABLE,
+            pieceId: 4,
+            pos: 30,
+          },
         ],
       },
     };

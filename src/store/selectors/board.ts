@@ -49,7 +49,14 @@ export const historyInfoSelector = (state: RootState) =>
   state.board.transcript
     .filter(({ bucketNo }) => bucketNo !== undefined)
     .map(({ pieceId, code, bucketNo }) => ({
-      code: code === Code.ACCEPT ? 'ACCEPT' : code === Code.DENY ? 'DENY' : code,
+      code:
+        code === Code.ACCEPT
+          ? 'ACCEPT'
+          : code === Code.DENY
+          ? 'DENY'
+          : code === Code.IMMOVABLE
+          ? 'IMMOVABLE'
+          : code,
       x: state.board.board[pieceId].x,
       y: state.board.board[pieceId].y,
       ...(state.board.board[pieceId].color && { color: state.board.board[pieceId].color }),
