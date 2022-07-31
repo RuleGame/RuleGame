@@ -10,9 +10,9 @@ import {
   lastDoublingStreakCountSelector,
   lastStretchSelector,
   lostStreakSelector,
+  numFacesSelector,
   numGoodMovesInARowSelector,
   numGoodMovesMadeSelector,
-  numMovesMadeSelector,
   seriesNoSelector,
   x2AfterSelector,
   x4AfterSelector,
@@ -22,7 +22,7 @@ import ShapeObject from './ShapeObject';
 const InformationArea: React.FunctionComponent = () => {
   const dispatch = useDispatch();
   const numGoodMoves = useSelector(numGoodMovesMadeSelector);
-  const numMoves = useSelector(numMovesMadeSelector);
+  const numFaces = useSelector(numFacesSelector);
   const goodBadMoves = useSelector(facesSelector)!;
   const lastStretch = useSelector(lastStretchSelector);
   const x4After = useSelector(x4AfterSelector)!;
@@ -58,7 +58,7 @@ const InformationArea: React.FunctionComponent = () => {
           <Box margin={{ bottom: 'medium' }}>
             <Text weight="bold">
               <Text style={{ fontStyle: 'italic' }}>{numGoodMoves}</Text> good of{' '}
-              <Text style={{ fontStyle: 'italic' }}>{numMoves}</Text>
+              <Text style={{ fontStyle: 'italic' }}>{numFaces}</Text>
             </Text>
           </Box>
           <Box margin={{ bottom: 'medium' }}>
