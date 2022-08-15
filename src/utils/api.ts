@@ -146,6 +146,8 @@ export type Display = {
   justReachedX2?: boolean;
   justReachedX4?: boolean;
   faces: boolean[];
+  displaySeriesNo: number;
+  displayEpisodeNo: number;
 };
 
 type Para = {

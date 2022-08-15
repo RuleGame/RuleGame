@@ -6,7 +6,7 @@ import { Next, Save } from 'grommet-icons';
 import TextareaAutosize from 'react-textarea-autosize';
 import keycode from 'keycode';
 import { guess } from '../store/actions/board';
-import { incentiveSelector, seriesNoSelector } from '../store/selectors/board';
+import { displaySeriesNoSelector, incentiveSelector } from '../store/selectors/board';
 import { useWorkerLocalStorage } from '../utils/hooks';
 import texts from '../constants/texts';
 import { Page } from '../constants/Page';
@@ -25,7 +25,7 @@ const CUSTOM_VALIDITY = 'Please type in what you think the rule is';
 
 const GuessRuleForm: React.FunctionComponent = () => {
   const dispatch = useDispatch();
-  const seriesNo = useSelector(seriesNoSelector);
+  const displaySeriesNo = useSelector(displaySeriesNoSelector);
   const [workerLocalStorage, setWorkerLocalStorage] = useWorkerLocalStorage();
   const [ruleGuess, setRuleGuess] = useState('');
   const [guessOpened, setGuessOpened] = useState(false);
@@ -39,7 +39,8 @@ const GuessRuleForm: React.FunctionComponent = () => {
   // This is so that the autofill button won't distractingly appear after saving the first guess
   // and before the form is unrendered.
   const isPrevSeriesRuleGuessSavedRef = useRef(
-    seriesNo === workerLocalStorage.seriesNo && workerLocalStorage.savedRuleGuess !== undefined,
+    displaySeriesNo === workerLocalStorage.seriesNo &&
+      workerLocalStorage.savedRuleGuess !== undefined,
   );
   const isPrevSeriesRuleGuessSaved = isPrevSeriesRuleGuessSavedRef.current;
   const isRuleGuessEmpty = ruleGuess.trim().length === 0;
@@ -203,7 +204,7 @@ const GuessRuleForm: React.FunctionComponent = () => {
                   onClick={() => {
                     setWorkerLocalStorage({
                       savedRuleGuess: ruleGuess,
-                      seriesNo,
+                      seriesNo: displaySeriesNo,
                     });
                     // TODO: Include ratingNum in confidence param instead of data
                     dispatch(guess(ruleGuess, ratingNum));

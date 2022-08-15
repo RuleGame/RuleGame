@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SpecialShape } from '../constants';
 import { submitDetails } from '../store/actions/board';
 import {
+  displaySeriesNoSelector,
   facesSelector,
   factorPromisedSelector,
   isSecondOrMoreTimeDoublingSelector,
@@ -13,7 +14,6 @@ import {
   numFacesSelector,
   numGoodMovesInARowSelector,
   numGoodMovesMadeSelector,
-  seriesNoSelector,
   x2AfterSelector,
   x4AfterSelector,
 } from '../store/selectors/board';
@@ -36,7 +36,7 @@ const InformationArea: React.FunctionComponent = () => {
   const lastDoublingStreakCount = useSelector(lastDoublingStreakCountSelector);
   const x2After = useSelector(x2AfterSelector);
   const lastFaceRef = useRef<HTMLDivElement | null>(null);
-  const seriesNo = useSelector(seriesNoSelector);
+  const displaySeriesNo = useSelector(displaySeriesNoSelector);
   useEffect(() => {
     lastFaceRef.current?.scrollIntoView();
   }, [goodBadMoves]);
@@ -78,7 +78,7 @@ const InformationArea: React.FunctionComponent = () => {
               key={
                 // There's no id but only the series and index to go off from.
                 // eslint-disable-next-line react/no-array-index-key
-                `${seriesNo}-${index}`
+                `${displaySeriesNo}-${index}`
               }
             >
               {move ? (
