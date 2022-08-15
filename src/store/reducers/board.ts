@@ -62,6 +62,8 @@ export type State = {
   x2After?: number;
   x4After?: number;
   faces?: boolean[];
+  displaySeriesNo: number;
+  displayEpisodeNo: number;
 };
 
 export const initialState: State = {
@@ -109,6 +111,8 @@ export const initialState: State = {
   x2After: undefined,
   x4After: undefined,
   faces: [],
+  displaySeriesNo: 0,
+  displayEpisodeNo: 0,
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -166,6 +170,8 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         x2After: action.payload.x2After,
         x4After: action.payload.x4After,
         faces: action.payload.faces,
+        displaySeriesNo: action.payload.displaySeriesNo,
+        displayEpisodeNo: action.payload.displayEpisodeNo,
       };
 
     case getType(pause):

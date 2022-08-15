@@ -16,7 +16,8 @@ import { addLayer, removeLayer } from '../../store/actions/layers';
 import {
   allowGiveUpOptionSelector,
   canActivateBonusSelector,
-  episodeNoSelector,
+  displayEpisodeNoSelector,
+  displaySeriesNoSelector,
   factorPromisedSelector,
   finishCodeSelector,
   hasMoreBonusRoundsSelector,
@@ -26,7 +27,6 @@ import {
   pausedSelector,
   ruleLineNoSelector,
   ruleSrcSelector,
-  seriesNoSelector,
   workerIdSelector,
 } from '../../store/selectors/board';
 import { debugModeSelector } from '../../store/selectors/debug-mode';
@@ -51,13 +51,13 @@ const Game: React.FunctionComponent<{
 
   const paused = useSelector(pausedSelector);
   const isGameCompleted = useSelector(isGameCompletedSelector);
-  const seriesNo = useSelector(seriesNoSelector);
+  const displaySeriesNo = useSelector(displaySeriesNoSelector);
   const ruleSrc = useSelector(ruleSrcSelector);
   const ruleLineNo = useSelector(ruleLineNoSelector);
   const historyInfo = useSelector(historyInfoSelector);
   const isInBonus = useSelector(isInBonusSelector);
   const canActivateBonus = useSelector(canActivateBonusSelector);
-  const episodeNo = useSelector(episodeNoSelector);
+  const displayEpisodeNo = useSelector(displayEpisodeNoSelector);
   const hasMoreBonusRounds = useSelector(hasMoreBonusRoundsSelector);
   const [bonusActivated, setBonusActivated] = useState(false);
   const finishCode = useSelector(finishCodeSelector);
@@ -76,9 +76,9 @@ const Game: React.FunctionComponent<{
 
   useEffect(() => {
     setBonusActivated(false);
-  }, [episodeNo]);
+  }, [displayEpisodeNo]);
 
-  const ruleNum = seriesNo + 1;
+  const ruleNum = displaySeriesNo + 1;
   const ruleName = isInBonus
     ? texts[Page.TRIALS].bonusTitle(ruleNum)
     : texts[Page.TRIALS].ruleTitle(ruleNum);

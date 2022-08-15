@@ -15,8 +15,8 @@ import { useMeasure } from 'react-use';
 import { Page } from '../../constants/Page';
 import texts from '../../constants/texts';
 import {
+  displayEpisodeNoSelector,
   episodeIdSelector,
-  episodeNoSelector,
   movesLeftToStayInBonusSelector,
   numMovesMadeSelector,
   rewardsAndFactorsPerSeriesSelector,
@@ -40,7 +40,7 @@ const NUM_FONT_SIZE = '1.25em;';
 
 const HUD: React.FunctionComponent = ({ children }) => {
   const numMovesMade = useSelector(numMovesMadeSelector);
-  const boardNum = useSelector(episodeNoSelector) + 1;
+  const boardNum = useSelector(displayEpisodeNoSelector) + 1;
   const numMovesLeft = useSelector(movesLeftToStayInBonusSelector);
   const numBoardsLeft = useSelector(totalBoardsPredictedSelector);
   const episodeId = useSelector(episodeIdSelector);
