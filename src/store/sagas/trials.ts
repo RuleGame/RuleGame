@@ -64,7 +64,7 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
 
       data = newEpisodeData;
 
-      if (newEpisodeData.error && newEpisodeData.alreadyFinished !== true) {
+      if (newEpisodeData.alreadyFinished !== true && newEpisodeData.error) {
         throw Error(`Error on /newEpisdoe: ${newEpisodeData.errmsg}`);
       }
     } else if (data.alreadyFinished !== true && error) {
@@ -264,6 +264,24 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
               episode: episodeId,
               data: guessAction.payload.data,
               confidence: guessAction.payload.confidence,
+            },
+            {},
+          );
+
+          if (error) {
+            throw Error(`Error on /guess: ${errmsg}`);
+          }
+        } else if (submitDetailsAction) {
+          const { how, idea } = submitDetailsAction.payload;
+          const {
+            data: { error, errmsg },
+          } = yield* apiResolve(
+            '/game-data/GameService2/guess',
+            METHOD.POST,
+            {
+              episode: episodeId,
+              data: `How:\n${how}\nIdea:\n${idea}`,
+              confidence: -1,
             },
             {},
           );

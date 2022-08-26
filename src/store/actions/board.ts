@@ -196,4 +196,7 @@ export const setWorkerId = createAction('board/SET_WORKER_ID', (workerId?: strin
   workerId,
 }))();
 
-export const submitDetails = createAction('board/SUBMIT_DETAILS')();
+export const submitDetails = createAction('board/SUBMIT_DETAILS', (idea: string, how: string) => ({
+  idea,
+  how,
+}))();
