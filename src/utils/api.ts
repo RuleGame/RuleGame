@@ -148,6 +148,8 @@ export type Display = {
   justReachedX4?: boolean;
   faces: boolean[];
   rewardRange?: [number, number];
+  displaySeriesNo: number;
+  displayEpisodeNo: number;
 };
 
 type Para = {

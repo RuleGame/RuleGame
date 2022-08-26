@@ -9,6 +9,8 @@ export const bucketShapesSelector = (state: RootState) => state.board.bucketShap
 
 export const seriesNoSelector = (state: RootState) => state.board.seriesNo;
 
+export const displaySeriesNoSelector = (state: RootState) => state.board.displaySeriesNo;
+
 export const isGameCompletedSelector = (state: RootState) =>
   state.board.finishCode === FinishCode.STALEMATE ||
   state.board.finishCode === FinishCode.LOST ||
@@ -66,11 +68,16 @@ export const historyInfoSelector = (state: RootState) =>
       bucketNo,
     }));
 
-export const numMovesMadeSelector = (state: RootState) => state.board.faces?.length;
+export const numMovesMadeSelector = (state: RootState) => state.board.numMovesMade;
+
+export const numFacesSelector = (state: RootState) => state.board.faces?.length;
+
 export const numGoodMovesMadeSelector = (state: RootState) =>
   state.board.faces?.reduce((acc, curr) => (curr ? acc + 1 : acc), 0);
 
 export const episodeNoSelector = (state: RootState) => state.board.episodeNo;
+
+export const displayEpisodeNoSelector = (state: RootState) => state.board.displayEpisodeNo;
 
 export const totalRewardEarnedSelector = (state: RootState) => state.board.totalRewardEarned;
 

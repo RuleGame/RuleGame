@@ -157,6 +157,8 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
             // isPaused: display.factorPromised === 4,
             isPaused: false,
             faces: display.faces,
+            displayEpisodeNo: display.displayEpisodeNo,
+            displaySeriesNo: display.displaySeriesNo,
           }),
         );
 

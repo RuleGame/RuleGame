@@ -58,6 +58,8 @@ export const setBoard = createAction(
     x4After,
     isPaused = false,
     faces,
+    displaySeriesNo,
+    displayEpisodeNo,
   }: {
     board: Board;
     bonus: boolean;
@@ -97,6 +99,8 @@ export const setBoard = createAction(
     x4After?: number;
     isPaused?: boolean;
     faces?: boolean[];
+    displaySeriesNo: number;
+    displayEpisodeNo: number;
   }) => ({
     board,
     bonus,
@@ -133,6 +137,8 @@ export const setBoard = createAction(
     x4After,
     isPaused,
     faces,
+    displaySeriesNo,
+    displayEpisodeNo,
   }),
 )();
 

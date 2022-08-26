@@ -4,8 +4,8 @@ import { Box, Grid, Heading, Stack, Text } from 'grommet';
 import range from 'lodash/range';
 import { useMeasure } from 'react-use';
 import {
+  displayEpisodeNoSelector,
   episodeIdSelector,
-  episodeNoSelector,
   maxPointsSelector,
   movesLeftToStayInBonusSelector,
   numMovesMadeSelector,
@@ -32,7 +32,7 @@ const NUM_FONT_SIZE = '1.25em;';
 
 const HUD: React.FunctionComponent = ({ children }) => {
   const numMovesMade = useSelector(numMovesMadeSelector);
-  const boardNum = useSelector(episodeNoSelector) + 1;
+  const boardNum = useSelector(displayEpisodeNoSelector) + 1;
   const points = useSelector(totalRewardEarnedSelector);
   const numMovesLeft = useSelector(movesLeftToStayInBonusSelector);
   const numBoardsLeft = useSelector(totalBoardsPredictedSelector);

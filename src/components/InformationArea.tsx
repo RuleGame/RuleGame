@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SpecialShape } from '../constants';
 import { pause, skipGuess, submitDetails } from '../store/actions/board';
 import {
+  displaySeriesNoSelector,
   facesSelector,
   factorPromisedSelector,
   finishCodeSelector,
@@ -11,10 +12,9 @@ import {
   lastDoublingStreakCountSelector,
   lastStretchSelector,
   lostStreakSelector,
+  numFacesSelector,
   numGoodMovesInARowSelector,
   numGoodMovesMadeSelector,
-  numMovesMadeSelector,
-  seriesNoSelector,
   x2AfterSelector,
   x4AfterSelector,
 } from '../store/selectors/board';
@@ -24,7 +24,7 @@ import ShapeObject from './ShapeObject';
 const InformationArea: React.FunctionComponent = () => {
   const dispatch = useDispatch();
   const numGoodMoves = useSelector(numGoodMovesMadeSelector);
-  const numMoves = useSelector(numMovesMadeSelector);
+  const numFaces = useSelector(numFacesSelector);
   const goodBadMoves = useSelector(facesSelector)!;
   const lastStretch = useSelector(lastStretchSelector);
   const x4After = useSelector(x4AfterSelector)!;
@@ -37,10 +37,10 @@ const InformationArea: React.FunctionComponent = () => {
   const lastDoublingStreakCount = useSelector(lastDoublingStreakCountSelector);
   const x2After = useSelector(x2AfterSelector);
   const lastFaceRef = useRef<HTMLDivElement | null>(null);
-  const seriesNo = useSelector(seriesNoSelector);
   const finishCode = useSelector(finishCodeSelector);
   const isAchieved = finishCode === FinishCode.EARLY_WIN || factorPromised === 4;
 
+  const displaySeriesNo = useSelector(displaySeriesNoSelector);
   useEffect(() => {
     lastFaceRef.current?.scrollIntoView();
   }, [goodBadMoves]);
@@ -61,7 +61,7 @@ const InformationArea: React.FunctionComponent = () => {
           <Box margin={{ bottom: 'medium' }}>
             <Text weight="bold">
               <Text style={{ fontStyle: 'italic' }}>{numGoodMoves}</Text> good of{' '}
-              <Text style={{ fontStyle: 'italic' }}>{numMoves}</Text>
+              <Text style={{ fontStyle: 'italic' }}>{numFaces}</Text>
             </Text>
           </Box>
           <Box margin={{ bottom: 'medium' }}>
@@ -81,7 +81,7 @@ const InformationArea: React.FunctionComponent = () => {
               key={
                 // There's no id but only the series and index to go off from.
                 // eslint-disable-next-line react/no-array-index-key
-                `${seriesNo}-${index}`
+                `${displaySeriesNo}-${index}`
               }
             >
               {move ? (
