@@ -2,23 +2,299 @@ import React from 'react';
 import { Box, Button, Heading, Image, Paragraph, Text } from 'grommet';
 import { Page } from './Page';
 
-import I1 from '../assets/instructions_NOBINS/instructions_final.001.jpeg';
-import I2 from '../assets/instructions_NOBINS/instructions_final.002.jpeg';
-import I3 from '../assets/instructions_NOBINS/instructions_final.003.jpeg';
-import I4 from '../assets/instructions_NOBINS/instructions_final.004M.jpeg';
-import I5 from '../assets/instructions_NOBINS/instructions_final.005.jpeg';
-import I6 from '../assets/instructions_NOBINS/instructions_final.006.jpeg';
-import I7 from '../assets/instructions_NOBINS/instructions_final.007M.jpeg';
-import I8 from '../assets/instructions_NOBINS/instructions_final.008.jpeg';
-import I9 from '../assets/instructions_NOBINS/instructions_final.009.jpeg';
-import I10 from '../assets/instructions_NOBINS/instructions_final.010.jpeg';
-import I11 from '../assets/instructions_NOBINS/instructions_final.011.jpeg';
-import I12 from '../assets/instructions_NOBINS/instructions_final.012.jpeg';
-import I13 from '../assets/instructions_NOBINS/instructions_final.013.jpeg';
-import I14 from '../assets/instructions_NOBINS/instructions_final.014.jpeg';
-import I15 from '../assets/instructions_NOBINS/instructions_final.015.jpeg';
-import I16 from '../assets/instructions_NOBINS/instructions_final.016.jpeg';
+import I1_1 from '../assets/instructions_NOBINS/instructions_final.001.jpeg';
+import I1_2 from '../assets/instructions_NOBINS/instructions_final.002.jpeg';
+import I1_3 from '../assets/instructions_NOBINS/instructions_final.003.jpeg';
+import I1_4 from '../assets/instructions_NOBINS/instructions_final.004M.jpeg';
+import I1_5 from '../assets/instructions_NOBINS/instructions_final.005.jpeg';
+import I1_6 from '../assets/instructions_NOBINS/instructions_final.006.jpeg';
+import I1_7 from '../assets/instructions_NOBINS/instructions_final.007M.jpeg';
+import I1_8 from '../assets/instructions_NOBINS/instructions_final.008.jpeg';
+import I1_9 from '../assets/instructions_NOBINS/instructions_final.009.jpeg';
+import I1_10 from '../assets/instructions_NOBINS/instructions_final.010.jpeg';
+import I1_11 from '../assets/instructions_NOBINS/instructions_final.011.jpeg';
+import I1_12 from '../assets/instructions_NOBINS/instructions_final.012.jpeg';
+import I1_13 from '../assets/instructions_NOBINS/instructions_final.013.jpeg';
+import I1_14 from '../assets/instructions_NOBINS/instructions_final.014.jpeg';
+import I1_15 from '../assets/instructions_NOBINS/instructions_final.015.jpeg';
+import I1_16 from '../assets/instructions_NOBINS/instructions_final.016.jpeg';
+
+import I2_1 from '../assets/stalemate_instructions/1.png';
+import I2_2 from '../assets/stalemate_instructions/2.png';
+import I2_3 from '../assets/stalemate_instructions/3.png';
+import I2_4 from '../assets/stalemate_instructions/4.png';
+import I2_5 from '../assets/stalemate_instructions/5.png';
+import I2_6 from '../assets/stalemate_instructions/6.png';
+import I2_7 from '../assets/stalemate_instructions/7.png';
+import I2_8 from '../assets/stalemate_instructions/8.png';
+import I2_9 from '../assets/stalemate_instructions/9.png';
+import I2_10 from '../assets/stalemate_instructions/10.png';
+import I2_11 from '../assets/stalemate_instructions/11.png';
+import I2_12 from '../assets/stalemate_instructions/12.png';
+import I2_13 from '../assets/stalemate_instructions/13.png';
+
+import I11_1 from '../assets/doubling_scheme/Slide1.png';
+import I11_2 from '../assets/doubling_scheme/Slide2.png';
+import I11_3 from '../assets/doubling_scheme/Slide3.png';
+import I11_4 from '../assets/doubling_scheme/Slide4.png';
+import I11_5 from '../assets/doubling_scheme/Slide5.png';
+import I11_6 from '../assets/doubling_scheme/Slide6.png';
+import I11_7 from '../assets/doubling_scheme/Slide7.png';
+import I11_8 from '../assets/doubling_scheme/Slide8.png';
+import I11_9 from '../assets/doubling_scheme/Slide9.png';
+import I11_10 from '../assets/doubling_scheme/Slide10.png';
+import I11_11 from '../assets/doubling_scheme/Slide11.png';
+
 import { HAS_UID } from '.';
+import R1 from '../assets/instructions_relational/1.png';
+import R2 from '../assets/instructions_relational/2.png';
+import R3 from '../assets/instructions_relational/3.png';
+import R4 from '../assets/instructions_relational/4.png';
+import R5 from '../assets/instructions_relational/5.png';
+import R6 from '../assets/instructions_relational/6.png';
+import R7 from '../assets/instructions_relational/7.png';
+import R8 from '../assets/instructions_relational/8.png';
+
+const INSTRUCTIONS_R = [R1, R2, R3, R4, R5, R6, R7, R8].map((src) => (
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="xlarge" align="center">
+      <Image src={src} width="100%" height="100%" style={{ objectFit: 'contain' }} />
+    </Box>
+  </>
+));
+
+const INSTRUCTIONS_1 = [
+  // Page 2
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I1_1} width="600" />
+    </Box>
+  </>,
+
+  // Page 3
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I1_2} width="600" />
+    </Box>
+  </>,
+
+  // Page 4
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I1_3} width="600" />
+    </Box>
+  </>,
+
+  // Page 5
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I1_4} width="600" />
+    </Box>
+  </>,
+
+  // Page 6
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I1_5} width="600" />
+    </Box>
+  </>,
+
+  // Page 7
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I1_6} width="600" />
+    </Box>
+  </>,
+
+  // Page 8
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I1_7} width="600" />
+    </Box>
+  </>,
+
+  // Page 9
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I1_8} width="600" />
+    </Box>
+  </>,
+
+  // Page 10
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I1_9} width="600" />
+    </Box>
+  </>,
+
+  // Page 11
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I1_10} width="600" />
+    </Box>
+  </>,
+
+  // Page 12
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I1_11} width="600" />
+    </Box>
+  </>,
+
+  // Page 13
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I1_12} width="600" />
+    </Box>
+  </>,
+
+  // Page 14
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I1_13} width="600" />
+    </Box>
+  </>,
+
+  // Page 15
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I1_14} width="600" />
+    </Box>
+  </>,
+
+  // Page 16
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I1_15} width="600" />
+    </Box>
+  </>,
+
+  // Page 17
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I1_16} width="600" />
+    </Box>
+  </>,
+];
+
+const INSTRUCTIONS_2 = [
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I2_1} width="600" />
+    </Box>
+  </>,
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I2_2} width="600" />
+    </Box>
+  </>,
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I2_3} width="600" />
+    </Box>
+  </>,
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I2_4} width="600" />
+    </Box>
+  </>,
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I2_5} width="600" />
+    </Box>
+  </>,
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I2_6} width="600" />
+    </Box>
+  </>,
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I2_7} width="600" />
+    </Box>
+  </>,
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I2_8} width="600" />
+    </Box>
+  </>,
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I2_9} width="600" />
+    </Box>
+  </>,
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I2_10} width="600" />
+    </Box>
+  </>,
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I2_11} width="600" />
+    </Box>
+  </>,
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I2_12} width="600" />
+    </Box>
+  </>,
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="large" align="center">
+      <Image src={I2_13} width="600" />
+    </Box>
+  </>,
+];
+
+const INSTRUCTIONS_11 = [
+  I11_1,
+  I11_2,
+  I11_3,
+  I11_4,
+  I11_5,
+  I11_6,
+  I11_7,
+  I11_8,
+  I11_9,
+  I11_10,
+  I11_11,
+].map((src) => (
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="xlarge" align="center">
+      <Image src={src} width="100%" height="100%" style={{ objectFit: 'contain' }} />
+    </Box>
+  </>
+));
 
 export default {
   [Page.CONSENT]: {
@@ -69,139 +345,17 @@ export default {
   },
 
   [Page.INTRODUCTION]: {
-    // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
-    text: (numRules: number | string) =>
+    text: (init?: number) =>
       // A list of JSX (HTML). One per instruction page.
       // Players can navigate through them via back and next buttons.
       [
-        // Page 2
-        <>
-          <Heading>RuleGame Challenge</Heading>
-          <Box width="large" align="center">
-            <Image src={I1} width="600" />
-          </Box>
-        </>,
-
-        // Page 3
-        <>
-          <Heading>RuleGame Challenge</Heading>
-          <Box width="large" align="center">
-            <Image src={I2} width="600" />
-          </Box>
-        </>,
-
-        // Page 4
-        <>
-          <Heading>RuleGame Challenge</Heading>
-          <Box width="large" align="center">
-            <Image src={I3} width="600" />
-          </Box>
-        </>,
-
-        // Page 5
-        <>
-          <Heading>RuleGame Challenge</Heading>
-          <Box width="large" align="center">
-            <Image src={I4} width="600" />
-          </Box>
-        </>,
-
-        // Page 6
-        <>
-          <Heading>RuleGame Challenge</Heading>
-          <Box width="large" align="center">
-            <Image src={I5} width="600" />
-          </Box>
-        </>,
-
-        // Page 7
-        <>
-          <Heading>RuleGame Challenge</Heading>
-          <Box width="large" align="center">
-            <Image src={I6} width="600" />
-          </Box>
-        </>,
-
-        // Page 8
-        <>
-          <Heading>RuleGame Challenge</Heading>
-          <Box width="large" align="center">
-            <Image src={I7} width="600" />
-          </Box>
-        </>,
-
-        // Page 9
-        <>
-          <Heading>RuleGame Challenge</Heading>
-          <Box width="large" align="center">
-            <Image src={I8} width="600" />
-          </Box>
-        </>,
-
-        // Page 10
-        <>
-          <Heading>RuleGame Challenge</Heading>
-          <Box width="large" align="center">
-            <Image src={I9} width="600" />
-          </Box>
-        </>,
-
-        // Page 11
-        <>
-          <Heading>RuleGame Challenge</Heading>
-          <Box width="large" align="center">
-            <Image src={I10} width="600" />
-          </Box>
-        </>,
-
-        // Page 12
-        <>
-          <Heading>RuleGame Challenge</Heading>
-          <Box width="large" align="center">
-            <Image src={I11} width="600" />
-          </Box>
-        </>,
-
-        // Page 13
-        <>
-          <Heading>RuleGame Challenge</Heading>
-          <Box width="large" align="center">
-            <Image src={I12} width="600" />
-          </Box>
-        </>,
-
-        // Page 14
-        <>
-          <Heading>RuleGame Challenge</Heading>
-          <Box width="large" align="center">
-            <Image src={I13} width="600" />
-          </Box>
-        </>,
-
-        // Page 15
-        <>
-          <Heading>RuleGame Challenge</Heading>
-          <Box width="large" align="center">
-            <Image src={I14} width="600" />
-          </Box>
-        </>,
-
-        // Page 16
-        <>
-          <Heading>RuleGame Challenge</Heading>
-          <Box width="large" align="center">
-            <Image src={I15} width="600" />
-          </Box>
-        </>,
-
-        // Page 17
-        <>
-          <Heading>RuleGame Challenge</Heading>
-          <Box width="large" align="center">
-            <Image src={I16} width="600" />
-          </Box>
-        </>,
-
+        ...(init === 3
+          ? INSTRUCTIONS_R
+          : init === 11
+          ? INSTRUCTIONS_11
+          : init === 2
+          ? INSTRUCTIONS_2
+          : INSTRUCTIONS_1),
         // Page 18
         <>
           <Heading>RuleGame Challenge</Heading>
@@ -235,7 +389,7 @@ export default {
     giveUpNoConfirmationLabel: 'No',
 
     // Bonus only: Displayed below the board after board has no more moves.
-    bonusSuccessMessage: 'Board succesfully cleared!',
+    bonusSuccessMessage: 'Board successfully cleared!',
     bonusFailureMessage: 'No more moves left!',
 
     // Button below the board after the board has no more moves.
@@ -275,6 +429,9 @@ export default {
     reusePreviousResponseLabel: 'Fill with previous response',
 
     instructionsButtonLabel: 'Open instructions in a new tab',
+
+    stalematePrompt:
+      'You have cleared all the pieces this rule requires. Please enter your guess to continue',
   },
 
   [Page.DEMOGRAPHICS_INSTRUCTIONS]: {

@@ -2,11 +2,12 @@ import { Box, Button, Form, Text, TextArea } from 'grommet';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { SpecialShape } from '../constants';
-import { submitDetails } from '../store/actions/board';
+import { pause, skipGuess, submitDetails } from '../store/actions/board';
 import {
   displaySeriesNoSelector,
   facesSelector,
   factorPromisedSelector,
+  finishCodeSelector,
   isSecondOrMoreTimeDoublingSelector,
   lastDoublingStreakCountSelector,
   lastStretchSelector,
@@ -17,6 +18,7 @@ import {
   x2AfterSelector,
   x4AfterSelector,
 } from '../store/selectors/board';
+import { FinishCode } from '../utils/api';
 import ShapeObject from './ShapeObject';
 
 const InformationArea: React.FunctionComponent = () => {
@@ -27,7 +29,6 @@ const InformationArea: React.FunctionComponent = () => {
   const lastStretch = useSelector(lastStretchSelector);
   const x4After = useSelector(x4AfterSelector)!;
   const factorPromised = useSelector(factorPromisedSelector);
-  const [showDetailsForm, setShowDetailsForm] = useState(false);
   const [idea, setIdea] = useState('');
   const [how, setHow] = useState('');
   const numGoodMovesInARow = useSelector(numGoodMovesInARowSelector);
@@ -36,20 +37,22 @@ const InformationArea: React.FunctionComponent = () => {
   const lastDoublingStreakCount = useSelector(lastDoublingStreakCountSelector);
   const x2After = useSelector(x2AfterSelector);
   const lastFaceRef = useRef<HTMLDivElement | null>(null);
+  const finishCode = useSelector(finishCodeSelector);
+  const isAchieved = finishCode === FinishCode.EARLY_WIN || factorPromised === 4;
+
   const displaySeriesNo = useSelector(displaySeriesNoSelector);
   useEffect(() => {
     lastFaceRef.current?.scrollIntoView();
   }, [goodBadMoves]);
 
   useEffect(() => {
-    if (factorPromised === 4) {
-      setShowDetailsForm(true);
-
-      // TODO: Temporarily allow the player to clear the board after the factorPromised is at 4.
-      // Eventually, disallow it to continue once the API can auto complete the board.
-      // dispatch(pause());
+    if (isAchieved) {
+      // Disallow the player to continue for the server to auto complete the board.
+      dispatch(pause());
+      setIdea('');
+      setHow('');
     }
-  }, [dispatch, factorPromised]);
+  }, [dispatch, factorPromised, finishCode, isAchieved]);
 
   return (
     <Box background="steelblue" pad="medium" fill="vertical" border={{ color: 'black' }}>
@@ -116,11 +119,11 @@ const InformationArea: React.FunctionComponent = () => {
         ) : (
           ''
         )}
-        {showDetailsForm && (
+        {isAchieved && (
           <Box margin={{ top: 'medium' }}>
             <Form
               onSubmit={() => {
-                dispatch(submitDetails());
+                dispatch(submitDetails(idea, how));
               }}
             >
               <TextArea
@@ -129,13 +132,16 @@ const InformationArea: React.FunctionComponent = () => {
                 onChange={(event) => setIdea(event.target.value)}
               />
               <TextArea
-                placeholder="(Optional) How did you figure it out?"
+                placeholder="How did you figure it out?"
                 value={how}
                 onChange={(event) => setHow(event.target.value)}
               />
               <Button type="submit" label="Submit" primary />
             </Form>
           </Box>
+        )}
+        {finishCode === FinishCode.FINISH && !isAchieved && (
+          <Button label="Next" primary onClick={() => dispatch(skipGuess())} />
         )}
       </Box>
     </Box>

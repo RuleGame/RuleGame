@@ -18,10 +18,10 @@ import {
   canActivateBonusSelector,
   displayEpisodeNoSelector,
   displaySeriesNoSelector,
-  factorPromisedSelector,
   finishCodeSelector,
   hasMoreBonusRoundsSelector,
   historyInfoSelector,
+  incentiveSelector,
   isGameCompletedSelector,
   isInBonusSelector,
   pausedSelector,
@@ -30,10 +30,10 @@ import {
   workerIdSelector,
 } from '../../store/selectors/board';
 import { debugModeSelector } from '../../store/selectors/debug-mode';
-import { FinishCode } from '../../utils/api';
+import { FinishCode, Incentive } from '../../utils/api';
 import { useExperimentPlan } from '../../utils/hooks';
-import Board from './Board';
 import GuessRuleForm from '../GuessRuleForm';
+import Board from './Board';
 
 enum GridAreaName {
   HEADING = 'HEADING',
@@ -65,8 +65,8 @@ const Game: React.FunctionComponent<{
   const allowGiveUpOption = useSelector(allowGiveUpOptionSelector);
   const [instructionsButtonOver, setInstructionsButtonOver] = useState(false);
   const workerId = useSelector(workerIdSelector);
-  const factorPromised = useSelector(factorPromisedSelector);
   const exp = useExperimentPlan();
+  const incentive = useSelector(incentiveSelector);
   const [leftRef, { width: leftWidth }] = useMeasure();
   const [rightRef, { width: rightWidth }] = useMeasure();
   const sideWidths =
@@ -198,7 +198,7 @@ const Game: React.FunctionComponent<{
             />
           </Box>
         )}
-        {isGameCompleted && !isInBonus && factorPromised !== 4 && (
+        {isGameCompleted && !isInBonus && incentive !== Incentive.DOUBLING && (
           // FireFox needs height={{ min: 'unset' }} inside a grid
           <Box
             data-cy={CY_NO_MORE_MOVES}
