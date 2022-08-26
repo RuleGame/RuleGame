@@ -46,6 +46,23 @@ import I11_10 from '../assets/doubling_scheme/Slide10.png';
 import I11_11 from '../assets/doubling_scheme/Slide11.png';
 
 import { HAS_UID } from '.';
+import R1 from '../assets/instructions_relational/1.png';
+import R2 from '../assets/instructions_relational/2.png';
+import R3 from '../assets/instructions_relational/3.png';
+import R4 from '../assets/instructions_relational/4.png';
+import R5 from '../assets/instructions_relational/5.png';
+import R6 from '../assets/instructions_relational/6.png';
+import R7 from '../assets/instructions_relational/7.png';
+import R8 from '../assets/instructions_relational/8.png';
+
+const INSTRUCTIONS_R = [R1, R2, R3, R4, R5, R6, R7, R8].map((src) => (
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="xlarge" align="center">
+      <Image src={src} width="100%" height="100%" style={{ objectFit: 'contain' }} />
+    </Box>
+  </>
+));
 
 const INSTRUCTIONS_1 = [
   // Page 2
@@ -332,7 +349,13 @@ export default {
       // A list of JSX (HTML). One per instruction page.
       // Players can navigate through them via back and next buttons.
       [
-        ...(init === 2 ? INSTRUCTIONS_2 : init === 11 ? INSTRUCTIONS_11 : INSTRUCTIONS_1),
+        ...(init === 3
+          ? INSTRUCTIONS_R
+          : init === 11
+          ? INSTRUCTIONS_11
+          : init === 2
+          ? INSTRUCTIONS_2
+          : INSTRUCTIONS_1),
         // Page 18
         <>
           <Heading>RuleGame Challenge</Heading>
