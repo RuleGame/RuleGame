@@ -11,6 +11,7 @@ export enum FinishCode {
   LOST = 4,
   NO = 0,
   STALEMATE = 2,
+  EARLY_WIN = 5,
 }
 
 export enum Code {
@@ -63,6 +64,11 @@ export enum FeedbackSwitches {
   FREE = 'free',
   NEW_DISPLAY_TRIGGER = 'new_display_trigger',
   FREE_TRIGGER = 'free_trigger',
+}
+
+export enum Incentive {
+  DOUBLING = 'DOUBLING',
+  BONUS = 'BONUS',
 }
 
 type RequestHandler<
@@ -133,6 +139,17 @@ export type Display = {
   transitionMap?: TransitionMap;
   ruleSetName: string;
   trialListId: string;
+  incentive?: Incentive;
+  lastStretch: number;
+  rewardsAndFactorsPerSeries: [number, number][];
+  factorAchieved?: number;
+  factorPromised?: number;
+  justReachedX2?: boolean;
+  justReachedX4?: boolean;
+  faces: boolean[];
+  rewardRange?: [number, number];
+  displaySeriesNo: number;
+  displayEpisodeNo: number;
 };
 
 type Para = {
@@ -159,6 +176,8 @@ type Para = {
   max_boards: number;
   activate_bonus_at: number;
   give_up_at?: number;
+  x2_after?: number;
+  x4_after?: number;
   init: number;
 };
 

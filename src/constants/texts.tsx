@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Heading, Image, Paragraph, Text } from 'grommet';
+import { Box, Button, Heading, Image, Paragraph, Text } from 'grommet';
 import { Page } from './Page';
 
 import I1_1 from '../assets/instructions_NOBINS/instructions_final.001.jpeg';
@@ -33,6 +33,19 @@ import I2_11 from '../assets/stalemate_instructions/11.png';
 import I2_12 from '../assets/stalemate_instructions/12.png';
 import I2_13 from '../assets/stalemate_instructions/13.png';
 
+import I11_1 from '../assets/doubling_scheme/Slide1.png';
+import I11_2 from '../assets/doubling_scheme/Slide2.png';
+import I11_3 from '../assets/doubling_scheme/Slide3.png';
+import I11_4 from '../assets/doubling_scheme/Slide4.png';
+import I11_5 from '../assets/doubling_scheme/Slide5.png';
+import I11_6 from '../assets/doubling_scheme/Slide6.png';
+import I11_7 from '../assets/doubling_scheme/Slide7.png';
+import I11_8 from '../assets/doubling_scheme/Slide8.png';
+import I11_9 from '../assets/doubling_scheme/Slide9.png';
+import I11_10 from '../assets/doubling_scheme/Slide10.png';
+import I11_11 from '../assets/doubling_scheme/Slide11.png';
+
+import { HAS_UID } from '.';
 import R1 from '../assets/instructions_relational/1.png';
 import R2 from '../assets/instructions_relational/2.png';
 import R3 from '../assets/instructions_relational/3.png';
@@ -262,6 +275,27 @@ const INSTRUCTIONS_2 = [
   </>,
 ];
 
+const INSTRUCTIONS_11 = [
+  I11_1,
+  I11_2,
+  I11_3,
+  I11_4,
+  I11_5,
+  I11_6,
+  I11_7,
+  I11_8,
+  I11_9,
+  I11_10,
+  I11_11,
+].map((src) => (
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="xlarge" align="center">
+      <Image src={src} width="100%" height="100%" style={{ objectFit: 'contain' }} />
+    </Box>
+  </>
+));
+
 export default {
   [Page.CONSENT]: {
     text: (
@@ -315,7 +349,13 @@ export default {
       // A list of JSX (HTML). One per instruction page.
       // Players can navigate through them via back and next buttons.
       [
-        ...(init === 3 ? INSTRUCTIONS_R : init === 2 ? INSTRUCTIONS_2 : INSTRUCTIONS_1),
+        ...(init === 3
+          ? INSTRUCTIONS_R
+          : init === 11
+          ? INSTRUCTIONS_11
+          : init === 2
+          ? INSTRUCTIONS_2
+          : INSTRUCTIONS_1),
         // Page 18
         <>
           <Heading>RuleGame Challenge</Heading>
@@ -369,14 +409,14 @@ export default {
     numMovesLeftPreText: 'Number of moves left:',
     pointsPreText: 'Points:',
     boardNumText: (boardNum: number, numBoardsLeft: number) => (
-      <>
+      <Box wrap direction="row" align="baseline">
         <Text size="inherit" weight="bold">
           Board&nbsp;
         </Text>
         <Text size="1.25em" weight="bold">
           {boardNum} of {numBoardsLeft}
         </Text>
-      </>
+      </Box>
     ),
 
     guessButtonLabel: 'Guess the rule',
@@ -410,7 +450,16 @@ export default {
           We’re using this task to better understand what kinds of rules are easy and hard for
           people compared to machine learning algorithms.
         </Paragraph>
-        <Paragraph fill>You may now close this window.</Paragraph>
+        {!HAS_UID ? (
+          <Paragraph fill>You may now close this window.</Paragraph>
+        ) : (
+          <Box>
+            <Paragraph>
+              {"You've done a good job, now click on this button to go back to the launch page."}
+            </Paragraph>
+            <Button primary onClick={() => window.history.back()} label="Return" />
+          </Box>
+        )}
       </>
     ),
   },

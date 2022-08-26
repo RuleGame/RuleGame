@@ -1,10 +1,12 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
 import { Box, Grid, Heading, Stack, Text } from 'grommet';
 import range from 'lodash/range';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Page } from '../constants/Page';
+import texts from '../constants/texts';
 import {
+  displayEpisodeNoSelector,
   episodeIdSelector,
-  episodeNoSelector,
   maxPointsSelector,
   movesLeftToStayInBonusSelector,
   numMovesMadeSelector,
@@ -14,8 +16,6 @@ import {
   trialListIdSelector,
 } from '../store/selectors/board';
 import { debugModeSelector } from '../store/selectors/debug-mode';
-import texts from '../constants/texts';
-import { Page } from '../constants/Page';
 
 enum GridArea {
   NUM_MOVES_MADE = 'NUM_MOVES_MADE',
@@ -30,7 +30,7 @@ const NUM_FONT_SIZE = '1.25em;';
 
 const HUD: React.FunctionComponent = ({ children }) => {
   const numMovesMade = useSelector(numMovesMadeSelector);
-  const boardNum = useSelector(episodeNoSelector) + 1;
+  const boardNum = useSelector(displayEpisodeNoSelector) + 1;
   const points = useSelector(totalRewardEarnedSelector);
   const numMovesLeft = useSelector(movesLeftToStayInBonusSelector);
   const numBoardsLeft = useSelector(totalBoardsPredictedSelector);

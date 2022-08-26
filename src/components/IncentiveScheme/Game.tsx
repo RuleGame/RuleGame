@@ -4,36 +4,36 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMeasure } from 'react-use';
 import { Dispatch } from 'redux';
-import { SearchQueryKey } from '../constants';
-import { CY_GAME, CY_NO_MORE_MOVES } from '../constants/data-cy';
-import { DEBUG_ENABLED } from '../constants/env';
-import { Page } from '../constants/Page';
-import texts from '../constants/texts';
-import { RootAction } from '../store/actions';
-import { activateBonus, giveUp, loadNextBonus } from '../store/actions/board';
-import { setDebugMode } from '../store/actions/debug-mode';
-import { addLayer, removeLayer } from '../store/actions/layers';
+import { SearchQueryKey } from '../../constants';
+import { CY_GAME, CY_NO_MORE_MOVES } from '../../constants/data-cy';
+import { DEBUG_ENABLED } from '../../constants/env';
+import { Page } from '../../constants/Page';
+import texts from '../../constants/texts';
+import { RootAction } from '../../store/actions';
+import { activateBonus, giveUp, loadNextBonus } from '../../store/actions/board';
+import { setDebugMode } from '../../store/actions/debug-mode';
+import { addLayer, removeLayer } from '../../store/actions/layers';
 import {
   allowGiveUpOptionSelector,
   canActivateBonusSelector,
   displayEpisodeNoSelector,
   displaySeriesNoSelector,
-  factorPromisedSelector,
   finishCodeSelector,
   hasMoreBonusRoundsSelector,
   historyInfoSelector,
+  incentiveSelector,
   isGameCompletedSelector,
   isInBonusSelector,
   pausedSelector,
   ruleLineNoSelector,
   ruleSrcSelector,
   workerIdSelector,
-} from '../store/selectors/board';
-import { debugModeSelector } from '../store/selectors/debug-mode';
-import { FinishCode } from '../utils/api';
-import { useExperimentPlan } from '../utils/hooks';
+} from '../../store/selectors/board';
+import { debugModeSelector } from '../../store/selectors/debug-mode';
+import { FinishCode, Incentive } from '../../utils/api';
+import { useExperimentPlan } from '../../utils/hooks';
+import GuessRuleForm from '../GuessRuleForm';
 import Board from './Board';
-import GuessRuleForm from './GuessRuleForm';
 
 enum GridAreaName {
   HEADING = 'HEADING',
@@ -65,8 +65,8 @@ const Game: React.FunctionComponent<{
   const allowGiveUpOption = useSelector(allowGiveUpOptionSelector);
   const [instructionsButtonOver, setInstructionsButtonOver] = useState(false);
   const workerId = useSelector(workerIdSelector);
-  const factorPromised = useSelector(factorPromisedSelector);
   const exp = useExperimentPlan();
+  const incentive = useSelector(incentiveSelector);
   const [leftRef, { width: leftWidth }] = useMeasure();
   const [rightRef, { width: rightWidth }] = useMeasure();
   const sideWidths =
@@ -198,30 +198,26 @@ const Game: React.FunctionComponent<{
             />
           </Box>
         )}
-        {isGameCompleted && !isInBonus && factorPromised !== 4 && (
+        {isGameCompleted && !isInBonus && incentive !== Incentive.DOUBLING && (
           // FireFox needs height={{ min: 'unset' }} inside a grid
           <Box
             data-cy={CY_NO_MORE_MOVES}
             height={{ min: 'unset' }}
+            gap="large"
             pad={{ left: 'xlarge', right: 'xlarge' }}
             fill
           >
-            <Box fill="horizontal" align="center" justify="center" margin="small">
-              {finishCode === FinishCode.STALEMATE && (
-                <Text>{texts[Page.TRIALS].stalematePrompt}</Text>
-              )}
-            </Box>
             <GuessRuleForm />
           </Box>
         )}
         {isGameCompleted && isInBonus && (
           <Box align="center">
             <Heading>
-              {finishCode === FinishCode.FINISH || finishCode === FinishCode.STALEMATE ? (
+              {finishCode === FinishCode.FINISH ? (
                 <Text size="inherit" color="blue">
                   {texts[Page.TRIALS].bonusSuccessMessage}
                 </Text>
-              ) : finishCode === FinishCode.LOST ? (
+              ) : finishCode === FinishCode.STALEMATE || finishCode === FinishCode.LOST ? (
                 <Text size="inherit" color="red">
                   {texts[Page.TRIALS].bonusFailureMessage}
                 </Text>

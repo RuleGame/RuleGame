@@ -6,6 +6,7 @@ import {
   BoardObject,
   FeedbackSwitches,
   FinishCode,
+  Incentive,
   Transcript,
   TransitionMap,
 } from '../../utils/api';
@@ -51,6 +52,18 @@ export type State = {
   feedbackSwitches: FeedbackSwitches;
   ruleSetName: string;
   trialListId: string;
+  incentive?: Incentive;
+  lastStretch: number;
+  rewardsAndFactorsPerSeries: [number, number][];
+  factorAchieved?: number;
+  factorPromised?: number;
+  justReachedX2?: boolean;
+  justReachedX4?: boolean;
+  x2After?: number;
+  x4After?: number;
+  faces?: boolean[];
+  displaySeriesNo: number;
+  displayEpisodeNo: number;
 };
 
 export const initialState: State = {
@@ -88,6 +101,18 @@ export const initialState: State = {
   feedbackSwitches: FeedbackSwitches.FIXED,
   ruleSetName: 'N/A',
   trialListId: 'N/A',
+  incentive: undefined,
+  lastStretch: 0,
+  rewardsAndFactorsPerSeries: [],
+  factorAchieved: undefined,
+  factorPromised: undefined,
+  justReachedX2: undefined,
+  justReachedX4: undefined,
+  x2After: undefined,
+  x4After: undefined,
+  faces: [],
+  displaySeriesNo: 0,
+  displayEpisodeNo: 0,
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -110,7 +135,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         totalBoardsPredicted: action.payload.totalBoardsPredicted,
         showGridMemoryOrder: action.payload.showGridMemoryOrder,
         showStackMemoryOrder: action.payload.showStackMemoryOrder,
-        isPaused: false,
+        isPaused: action.payload.isPaused,
         bucketShapes: {
           [BucketPosition.BL]: SpecialShape.BUCKET,
           [BucketPosition.BR]: SpecialShape.BUCKET,
@@ -135,6 +160,18 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         feedbackSwitches: action.payload.feedbackSwitches,
         ruleSetName: action.payload.ruleSetName,
         trialListId: action.payload.trialListId,
+        incentive: action.payload.incentive,
+        lastStretch: action.payload.lastStretch,
+        rewardsAndFactorsPerSeries: action.payload.rewardsAndFactorsPerSeries,
+        factorAchieved: action.payload.factorAchieved,
+        factorPromised: action.payload.factorPromised,
+        justReachedX2: action.payload.justReachedX2,
+        justReachedX4: action.payload.justReachedX4,
+        x2After: action.payload.x2After,
+        x4After: action.payload.x4After,
+        faces: action.payload.faces,
+        displaySeriesNo: action.payload.displaySeriesNo,
+        displayEpisodeNo: action.payload.displayEpisodeNo,
       };
 
     case getType(pause):
