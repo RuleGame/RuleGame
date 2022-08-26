@@ -64,7 +64,6 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
 
       data = newEpisodeData;
 
-      // Allow normal flow if board is alreadyFinished
       if (newEpisodeData.error && newEpisodeData.alreadyFinished !== true) {
         throw Error(`Error on /newEpisdoe: ${newEpisodeData.errmsg}`);
       }

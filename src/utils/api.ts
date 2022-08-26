@@ -176,6 +176,7 @@ type Para = {
   give_up_at?: number;
   x2_after?: number;
   x4_after?: number;
+  init: number;
 };
 
 export enum ErrorMsg {
