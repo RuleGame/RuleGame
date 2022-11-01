@@ -441,17 +441,17 @@ export default {
   [Page.DEBRIEFING]: {
     text: (completionCode: string) => (
       <>
-        <Heading>Thank you for participating!</Heading>        
-         {!HAS_UID ? (
-           <Paragraph fill>
-          Your completion code is <Text weight="bold">{completionCode}</Text>. Please paste the code
-          into the mTurk Box.
-        </Paragraph>
+        <Heading>Thank you for participating!</Heading>
+        {!HAS_UID ? (
+          <Paragraph fill>
+            Your completion code is <Text weight="bold">{completionCode}</Text>. Please paste the
+            code into the mTurk Box.
+          </Paragraph>
         ) : (
           <Paragraph fill>
-          For your reference, your completion code is <Text weight="bold">{completionCode}</Text>. 
-        </Paragraph>
-        )}      
+            For your reference, your completion code is <Text weight="bold">{completionCode}</Text>.
+          </Paragraph>
+        )}
         <Paragraph fill>
           We’re using this task to better understand what kinds of rules are easy and hard for
           people compared to machine learning algorithms.

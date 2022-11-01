@@ -54,7 +54,11 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
     );
 
     const noEpisodeStarted = error && errmsg === ErrorMsg.FAILED_TO_FIND_ANY_EPISODE;
-    if (noEpisodeStarted) {
+    const nonPlayableEpisode = !(
+      data?.display.finishCode === FinishCode.FINISH || data?.display.finishCode === FinishCode.NO
+    );
+    const guessSaved = data?.display.finishCode === FinishCode.FINISH && data?.display.guessSaved;
+    if (noEpisodeStarted || nonPlayableEpisode || guessSaved) {
       const { data: newEpisodeData } = yield* apiResolve(
         '/game-data/GameService2/newEpisode',
         METHOD.POST,
