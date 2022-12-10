@@ -55,6 +55,43 @@ import R6 from '../assets/instructions_relational/6.png';
 import R7 from '../assets/instructions_relational/7.png';
 import R8 from '../assets/instructions_relational/8.png';
 
+import I3_1 from '../assets/bigger_instructions_3rules/1.png';
+import I3_2 from '../assets/bigger_instructions_3rules/2.png';
+import I3_3 from '../assets/bigger_instructions_3rules/3.png';
+import I3_4 from '../assets/bigger_instructions_3rules/4.png';
+import I3_5 from '../assets/bigger_instructions_3rules/5.png';
+import I3_6 from '../assets/bigger_instructions_3rules/6.png';
+import I3_7 from '../assets/bigger_instructions_3rules/7.png';
+import I3_8 from '../assets/bigger_instructions_3rules/8.png';
+import I3_9 from '../assets/bigger_instructions_3rules/9.png';
+import I3_10 from '../assets/bigger_instructions_3rules/10.png';
+import I3_11 from '../assets/bigger_instructions_3rules/11.png';
+import I3_12 from '../assets/bigger_instructions_3rules/12.png';
+import I3_13 from '../assets/bigger_instructions_3rules/13.png';
+
+const INSTRUCTIONS_I3 = [
+  I3_1,
+  I3_2,
+  I3_3,
+  I3_4,
+  I3_5,
+  I3_6,
+  I3_7,
+  I3_8,
+  I3_9,
+  I3_10,
+  I3_11,
+  I3_12,
+  I3_13,
+].map((src) => (
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="xlarge" align="center">
+      <Image src={src} width="100%" height="100%" style={{ objectFit: 'contain' }} />
+    </Box>
+  </>
+));
+
 const INSTRUCTIONS_R = [R1, R2, R3, R4, R5, R6, R7, R8].map((src) => (
   <>
     <Heading>RuleGame Challenge</Heading>
@@ -355,6 +392,8 @@ export default {
           ? INSTRUCTIONS_11
           : init === 2
           ? INSTRUCTIONS_2
+          : init === 4
+          ? INSTRUCTIONS_I3
           : INSTRUCTIONS_1),
         // Page 18
         <>
