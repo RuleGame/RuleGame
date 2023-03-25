@@ -69,6 +69,76 @@ import I3_11 from '../assets/bigger_instructions_3rules/11.png';
 import I3_12 from '../assets/bigger_instructions_3rules/12.png';
 import I3_13 from '../assets/bigger_instructions_3rules/13.png';
 
+import I9_1 from '../assets/9piece_single_rule/1.png';
+import I9_2 from '../assets/9piece_single_rule/2.png';
+import I9_3 from '../assets/9piece_single_rule/3.png';
+import I9_4 from '../assets/9piece_single_rule/4.png';
+import I9_5 from '../assets/9piece_single_rule/5.png';
+import I9_6 from '../assets/9piece_single_rule/6.png';
+import I9_7 from '../assets/9piece_single_rule/7.png';
+import I9_8 from '../assets/9piece_single_rule/8.png';
+import I9_9 from '../assets/9piece_single_rule/9.png';
+import I9_10 from '../assets/9piece_single_rule/10.png';
+import I9_11 from '../assets/9piece_single_rule/11.png';
+import I9_12 from '../assets/9piece_single_rule/12.png';
+
+import I20_1 from '../assets/20piece_single_rule/1.png';
+import I20_2 from '../assets/20piece_single_rule/2.png';
+import I20_3 from '../assets/20piece_single_rule/3.png';
+import I20_4 from '../assets/20piece_single_rule/4.png';
+import I20_5 from '../assets/20piece_single_rule/5.png';
+import I20_6 from '../assets/20piece_single_rule/6.png';
+import I20_7 from '../assets/20piece_single_rule/7.png';
+import I20_8 from '../assets/20piece_single_rule/8.png';
+import I20_9 from '../assets/20piece_single_rule/9.png';
+import I20_10 from '../assets/20piece_single_rule/10.png';
+import I20_11 from '../assets/20piece_single_rule/11.png';
+import I20_12 from '../assets/20piece_single_rule/12.png';
+
+const INSTRUCTIONS_9 = [
+  I9_1,
+  I9_2,
+  I9_3,
+  I9_4,
+  I9_5,
+  I9_6,
+  I9_7,
+  I9_8,
+  I9_9,
+  I9_10,
+  I9_11,
+  I9_12,
+].map((src) => (
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="xlarge" align="center">
+      <Image src={src} width="100%" height="100%" style={{ objectFit: 'contain' }} />
+    </Box>
+  </>
+));
+
+const INSTRUCTIONS_20 = [
+  I20_1,
+  I20_2,
+  I20_3,
+  I20_4,
+  I20_5,
+  I20_6,
+  I20_7,
+  I20_8,
+  I20_9,
+  I20_10,
+  I20_11,
+  I20_12,
+].map((src) => (
+  <>
+    <Heading>RuleGame Challenge</Heading>
+    <Box width="xlarge" align="center">
+      <Image src={src} width="100%" height="100%" style={{ objectFit: 'contain' }} />
+    </Box>
+  </>
+));
+
 const INSTRUCTIONS_I3 = [
   I3_1,
   I3_2,
@@ -390,6 +460,10 @@ export default {
           ? INSTRUCTIONS_R
           : init === 11
           ? INSTRUCTIONS_11
+          : init === 9
+          ? INSTRUCTIONS_9
+          : init === 20
+          ? INSTRUCTIONS_20
           : init === 2
           ? INSTRUCTIONS_2
           : init === 4
