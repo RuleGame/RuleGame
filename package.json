@@ -75,7 +75,7 @@
     "react-query": "2.5.7-tsnext.1",
     "react-query-devtools": "2.4.2",
     "react-redux": "7.1.0",
-    "react-scripts": "3.3.0",
+    "react-scripts": "3.4.4",
     "react-textarea-autosize": "8.2.0",
     "react-tooltip": "3.11.1",
     "react-use": "13.24.0",
@@ -95,7 +95,7 @@
     "surveyjs-widgets": "1.8.0",
     "typed-redux-saga": "1.2.0",
     "typesafe-actions": "5.1.0",
-    "typescript": "3.8.2",
+    "typescript": "5.0.4",
     "utility-types": "3.10.0",
     "uuid": "3.3.3"
   },

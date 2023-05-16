@@ -65,7 +65,7 @@ const Board = ({ className }: BoardProps): JSX.Element => {
     <Box justify="center" align="center" ref={ref} fill>
       <Grid
         // fill="vertical"
-        style={{ width: `${height}px`, height: `${height}px` }}
+        style={{ width: `${height}px`, height: `${height}px`, overflow: 'hidden' }}
         className={className}
         rows={['10%', '40%', '40%', '10%']}
         columns={['10%', '80%', '10%']}
