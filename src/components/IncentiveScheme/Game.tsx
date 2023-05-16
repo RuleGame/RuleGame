@@ -118,6 +118,7 @@ const Game: React.FunctionComponent<{
           end: [2, 1],
         },
       ]}
+      style={{ overflow: 'hidden' }}
     >
       <Box gridArea={GridAreaName.HEADING}>
         <Box style={{ position: 'relative', display: 'block' }}>
