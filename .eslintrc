@@ -5,8 +5,10 @@
     "cypress/globals": true
   },
   "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
   "extends": [
-    "airbnb-typescript",
     "prettier",
     "prettier/@typescript-eslint",
     "plugin:@typescript-eslint/recommended",
@@ -49,7 +51,6 @@
       }
     ],
     "consistent-return": "off",
-    "@typescript-eslint/no-object-literal-type-assertion": ["error", { "allowAsParameter": true }],
     "react/prop-types": "off",
     "func-names": "off",
     "@typescript-eslint/interface-name-prefix": "off",

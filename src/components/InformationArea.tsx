@@ -41,9 +41,7 @@ const InformationArea: React.FunctionComponent = () => {
   const isAchieved = finishCode === FinishCode.EARLY_WIN || factorPromised === 4;
 
   const displaySeriesNo = useSelector(displaySeriesNoSelector);
-  useEffect(() => {
-    lastFaceRef.current?.scrollIntoView();
-  }, [goodBadMoves]);
+  useEffect(() => lastFaceRef.current?.scrollIntoView(), [goodBadMoves]);
 
   useEffect(() => {
     if (isAchieved) {
