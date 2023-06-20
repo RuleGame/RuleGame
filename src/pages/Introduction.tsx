@@ -1,7 +1,7 @@
 import { Box, Button, Heading, Image } from 'grommet';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useSearchParam } from 'react-use';
 import { Dispatch } from 'redux';
 import Spinner from '../components/Spinner';
@@ -10,7 +10,6 @@ import texts from '../constants/texts';
 import { RootAction } from '../store/actions';
 import { addLayer } from '../store/actions/layers';
 import { nextPage } from '../store/actions/page';
-import { workerIdSelector } from '../store/selectors/board';
 import { METHOD, api, getBookletPageUrl } from '../utils/api';
 import { useExperimentPlan } from '../utils/hooks';
 import { SearchQueryKey } from '../constants';
@@ -18,11 +17,11 @@ import { SearchQueryKey } from '../constants';
 export default () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
   const uid = useSearchParam(SearchQueryKey.UID) ?? undefined;
-  const workerIdFromStore = useSelector(workerIdSelector)!;
+  const workerIdSearchParam = useSearchParam(SearchQueryKey.WORKER_ID) ?? undefined;
   const [step, setStep] = useState(0);
   const exp = useExperimentPlan();
   const { data } = useQuery(
-    `${workerIdFromStore}-INTRODUCTION`,
+    `${workerIdSearchParam}-INTRODUCTION`,
     async () => {
       const {
         data: { error, errmsg, playerId },
@@ -30,7 +29,7 @@ export default () => {
         '/game-data/GameService2/player',
         METHOD.POST,
         {
-          ...(workerIdFromStore && { playerId: workerIdFromStore }),
+          ...(workerIdSearchParam && { playerId: workerIdSearchParam }),
           ...(uid && { uid: Number(uid) }),
           exp,
         },

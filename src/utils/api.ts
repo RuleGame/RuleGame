@@ -398,7 +398,7 @@ export type Endpoints = {
         errmsg: ErrorMsg;
       },
       undefined,
-      { playerId: string }
+      { playerId: string; name: string }
     >;
   };
 };
