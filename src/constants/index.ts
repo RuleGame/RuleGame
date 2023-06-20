@@ -34,6 +34,7 @@ export const API_HOST_ORIGIN =
   process.env.REACT_APP_APP_API_HOST_ORIGIN;
 
 export const IMAGE_BASE_URL = `${API_HOST_ORIGIN}/GetImageServlet`;
+export const BOOKLET_PAGE_BASE_URL = `${API_HOST_ORIGIN}/GetBookletPageServlet`;
 
 export const VERSION = process.env.REACT_APP_VERSION;
 

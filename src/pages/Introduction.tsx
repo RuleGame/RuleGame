@@ -1,32 +1,79 @@
-import { Box, Button } from 'grommet';
+import { Box, Button, Heading, Image } from 'grommet';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
+import { useSearchParam } from 'react-use';
 import { Dispatch } from 'redux';
 import Spinner from '../components/Spinner';
 import { Page } from '../constants/Page';
 import texts from '../constants/texts';
 import { RootAction } from '../store/actions';
+import { addLayer } from '../store/actions/layers';
 import { nextPage } from '../store/actions/page';
 import { workerIdSelector } from '../store/selectors/board';
-import { api, METHOD } from '../utils/api';
+import { METHOD, api, getBookletPageUrl } from '../utils/api';
 import { useExperimentPlan } from '../utils/hooks';
+import { SearchQueryKey } from '../constants';
 
 export default () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
-  const workerId = useSelector(workerIdSelector);
-  const exp = useExperimentPlan();
+  const uid = useSearchParam(SearchQueryKey.UID) ?? undefined;
+  const workerIdFromStore = useSelector(workerIdSelector)!;
   const [step, setStep] = useState(0);
-  const { data } = useQuery(`${workerId}-INTRODUCTION`, () =>
-    api('/game-data/GameService2/player', METHOD.POST, { playerId: workerId, exp }, {}),
+  const exp = useExperimentPlan();
+  const { data } = useQuery(
+    `${workerIdFromStore}-INTRODUCTION`,
+    async () => {
+      const {
+        data: { error, errmsg, playerId },
+      } = await api(
+        '/game-data/GameService2/player',
+        METHOD.POST,
+        {
+          ...(workerIdFromStore && { playerId: workerIdFromStore }),
+          ...(uid && { uid: Number(uid) }),
+          exp,
+        },
+        {},
+      );
+      if (error) {
+        throw Error(errmsg);
+      }
+
+      const {
+        data: { error: getBookletSizeError, errmsg: getBookletSizeErrorMsg, ...getBookletSizeData },
+      } = await api('/game-data/PregameService/getBookletSize', METHOD.GET, undefined, {
+        playerId,
+      });
+
+      if (getBookletSizeError) {
+        throw Error(getBookletSizeErrorMsg);
+      }
+
+      return { workerId: playerId, ...getBookletSizeData };
+    },
+    {
+      retry: false,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      onError: (e: Error) => dispatch(addLayer('An Error Ocurred', e.message, [])),
+    },
   );
 
   return (
     <Box direction="column" align="center" gap="medium" pad="medium">
       <Box align="center" elevation="large" fill>
-        {data?.data.trialList?.[0] !== undefined ? (
+        {data !== undefined ? (
           <Box background="brand" fill align="center" pad="medium" justify="center">
-            {texts[Page.INTRODUCTION].text(data?.data.trialList?.[0].init)[step]}
+            <Heading>RuleGame Challenge</Heading>
+            <Box width="xlarge" align="center">
+              <Image
+                src={getBookletPageUrl(data.workerId, step)}
+                width="100%"
+                height="100%"
+                style={{ objectFit: 'contain' }}
+              />
+            </Box>
             <Box direction="row" gap="small" justify="center">
               <Button
                 label={texts[Page.INTRODUCTION].backButtonLabel}
@@ -35,16 +82,13 @@ export default () => {
               />
               <Button
                 label={
-                  step === texts[Page.INTRODUCTION].text(data?.data.trialList?.[0].init).length - 1
+                  step === data.bookletSize - 1
                     ? texts[Page.INTRODUCTION].startExperimentButtonLabel
                     : texts[Page.INTRODUCTION].nextButtonLabel
                 }
                 primary
                 onClick={() => {
-                  if (
-                    step ===
-                    texts[Page.INTRODUCTION].text(data?.data.trialList?.[0].init).length - 1
-                  ) {
+                  if (step === data.bookletSize - 1) {
                     dispatch(nextPage());
                   } else {
                     setStep((step) => step + 1);
