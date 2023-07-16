@@ -55,9 +55,9 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
 
     const noEpisodeStarted = error && errmsg === ErrorMsg.FAILED_TO_FIND_ANY_EPISODE;
     const nonPlayableEpisode = !(
-      data?.display.finishCode === FinishCode.FINISH || data?.display.finishCode === FinishCode.NO
+      data?.display?.finishCode === FinishCode.FINISH || data?.display?.finishCode === FinishCode.NO
     );
-    const guessSaved = data?.display.finishCode === FinishCode.FINISH && data?.display.guessSaved;
+    const guessSaved = data?.display?.finishCode === FinishCode.FINISH && data?.display.guessSaved;
     if (noEpisodeStarted || nonPlayableEpisode || guessSaved) {
       const { data: newEpisodeData } = yield* apiResolve(
         '/game-data/GameService2/newEpisode',
@@ -337,6 +337,7 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
   } catch (e) {
     if (e instanceof Error) {
       yield* put(addLayer('An Error Ocurred', e.message, []));
+      throw e;
     }
   }
 }

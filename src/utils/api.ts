@@ -391,7 +391,7 @@ export type Endpoints = {
   '/game-data/PregameService/getPage': {
     [METHOD.GET]: RequestHandler<
       {
-        error: false;
+        error: boolean;
         bookletSize: number;
         path: string;
         value: string;
