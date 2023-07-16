@@ -23,12 +23,10 @@
   "lint-staged": {
     "*.{ts,tsx}": [
       "prettier --write",
-      "eslint --fix",
       "git add"
     ],
     "*.{js,jsx}": [
       "prettier --write",
-      "eslint --fix",
       "git add"
     ],
     "*.{json,md}": [
