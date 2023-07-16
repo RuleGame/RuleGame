@@ -14,24 +14,13 @@ Node.js (LTS) https://nodejs.org/
   - Force player to play in fullscreen
   - Default: `false`
 
-## Texts File
+## Instructions, Consent, Demographics, Debriefing, etc. Files
 
-[`src/constants/texts.tsx`](src/constants/texts.tsx)
+Instructions, consent, demographics, debriefing, etc. files are now all located in the pregame folder in the game-data repository:
 
-### Adding Images
+https://github.com/lupyanlab/Rule-Game-game-data/tree/master/pregame
 
-```tsx
-// store images in src/assets folder
-import HappyFace from '../assets/smiley-face.png';
-
-<Box width="small" height="small">
-  <Image src={HappyFace} fill />
-</Box>;
-```
-
-## Demographics File
-
-[`src/constants/demographics.ts`](src/constants/demographics.ts)
+The demographics files follow the SurveyJS standard format for writing new questions.
 
 SurveyJS Library Documentation: https://surveyjs.io/Examples/Library?id=questiontype-text&platform=jQuery&theme=modern#content-result
 
