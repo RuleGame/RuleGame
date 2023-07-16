@@ -1,17 +1,21 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-param-reassign */
+/* eslint-disable @typescript-eslint/no-var-requires,import/no-extraneous-dependencies */
 // const StylelintPlugin = require('stylelint-webpack-plugin');
-// eslint-disable-next-line @typescript-eslint/no-var-requires,import/no-extraneous-dependencies
-// eslint-disable-next-line @typescript-eslint/no-var-requires,import/no-extraneous-dependencies
-const { useBabelRc, addWebpackModuleRule } = require('customize-cra');
+const {
+  useBabelRc,
+  addWebpackModuleRule,
+  disableEsLint,
+  addWebpackPlugin,
+} = require('customize-cra');
+const webpack = require('webpack');
 
 module.exports = function override(config, env) {
   config = useBabelRc()(config);
   // Definition for rule '@typescript-eslint/no-object-literal-type-assertion' was not found
   // Probably not using correct list of plugins for react rewired (lint command works directly)
   // config = useEslintRc(path.resolve(__dirname, '.eslintrc'))(config);
-  // const contents = fs.readFileSync(path.resolve(__dirname, '.eslintrc'), 'utf8');
-  // console.log(contents);
+  config = disableEsLint()(config);
 
   if (env === 'development') {
     config.plugins
@@ -24,5 +28,11 @@ module.exports = function override(config, env) {
   }
   config = addWebpackModuleRule({ test: /\.txt$/, use: 'raw-loader' })(config);
   config = addWebpackModuleRule({ test: /\.(graphql|gql)$/, use: 'graphql-tag/loader' })(config);
+  config = addWebpackPlugin(
+    new webpack.ProvidePlugin({
+      React: 'react',
+    }),
+  )(config);
+
   return config;
 };
