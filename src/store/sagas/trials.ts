@@ -1,6 +1,7 @@
 import { call, delay, put, race, select, takeEvery } from 'typed-redux-saga';
 import { getType } from 'typesafe-actions';
 import Papa from 'papaparse';
+import { merge } from 'lodash';
 import { Code, ErrorMsg, FinishCode, METHOD } from '../../utils/api';
 import {
   activateBonus,
@@ -316,6 +317,10 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
     const {
       payload: { data: demographics },
     } = yield* takeAction(recordDemographics);
+
+    // Process matrix-game specially
+    const demographicsProcessedData = merge(demographics, demographics['matrix-games']);
+    delete demographicsProcessedData['matrix-games'];
 
     const csvString = Papa.unparse({
       fields: ['key', 'value'],
