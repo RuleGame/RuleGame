@@ -45,5 +45,11 @@ jobs:
       - name: Zip build folder
         run: cd build && zip -r ../dev.zip *
 
-      - name: Upload build
-        run: curl -k -F "secret=${{ secrets.UPLOAD_SECRET }}" -F "build=@dev.zip" "${{ secrets.UPLOAD_URL }}"
+      - name: Upload Zip build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: dev.zip
+
+      # - name: Upload build
+      #   run: curl -k -F "secret=${{ secrets.UPLOAD_SECRET }}" -F "build=@dev.zip" "${{ secrets.UPLOAD_URL }}"

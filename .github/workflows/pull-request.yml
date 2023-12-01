@@ -46,11 +46,17 @@ jobs:
       - name: Zip build folder
         run: cd build && zip -r ../preview-${{ github.head_ref }}.zip *
 
-      - name: Upload build
-        run: curl -k -F "secret=${{ secrets.UPLOAD_SECRET }}" -F "build=@preview-${{ github.head_ref }}.zip" "${{ secrets.UPLOAD_URL }}"
-
-      - name: Comment PR
-        uses: thollander/actions-comment-pull-request@main
+      - name: Upload Zip build artifact
+        uses: actions/upload-artifact@v3
         with:
-          message: Successfully deployed to http://sapir.psych.wisc.edu/rule-game/preview-${{ github.head_ref }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: build
+          path: preview-${{ github.head_ref }}.zip
+
+      # - name: Upload build
+      #   run: curl -k -F "secret=${{ secrets.UPLOAD_SECRET }}" -F "build=@preview-${{ github.head_ref }}.zip" "${{ secrets.UPLOAD_URL }}"
+
+      # - name: Comment PR
+      #   uses: thollander/actions-comment-pull-request@main
+      #   with:
+      #     message: Successfully deployed to http://sapir.psych.wisc.edu/rule-game/preview-${{ github.head_ref }}
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
