@@ -48,7 +48,7 @@ jobs:
       - name: Upload Zip build artifact
         uses: actions/upload-artifact@v3
         with:
-          name: code-coverage-report
+          name: build
           path: prod.zip
 
       # - name: Upload build
