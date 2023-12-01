@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMeasure } from 'react-use';
 import { Dispatch } from 'redux';
-import { SearchQueryKey } from '../../constants';
+import { API_HOST_ORIGIN, SearchQueryKey } from '../../constants';
 import { CY_GAME, CY_NO_MORE_MOVES } from '../../constants/data-cy';
 import { DEBUG_ENABLED } from '../../constants/env';
 import { Page } from '../../constants/Page';
@@ -157,7 +157,7 @@ const Game: React.FunctionComponent<{
             ref={instructionsButtonRef}
             onClick={() =>
               window.open(
-                `${window.location.origin}${window.location.pathname}/?${SearchQueryKey.HELP}=true&${SearchQueryKey.WORKER_ID}=${workerId}&${SearchQueryKey.EXPERIMENT_PLAN}=${exp}`,
+                `${window.location.origin}${window.location.pathname}/?${SearchQueryKey.HELP}=true&${SearchQueryKey.WORKER_ID}=${workerId}&${SearchQueryKey.EXPERIMENT_PLAN}=${exp}&${SearchQueryKey.SERVER}=${API_HOST_ORIGIN}`,
               )
             }
           />
