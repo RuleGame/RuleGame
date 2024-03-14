@@ -1,6 +1,7 @@
 import { call, delay, put, race, select, takeEvery } from 'typed-redux-saga';
 import { getType } from 'typesafe-actions';
 import Papa from 'papaparse';
+import { merge } from 'lodash';
 import { Code, ErrorMsg, FinishCode, METHOD } from '../../utils/api';
 import {
   activateBonus,
@@ -55,9 +56,9 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
 
     const noEpisodeStarted = error && errmsg === ErrorMsg.FAILED_TO_FIND_ANY_EPISODE;
     const nonPlayableEpisode = !(
-      data?.display.finishCode === FinishCode.FINISH || data?.display.finishCode === FinishCode.NO
+      data?.display?.finishCode === FinishCode.FINISH || data?.display?.finishCode === FinishCode.NO
     );
-    const guessSaved = data?.display.finishCode === FinishCode.FINISH && data?.display.guessSaved;
+    const guessSaved = data?.display?.finishCode === FinishCode.FINISH && data?.display.guessSaved;
     if (noEpisodeStarted || nonPlayableEpisode || guessSaved) {
       const { data: newEpisodeData } = yield* apiResolve(
         '/game-data/GameService2/newEpisode',
@@ -317,6 +318,10 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
       payload: { data: demographics },
     } = yield* takeAction(recordDemographics);
 
+    // Process matrix-game specially
+    const demographicsProcessedData = merge(demographics, demographics['matrix-games']);
+    delete demographicsProcessedData['matrix-games'];
+
     const csvString = Papa.unparse({
       fields: ['key', 'value'],
       data: Object.entries(demographics),
@@ -337,6 +342,7 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
   } catch (e) {
     if (e instanceof Error) {
       yield* put(addLayer('An Error Ocurred', e.message, []));
+      throw e;
     }
   }
 }

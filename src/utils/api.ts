@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 // eslint-disable-next-line import/no-cycle
-import { API_HOST_ORIGIN, IMAGE_BASE_URL } from '../constants';
+import { API_HOST_ORIGIN, BOOKLET_PAGE_BASE_URL, IMAGE_BASE_URL } from '../constants';
 import { BucketPosition } from '../constants/BucketPosition';
 import { Color } from '../constants/Color';
 import { Shape } from '../constants/Shape';
@@ -374,6 +374,33 @@ export type Endpoints = {
       }
     >;
   };
+
+  '/game-data/PregameService/getBookletSize': {
+    [METHOD.GET]: RequestHandler<
+      {
+        error: boolean;
+        bookletSize: number;
+        path: string;
+        errmsg: ErrorMsg;
+      },
+      undefined,
+      { playerId: string }
+    >;
+  };
+
+  '/game-data/PregameService/getPage': {
+    [METHOD.GET]: RequestHandler<
+      {
+        error: boolean;
+        bookletSize: number;
+        path: string;
+        value: string;
+        errmsg: ErrorMsg;
+      },
+      undefined,
+      { playerId: string; name: string }
+    >;
+  };
 };
 
 export type ResBody<
@@ -417,3 +444,6 @@ export function api<T extends keyof Endpoints, U extends keyof Endpoints[T]>(
 }
 
 export const getImageUrl = (image: string) => `${IMAGE_BASE_URL}?image=${image}`;
+
+export const getBookletPageUrl = (playerId: string, pageNo: number) =>
+  `${BOOKLET_PAGE_BASE_URL}?playerId=${playerId}&pageNo=${pageNo}`;
