@@ -393,6 +393,7 @@ export type Endpoints = {
       {
         error: boolean;
         bookletSize: number;
+        goodnessScore?: number;
         path: string;
         value: string;
         errmsg: ErrorMsg;
