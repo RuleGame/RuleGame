@@ -16,7 +16,30 @@ const Demographics: React.FunctionComponent = () => {
   });
   const model = useMemo(() => {
     if (data !== undefined) {
-      return new Model({ elements: JSON.parse(data.value) as Partial<ItemValue>[] });
+      const elements = (JSON.parse(data.value) as Partial<ItemValue>[])
+        .filter(({ goodnessGE, goodnessLT }) => {
+          // Only filter out items that have both a goodnessScore calculated and a goodness condition
+          if (
+            data.goodnessScore !== undefined &&
+            (goodnessGE !== undefined || goodnessLT !== undefined)
+          ) {
+            if (goodnessGE !== undefined && data.goodnessScore >= goodnessGE) {
+              return true;
+            } else if (goodnessLT !== undefined && data.goodnessScore < goodnessLT) {
+              return true;
+            }
+
+            return false;
+          }
+
+          return true;
+        })
+        .map((element) => {
+          delete element.goodnessGE;
+          delete element.goodnessLT;
+        });
+
+      return new Model({ elements });
     }
   }, [data]);
 
