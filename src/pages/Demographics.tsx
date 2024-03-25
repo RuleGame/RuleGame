@@ -37,6 +37,8 @@ const Demographics: React.FunctionComponent = () => {
         .map((element) => {
           delete element.goodnessGE;
           delete element.goodnessLT;
+
+          return element;
         });
 
       return new Model({ elements });
