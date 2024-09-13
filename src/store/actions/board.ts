@@ -49,6 +49,7 @@ export const setBoard = createAction(
     giveUpAt,
     incentive,
     lastStretch,
+    lastR,
     rewardsAndFactorsPerSeries,
     factorAchieved,
     factorPromised,
@@ -56,6 +57,8 @@ export const setBoard = createAction(
     justReachedX4,
     x2After,
     x4After,
+    x2Likelihood,
+    x4Likelihood,
     isPaused = false,
     faces,
     displaySeriesNo,
@@ -90,6 +93,7 @@ export const setBoard = createAction(
     giveUpAt?: number;
     incentive?: Incentive;
     lastStretch: number;
+    lastR: number;
     rewardsAndFactorsPerSeries: [number, number][];
     factorAchieved?: number;
     factorPromised?: number;
@@ -97,6 +101,8 @@ export const setBoard = createAction(
     justReachedX4?: boolean;
     x2After?: number;
     x4After?: number;
+    x2Likelihood?: number;
+    x4Likelihood?: number;
     isPaused?: boolean;
     faces?: boolean[];
     displaySeriesNo: number;
@@ -128,6 +134,7 @@ export const setBoard = createAction(
     trialListId,
     incentive,
     lastStretch,
+    lastR,
     rewardsAndFactorsPerSeries,
     factorAchieved,
     factorPromised,
@@ -135,6 +142,8 @@ export const setBoard = createAction(
     justReachedX4,
     x2After,
     x4After,
+    x2Likelihood,
+    x4Likelihood,
     isPaused,
     faces,
     displaySeriesNo,

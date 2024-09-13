@@ -68,7 +68,7 @@ const App = () => {
           <Box>
             <Text>
               Client Version [environment-commitHash]:{' '}
-              <Text weight="bold">{VERSION ?? 'Missing Client Version'}</Text>
+              <Text weight="bold">{VERSION ?? 'Missing Client Version'} (2024-09-11-b)</Text>
             </Text>
             <Text>
               Server URL: <Text weight="bold">{API_HOST_ORIGIN ?? 'Missing Server URL'}</Text>

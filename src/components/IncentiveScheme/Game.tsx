@@ -199,18 +199,21 @@ const Game: React.FunctionComponent<{
             />
           </Box>
         )}
-        {isGameCompleted && !isInBonus && incentive !== Incentive.DOUBLING && (
-          // FireFox needs height={{ min: 'unset' }} inside a grid
-          <Box
-            data-cy={CY_NO_MORE_MOVES}
-            height={{ min: 'unset' }}
-            gap="large"
-            pad={{ left: 'xlarge', right: 'xlarge' }}
-            fill
-          >
-            <GuessRuleForm />
-          </Box>
-        )}
+        {isGameCompleted &&
+          !isInBonus &&
+          incentive !== Incentive.DOUBLING &&
+          incentive !== Incentive.LIKELIHOOD && (
+            // FireFox needs height={{ min: 'unset' }} inside a grid
+            <Box
+              data-cy={CY_NO_MORE_MOVES}
+              height={{ min: 'unset' }}
+              gap="large"
+              pad={{ left: 'xlarge', right: 'xlarge' }}
+              fill
+            >
+              <GuessRuleForm />
+            </Box>
+          )}
         {isGameCompleted && isInBonus && (
           <Box align="center">
             <Heading>

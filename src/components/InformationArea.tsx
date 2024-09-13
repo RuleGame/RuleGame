@@ -8,17 +8,21 @@ import {
   facesSelector,
   factorPromisedSelector,
   finishCodeSelector,
+  incentiveSelector,
   isSecondOrMoreTimeDoublingSelector,
   lastDoublingStreakCountSelector,
   lastStretchSelector,
+  lastRSelector,
   lostStreakSelector,
   numFacesSelector,
   numGoodMovesInARowSelector,
   numGoodMovesMadeSelector,
   x2AfterSelector,
   x4AfterSelector,
+  x2LikelihoodSelector,
+  x4LikelihoodSelector,
 } from '../store/selectors/board';
-import { FinishCode } from '../utils/api';
+import { FinishCode, Incentive } from '../utils/api';
 import ShapeObject from './ShapeObject';
 
 const InformationArea: React.FunctionComponent = () => {
@@ -27,6 +31,7 @@ const InformationArea: React.FunctionComponent = () => {
   const numFaces = useSelector(numFacesSelector);
   const goodBadMoves = useSelector(facesSelector)!;
   const lastStretch = useSelector(lastStretchSelector);
+  const lastR = useSelector(lastRSelector);
   const x4After = useSelector(x4AfterSelector)!;
   const factorPromised = useSelector(factorPromisedSelector);
   const [idea, setIdea] = useState('');
@@ -36,11 +41,15 @@ const InformationArea: React.FunctionComponent = () => {
   const isSecondOrMoreTimeDoubling = useSelector(isSecondOrMoreTimeDoublingSelector);
   const lastDoublingStreakCount = useSelector(lastDoublingStreakCountSelector);
   const x2After = useSelector(x2AfterSelector);
+  const x2Likelihood = useSelector(x2LikelihoodSelector);
+  const x4Likelihood = useSelector(x4LikelihoodSelector);
   const lastFaceRef = useRef<HTMLDivElement | null>(null);
   const finishCode = useSelector(finishCodeSelector);
   const isAchieved = finishCode === FinishCode.EARLY_WIN || factorPromised === 4;
 
   const displaySeriesNo = useSelector(displaySeriesNoSelector);
+  const incentive = useSelector(incentiveSelector);
+
   useEffect(() => {
     lastFaceRef.current?.scrollIntoView();
   }, [goodBadMoves]);
@@ -70,6 +79,12 @@ const InformationArea: React.FunctionComponent = () => {
               <Text weight="bold" style={{ fontStyle: 'italic' }}>
                 {lastStretch}
               </Text>
+              ; Last R=
+              <Text weight="bold" style={{ fontStyle: 'italic' }}>
+                {lastR}
+              </Text>
+              ; (Score will double when R &ge; {x2Likelihood}; score will quadruple when R &ge;{' '}
+              {x4Likelihood})
             </Text>
           </Box>
         </Box>
@@ -96,7 +111,23 @@ const InformationArea: React.FunctionComponent = () => {
         </Box>
       </Box>
       <Box background="beige" pad="xxsmall" border={{ color: 'black' }} style={{ flex: 1 }}>
-        {factorPromised === 4 ? (
+        {incentive === Incentive.LIKELIHOOD ? (
+          factorPromised === 4 ? (
+            <Text>
+              Your recent moves are {lastR} times better than one could do at random! This has{' '}
+              <Text weight="bold">re-doubled</Text> your score. Tell us below how you did it.
+            </Text>
+          ) : x2Likelihood && lastR >= x2Likelihood ? (
+            <Text>
+              Your recent moves are {lastR} times better than one could do at random. This has
+              doubled your score. If you make a few more good moves, achieving factor {x4Likelihood}
+              , that will double your score again.
+            </Text>
+          ) : (
+            <Text>Please keep working...</Text>
+          )
+        ) : //----   DOUBLING
+        factorPromised === 4 ? (
           <Text>
             Your {numGoodMovesInARow} good moves in a row has <Text weight="bold">re-doubled</Text>{' '}
             your score. Tell us below how you did it.

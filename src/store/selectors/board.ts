@@ -128,6 +128,7 @@ export const factorPromisedSelector = (state: RootState) => state.board.factorPr
 export const justReachedX2Selector = (state: RootState) => state.board.justReachedX2;
 export const justReachedX4Selector = (state: RootState) => state.board.justReachedX4;
 export const lastStretchSelector = (state: RootState) => state.board.lastStretch;
+export const lastRSelector = (state: RootState) => state.board.lastR;
 
 export const goodBadMovesSelector = (state: RootState) =>
   state.board.transcript
@@ -136,6 +137,8 @@ export const goodBadMovesSelector = (state: RootState) =>
 
 export const x2AfterSelector = (state: RootState) => state.board.x2After;
 export const x4AfterSelector = (state: RootState) => state.board.x4After;
+export const x2LikelihoodSelector = (state: RootState) => state.board.x2Likelihood;
+export const x4LikelihoodSelector = (state: RootState) => state.board.x4Likelihood;
 
 export const facesSelector = (state: RootState) => state.board.faces;
 

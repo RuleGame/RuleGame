@@ -89,6 +89,8 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
         feedback_switches: feedbackSwitches,
         x2_after: x2After,
         x4_after: x4After,
+        x2_likelihood: x2Likelihood,
+        x4_likelihood: x4Likelihood,
       } = para;
 
       let moveAction: ReturnType<typeof move> | undefined;
@@ -149,6 +151,7 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
             giveUpAt,
             incentive: display.incentive,
             lastStretch: display.lastStretch,
+            lastR: display.lastR,
             rewardsAndFactorsPerSeries: display.rewardsAndFactorsPerSeries,
             factorAchieved: display.factorAchieved,
             factorPromised: display.factorPromised,
@@ -156,6 +159,8 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
             justReachedX4: display.justReachedX4,
             x2After,
             x4After,
+            x2Likelihood,
+            x4Likelihood,
             // TODO: Temporarily allow the player to clear the board after the factorPromised is at 4.
             // Eventually, disallow it to continue once the API can auto complete the board.
             // if (display.factorPromised !== 4) {

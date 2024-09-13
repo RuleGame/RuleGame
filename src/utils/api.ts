@@ -67,8 +67,9 @@ export enum FeedbackSwitches {
 }
 
 export enum Incentive {
-  DOUBLING = 'DOUBLING',
   BONUS = 'BONUS',
+  DOUBLING = 'DOUBLING',
+  LIKELIHOOD = 'LIKELIHOOD',
 }
 
 type RequestHandler<
@@ -141,6 +142,7 @@ export type Display = {
   trialListId: string;
   incentive?: Incentive;
   lastStretch: number;
+  lastR: number;
   rewardsAndFactorsPerSeries: [number, number][];
   factorAchieved?: number;
   factorPromised?: number;
@@ -178,6 +180,8 @@ type Para = {
   give_up_at?: number;
   x2_after?: number;
   x4_after?: number;
+  x2_likelihood?: number;
+  x4_likelihood?: number;
   init: number;
 };
 

@@ -59,13 +59,18 @@ const Board = ({ className }: BoardProps): JSX.Element => {
   const bucketShapes = useSelector(bucketShapesSelector);
   const boardObjects = useSelector(boardObjectsSelector);
   const displayBucketDropLists = useSelector(displayBucketDropListsSelector);
-  const [ref, { height }] = useMeasure();
+  const [ref, { height, width }] = useMeasure();
 
   return (
     <Box justify="center" align="center" ref={ref} fill>
       <Grid
+        fill
         // fill="vertical"
-        style={{ width: `${height}px`, height: `${height}px`, overflow: 'hidden' }}
+        style={{
+          width: `${Math.min(width, height)}px`,
+          height: `${Math.min(width, height)}px`,
+          overflow: 'hidden',
+        }}
         className={className}
         rows={['10%', '40%', '40%', '10%']}
         columns={['10%', '80%', '10%']}
@@ -114,7 +119,7 @@ const Board = ({ className }: BoardProps): JSX.Element => {
           </>
         )}
 
-        <Box gridArea={GridAreaName.BOARD} pad="xxsmall">
+        <Box gridArea={GridAreaName.BOARD} pad="xxsmall" fill>
           <StyledBoard>
             {boardObjects.map((boardObject) => (
               <StyledBoardObject

@@ -30,7 +30,9 @@ const GuessRuleForm: React.FunctionComponent = () => {
   const [ruleGuess, setRuleGuess] = useState('');
   const [guessOpened, setGuessOpened] = useState(false);
   const incentive = useSelector(incentiveSelector);
-  const [showScale, setShowScale] = useState(incentive === Incentive.DOUBLING);
+  const [showScale, setShowScale] = useState(
+    incentive === Incentive.DOUBLING || incentive === Incentive.LIKELIHOOD,
+  );
   const nextButtonRef = useRef<HTMLButtonElement | null>(null);
   const autofillButtonRef = useRef<HTMLButtonElement | null>(null);
   const [autofillButtonOver, setAutofillButtonOver] = useState(false);

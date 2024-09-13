@@ -54,6 +54,7 @@ export type State = {
   trialListId: string;
   incentive?: Incentive;
   lastStretch: number;
+  lastR: number;
   rewardsAndFactorsPerSeries: [number, number][];
   factorAchieved?: number;
   factorPromised?: number;
@@ -61,6 +62,8 @@ export type State = {
   justReachedX4?: boolean;
   x2After?: number;
   x4After?: number;
+  x2Likelihood?: number;
+  x4Likelihood?: number;
   faces?: boolean[];
   displaySeriesNo: number;
   displayEpisodeNo: number;
@@ -103,6 +106,7 @@ export const initialState: State = {
   trialListId: 'N/A',
   incentive: undefined,
   lastStretch: 0,
+  lastR: 0,
   rewardsAndFactorsPerSeries: [],
   factorAchieved: undefined,
   factorPromised: undefined,
@@ -110,6 +114,8 @@ export const initialState: State = {
   justReachedX4: undefined,
   x2After: undefined,
   x4After: undefined,
+  x2Likelihood: undefined,
+  x4Likelihood: undefined,
   faces: [],
   displaySeriesNo: 0,
   displayEpisodeNo: 0,
@@ -162,6 +168,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         trialListId: action.payload.trialListId,
         incentive: action.payload.incentive,
         lastStretch: action.payload.lastStretch,
+        lastR: action.payload.lastR,
         rewardsAndFactorsPerSeries: action.payload.rewardsAndFactorsPerSeries,
         factorAchieved: action.payload.factorAchieved,
         factorPromised: action.payload.factorPromised,
@@ -169,6 +176,8 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         justReachedX4: action.payload.justReachedX4,
         x2After: action.payload.x2After,
         x4After: action.payload.x4After,
+        x2Likelihood: action.payload.x2Likelihood,
+        x4Likelihood: action.payload.x4Likelihood,
         faces: action.payload.faces,
         displaySeriesNo: action.payload.displaySeriesNo,
         displayEpisodeNo: action.payload.displayEpisodeNo,

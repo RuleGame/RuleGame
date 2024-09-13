@@ -22,6 +22,7 @@ import {
   finishCodeSelector,
   hasMoreBonusRoundsSelector,
   historyInfoSelector,
+  incentiveSelector,
   isGameCompletedSelector,
   isInBonusSelector,
   pausedSelector,
@@ -30,7 +31,7 @@ import {
   workerIdSelector,
 } from '../store/selectors/board';
 import { debugModeSelector } from '../store/selectors/debug-mode';
-import { FinishCode } from '../utils/api';
+import { FinishCode, Incentive } from '../utils/api';
 import { useExperimentPlan } from '../utils/hooks';
 import Board from './Board';
 import GuessRuleForm from './GuessRuleForm';
@@ -65,6 +66,7 @@ const Game: React.FunctionComponent<{
   const allowGiveUpOption = useSelector(allowGiveUpOptionSelector);
   const [instructionsButtonOver, setInstructionsButtonOver] = useState(false);
   const workerId = useSelector(workerIdSelector);
+  const incentive = useSelector(incentiveSelector);
   const factorPromised = useSelector(factorPromisedSelector);
   const exp = useExperimentPlan();
   const [leftRef, { width: leftWidth }] = useMeasure();
@@ -199,22 +201,26 @@ const Game: React.FunctionComponent<{
             />
           </Box>
         )}
-        {isGameCompleted && !isInBonus && factorPromised !== 4 && (
-          // FireFox needs height={{ min: 'unset' }} inside a grid
-          <Box
-            data-cy={CY_NO_MORE_MOVES}
-            height={{ min: 'unset' }}
-            pad={{ left: 'xlarge', right: 'xlarge' }}
-            fill
-          >
-            <Box fill="horizontal" align="center" justify="center" margin="small">
-              {finishCode === FinishCode.STALEMATE && (
-                <Text>{texts[Page.TRIALS].stalematePrompt}</Text>
-              )}
+        {isGameCompleted &&
+          !isInBonus &&
+          incentive !== Incentive.DOUBLING &&
+          incentive !== Incentive.LIKELIHOOD && (
+            // FireFox needs height={{ min: 'unset' }} inside a grid
+            <Box
+              data-cy={CY_NO_MORE_MOVES}
+              height={{ min: 'unset' }}
+              gap="large"
+              pad={{ left: 'xlarge', right: 'xlarge' }}
+              fill
+            >
+              <Box fill="horizontal" align="center" justify="center" margin="small">
+                {finishCode === FinishCode.STALEMATE && (
+                  <Text>{texts[Page.TRIALS].stalematePrompt}</Text>
+                )}
+              </Box>
+              <GuessRuleForm />
             </Box>
-            <GuessRuleForm />
-          </Box>
-        )}
+          )}
         {isGameCompleted && isInBonus && (
           <Box align="center">
             <Heading>
