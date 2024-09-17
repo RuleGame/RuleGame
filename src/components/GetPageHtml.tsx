@@ -38,7 +38,14 @@ function GetPageHtml({
       {(data) => (
         <>
           {sanitizedHtml !== undefined && (
-            <Box background="brand" fill align="center" pad="medium" justify="center">
+            <Box
+              background="brand"
+              fill
+              align="center"
+              pad="medium"
+              justify="start"
+              overflow="auto"
+            >
               {/* eslint-disable-next-line react/no-danger */}
               <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
               {children !== undefined && children(data)}

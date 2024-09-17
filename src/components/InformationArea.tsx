@@ -79,13 +79,19 @@ const InformationArea: React.FunctionComponent = () => {
               <Text weight="bold" style={{ fontStyle: 'italic' }}>
                 {lastStretch}
               </Text>
-              ; Last R=
-              <Text weight="bold" style={{ fontStyle: 'italic' }}>
-                {lastR}
-              </Text>
-              ; (Score will double when R &ge; {x2Likelihood}; score will quadruple when R &ge;{' '}
-              {x4Likelihood})
             </Text>
+            {incentive === Incentive.LIKELIHOOD ? (
+              <Text>
+                ; Last R=
+                <Text weight="bold" style={{ fontStyle: 'italic' }}>
+                  {lastR}
+                </Text>
+                ; (Score will double when R &ge; {x2Likelihood}; score will quadruple when R &ge;{' '}
+                {x4Likelihood})
+              </Text>
+            ) : (
+              ''
+            )}
           </Box>
         </Box>
         <Box direction="row" wrap overflow="auto">
