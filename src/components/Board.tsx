@@ -66,11 +66,12 @@ const Board = ({ className }: BoardProps): JSX.Element => {
       <Grid
         fill
         // fill="vertical"
-        style={{
-          width: `${Math.min(width, height)}px`,
-          height: `${Math.min(width, height)}px`,
-          overflow: 'hidden',
-        }}
+        style={{ width: `${height}px`, height: `${height}px`, overflow: 'hidden' }}
+        //style={{
+        //         width: `${Math.min(width, height)}px`,
+        //         height: `${Math.min(width, height)}px`,
+        //         overflow: 'hidden',
+        //       }}
         className={className}
         rows={['10%', '40%', '40%', '10%']}
         columns={['10%', '80%', '10%']}

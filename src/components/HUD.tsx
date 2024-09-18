@@ -107,7 +107,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
           justify="center"
           align="center"
           overflow="auto"
-          fill="vertical"
+          fill={true}
           margin="small"
         >
           {children}
