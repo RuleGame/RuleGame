@@ -27,6 +27,10 @@ export enum SearchQueryKey {
   INTRO = 'intro',
   SERVER = 'server',
   UID = 'uid',
+  // Three params that may occur in Prolific URLs, 2024-09
+  PROLIFIC_PID = 'PROLIFIC_PID',
+  STUDY_ID = 'STUDY_ID',
+  SESSION_ID = 'SESSION_ID',
 }
 
 export const API_HOST_ORIGIN =

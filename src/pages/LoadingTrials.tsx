@@ -9,12 +9,12 @@ import { Page } from '../constants/Page';
 import texts from '../constants/texts';
 import { RootAction } from '../store/actions';
 import { startTrials } from '../store/actions/board';
-import { useExperimentPlan } from '../utils/hooks';
+import { useExperimentPlan, getWorkerId } from '../utils/hooks';
 
 export default () => {
   const dispatch: Dispatch<RootAction> = useDispatch();
   const uid = useSearchParam(SearchQueryKey.UID) ?? undefined;
-  const workerId = useSearchParam(SearchQueryKey.WORKER_ID) ?? undefined;
+  const workerId = getWorkerId();
   const exp = useExperimentPlan();
 
   useMount(async () => {

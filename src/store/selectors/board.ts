@@ -3,6 +3,10 @@ import { BucketPosition } from '../../constants/BucketPosition';
 import { BoardObject, Code, FinishCode } from '../../utils/api';
 import { RootState } from '../reducers';
 
+//-- Added by VM 2024-09-28, so that we could pull in the entire structure
+//-- at once, rather than field-by-field
+export const boardSelector = (state: RootState) => state.board;
+
 export const isPausedSelector = (state: RootState) => state.board.isPaused;
 
 export const bucketShapesSelector = (state: RootState) => state.board.bucketShapes;

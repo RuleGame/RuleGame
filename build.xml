@@ -1,0 +1,71 @@
+<!-- We use ant to run the "jar" tool, because we don't know where this tool
+     is installed on action.rutgers.edu... but ant does!
+
+ compile.sh
+ ant war
+
+-->
+
+<project name="w2020" default="war" basedir=".">
+
+ <property name="main" location="."/>
+
+ <property name="src" location="src"/>
+ <!-- property name="src.doc" location="src.doc"/ -->
+
+ <property name="rg" location="${main}/rule-game"/>
+
+ <property name="dist.war"       value="${main}/rule-game.war"/>
+
+<!-- An auxiliary target; you aren't likely to use it directly.  It just creates necessary directories -->
+<target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${rg}"/>
+</target>
+
+
+<target name="clean"
+        description="Clean up compiled files and generated database files">
+
+  <!-- delete dir="${deploy.home}"/ -->
+  <delete dir="${rg}"/>
+  <delete dir="build"/>
+	
+</target>
+
+
+<target name="war" depends="">
+<war destfile="${dist.war}" needxmlfile="false">
+  <fileset dir="${rg}"  />
+  <!-- webinf dir="WEB-INF"/>
+  <metainf dir="META-INF"/ -->
+</war>
+</target>
+
+</project>
+<!--
+setenv REACT_APP_APP_API_HOST_ORIGIN /w2020
+
+rm -rf rule-game 
+mkdir rule-game
+
+setenv REACT_APP_DEBUG_MODE_ENABLED true
+echo "Compiling with REACT_APP_DEBUG_MODE_ENABLED=$REACT_APP_DEBUG_MODE_ENABLED"
+# setenv REACT_APP_APP_API_HOST_ORIGIN http://localhost:8080/w2020
+rm -rf build 
+npm run build
+mv build rule-game/dev
+
+echo "Compiling with REACT_APP_DEBUG_MODE_ENABLED=$REACT_APP_DEBUG_MODE_ENABLED"
+setenv REACT_APP_DEBUG_MODE_ENABLED false
+# setenv REACT_APP_APP_API_HOST_ORIGIN http://localhost:8080/w2020
+rm -rf build
+npm run build
+mv build rule-game/prod
+
+rm -f rule-game.war
+(cd rule-game; jar -cvf ../rule-game.war .)
+-->
+

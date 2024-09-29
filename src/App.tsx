@@ -24,6 +24,7 @@ import { setWorkerId } from './store/actions/board';
 import { goToPage } from './store/actions/page';
 import { pageSelector } from './store/selectors/page';
 import { api, METHOD } from './utils/api';
+import { getWorkerId } from './utils/hooks';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -35,7 +36,8 @@ const App = () => {
   const versionPage = useSearchParam(SearchQueryKey.VERSION)?.toLowerCase() === 'true';
   const [fullscreen, setFullscreen] = useState(false);
   const intro = (useSearchParam(SearchQueryKey.INTRO)?.toLowerCase() ?? 'true') === 'true';
-  const workerId = useSearchParam(SearchQueryKey.WORKER_ID) ?? undefined;
+  const workerId = getWorkerId();
+
   useMount(() => {
     if (workerId !== undefined) {
       dispatch(setWorkerId(workerId));
@@ -68,7 +70,7 @@ const App = () => {
           <Box>
             <Text>
               Client Version [environment-commitHash]:{' '}
-              <Text weight="bold">{VERSION ?? 'Missing Client Version'} (2024-09-17-a)</Text>
+              <Text weight="bold">{VERSION ?? 'Missing Client Version'} (2024-09-28-a)</Text>
             </Text>
             <Text>
               Server URL: <Text weight="bold">{API_HOST_ORIGIN ?? 'Missing Server URL'}</Text>

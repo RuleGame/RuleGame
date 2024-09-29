@@ -11,6 +11,7 @@ import { Endpoints, METHOD, api } from './api';
 import rgb from './rgb';
 import { RootState } from '../store/reducers';
 import { AppDispatch } from '../store/configureStore';
+// import { getWorkerId } from './utils/hooks';
 
 export const useWorkerLocalStorage = () =>
   useLocalStorage<LocalStorageWorkerIdKey>(LOCAL_STORAGE_KEY.WORKER_ID, {
@@ -48,7 +49,8 @@ export function usePregameService<
 ): QueryResult<Endpoints[T][METHOD.GET]['resBody'] & { workerId: string }, Error> {
   const dispatch = useAppDispatch();
   const uid = useSearchParam(SearchQueryKey.UID) ?? undefined;
-  const workerIdSearchParam = useSearchParam(SearchQueryKey.WORKER_ID) ?? undefined;
+  //  const workerIdSearchParam = useSearchParam(SearchQueryKey.WORKER_ID) ?? undefined;
+  const workerIdSearchParam = getWorkerId();
   const exp = useExperimentPlan();
 
   const query = useQuery(
@@ -217,3 +219,23 @@ export const useReplaceString = (
       return value.replace(new RegExp(`{${replaceString}}`, 'g'), replaceValue);
     }
   }, [replaceString, replaceValue, value]);
+
+export const getWorkerId: () => string | undefined = function (): string | undefined {
+  const workerId: string | undefined = useSearchParam(SearchQueryKey.WORKER_ID) ?? undefined;
+
+  // Three variables that may come in Prolific URLs
+  const prolificPid = useSearchParam(SearchQueryKey.PROLIFIC_PID) ?? undefined;
+  const studyId = useSearchParam(SearchQueryKey.STUDY_ID) ?? undefined;
+  const sessionId = useSearchParam(SearchQueryKey.SESSION_ID) ?? undefined;
+
+  // Prolific subjects may come with URLs that contain STUDY_ID and
+  // PROLIFIC_PID supplied instead of workerId, so we generate a
+  //  workerId based on them.
+
+  if (workerId === undefined) {
+    if (studyId !== undefined && prolificPid !== undefined) {
+      return 'prolific-' + studyId + '-' + prolificPid;
+    }
+  }
+  return workerId;
+};

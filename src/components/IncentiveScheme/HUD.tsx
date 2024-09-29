@@ -36,7 +36,8 @@ enum GridArea {
   INFORMATION_AREA = 'INFORMATION_AREA',
 }
 
-const NUM_FONT_SIZE = '1.25em;';
+//const NUM_FONT_SIZE = '1.25em;';
+const NUM_FONT_SIZE = '1em;'; // to fit better
 
 const HUD: React.FunctionComponent = ({ children }) => {
   const numMovesMade = useSelector(numMovesMadeSelector);
@@ -52,6 +53,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
 
   const [ref, { height, width }] = useMeasure();
 
+  // tried to change width from 50em to 35em (--VM, 2024-09-25)
   return (
     <Box fill direction="row">
       <Box width="50em">
