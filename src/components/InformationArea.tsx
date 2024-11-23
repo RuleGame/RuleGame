@@ -92,7 +92,12 @@ const InformationArea: React.FunctionComponent = () => {
 
   return (
     <Box background="steelblue" pad="medium" fill="vertical" border={{ color: 'black' }}>
-      <Box background="darkseagreen" pad="xxsmall" border={{ color: 'black' }} style={{ flex: 1 }}>
+      <Box
+        background="darkseagreen"
+        pad="xxsmall"
+        border={{ color: 'black' }}
+        style={{ flex: justReachedX4 ? 0.3 : 0.7, transition: 'flex 0.3s ease-in-out' }}
+      >
         <Box margin={{ bottom: 'medium' }}>
           {
             //<Box margin={{ bottom: 'medium' }}>
@@ -147,7 +152,12 @@ const InformationArea: React.FunctionComponent = () => {
           ))}
         </Box>
       </Box>
-      <Box background="beige" pad="xxsmall" border={{ color: 'black' }} style={{ flex: 1 }}>
+      <Box
+        background="beige"
+        pad="xxsmall"
+        border={{ color: 'black' }}
+        style={{ flex: justReachedX4 ? 0.7 : 0.3, transition: 'flex 0.3s ease-in-out' }}
+      >
         {incentive === Incentive.LIKELIHOOD ? (
           justReachedX4 ? (
             <Text>
@@ -196,7 +206,7 @@ const InformationArea: React.FunctionComponent = () => {
           <Text>Please keep trying...</Text>
         )}
         {isAchieved && (
-          <Box margin={{ top: 'small' }}>
+          <Box margin={{ top: 'small' }} overflow="auto">
             <Form
               onSubmit={() => {
                 dispatch(submitDetails(idea, how));
