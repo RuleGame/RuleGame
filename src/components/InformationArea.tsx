@@ -73,6 +73,16 @@ const InformationArea: React.FunctionComponent = () => {
 
   const displaySeriesNo = useSelector(displaySeriesNoSelector);
   const incentive = useSelector(incentiveSelector);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (containerRef.current && justReachedX4) {
+      const container = containerRef.current;
+      setTimeout(() => {
+        container.scrollTop = container.scrollHeight;
+      }, 300);
+    }
+  }, [justReachedX4]);
 
   useEffect(() => {
     lastFaceRef.current?.scrollIntoView();
@@ -96,7 +106,7 @@ const InformationArea: React.FunctionComponent = () => {
         background="darkseagreen"
         pad="xxsmall"
         border={{ color: 'black' }}
-        style={{ flex: justReachedX4 ? 0.3 : 0.7, transition: 'flex 0.3s ease-in-out' }}
+        style={{ flex: justReachedX4 ? 0.4 : 0.6, transition: 'flex 0.2s ease-in-out' }}
       >
         <Box margin={{ bottom: 'medium' }}>
           {
@@ -129,7 +139,7 @@ const InformationArea: React.FunctionComponent = () => {
             )}
           </Box>
         </Box>
-        <Box direction="row" wrap overflow="auto">
+        <Box direction="row" wrap overflow="auto" ref={containerRef}>
           {/* was Box width="xxsmall" */}
           {goodBadMoves.map((move, index) => (
             <Box
@@ -156,7 +166,7 @@ const InformationArea: React.FunctionComponent = () => {
         background="beige"
         pad="xxsmall"
         border={{ color: 'black' }}
-        style={{ flex: justReachedX4 ? 0.7 : 0.3, transition: 'flex 0.3s ease-in-out' }}
+        style={{ flex: justReachedX4 ? 0.6 : 0.4, transition: 'flex 0.2s ease-in-out' }}
       >
         {incentive === Incentive.LIKELIHOOD ? (
           justReachedX4 ? (
