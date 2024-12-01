@@ -106,9 +106,33 @@ const InformationArea: React.FunctionComponent = () => {
         background="darkseagreen"
         pad="xxsmall"
         border={{ color: 'black' }}
-        style={{ flex: justReachedX4 ? 0.4 : 0.6, transition: 'flex 0.2s ease-in-out' }}
+        style={{
+          flex: justReachedX4 ? 'none' : 0.8,
+          height:
+            justReachedX4 && containerRef.current
+              ? (() => {
+                  const containerWidth = containerRef.current.clientWidth;
+                  const moveWidth = 32; // 2em in pixels
+                  const movesPerRow = Math.floor(containerWidth / moveWidth);
+                  const totalMoves = goodBadMoves.length;
+                  const x = totalMoves % movesPerRow;
+
+                  if (movesPerRow < 10) {
+                    const y = Math.ceil((10 - x) / movesPerRow);
+                    return `${(y + 2) * moveWidth}px`;
+                  } else if (movesPerRow === 10) {
+                    return 10 - x > 0 ? `${3 * moveWidth}px` : `64px`;
+                  } else {
+                    // movesPerRow > 10
+                    return 10 - x > 0 ? `${3 * moveWidth}px` : `64px`;
+                  }
+                })()
+              : 'auto',
+          overflow: 'auto',
+          transition: 'all 0.2s ease-in-out',
+        }}
       >
-        <Box margin={{ bottom: 'medium' }}>
+        <Box style={{ height: '32px' }}>
           {
             //<Box margin={{ bottom: 'medium' }}>
             //<Text weight="bold">
@@ -117,7 +141,7 @@ const InformationArea: React.FunctionComponent = () => {
             //</Text>
             //</Box>
           }
-          <Box margin={{ bottom: 'medium' }}>
+          <Box margin={{ bottom: '7px' }}>
             {incentive === Incentive.LIKELIHOOD ? (
               <Text>
                 Golden string={Number(golden()).toFixed(1)}.
@@ -166,7 +190,10 @@ const InformationArea: React.FunctionComponent = () => {
         background="beige"
         pad="xxsmall"
         border={{ color: 'black' }}
-        style={{ flex: justReachedX4 ? 0.6 : 0.4, transition: 'flex 0.2s ease-in-out' }}
+        style={{
+          flex: justReachedX4 ? 1 : 0.2,
+          transition: 'all 0.2s ease-in-out',
+        }}
       >
         {incentive === Incentive.LIKELIHOOD ? (
           justReachedX4 ? (
@@ -216,21 +243,37 @@ const InformationArea: React.FunctionComponent = () => {
           <Text>Please keep trying...</Text>
         )}
         {isAchieved && (
-          <Box margin={{ top: 'small' }} overflow="auto">
+          <Box margin={{ top: 'small' }} overflow="auto" fill>
             <Form
               onSubmit={() => {
                 dispatch(submitDetails(idea, how));
+              }}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4%',
+                height: '100%',
               }}
             >
               <TextArea
                 placeholder="Explain your idea here"
                 value={idea}
                 onChange={(event) => setIdea(event.target.value)}
+                style={{
+                  flex: '48%',
+                  minHeight: 0,
+                  resize: 'none',
+                }}
               />
               <TextArea
                 placeholder="How did you figure it out?"
                 value={how}
                 onChange={(event) => setHow(event.target.value)}
+                style={{
+                  flex: '48%',
+                  minHeight: 0,
+                  resize: 'none',
+                }}
               />
               <Button type="submit" label="Submit" primary />
             </Form>
