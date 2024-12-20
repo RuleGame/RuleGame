@@ -55,26 +55,21 @@ const HUD: React.FunctionComponent = ({ children }) => {
             {
               name: GridArea.BOARD_COUNT,
               start: [0, 2],
-              end: [0, 2],
+              end: [1, 2],
             },
             {
               name: GridArea.POINTS,
-              start: [1, 2],
-              end: [1, 2],
+              start: [0, 1],
+              end: [1, 1],
             },
             {
               name: GridArea.INFORMATION_AREA,
               start: [0, 0],
               end: [1, 0],
             },
-            {
-              name: GridArea.NUM_MOVES,
-              start: [0, 1],
-              end: [1, 1],
-            },
           ]}
         >
-          <Box gridArea={GridArea.NUM_MOVES} align="start" justify="end">
+          {/* <Box gridArea={GridArea.NUM_MOVES} align="start" justify="end">
             {debugMode && (
               <Text>
                 <Heading level="4" margin="none">
@@ -101,7 +96,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
                 </Text>
               </Box>
             </Heading>
-          </Box>
+          </Box> */}
           <Box gridArea={GridArea.BOARD_COUNT} justify="end">
             <Heading level="3" margin="none">
               <Box direction="row" align="baseline">
