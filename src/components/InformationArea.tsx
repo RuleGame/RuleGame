@@ -220,7 +220,7 @@ const InformationArea: React.FunctionComponent = () => {
         factorPromised === 4 ? (
           <Text>
             Your {numGoodMovesInARow} good moves in a row has <Text weight="bold">re-doubled</Text>{' '}
-            your score. Tell us below how you did it.
+            your score. Please tell us what the hidden rule is.
           </Text>
         ) : isSecondOrMoreTimeDoubling ? (
           <Text>
