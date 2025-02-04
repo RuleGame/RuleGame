@@ -63,6 +63,8 @@ export type Game = {
   numDisplaysLimit?: number;
   showStackMemoryOrder?: boolean;
   showGridMemoryOrder?: boolean;
+  twoPGAdve: boolean;
+  twoPGCoop: boolean;
 };
 
 export type HistoryLog = {

@@ -28,6 +28,7 @@ import {
   ruleLineNoSelector,
   ruleSrcSelector,
   workerIdSelector,
+  isPlayerTurnSelector,
 } from '../../store/selectors/board';
 import { debugModeSelector } from '../../store/selectors/debug-mode';
 import { FinishCode, Incentive } from '../../utils/api';
@@ -48,7 +49,7 @@ const Game: React.FunctionComponent<{
 }> = ({ className }) => {
   const dispatch: Dispatch<RootAction> = useDispatch();
   const instructionsButtonRef = useRef<HTMLButtonElement | null>(null);
-
+  const isPlayerTurn = useSelector(isPlayerTurnSelector);
   const paused = useSelector(pausedSelector);
   const isGameCompleted = useSelector(isGameCompletedSelector);
   const displaySeriesNo = useSelector(displaySeriesNoSelector);
@@ -171,7 +172,7 @@ const Game: React.FunctionComponent<{
         justify="center"
         fill
       >
-        <Board className={className} paused={paused} />
+        <Board className={className} paused={paused} isPlayerTurn={isPlayerTurn} />
       </Box>
       <Box gridArea={GridAreaName.FORM} align="center">
         {!isGameCompleted && allowGiveUpOption && (

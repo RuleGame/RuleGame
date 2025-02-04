@@ -24,6 +24,9 @@ import {
   justReachedX4Selector,
   x2LikelihoodSelector,
   x4LikelihoodSelector,
+  myFacesSelector,
+  is2PGAdveGameSelector,
+  is2PGCoopGameSelector,
 } from '../store/selectors/board';
 import { FinishCode, Incentive } from '../utils/api';
 import ShapeObject from './ShapeObject';
@@ -52,6 +55,9 @@ const InformationArea: React.FunctionComponent = () => {
   const numGoodMoves = useSelector(numGoodMovesMadeSelector);
   const numFaces = useSelector(numFacesSelector);
   const goodBadMoves = useSelector(facesSelector)!;
+  const myfaces = useSelector(myFacesSelector) ?? [];
+  const is2PGCoopGame = useSelector(is2PGCoopGameSelector);
+  const is2PGAdveGame = useSelector(is2PGAdveGameSelector);
   const lastStretch = useSelector(lastStretchSelector);
   const lastR = useSelector(lastRSelector);
   const x4After = useSelector(x4AfterSelector)!;
@@ -174,13 +180,19 @@ const InformationArea: React.FunctionComponent = () => {
                 // eslint-disable-next-line react/no-array-index-key
                 `${displaySeriesNo}-${index}`
               }
+              style={{
+                padding: '4px',
+              }}
             >
               {move ? (
-                <ShapeObject shape={SpecialShape.HAPPY} />
+                <ShapeObject shape={SpecialShape.HAPPY} size={myfaces[index] ? 1 : 0.6} />
               ) : (
-                <Box background="red" round="large">
-                  <ShapeObject shape={SpecialShape.UNHAPPY} />
-                </Box>
+                <ShapeObject
+                  shape={SpecialShape.UNHAPPY}
+                  size={myfaces[index] ? 1 : 0.6}
+                  backgroundColor="red"
+                  round="full"
+                />
               )}
             </Box>
           ))}

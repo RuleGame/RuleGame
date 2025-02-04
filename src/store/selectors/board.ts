@@ -9,6 +9,12 @@ export const boardSelector = (state: RootState) => state.board;
 
 export const isPausedSelector = (state: RootState) => state.board.isPaused;
 
+export const isPlayerTurnSelector = (state: RootState) => state.board.isPlayerTurn;
+
+export const is2PGAdveGameSelector = (state: RootState) => state.board.twoPGAdve;
+
+export const is2PGCoopGameSelector = (state: RootState) => state.board.twoPGCoop;
+
 export const bucketShapesSelector = (state: RootState) => state.board.bucketShapes;
 
 export const seriesNoSelector = (state: RootState) => state.board.seriesNo;
@@ -36,6 +42,21 @@ export const bucketDropListSelector = (bucketPosition: BucketPosition) => (
     .map(({ pieceId }) => state.board.board[pieceId]);
   return bucketDropList.slice(Math.max(0, bucketDropList.length - state.board.stackMemoryDepth));
 };
+
+export const lastMoveSelector = (state: RootState) =>
+  state.board.transcript[state.board.transcript.length - 1];
+
+export const disallowedBucketSelector = (state: RootState): { [pieceId: number]: number[] } =>
+  state.board.transcript
+    .filter(({ code }) => code !== Code.ACCEPT)
+    .reduce((acc, { pieceId, bucketNo }) => {
+      return {
+        ...acc,
+        [pieceId]: [...(acc[pieceId] || []), bucketNo],
+      };
+    }, {} as { [pieceId: string]: number[] });
+
+export const myFacesSelector = (state: RootState) => state.board.facesMine;
 
 export const moveNumByBoardObjectSelector = (
   state: RootState,
@@ -84,6 +105,8 @@ export const episodeNoSelector = (state: RootState) => state.board.episodeNo;
 export const displayEpisodeNoSelector = (state: RootState) => state.board.displayEpisodeNo;
 
 export const totalRewardEarnedSelector = (state: RootState) => state.board.totalRewardEarned;
+export const totalRewardEarnedPartnerSelector = (state: RootState) =>
+  state.board.totalRewardEarnedPartner;
 
 export const totalRewardsAndFactorsPerSeriesSelector = (state: RootState) => {
   return state.board.rewardsAndFactorsPerSeries

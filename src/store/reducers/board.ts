@@ -29,11 +29,15 @@ export type State = {
   canActivateBonus: boolean;
   finishCode: FinishCode;
   totalRewardEarned: number;
+  totalRewardEarnedPartner: number;
   totalBoardsPredicted: number;
   showGridMemoryOrder: boolean;
   showStackMemoryOrder: boolean;
   bucketShapes: { [bucket in BucketPosition]: Shape };
   isPaused: boolean;
+  isPlayerTurn: boolean;
+  twoPGCoop: boolean;
+  twoPGAdve: boolean;
   seriesNo: number;
   transcript: Transcript;
   rulesSrc: {
@@ -65,6 +69,7 @@ export type State = {
   x2Likelihood?: number;
   x4Likelihood?: number;
   faces?: boolean[];
+  facesMine?: boolean[];
   displaySeriesNo: number;
   displayEpisodeNo: number;
 };
@@ -77,6 +82,7 @@ export const initialState: State = {
   canActivateBonus: false,
   finishCode: FinishCode.NO,
   totalRewardEarned: 0,
+  totalRewardEarnedPartner: 0,
   totalBoardsPredicted: 0,
   showGridMemoryOrder: false,
   showStackMemoryOrder: false,
@@ -87,6 +93,9 @@ export const initialState: State = {
     [BucketPosition.TL]: SpecialShape.BUCKET,
   },
   isPaused: false,
+  isPlayerTurn: true,
+  twoPGCoop: false,
+  twoPGAdve: false,
   seriesNo: 0,
   transcript: [],
   rulesSrc: {
@@ -117,6 +126,7 @@ export const initialState: State = {
   x2Likelihood: undefined,
   x4Likelihood: undefined,
   faces: [],
+  facesMine: [],
   displaySeriesNo: 0,
   displayEpisodeNo: 0,
 };
@@ -138,10 +148,14 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         canActivateBonus: action.payload.canActivateBonus,
         finishCode: action.payload.finishCode,
         totalRewardEarned: action.payload.totalRewardEarned,
+        totalRewardEarnedPartner: action.payload.totalRewardEarnedPartner,
         totalBoardsPredicted: action.payload.totalBoardsPredicted,
         showGridMemoryOrder: action.payload.showGridMemoryOrder,
         showStackMemoryOrder: action.payload.showStackMemoryOrder,
         isPaused: action.payload.isPaused,
+        isPlayerTurn: action.payload.isPlayerTurn,
+        twoPGCoop: action.payload.twoPGCoop,
+        twoPGAdve: action.payload.twoPGAdve,
         bucketShapes: {
           [BucketPosition.BL]: SpecialShape.BUCKET,
           [BucketPosition.BR]: SpecialShape.BUCKET,
@@ -179,6 +193,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         x2Likelihood: action.payload.x2Likelihood,
         x4Likelihood: action.payload.x4Likelihood,
         faces: action.payload.faces,
+        facesMine: action.payload.facesMine,
         displaySeriesNo: action.payload.displaySeriesNo,
         displayEpisodeNo: action.payload.displayEpisodeNo,
       };
