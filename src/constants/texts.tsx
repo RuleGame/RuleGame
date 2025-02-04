@@ -23,6 +23,10 @@ export default {
     text: 'Loading Trials...',
   },
 
+  [Page.WAITING]: {
+    text: 'Waiting for other player to start an episode...',
+  },
+
   [Page.TRIALS]: {
     // Titles are displayed above the board. ruleNum is the current rule number starting from 1.
     ruleTitle: (ruleNum: number) => `Rule ${ruleNum}`,

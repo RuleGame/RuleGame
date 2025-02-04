@@ -20,6 +20,16 @@ export const startTrials = createAction(
   }),
 )();
 
+// TODO:  Check if both player ids are required
+export const start2PTrials = createAction(
+  'board/START_2P_TRIALS',
+  ({ uid, playerId, exp }: { uid?: number; playerId?: string; exp?: string }) => ({
+    uid,
+    playerId,
+    exp,
+  }),
+)();
+
 export const setBoard = createAction(
   'board/SET_BOARD',
   ({
@@ -29,6 +39,7 @@ export const setBoard = createAction(
     canActivateBonus,
     finishCode,
     totalRewardEarned,
+    totalRewardEarnedPartner,
     totalBoardsPredicted,
     showGridMemoryOrder,
     showStackMemoryOrder,
@@ -60,7 +71,11 @@ export const setBoard = createAction(
     x2Likelihood,
     x4Likelihood,
     isPaused = false,
+    isPlayerTurn,
+    twoPGCoop,
+    twoPGAdve,
     faces,
+    facesMine,
     displaySeriesNo,
     displayEpisodeNo,
   }: {
@@ -70,6 +85,7 @@ export const setBoard = createAction(
     canActivateBonus: boolean;
     finishCode: FinishCode;
     totalRewardEarned: number;
+    totalRewardEarnedPartner: number;
     totalBoardsPredicted: number;
     showGridMemoryOrder: boolean;
     showStackMemoryOrder: boolean;
@@ -104,7 +120,11 @@ export const setBoard = createAction(
     x2Likelihood?: number;
     x4Likelihood?: number;
     isPaused?: boolean;
+    isPlayerTurn: boolean;
+    twoPGCoop: boolean;
+    twoPGAdve: boolean;
     faces?: boolean[];
+    facesMine?: boolean[];
     displaySeriesNo: number;
     displayEpisodeNo: number;
   }) => ({
@@ -114,6 +134,7 @@ export const setBoard = createAction(
     canActivateBonus,
     finishCode,
     totalRewardEarned,
+    totalRewardEarnedPartner,
     totalBoardsPredicted,
     showGridMemoryOrder,
     showStackMemoryOrder,
@@ -145,7 +166,11 @@ export const setBoard = createAction(
     x2Likelihood,
     x4Likelihood,
     isPaused,
+    isPlayerTurn,
+    twoPGCoop,
+    twoPGAdve,
     faces,
+    facesMine,
     displaySeriesNo,
     displayEpisodeNo,
   }),

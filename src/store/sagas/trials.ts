@@ -21,16 +21,27 @@ import {
   unpause,
   validMove,
 } from '../actions/board';
+import { addMessage } from '../actions/message';
 import { nextPage } from '../actions/page';
 import { boardPositionToBxBy, FEEDBACK_DURATION } from '../../constants';
 import { apiResolve, takeAction } from './utils/helpers';
 import { addLayer } from '../actions/layers';
 import { workerIdSelector } from '../selectors/board';
+import { WebSocketService } from '../../middleware/socket';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { goToPage } from '../../store/actions/page';
+// import { Page } from '../../constants/Page';
 
 function* trials(playerId?: string, exp?: string, uid?: number) {
   try {
     const {
-      data: { error: playerError, errmsg: playerErrmsg, playerId: playerIdResponse },
+      data: {
+        error: playerError,
+        errmsg: playerErrmsg,
+        playerId: playerIdResponse,
+        isCoopGame: isCurrentGameCoop,
+        isAdveGame: isCurrentGameAdve,
+      },
     } = yield* apiResolve(
       '/game-data/GameService2/player',
       METHOD.POST,
@@ -43,6 +54,18 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
 
     playerId = playerIdResponse;
     yield* put(setWorkerId(playerId));
+
+    // socket connect logic
+    const ws = new WebSocketService();
+
+    let socket: ReturnType<typeof ws.getSocket> | null;
+
+    if (isCurrentGameCoop || isCurrentGameAdve) {
+      const socketConnected = yield* call(ws.connect, playerId);
+
+      // TODO: remove if not required
+      socket = ws.getSocket();
+    }
 
     let {
       // eslint-disable-next-line prefer-const
@@ -76,7 +99,30 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
       throw Error(`Error on /mostRecentEpisode ${errmsg}`);
     }
 
-    let { alreadyFinished, episodeId, para } = data;
+    let { alreadyFinished, episodeId, para, mustWait, display } = data;
+
+    // GPT: Add code to listen for a socket message "READY EPI" over here if the mustWait flag above is true. Do a yield* put(nextPage()); to go to a wating page
+    // Do this GPT: If the mustWait flag is set to false skip the listening for READY EPI message part and proceed to the next lines of code
+
+    // TODO: Check if socket connection error is getting handles
+    if (mustWait) {
+      yield* put(nextPage());
+      yield call(ws.waitForReadyEpi);
+      yield* put(addMessage('READY EPI'));
+      let {
+        // eslint-disable-next-line prefer-const
+        data: { errmsg, error, ...data },
+      } = yield* apiResolve(
+        '/game-data/GameService2/mostRecentEpisode',
+        METHOD.POST,
+        { playerId },
+        {},
+      );
+
+      ({ alreadyFinished, episodeId, para, mustWait, display } = data);
+    } else {
+      yield* put(nextPage());
+    }
 
     yield* put(nextPage());
 
@@ -103,75 +149,34 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
 
       // Encompasses a single episode. Exiting from the loop will result in a new episode if any.
       do {
-        const { data: display } = yield* apiResolve(
-          '/game-data/GameService2/display',
-          METHOD.GET,
-          undefined,
-          {
-            episode: episodeId,
-          },
+        let displayResult = yield* call(
+          handleDisplayUpdate,
+          episodeId,
+          playerId,
+          para,
+          isCurrentGameCoop,
+          isCurrentGameAdve,
         );
 
-        if (display.finishCode === FinishCode.GIVEN_UP) {
-          // Exit current episode and retrieve a new episode if any.
+        if (displayResult.finishCode === FinishCode.GIVEN_UP) {
           break;
         }
 
-        // TODO: Temporarily allow the player to clear the board after the factorPromised is at 4.
-        // Eventually, disallow it to continue once the API can auto complete the board.
-        // if (display.factorPromised !== 4) {
-        yield* put(unpause());
-        // }
-
-        yield* put(
-          setBoard({
-            board: display.board.value,
-            bonus: display.bonus,
-            bonusEpisodeNo: display.bonusEpisodeNo,
-            canActivateBonus: display.canActivateBonus,
-            finishCode: display.finishCode,
-            totalRewardEarned: display.totalRewardEarned,
-            totalBoardsPredicted: display.totalBoardsPredicted,
-            showGridMemoryOrder: gridMemoryShowOrder,
-            showStackMemoryOrder: stackMemoryShowOrder,
-            stackMemoryDepth,
-            seriesNo: display.seriesNo,
-            transcript: display.transcript,
-            rulesSrc: display.rulesSrc,
-            ruleLineNo: display.ruleLineNo,
-            numMovesMade: display.numMovesMade,
-            episodeNo: display.episodeNo,
+        // This will help the other client wait for the current client to finish their win streak
+        while (displayResult.mustWait) {
+          yield call(ws.waitForReadyDis);
+          yield* put(addMessage('READY DIS'));
+          displayResult = yield* call(
+            handleDisplayUpdate,
             episodeId,
-            maxPoints: para.max_points,
-            feedbackSwitches,
-            ruleSetName: display.ruleSetName,
-            trialListId: display.trialListId,
-            movesLeftToStayInBonus: display.movesLeftToStayInBonus,
-            transitionMap: display.transitionMap,
-            giveUpAt,
-            incentive: display.incentive,
-            lastStretch: display.lastStretch,
-            lastR: display.lastR,
-            rewardsAndFactorsPerSeries: display.rewardsAndFactorsPerSeries,
-            factorAchieved: display.factorAchieved,
-            factorPromised: display.factorPromised,
-            justReachedX2: display.justReachedX2,
-            justReachedX4: display.justReachedX4,
-            x2After,
-            x4After,
-            x2Likelihood,
-            x4Likelihood,
-            // TODO: Temporarily allow the player to clear the board after the factorPromised is at 4.
-            // Eventually, disallow it to continue once the API can auto complete the board.
-            // if (display.factorPromised !== 4) {
-            // isPaused: display.factorPromised === 4,
-            isPaused: false,
-            faces: display.faces,
-            displayEpisodeNo: display.displayEpisodeNo,
-            displaySeriesNo: display.displaySeriesNo,
-          }),
-        );
+            playerId,
+            para,
+            isCurrentGameCoop,
+            isCurrentGameAdve,
+          );
+        }
 
+        // GPT: Also in the follwing race if move or pick responses also have mustWait flag in their responses. If it is set to truie.. the play should be stopped for this client
         ({
           moveAction,
           giveUpAction,
@@ -191,7 +196,7 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
         }));
 
         if (moveAction) {
-          const boardObject = display.board.value.find(
+          const boardObject = displayResult.board.value.find(
             // eslint-disable-next-line no-loop-func
             (boardObject) => boardObject.id === moveAction!.payload.boardObjectId,
           )!;
@@ -199,7 +204,7 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
           yield* put(pause());
 
           const {
-            data: { code, error, errmsg },
+            data: { code, error, errmsg, mustWait },
           } = yield* apiResolve(
             '/game-data/GameService2/move',
             METHOD.POST,
@@ -209,7 +214,8 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
               bx: boardPositionToBxBy[moveAction.payload.bucket].bx,
               by: boardPositionToBxBy[moveAction.payload.bucket].by,
               y: boardObject.y,
-              cnt: display.numMovesMade,
+              cnt: displayResult.numMovesMade,
+              playerId: playerId,
             },
             {},
           );
@@ -227,6 +233,12 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
           }
 
           yield* delay(FEEDBACK_DURATION);
+          // if (mustWait) {
+          //   yield call(ws.waitForReadyDis);
+          //   yield* put(addMessage('READY DIS'));
+          //   // displayResult = yield* call(handleDisplayUpdate, episodeId, playerId, para);
+          //   continue;
+          // }
         } else if (pickAction) {
           const boardObject = display.board.value.find(
             // eslint-disable-next-line no-loop-func
@@ -234,7 +246,7 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
           )!;
 
           const {
-            data: { errmsg, error },
+            data: { errmsg, error, mustWait },
           } = yield* apiResolve(
             '/game-data/GameService2/pick',
             METHOD.POST,
@@ -242,7 +254,8 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
               episode: episodeId,
               x: boardObject.x,
               y: boardObject.y,
-              cnt: display.numMovesMade,
+              cnt: displayResult.numMovesMade,
+              playerId: playerId,
             },
             {},
           );
@@ -252,6 +265,13 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
           if (error) {
             throw Error(`Error on /pick: ${errmsg}`);
           }
+
+          // if (mustWait) {
+          //   yield call(ws.waitForReadyDis);
+          //   yield* put(addMessage('READY DIS'));
+          //   // displayResult = yield* call(handleDisplayUpdate, episodeId, playerId, para);
+          //   continue;
+          // }
         } else if (giveUpAction) {
           const {
             data: { error, errmsg },
@@ -350,6 +370,91 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
       throw e;
     }
   }
+}
+
+function* handleDisplayUpdate(
+  episodeId: string,
+  playerId: string,
+  para: any,
+  isCurrentGameCoop: boolean,
+  isCurrentGameAdve: boolean,
+) {
+  const { data: display } = yield* apiResolve(
+    '/game-data/GameService2/display',
+    METHOD.GET,
+    undefined,
+    {
+      episode: episodeId,
+      playerId: playerId,
+    },
+  );
+
+  // TODO: This code won't affect the two player game as there is no way to give up in it
+  if (display.finishCode === FinishCode.GIVEN_UP) {
+    // Exit current episode and retrieve a new episode if any.
+    return display;
+  }
+
+  // TODO: Temporarily allow the player to clear the board after the factorPromised is at 4.
+  // Eventually, disallow it to continue once the API can auto complete the board.
+  // if (display.factorPromised !== 4) {
+  yield* put(unpause());
+  // }
+  const boardPayload = {
+    board: display.board.value,
+    bonus: display.bonus,
+    bonusEpisodeNo: display.bonusEpisodeNo,
+    canActivateBonus: display.canActivateBonus,
+    finishCode: display.finishCode,
+    totalRewardEarned: display.totalRewardEarned,
+    totalRewardEarnedPartner: display.totalRewardEarnedPartner,
+    totalBoardsPredicted: display.totalBoardsPredicted,
+    stackMemoryDepth: para.stack_memory_depth,
+    showGridMemoryOrder: para.grid_memory_show_order,
+    showStackMemoryOrder: para.stack_memory_show_order,
+    seriesNo: display.seriesNo,
+    transcript: display.transcript,
+    rulesSrc: display.rulesSrc,
+    ruleLineNo: display.ruleLineNo,
+    numMovesMade: display.numMovesMade,
+    episodeNo: display.episodeNo,
+    episodeId,
+    maxPoints: para.max_points,
+    feedbackSwitches: para.feedback_switches,
+    ruleSetName: display.ruleSetName,
+    trialListId: display.trialListId,
+    movesLeftToStayInBonus: display.movesLeftToStayInBonus,
+    transitionMap: display.transitionMap,
+    giveUpAt: para.give_up_at,
+    incentive: display.incentive,
+    lastStretch: display.lastStretch,
+    lastR: display.lastR,
+    rewardsAndFactorsPerSeries: display.rewardsAndFactorsPerSeries,
+    factorAchieved: display.factorAchieved,
+    factorPromised: display.factorPromised,
+    justReachedX2: display.justReachedX2,
+    justReachedX4: display.justReachedX4,
+    x2After: para.x2_after,
+    x4After: para.x4_after,
+    x2Likelihood: para.x2_likelihood,
+    x4Likelihood: para.x4_likelihood,
+    // TODO: Temporarily allow the player to clear the board after the factorPromised is at 4.
+    // Eventually, disallow it to continue once the API can auto complete the board.
+    // if (display.factorPromised !== 4) {
+    // isPaused: display.factorPromised === 4,
+    isPaused: false,
+    isPlayerTurn: display.mustWait ? false : true,
+    twoPGCoop: isCurrentGameCoop,
+    twoPGAdve: isCurrentGameAdve,
+    faces: display.faces,
+    facesMine: display.facesMine,
+    displayEpisodeNo: display.displayEpisodeNo,
+    displaySeriesNo: display.displaySeriesNo,
+  };
+
+  yield* put(setBoard(boardPayload));
+
+  return display;
 }
 
 function* activateBonusSaga() {

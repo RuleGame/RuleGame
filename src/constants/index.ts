@@ -27,6 +27,7 @@ export enum SearchQueryKey {
   INTRO = 'intro',
   SERVER = 'server',
   UID = 'uid',
+  GAME_TYPE = 'gameType',
   // Three params that may occur in Prolific URLs, 2024-09
   PROLIFIC_PID = 'PROLIFIC_PID',
   STUDY_ID = 'STUDY_ID',
@@ -52,11 +53,12 @@ export const boardPositionToBxBy: {
 };
 
 export const HAS_UID = new URLSearchParams(window.location.search).get(SearchQueryKey.UID) !== null;
-
+// TODO: Add finding players
 export const PAGE_ORDER: Page[] = [
   Page.CONSENT,
   Page.INTRODUCTION,
   Page.LOADING_TRIALS,
+  Page.WAITING,
   Page.TRIALS,
   ...(!HAS_UID ? [Page.DEMOGRAPHICS_INSTRUCTIONS, Page.DEMOGRAPHICS] : []),
   Page.DEBRIEFING,

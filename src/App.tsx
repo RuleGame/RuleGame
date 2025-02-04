@@ -19,6 +19,7 @@ import DemographicsInstructions from './pages/DemographicsInstructions';
 import Help from './pages/Help';
 import Introduction from './pages/Introduction';
 import LoadingTrials from './pages/LoadingTrials';
+import Waiting from './pages/Waiting';
 import Trials from './pages/Trials';
 import { setWorkerId } from './store/actions/board';
 import { goToPage } from './store/actions/page';
@@ -42,6 +43,7 @@ const App = () => {
     if (workerId !== undefined) {
       dispatch(setWorkerId(workerId));
     }
+
     if (!intro) {
       dispatch(goToPage(Page.LOADING_TRIALS));
     }
@@ -95,6 +97,8 @@ const App = () => {
                 <Consent />
               ) : page === Page.LOADING_TRIALS ? (
                 <LoadingTrials />
+              ) : page === Page.WAITING ? (
+                <Waiting />
               ) : page === Page.TRIALS ? (
                 <Trials />
               ) : page === Page.DEMOGRAPHICS_INSTRUCTIONS ? (
