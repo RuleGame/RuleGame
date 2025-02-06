@@ -118,7 +118,7 @@ const InformationArea: React.FunctionComponent = () => {
             justReachedX4 && containerRef.current
               ? (() => {
                   const containerWidth = containerRef.current.clientWidth;
-                  const moveWidth = 32; // 2em in pixels
+                  const moveWidth = 33; // 2em in pixels
                   const movesPerRow = Math.floor(containerWidth / moveWidth);
                   const totalMoves = goodBadMoves.length;
                   const x = totalMoves % movesPerRow;
@@ -181,7 +181,7 @@ const InformationArea: React.FunctionComponent = () => {
                 `${displaySeriesNo}-${index}`
               }
               style={{
-                padding: '4px',
+                padding: '1px',
               }}
             >
               {move ? (

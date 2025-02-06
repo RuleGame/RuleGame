@@ -48,7 +48,7 @@ export const lastMoveSelector = (state: RootState) =>
 
 export const disallowedBucketSelector = (state: RootState): { [pieceId: number]: number[] } =>
   state.board.transcript
-    .filter(({ code }) => code !== Code.ACCEPT)
+    .filter(({ code }) => code === Code.DENY)
     .reduce((acc, { pieceId, bucketNo }) => {
       return {
         ...acc,
