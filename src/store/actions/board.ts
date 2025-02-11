@@ -7,6 +7,7 @@ import {
   Incentive,
   Transcript,
   TransitionMap,
+  BoardObject,
 } from '../../utils/api';
 // eslint-disable-next-line import/no-cycle
 import { BucketPosition } from '../../constants/BucketPosition';
@@ -175,6 +176,15 @@ export const setBoard = createAction(
     displayEpisodeNo,
   }),
 )();
+
+export const setHoveredItem = createAction(
+  'board/SET_HOVERED_ITEM',
+  (hoveredItem?: BoardObject) => ({
+    hoveredItem,
+  }),
+)();
+
+export const resetHoveredItem = createAction('board/RESET_HOVERED_ITEM')();
 
 export const pause = createAction('board/PAUSE')();
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDrop } from 'react-dnd';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,6 +12,7 @@ import {
   isGameCompletedSelector,
   isPausedSelector,
   disallowedBucketSelector,
+  hoveredItemSelector,
 } from '../store/selectors/board';
 import { Shape } from '../constants/Shape';
 import { move } from '../store/actions/board';
@@ -33,25 +34,12 @@ const StyledBucket = styled(ShapeObject)<{
   position: relative;
 `;
 
-const InvalidDropOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  pointer-events: none;
-  background-color: rgba(253, 253, 253, 0.2);
-  z-index: 9999; /* Increase z-index for testing */
-`;
-
 const Bucket = ({ className, shape, bucket }: BucketProps): JSX.Element => {
   const dispatch: Dispatch<RootAction> = useDispatch();
   const isPaused = useSelector(isPausedSelector);
   const isGameCompleted = useSelector(isGameCompletedSelector);
   const disallowedBuckets = useSelector(disallowedBucketSelector);
+  const hoveredItem = useSelector(hoveredItemSelector);
 
   const [{ isOver, item }, ref] = useDrop({
     canDrop: () => !isPaused,
@@ -66,7 +54,9 @@ const Bucket = ({ className, shape, bucket }: BucketProps): JSX.Element => {
 
   // Determine if an X should be shown
   const showInvalidDropX =
-    item && disallowedBuckets[item.id] && disallowedBuckets[item.id].includes(bucket.pos);
+    hoveredItem &&
+    disallowedBuckets[hoveredItem.id] &&
+    disallowedBuckets[hoveredItem.id].includes(bucket.pos);
 
   return (
     <StyledBucket

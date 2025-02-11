@@ -46,15 +46,25 @@ export const bucketDropListSelector = (bucketPosition: BucketPosition) => (
 export const lastMoveSelector = (state: RootState) =>
   state.board.transcript[state.board.transcript.length - 1];
 
-export const disallowedBucketSelector = (state: RootState): { [pieceId: number]: number[] } =>
-  state.board.transcript
+export const hoveredItemSelector = (state: RootState) => state.board.hoveredItem;
+
+export const disallowedBucketSelector = (state: RootState): { [pieceId: number]: number[] } => {
+  const transcript = state.board.transcript;
+
+  // Find the last occurrence of Code.ACCEPT
+  const lastAcceptIndex = transcript.map(({ code }) => code).lastIndexOf(Code.ACCEPT);
+
+  return transcript
+    .slice(lastAcceptIndex + 1)
     .filter(({ code }) => code === Code.DENY)
     .reduce((acc, { pieceId, bucketNo }) => {
+      if (bucketNo === undefined) return acc;
       return {
         ...acc,
         [pieceId]: [...(acc[pieceId] || []), bucketNo],
       };
-    }, {} as { [pieceId: string]: number[] });
+    }, {} as { [pieceId: number]: number[] });
+};
 
 export const myFacesSelector = (state: RootState) => state.board.facesMine;
 

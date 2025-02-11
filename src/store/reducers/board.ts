@@ -19,6 +19,8 @@ import {
   setWorkerId,
   unpause,
   validMove,
+  setHoveredItem,
+  resetHoveredItem,
 } from '../actions/board';
 
 export type State = {
@@ -72,6 +74,7 @@ export type State = {
   facesMine?: boolean[];
   displaySeriesNo: number;
   displayEpisodeNo: number;
+  hoveredItem?: BoardObject;
 };
 
 export const initialState: State = {
@@ -129,6 +132,7 @@ export const initialState: State = {
   facesMine: [],
   displaySeriesNo: 0,
   displayEpisodeNo: 0,
+  hoveredItem: undefined,
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -240,6 +244,18 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       return {
         ...state,
         workerId: action.payload.workerId,
+      };
+
+    case getType(setHoveredItem):
+      return {
+        ...state,
+        hoveredItem: action.payload.hoveredItem,
+      };
+
+    case getType(resetHoveredItem):
+      return {
+        ...state,
+        hoveredItem: undefined,
       };
 
     default:

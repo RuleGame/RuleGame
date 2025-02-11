@@ -15,11 +15,10 @@ import {
   isPausedSelector,
   showGridMemoryOrderSelector,
   lastMoveSelector,
-  disallowedBucketSelector,
 } from '../store/selectors/board';
 import { debugModeSelector } from '../store/selectors/debug-mode';
 import { RootAction } from '../store/actions';
-import { pick } from '../store/actions/board';
+import { pick, setHoveredItem, resetHoveredItem } from '../store/actions/board';
 import ImageShapeObject from './ImageShapeObject';
 
 export type BoardObjectProps = {
@@ -104,6 +103,8 @@ const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX
       onMouseDown={() => {
         return !canDrag && !isPaused && !gameCompleted && dispatch(pick(boardObject.id));
       }}
+      onMouseEnter={() => dispatch(setHoveredItem(boardObject))}
+      onMouseLeave={() => dispatch(resetHoveredItem())}
       fill
     >
       {boardObject.image !== undefined ? (
