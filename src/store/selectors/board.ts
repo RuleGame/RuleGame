@@ -43,6 +43,29 @@ export const bucketDropListSelector = (bucketPosition: BucketPosition) => (
   return bucketDropList.slice(Math.max(0, bucketDropList.length - state.board.stackMemoryDepth));
 };
 
+export const immovableItemsSelector = (state: RootState): number[] => {
+  const transcript = state.board.transcript;
+  const lastAcceptIndex = transcript.map(({ code }) => code).lastIndexOf(Code.ACCEPT);
+
+  return transcript
+    .slice(lastAcceptIndex + 1)
+    .filter(({ code }) => code === Code.IMMOVABLE)
+    .map(({ pieceId }) => pieceId);
+};
+
+export const pickedItemsSelector = (state: RootState): number[] => {
+  const transcript = state.board.transcript;
+  const lastAcceptIndex = transcript.map(({ code }) => code).lastIndexOf(Code.ACCEPT);
+
+  return transcript
+    .slice(lastAcceptIndex + 1)
+    .filter(
+      ({ bucketNo, code }) =>
+        (bucketNo === undefined && code === Code.ACCEPT) || code === Code.DENY,
+    )
+    .map(({ pieceId }) => pieceId);
+};
+
 export const lastMoveSelector = (state: RootState) =>
   state.board.transcript[state.board.transcript.length - 1];
 
@@ -50,8 +73,6 @@ export const hoveredItemSelector = (state: RootState) => state.board.hoveredItem
 
 export const disallowedBucketSelector = (state: RootState): { [pieceId: number]: number[] } => {
   const transcript = state.board.transcript;
-
-  // Find the last occurrence of Code.ACCEPT
   const lastAcceptIndex = transcript.map(({ code }) => code).lastIndexOf(Code.ACCEPT);
 
   return transcript
@@ -135,7 +156,7 @@ export const movesLeftToStayInBonusSelector = (state: RootState) =>
 
 // The transitionMap will contain a BONUS -> DEFAULT if there are still bonus rounds
 export const hasMoreBonusRoundsSelector = (state: RootState): boolean =>
-  isInBonusSelector(state) && (state.board.transitionMap?.BONUS === 'DEFAULT' ?? false);
+  isInBonusSelector(state) && state.board.transitionMap?.BONUS === 'DEFAULT';
 
 export const finishCodeSelector = (state: RootState) => state.board.finishCode;
 

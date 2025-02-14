@@ -28,6 +28,7 @@ import { apiResolve, takeAction } from './utils/helpers';
 import { addLayer } from '../actions/layers';
 import { workerIdSelector } from '../selectors/board';
 import { WebSocketService } from '../../middleware/socket';
+import { dispatch } from 'rxjs/internal/observable/pairs';
 // import { useDispatch, useSelector } from 'react-redux';
 // import { goToPage } from '../../store/actions/page';
 // import { Page } from '../../constants/Page';

@@ -15,6 +15,8 @@ import {
   isPausedSelector,
   showGridMemoryOrderSelector,
   lastMoveSelector,
+  pickedItemsSelector,
+  immovableItemsSelector,
 } from '../store/selectors/board';
 import { debugModeSelector } from '../store/selectors/debug-mode';
 import { RootAction } from '../store/actions';
@@ -30,27 +32,33 @@ export type BoardObjectProps = {
 const StyledShapeObject = styled(ShapeObject)<{
   canDrag: boolean;
   feedbackSwitches: FeedbackSwitches;
-  isLastMoved: boolean;
+  isPicked: boolean;
+  isImmovable: boolean;
 }>`
   width: 100%;
   height: 100%;
   cursor: ${({ canDrag, feedbackSwitches }) =>
     canDrag || feedbackSwitches === FeedbackSwitches.FREE ? 'grab' : 'unset'};
-  ${({ isLastMoved }) =>
-    isLastMoved ? 'border: 3px solid black; border-radius: 8px; box-sizing: border-box;' : ''}
+  ${({ isPicked }) =>
+    isPicked ? 'border: 3px solid black; border-radius: 8px; box-sizing: border-box;' : ''}
+  ${({ isImmovable }) =>
+    isImmovable ? 'border: 3px solid red; border-radius: 8px; box-sizing: border-box;' : ''}
 `;
 
 const ImageStyledShapeObject = styled(ImageShapeObject)<{
   canDrag: boolean;
   feedbackSwitches: FeedbackSwitches;
-  isLastMoved: boolean;
+  isPicked: boolean;
+  isImmovable: boolean;
 }>`
   width: 100%;
   height: 100%;
   cursor: ${({ canDrag, feedbackSwitches }) =>
     canDrag || feedbackSwitches === FeedbackSwitches.FREE ? 'grab' : 'unset'};
-  ${({ isLastMoved }) =>
-    isLastMoved ? 'border: 3px solid black; border-radius: 8px; box-sizing: border-box;' : ''}
+  ${({ isPicked }) =>
+    isPicked ? 'border: 3px solid black; border-radius: 8px; box-sizing: border-box;' : ''}
+  ${({ isImmovable }) =>
+    isImmovable ? 'border: 3px solid red; border-radius: 8px; box-sizing: border-box;' : ''}
 `;
 
 const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX.Element => {
@@ -62,6 +70,8 @@ const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX
   const feedbackSwitches = useSelector(feedbackSwitchesSelector);
   const lastMove = useSelector(lastMoveSelector);
   const isLastMovedPiece = lastMove?.pieceId === boardObject.id;
+  const pickedItems = useSelector(pickedItemsSelector) ?? [];
+  const immovableItems = useSelector(immovableItemsSelector) ?? [];
 
   const canDrag = boardObject.buckets.length > 0 && !gameCompleted && !isPaused;
   const [, ref] = useDrag({
@@ -115,7 +125,8 @@ const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX
           feedbackSwitches={feedbackSwitches}
           shapeObjectId={boardObject.id}
           debugInfo={debugMode ? debugInfo : undefined}
-          isLastMoved={isLastMovedPiece}
+          isPicked={pickedItems.includes(boardObject.id)}
+          isImmovable={immovableItems.includes(boardObject.id)}
         />
       ) : (
         <StyledShapeObject
@@ -127,7 +138,8 @@ const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX
           feedbackSwitches={feedbackSwitches}
           shapeObjectId={boardObject.id}
           debugInfo={debugMode ? debugInfo : undefined}
-          isLastMoved={isLastMovedPiece}
+          isPicked={pickedItems.includes(boardObject.id)}
+          isImmovable={immovableItems.includes(boardObject.id)}
         />
       )}
       {hasBeenDropped && <FiCheck color="green" size="100%" />}
