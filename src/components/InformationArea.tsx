@@ -138,7 +138,7 @@ const InformationArea: React.FunctionComponent = () => {
           transition: 'all 0.2s ease-in-out',
         }}
       >
-        <Box style={{ height: '32px' }}>
+        <Box style={{ height: '50px' }}>
           {
             //<Box margin={{ bottom: 'medium' }}>
             //<Text weight="bold">

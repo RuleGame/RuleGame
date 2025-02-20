@@ -124,8 +124,8 @@ export const historyInfoSelector = (state: RootState) =>
       bucketNo,
     }));
 
-export const numMovesMadeSelector = (state: RootState) => state.board.numMovesMade;
-
+export const numMovesMadeSelector = (state: RootState) =>
+  (state.board.facesMine ?? []).filter((val) => val === true).length;
 export const numFacesSelector = (state: RootState) => state.board.faces?.length;
 
 export const numGoodMovesMadeSelector = (state: RootState) =>
