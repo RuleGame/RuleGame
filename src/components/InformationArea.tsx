@@ -257,6 +257,8 @@ const InformationArea: React.FunctionComponent = () => {
           </Text>
         ) : numFaces == 0 ? (
           <Text>Welcome!</Text>
+        ) : iLost && is2PGAdveGame ? (
+          <Text>Your adversary has won this game. Press NEXT to continue</Text>
         ) : (
           <Text>Please keep trying...</Text>
         )}
