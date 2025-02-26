@@ -45,7 +45,14 @@ export const bucketDropListSelector = (bucketPosition: BucketPosition) => (
 
 export const immovableItemsSelector = (state: RootState): number[] => {
   const transcript = state.board.transcript;
-  const lastAcceptIndex = transcript.map(({ code }) => code).lastIndexOf(Code.ACCEPT);
+  let lastAcceptIndex = 0;
+  for (let i = transcript.length - 1; i >= 0; i--) {
+    const item = transcript[i];
+    if (item.code === Code.ACCEPT && item.bucketNo !== undefined) {
+      lastAcceptIndex = i;
+      break;
+    }
+  }
 
   return transcript
     .slice(lastAcceptIndex + 1)
@@ -55,10 +62,20 @@ export const immovableItemsSelector = (state: RootState): number[] => {
 
 export const pickedItemsSelector = (state: RootState): number[] => {
   const transcript = state.board.transcript;
-  const lastAcceptIndex = transcript.map(({ code }) => code).lastIndexOf(Code.ACCEPT);
+
+  // Find the last index where code is ACCEPT and bucketNo is not undefined
+  const lastAcceptIndex = transcript.reduce((lastIndex, item, currentIndex) => {
+    if (item.code === Code.ACCEPT && item.bucketNo !== undefined) {
+      return currentIndex;
+    }
+    return lastIndex;
+  }, -1);
+
+  // Provide fallback of 0 if no matching index is found
+  const resultIndex = lastAcceptIndex !== -1 ? lastAcceptIndex : 0;
 
   return transcript
-    .slice(lastAcceptIndex + 1)
+    .slice(resultIndex + 1)
     .filter(
       ({ bucketNo, code }) =>
         (bucketNo === undefined && code === Code.ACCEPT) || code === Code.DENY,

@@ -8,6 +8,7 @@ import {
   displaySeriesNoSelector,
   facesSelector,
   factorPromisedSelector,
+  factorAchievedSelector,
   finishCodeSelector,
   incentiveSelector,
   isSecondOrMoreTimeDoublingSelector,
@@ -62,6 +63,7 @@ const InformationArea: React.FunctionComponent = () => {
   const lastR = useSelector(lastRSelector);
   const x4After = useSelector(x4AfterSelector)!;
   const factorPromised: number = useSelector(factorPromisedSelector) ?? 1;
+  const factorAchieved: number = useSelector(factorAchievedSelector) ?? 1;
   const [idea, setIdea] = useState('');
   const [how, setHow] = useState('');
   const numGoodMovesInARow = useSelector(numGoodMovesInARowSelector);
@@ -75,20 +77,21 @@ const InformationArea: React.FunctionComponent = () => {
   const justReachedX4 = useSelector(justReachedX4Selector);
   const lastFaceRef = useRef<HTMLDivElement | null>(null);
   const finishCode = useSelector(finishCodeSelector);
-  const isAchieved = finishCode === FinishCode.EARLY_WIN || factorPromised === 4;
+  const isAchieved = finishCode === FinishCode.EARLY_WIN && factorAchieved === 4;
+  const iLost = finishCode === FinishCode.EARLY_WIN && factorAchieved < 4;
 
   const displaySeriesNo = useSelector(displaySeriesNoSelector);
   const incentive = useSelector(incentiveSelector);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (containerRef.current && justReachedX4) {
+    if (containerRef.current && isAchieved) {
       const container = containerRef.current;
       setTimeout(() => {
         container.scrollTop = container.scrollHeight;
       }, 300);
     }
-  }, [justReachedX4]);
+  }, [isAchieved]);
 
   useEffect(() => {
     lastFaceRef.current?.scrollIntoView();
@@ -118,19 +121,20 @@ const InformationArea: React.FunctionComponent = () => {
             justReachedX4 && containerRef.current
               ? (() => {
                   const containerWidth = containerRef.current.clientWidth;
-                  const moveWidth = 33; // 2em in pixels
+                  const moveWidth = 32; // 2em in pixels
                   const movesPerRow = Math.floor(containerWidth / moveWidth);
                   const totalMoves = goodBadMoves.length;
+                  // x is the number of rows/scrolls
                   const x = totalMoves % movesPerRow;
 
                   if (movesPerRow < 10) {
-                    const y = Math.ceil((10 - x) / movesPerRow);
-                    return `${(y + 2) * moveWidth}px`;
+                    const y = Math.ceil(10 / movesPerRow);
+                    return `${y * moveWidth + 32}px`;
                   } else if (movesPerRow === 10) {
-                    return 10 - x > 0 ? `${3 * moveWidth}px` : `64px`;
+                    return `64px`;
                   } else {
                     // movesPerRow > 10
-                    return 10 - x > 0 ? `${3 * moveWidth}px` : `64px`;
+                    return `64px`;
                   }
                 })()
               : 'auto',
@@ -138,7 +142,7 @@ const InformationArea: React.FunctionComponent = () => {
           transition: 'all 0.2s ease-in-out',
         }}
       >
-        <Box style={{ height: '50px' }}>
+        <Box style={{ height: '32px' }}>
           {
             //<Box margin={{ bottom: 'medium' }}>
             //<Text weight="bold">
@@ -225,6 +229,8 @@ const InformationArea: React.FunctionComponent = () => {
             <Text>You are making progress!</Text>
           ) : lastR > 1 && cfa > 1 ? (
             <Text>You are making more progress!</Text>
+          ) : iLost && is2PGAdveGame ? (
+            <Text>Your adversary has won this game. Press NEXT to continue</Text>
           ) : (
             <Text>Please keep trying...</Text>
           )
@@ -291,7 +297,8 @@ const InformationArea: React.FunctionComponent = () => {
             </Form>
           </Box>
         )}
-        {finishCode === FinishCode.FINISH && !isAchieved && (
+
+        {((iLost && is2PGAdveGame) || (finishCode === FinishCode.FINISH && !isAchieved)) && (
           <Button label="Next" primary onClick={() => dispatch(skipGuess())} />
         )}
       </Box>
