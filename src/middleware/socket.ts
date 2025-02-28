@@ -8,10 +8,13 @@ export class WebSocketService {
       this.serverUrl = baseUrl;
     } else {
       const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
-      const path = window.location.pathname;
-      const app = path.split('/')[1];
-      //TODO: Change this to the correct path
-      this.serverUrl = `${protocol}://action.rutgers.edu/w2020-dev/websocket/watchPlayer`;
+      const params = new URL(window.location.href).searchParams;
+      const server = params.get('server');
+      if (server) {
+        this.serverUrl = server.replace(/^http/, protocol) + '/websocket/watchPlayer';
+      } else {
+        throw new Error('Server URL not found in query parameters');
+      }
     }
   }
 
