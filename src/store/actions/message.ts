@@ -1,17 +1,11 @@
 import { createAction, createAsyncAction } from 'typesafe-actions';
 import shortid from 'shortid';
+import { MessageType } from '../../@types';
 
-export interface Message {
-  id: string;
-  text: string;
-  timestamp: number;
-}
+export const addMessage = createAction('messages/ADD_MESSAGE', (who: string, text: string) => ({
+  who,
+  text,
+  timestamp: Date.now(),
+}))();
 
-export const addMessage = createAction(
-  'messages/ADD_MESSAGE',
-  (text: string, id: string = shortid()) => ({
-    id,
-    text,
-    timestamp: Date.now(),
-  }),
-)();
+export const removeAllMessages = createAction('messages/REMOVE_ALL_MESSAGES', () => ({}))();

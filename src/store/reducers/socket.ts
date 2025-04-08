@@ -7,6 +7,7 @@ export type State = {
   error: Error | null;
   loading: boolean;
   messages: string;
+  socket: WebSocket | null;
 };
 
 export const initialState: State = {
@@ -14,6 +15,7 @@ export const initialState: State = {
   error: null,
   loading: false,
   messages: 'N/A',
+  socket: null,
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -31,6 +33,21 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         connected: true,
         loading: false,
         error: null,
+        socket: action.payload.socket,
+      };
+
+    case getType(socketDisconnect):
+      // Close the socket if it exists
+      if (state.socket && state.socket.readyState !== WebSocket.CLOSED) {
+        state.socket.close();
+      }
+
+      return {
+        ...state,
+        connected: false,
+        loading: false,
+        error: null,
+        socket: null,
       };
 
     case getType(socketConnection.failure):
@@ -39,14 +56,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         connected: false,
         loading: false,
         error: action.payload.error,
-      };
-
-    case getType(socketDisconnect):
-      return {
-        ...state,
-        connected: false,
-        loading: false,
-        error: null,
+        socket: null,
       };
 
     default:

@@ -90,16 +90,6 @@ export class WebSocketService {
       console.warn('Socket is not connected');
     }
   };
-
-  // private handleMessage(data: string): void {
-  //   if (data.startsWith('READY EPI')) {
-  //     const readyEpiForm = document.getElementById('readyEpiForm') as HTMLFormElement;
-  //     if (readyEpiForm) readyEpiForm.submit();
-  //   } else if (data.startsWith('READY DIS')) {
-  //     const readyDisForm = document.getElementById('readyDisForm') as HTMLFormElement;
-  //     if (readyDisForm) readyDisForm.submit();
-  //   }
-  // }
 }
 
 // // Optional Console utility class if you want to keep the logging functionality

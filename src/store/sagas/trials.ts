@@ -1,4 +1,4 @@
-import { call, delay, put, race, select, takeEvery } from 'typed-redux-saga';
+import { call, delay, put, race, select, takeEvery, take } from 'typed-redux-saga';
 import { getType } from 'typesafe-actions';
 import Papa from 'papaparse';
 import { merge } from 'lodash';
@@ -23,17 +23,57 @@ import {
 } from '../actions/board';
 import { addMessage } from '../actions/message';
 import { nextPage } from '../actions/page';
+import { socketConnection } from '../actions/socket';
+import { TakeEffect } from 'redux-saga/effects';
 import { boardPositionToBxBy, FEEDBACK_DURATION } from '../../constants';
 import { apiResolve, takeAction } from './utils/helpers';
 import { addLayer } from '../actions/layers';
 import { workerIdSelector } from '../selectors/board';
 import { WebSocketService } from '../../middleware/socket';
-import { dispatch } from 'rxjs/internal/observable/pairs';
+import { eventChannel, EventChannel } from 'redux-saga';
+import { SocketMessage } from '../../@types/index';
+// import { dispatch } from 'rxjs/internal/observable/pairs';
 // import { useDispatch, useSelector } from 'react-redux';
 // import { goToPage } from '../../store/actions/page';
 // import { Page } from '../../constants/Page';
 
-function* trials(playerId?: string, exp?: string, uid?: number) {
+function createSocketChannel(socket: WebSocket): EventChannel<SocketMessage> {
+  return eventChannel((emitter) => {
+    const handler = (msg: MessageEvent) => {
+      const parts = msg.data.split(' ');
+      const command = parts[0] + ' ' + parts[1];
+
+      if (command === 'READY DIS') {
+        emitter({ type: 'READY_DIS' });
+      }
+      //  else if (parts[0] === 'CHAT') {
+      //   const messageText = parts.slice(1).join(' ');
+      //   emitter({ type: 'CHAT', messageText });
+      // }
+    };
+
+    socket.addEventListener('message', handler);
+
+    // Return unsubscribe function
+    return () => {
+      socket.removeEventListener('message', handler);
+    };
+  });
+}
+
+function* processMessages(
+  socketChannel: EventChannel<SocketMessage>,
+): Generator<any, void, SocketMessage> {
+  while (true) {
+    const action: SocketMessage = yield take(socketChannel);
+    if (action.type === 'READY_DIS') {
+      // Break out of the loop once we get the ready signal.
+      break;
+    }
+  }
+}
+
+function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, void, any> {
   try {
     const {
       data: {
@@ -55,18 +95,35 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
 
     playerId = playerIdResponse;
     yield* put(setWorkerId(playerId));
-
     // socket connect logic
     const ws = new WebSocketService();
-
-    let socket: ReturnType<typeof ws.getSocket> | null;
+    let socket: ReturnType<typeof ws.getSocket> | null = null;
 
     if (isCurrentGameCoop || isCurrentGameAdve) {
-      const socketConnected = yield* call(ws.connect, playerId);
+      yield* put(socketConnection.request(playerId));
 
-      // TODO: remove if not required
-      socket = ws.getSocket();
+      try {
+        const socketConnected = yield* call(ws.connect, playerId);
+
+        if (socketConnected) {
+          socket = ws.getSocket();
+          if (!socket) {
+            throw new Error('WebSocket connection is null');
+          }
+
+          yield* put(socketConnection.success(socket));
+        }
+      } catch (error) {
+        yield* put(
+          socketConnection.failure(error instanceof Error ? error : new Error(String(error))),
+        );
+      }
     }
+    if (!socket) {
+      throw new Error('Socket is not initialized');
+    }
+    //create socket channel
+    const socketChannel = createSocketChannel(socket);
 
     let {
       // eslint-disable-next-line prefer-const
@@ -109,7 +166,7 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
     if (mustWait) {
       yield* put(nextPage());
       yield call(ws.waitForReadyEpi);
-      yield* put(addMessage('READY EPI'));
+      //yield* put(addMessage('READY EPI'));
       let {
         // eslint-disable-next-line prefer-const
         data: { errmsg, error, ...data },
@@ -165,9 +222,11 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
 
         // This will help the other client wait for the current client to finish their win streak
         while (displayResult.mustWait) {
-          yield call(ws.waitForReadyDis);
-          yield* put(addMessage('READY DIS'));
-          displayResult = yield* call(
+          // Listen for messages and process them:
+          yield call(processMessages, socketChannel);
+
+          // Once READY DIS is received, update the display
+          displayResult = yield call(
             handleDisplayUpdate,
             episodeId,
             playerId,
@@ -295,6 +354,7 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
               episode: episodeId,
               data: guessAction.payload.data,
               confidence: guessAction.payload.confidence,
+              playerId,
             },
             {},
           );
@@ -313,6 +373,7 @@ function* trials(playerId?: string, exp?: string, uid?: number) {
               episode: episodeId,
               data: `How:\n${how}\nIdea:\n${idea}`,
               confidence: -1,
+              playerId,
             },
             {},
           );

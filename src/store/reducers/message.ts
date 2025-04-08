@@ -1,9 +1,10 @@
 import { getType } from 'typesafe-actions';
 import { RootAction } from '../actions';
-import { Message, addMessage } from '../actions/message';
+import { addMessage, removeAllMessages } from '../actions/message';
+import { MessageType } from '../../../src/@types';
 
 export type State = {
-  messageList: Message[];
+  messageList: MessageType[];
 };
 
 export const initialState: State = {
@@ -17,11 +18,17 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         messageList: [
           ...state.messageList,
           {
-            id: action.payload.id,
+            who: action.payload.who,
             text: action.payload.text,
             timestamp: action.payload.timestamp,
           },
         ],
+      };
+
+    case getType(removeAllMessages):
+      return {
+        ...state,
+        messageList: [],
       };
 
     default:

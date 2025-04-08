@@ -81,3 +81,11 @@ export type LocalStorageWorkerIdKey = {
   seriesNo?: number;
   savedRuleGuess?: string;
 };
+
+export type MessageType = {
+  who: string;
+  text: string;
+  timestamp: number;
+};
+
+export type SocketMessage = { type: 'READY_DIS' };

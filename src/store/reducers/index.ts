@@ -4,6 +4,8 @@ import page from './page';
 import layers from './layers';
 import boardObjectArrays from './board-objects-arrays';
 import games from './games';
+import socket from './socket';
+import message from './message';
 import notifications from './notifications';
 import board from './board';
 import debugMode from './debug-mode';
@@ -17,6 +19,8 @@ export const createRootReducer = () =>
     notifications,
     board,
     debugMode,
+    socket,
+    message,
   });
 
 export default createRootReducer;

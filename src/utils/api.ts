@@ -340,7 +340,7 @@ export type Endpoints = {
         byteCnt: number;
         path: string;
       },
-      { episode: string; data: string; confidence: number }
+      { episode: string; data: string; confidence: number; playerId: string }
     >;
   };
 
