@@ -524,18 +524,8 @@ const InformationArea: React.FunctionComponent = () => {
               {incentive === Incentive.LIKELIHOOD ? (
                 justReachedX4 ? (
                   <Text>
-                    Your play is a{' '}
-                    {x4Likelihood == 1000000
-                      ? 'million'
-                      : x4Likelihood == 100000
-                      ? 'one hundred thousand'
-                      : x4Likelihood == 10000
-                      ? 'ten thousand'
-                      : x4Likelihood == 1000
-                      ? 'thousand'
-                      : ''}{' '}
-                    times better than chance. This has re-doubled your score. Please tell us what
-                    the rule is, and how you found it.
+                    Your play is {(x4Likelihood ?? 0).toString()} times better than chance. This has
+                    re-doubled your score. Please tell us what the rule is, and how you found it.
                   </Text>
                 ) : justReachedX2 ? (
                   <Text>
