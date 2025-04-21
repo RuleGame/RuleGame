@@ -411,13 +411,13 @@ const InformationArea: React.FunctionComponent = () => {
   return (
     <Box
       background="steelblue"
-      pad="medium"
+      pad="small"
       fill="vertical"
       border={{ color: 'black' }}
       height="100%"
     >
       <Box style={{ height: '32px', alignItems: 'center' }}>
-        <Box margin={{ bottom: '7px' }}>
+        <Box margin={{ bottom: '3px' }}>
           {incentive === Incentive.LIKELIHOOD ? (
             <Text>
               Golden string={Number(golden()).toFixed(1)}.
@@ -519,12 +519,23 @@ const InformationArea: React.FunctionComponent = () => {
                 flex: justReachedX4 ? '1 1 auto' : '1 1 20%',
                 transition: 'all 0.2s ease-in-out',
               }}
+              overflow={'auto'}
             >
               {incentive === Incentive.LIKELIHOOD ? (
                 justReachedX4 ? (
                   <Text>
-                    Your play is a million times better than chance. This has re-doubled your score.
-                    Please tell us what the rule is, and how you found it.
+                    Your play is a{' '}
+                    {x4Likelihood == 1000000
+                      ? 'million'
+                      : x4Likelihood == 100000
+                      ? 'one hundred thousand'
+                      : x4Likelihood == 10000
+                      ? 'ten thousand'
+                      : x4Likelihood == 1000
+                      ? 'thousand'
+                      : ''}{' '}
+                    times better than chance. This has re-doubled your score. Please tell us what
+                    the rule is, and how you found it.
                   </Text>
                 ) : justReachedX2 ? (
                   <Text>
