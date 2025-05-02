@@ -60,7 +60,6 @@ function golden(): number {
   return g;
 }
 
-// New Chat component
 const ChatArea: React.FC = () => {
   const [messageInput, setMessageInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -73,13 +72,20 @@ const ChatArea: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messageList]);
 
-  const handleKeyPress = () => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
+  const sendMessage = () => {
+    if (messageInput.trim() && socket && socket.readyState === WebSocket.OPEN) {
       socket.send('CHAT ' + messageInput);
       dispatch(addMessage('ME', messageInput));
       setMessageInput('');
-    } else {
+    } else if (!socket || socket.readyState !== WebSocket.OPEN) {
       console.warn('Socket is not connected');
+    }
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      sendMessage();
     }
   };
 
@@ -93,13 +99,8 @@ const ChatArea: React.FC = () => {
 
   return (
     <Box fill direction="column">
-      <Box
-        flex
-        overflow="auto"
-        pad="small"
-        background="light-2"
-        style={{ maxHeight: 'calc(100% - 60px)' }}
-      >
+      {/* Message list that takes up available space */}
+      <Box fill overflow="auto" pad="small" background="light-2">
         {messageList.map((msg, index) => (
           <Text key={index} margin={{ bottom: 'xsmall' }}>
             {msg.who}: {msg.text}
@@ -107,6 +108,8 @@ const ChatArea: React.FC = () => {
         ))}
         <div ref={messagesEndRef} />
       </Box>
+
+      {/* Input message box with a fixed height */}
       <Box
         direction="row"
         align="center"
@@ -118,21 +121,40 @@ const ChatArea: React.FC = () => {
           placeholder="Type a message..."
           value={messageInput}
           onChange={(event) => setMessageInput(event.target.value)}
-          style={{ flex: 1 }}
+          onKeyDown={handleKeyPress}
         />
-        <Button icon={<Send />} onClick={handleKeyPress} primary disabled={!messageInput.trim()} />
+        <Button icon={<Send />} onClick={sendMessage} primary disabled={!messageInput.trim()} />
       </Box>
     </Box>
   );
 };
 
 const HistoryArea: React.FC = () => {
-  const finishCode = useSelector(finishCodeSelector);
-  const episodeId = useSelector(episodeIdSelector);
   const [currentScreenshotIndex, setCurrentScreenshotIndex] = useState(0);
   const displaySerriesNo = useSelector(displaySeriesNoSelector);
   const workerId = useSelector(workerIdSelector);
   const id = displaySerriesNo + '-' + workerId;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerHeight, setContainerHeight] = useState(0);
+
+  // Effect to measure container height
+  useEffect(() => {
+    if (containerRef.current) {
+      const updateHeight = () => {
+        if (containerRef.current) {
+          const height = containerRef.current.clientHeight;
+          setContainerHeight(height);
+        }
+      };
+
+      // Initial measurement
+      updateHeight();
+
+      // Update on resize
+      window.addEventListener('resize', updateHeight);
+      return () => window.removeEventListener('resize', updateHeight);
+    }
+  }, []);
 
   // Function to get current episode screenshots directly from localStorage
   const getCurrentEpisodeScreenshots = (): string[] => {
@@ -149,10 +171,9 @@ const HistoryArea: React.FC = () => {
     return [];
   };
 
-  // Get current episode screenshots for rendering
   const currentEpisodeScreenshots = getCurrentEpisodeScreenshots();
-  console.log('length', currentEpisodeScreenshots.length);
   const hasScreenshots = currentEpisodeScreenshots.length > 0;
+
   // Navigation handlers
   const goToPrevious = () => {
     setCurrentScreenshotIndex((prev) =>
@@ -166,89 +187,95 @@ const HistoryArea: React.FC = () => {
     );
   };
 
+  // Calculate image height based on container size
+  // Reserve space for navigation (30px) and padding (20px)
+  const calculateImageHeight = () => {
+    return Math.max(100, containerHeight - 50);
+  };
+
   return (
-    <Box fill direction="column" overflow="hidden" height="100%">
+    <Box
+      ref={containerRef}
+      fill
+      overflow="hidden"
+      style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}
+    >
       {!hasScreenshots ? (
         <Box align="center" justify="center" fill>
           <Text>No game history for current episode. Completed games will appear here.</Text>
         </Box>
       ) : (
-        <Box
-          border={{ color: 'brand', size: 'small' }}
-          round="small"
-          overflow="hidden"
-          margin={{ bottom: 'xsmall' }}
-          elevation="small"
-          fill
-          pad="small"
-        >
-          {/* Container that fills its parent */}
-          <Box fill style={{ position: 'relative', maxHeight: '100%' }}>
-            {/* Image container */}
-            <Box fill pad="xsmall" align="center" justify="center">
-              <Box fill align="center" justify="center" overflow="hidden">
-                {currentEpisodeScreenshots.length > 0 && (
-                  <img
-                    src={currentEpisodeScreenshots[currentScreenshotIndex]}
-                    alt={`Episode ${id} screenshot ${currentScreenshotIndex + 1}`}
-                    style={{
-                      width: '80%',
-                      height: '80%',
-                      objectFit: 'contain', // use "contain" if you want the whole image visible without cropping
-                      display: 'block',
-                    }}
-                  />
-                )}
-              </Box>
-            </Box>
-
-            {/* Navigation buttons (only show if more than one screenshot) */}
-            {currentEpisodeScreenshots.length > 1 && (
-              <Box
-                direction="row"
-                justify="between"
-                align="center"
+        <Box fill align="center" justify="between" overflow="hidden" pad="xsmall">
+          {/* Dynamic image size based on parent container */}
+          <Box
+            align="center"
+            justify="center"
+            flex="grow"
+            height={`${calculateImageHeight()}px`}
+            width="100%"
+            overflow="hidden"
+          >
+            {currentEpisodeScreenshots.length > 0 && (
+              <img
+                src={currentEpisodeScreenshots[currentScreenshotIndex]}
+                alt={`Screenshot ${currentScreenshotIndex + 1}`}
                 style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: 0,
-                  right: 0,
-                  transform: 'translateY(-50%)',
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  objectFit: 'contain',
                 }}
-                pad={{ horizontal: 'small' }}
-              >
-                <Button
-                  icon={<Previous size="medium" />}
-                  onClick={goToPrevious}
-                  plain
-                  hoverIndicator
-                  a11yTitle="Previous screenshot"
-                />
-                <Button
-                  icon={<Next size="medium" />}
-                  onClick={goToNext}
-                  plain
-                  hoverIndicator
-                  a11yTitle="Next screenshot"
-                />
-              </Box>
+              />
             )}
           </Box>
 
-          {/* Pagination dots */}
+          {/* Fixed-height navigation bar */}
           {currentEpisodeScreenshots.length > 1 && (
-            <Box direction="row" justify="center" pad={{ vertical: 'xsmall' }} gap="xsmall">
-              {currentEpisodeScreenshots.map((_, index) => (
-                <Box
-                  key={index}
-                  background={index === currentScreenshotIndex ? 'brand' : 'light-4'}
-                  width="8px"
-                  height="8px"
-                  round="full"
-                  onClick={() => setCurrentScreenshotIndex(index)}
-                  style={{ cursor: 'pointer' }}
-                />
-              ))}
+            <Box
+              direction="row"
+              justify="center"
+              align="center"
+              height="30px"
+              width="100%"
+              flex={false}
+              margin={{ top: 'xsmall' }}
+            >
+              <Button
+                icon={<Previous size="medium" />}
+                onClick={goToPrevious}
+                primary
+                hoverIndicator
+                style={{
+                  borderRadius: '50%',
+                  padding: '8px',
+                  background: '#7D4CDB',
+                  width: '40px',
+                  height: '40px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              />
+
+              <Text size="small" weight="bold" margin={{ horizontal: 'small' }}>
+                {`${currentScreenshotIndex + 1}/${currentEpisodeScreenshots.length}`}
+              </Text>
+
+              <Button
+                icon={<Next size="medium" />}
+                onClick={goToNext}
+                primary
+                hoverIndicator
+                style={{
+                  borderRadius: '50%',
+                  padding: '8px',
+                  background: '#7D4CDB',
+                  width: '40px',
+                  height: '40px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              />
             </Box>
           )}
         </Box>
@@ -290,10 +317,10 @@ const InformationArea: React.FunctionComponent = () => {
   const displaySeriesNo = useSelector(displaySeriesNoSelector);
   const incentive = useSelector(incentiveSelector);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const infoBoxRef = useRef<HTMLDivElement | null>(null);
   const firstRender = useRef(true);
 
-  // State for active tab
-  const [activeTab, setActiveTab] = useState<number>(0);
+  const [activeTab, setActiveTab] = useState<number>(1);
   const displaySerriesNo = useSelector(displaySeriesNoSelector);
   const workerId = useSelector(workerIdSelector);
   const id = displaySerriesNo + '-' + workerId;
@@ -302,6 +329,7 @@ const InformationArea: React.FunctionComponent = () => {
 
   useEffect(() => {
     const screenshotsData = localStorage.getItem('SCREENSHOTS');
+    // TODO: check where to implement this
     // dispatch(removeAllMessages());
     if (screenshotsData) {
       try {
@@ -323,7 +351,6 @@ const InformationArea: React.FunctionComponent = () => {
   useEffect(() => {
     if (isCurrentGameCoop && socket) {
       socket.onmessage = (event: MessageEvent) => {
-        console.log('Received message:');
         const parts = event.data.split(' ');
 
         if (parts[0] === 'CHAT') {
@@ -334,6 +361,16 @@ const InformationArea: React.FunctionComponent = () => {
       };
     }
   }, [isCurrentGameCoop, socket]);
+
+  useEffect(() => {
+    if (infoBoxRef.current) {
+      setTimeout(() => {
+        if (infoBoxRef.current) {
+          infoBoxRef.current.scrollTop = infoBoxRef.current.scrollHeight;
+        }
+      }, 50);
+    }
+  }, [iLost, is2PGAdveGame, finishCode, isAchieved, numGoodMovesInARow, lastStretch, incentive]);
 
   useEffect(() => {
     if (firstRender.current) {
@@ -406,7 +443,6 @@ const InformationArea: React.FunctionComponent = () => {
 
   //-- current "factor achieved" (based on both previous and current episode)
   const cfa: number = Math.max(factorPromised, board.factorAchieved ?? 1);
-  // remove undrline from tabs
 
   return (
     <Box
@@ -439,7 +475,7 @@ const InformationArea: React.FunctionComponent = () => {
           )}
         </Box>
       </Box>
-      <Tabs activeIndex={activeTab} onActive={(index: number) => setActiveTab(index)} flex="grow">
+      <Tabs activeIndex={activeTab} onActive={(index: number) => setActiveTab(index)} flex>
         <Tab
           plain={true}
           title={
@@ -520,12 +556,23 @@ const InformationArea: React.FunctionComponent = () => {
                 transition: 'all 0.2s ease-in-out',
               }}
               overflow={'auto'}
+              ref={infoBoxRef}
             >
               {incentive === Incentive.LIKELIHOOD ? (
                 justReachedX4 ? (
                   <Text>
-                    Your play is {(x4Likelihood ?? 0).toString()} times better than chance. This has
-                    re-doubled your score. Please tell us what the rule is, and how you found it.
+                    Your play is{' '}
+                    {x4Likelihood == 1000000
+                      ? 'million'
+                      : x4Likelihood == 100000
+                      ? 'one hundred thousand'
+                      : x4Likelihood == 10000
+                      ? 'ten thousand'
+                      : x4Likelihood == 1000
+                      ? 'thousand'
+                      : ''}{' '}
+                    times better than chance. This has re-doubled your score. Please tell us what
+                    the rule is, and how you found it.
                   </Text>
                 ) : justReachedX2 ? (
                   <Text>
@@ -632,7 +679,9 @@ const InformationArea: React.FunctionComponent = () => {
             </span>
           }
         >
-          <ChatArea />
+          <Box fill height="100%">
+            <ChatArea />
+          </Box>
         </Tab>
         <Tab
           plain={true}

@@ -98,7 +98,7 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
     // socket connect logic
     const ws = new WebSocketService();
     let socket: ReturnType<typeof ws.getSocket> | null = null;
-
+    let socketChannel: EventChannel<SocketMessage> | null = null;
     if (isCurrentGameCoop || isCurrentGameAdve) {
       yield* put(socketConnection.request(playerId));
 
@@ -112,6 +112,7 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           }
 
           yield* put(socketConnection.success(socket));
+          socketChannel = createSocketChannel(socket);
         }
       } catch (error) {
         yield* put(
@@ -119,11 +120,6 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
         );
       }
     }
-    if (!socket) {
-      throw new Error('Socket is not initialized');
-    }
-    //create socket channel
-    const socketChannel = createSocketChannel(socket);
 
     let {
       // eslint-disable-next-line prefer-const
@@ -158,9 +154,6 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
     }
 
     let { alreadyFinished, episodeId, para, mustWait, display } = data;
-
-    // GPT: Add code to listen for a socket message "READY EPI" over here if the mustWait flag above is true. Do a yield* put(nextPage()); to go to a wating page
-    // Do this GPT: If the mustWait flag is set to false skip the listening for READY EPI message part and proceed to the next lines of code
 
     // TODO: Check if socket connection error is getting handles
     if (mustWait) {
@@ -223,7 +216,10 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
         // This will help the other client wait for the current client to finish their win streak
         while (displayResult.mustWait) {
           // Listen for messages and process them:
-          yield call(processMessages, socketChannel);
+          if (socketChannel) {
+            // Listen for messages and process them:
+            yield* processMessages(socketChannel);
+          }
 
           // Once READY DIS is received, update the display
           displayResult = yield call(
@@ -236,7 +232,6 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           );
         }
 
-        // GPT: Also in the follwing race if move or pick responses also have mustWait flag in their responses. If it is set to truie.. the play should be stopped for this client
         ({
           moveAction,
           giveUpAction,
