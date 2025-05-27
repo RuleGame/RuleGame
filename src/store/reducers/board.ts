@@ -21,6 +21,7 @@ import {
   validMove,
   setHoveredItem,
   resetHoveredItem,
+  setIsBotAssisted,
 } from '../actions/board';
 
 export type State = {
@@ -70,6 +71,7 @@ export type State = {
   x4After?: number;
   x2Likelihood?: number;
   x4Likelihood?: number;
+  botAssistance?: string;
   faces?: boolean[];
   facesMine?: boolean[];
   displaySeriesNo: number;
@@ -128,6 +130,7 @@ export const initialState: State = {
   x4After: undefined,
   x2Likelihood: undefined,
   x4Likelihood: undefined,
+  botAssistance: undefined,
   faces: [],
   facesMine: [],
   displaySeriesNo: 0,
@@ -256,6 +259,12 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       return {
         ...state,
         hoveredItem: undefined,
+      };
+
+    case getType(setIsBotAssisted):
+      return {
+        ...state,
+        botAssistance: action.payload.botAssistance,
       };
 
     default:

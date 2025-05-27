@@ -20,6 +20,7 @@ import {
   submitDetails,
   unpause,
   validMove,
+  setIsBotAssisted,
 } from '../actions/board';
 import { addMessage } from '../actions/message';
 import { nextPage } from '../actions/page';
@@ -82,6 +83,7 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
         playerId: playerIdResponse,
         isCoopGame: isCurrentGameCoop,
         isAdveGame: isCurrentGameAdve,
+        trialList: trialList,
       },
     } = yield* apiResolve(
       '/game-data/GameService2/player',
@@ -92,6 +94,8 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
     if (playerError) {
       throw Error(`Error on /player: ${playerErrmsg}`);
     }
+
+    yield* put(setIsBotAssisted(trialList[0]?.bot_assist));
 
     playerId = playerIdResponse;
     yield* put(setWorkerId(playerId));
@@ -259,7 +263,7 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           yield* put(pause());
 
           const {
-            data: { code, error, errmsg, mustWait },
+            data: { code, error, errmsg, mustWait, botAssistChat },
           } = yield* apiResolve(
             '/game-data/GameService2/move',
             METHOD.POST,
@@ -287,6 +291,9 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
             yield* put(invalidMove(moveAction.payload.boardObjectId, moveAction.payload.bucket));
           }
 
+          if (botAssistChat) {
+            yield* put(addMessage('ASSISTANT: ', botAssistChat));
+          }
           yield* delay(FEEDBACK_DURATION);
           // if (mustWait) {
           //   yield call(ws.waitForReadyDis);
@@ -301,7 +308,7 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           )!;
 
           const {
-            data: { errmsg, error, mustWait },
+            data: { errmsg, error, mustWait, botAssistChat },
           } = yield* apiResolve(
             '/game-data/GameService2/pick',
             METHOD.POST,
@@ -319,6 +326,10 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           // Would be easy to know whether there is an error flag in the /pick response.
           if (error) {
             throw Error(`Error on /pick: ${errmsg}`);
+          }
+
+          if (botAssistChat) {
+            yield* put(addMessage('ASSISTANT: ', botAssistChat));
           }
 
           // if (mustWait) {
@@ -429,6 +440,7 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
   }
 }
 
+// TODO: Set data type of para
 function* handleDisplayUpdate(
   episodeId: string,
   playerId: string,

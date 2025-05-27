@@ -17,6 +17,8 @@ import {
   lastMoveSelector,
   pickedItemsSelector,
   immovableItemsSelector,
+  is2PGAdveGameSelector,
+  is2PGCoopGameSelector,
 } from '../store/selectors/board';
 import { debugModeSelector } from '../store/selectors/debug-mode';
 import { RootAction } from '../store/actions';
@@ -50,15 +52,39 @@ const ImageStyledShapeObject = styled(ImageShapeObject)<{
   feedbackSwitches: FeedbackSwitches;
   isPicked: boolean;
   isImmovable: boolean;
+  is2PG: boolean;
+  label?: string;
 }>`
   width: 100%;
   height: 100%;
+  position: relative;
   cursor: ${({ canDrag, feedbackSwitches }) =>
     canDrag || feedbackSwitches === FeedbackSwitches.FREE ? 'grab' : 'unset'};
-  ${({ isPicked }) =>
-    isPicked ? 'border: 3px solid black; border-radius: 8px; box-sizing: border-box;' : ''}
-  ${({ isImmovable }) =>
-    isImmovable ? 'border: 3px solid red; border-radius: 8px; box-sizing: border-box;' : ''}
+  ${({ isPicked, is2PG }) =>
+    isPicked && is2PG ? 'border: 3px solid black; border-radius: 8px; box-sizing: border-box;' : ''}
+  ${({ isImmovable, is2PG }) =>
+    isImmovable && is2PG
+      ? 'border: 3px solid red; border-radius: 8px; box-sizing: border-box;'
+      : ''}
+
+  ${({ label }) =>
+    label
+      ? `
+        &::after {
+          content: '${label}';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: white;
+          font-weight: bold;
+          font-size: 14px;
+          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+          pointer-events: none;
+          z-index: 1;
+        }
+      `
+      : ''}
 `;
 
 const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX.Element => {
@@ -72,6 +98,7 @@ const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX
   const isLastMovedPiece = lastMove?.pieceId === boardObject.id;
   const pickedItems = useSelector(pickedItemsSelector) ?? [];
   const immovableItems = useSelector(immovableItemsSelector) ?? [];
+  const is2PG = useSelector(is2PGAdveGameSelector) || useSelector(is2PGCoopGameSelector);
 
   const canDrag = boardObject.buckets.length > 0 && !gameCompleted && !isPaused;
   const [, ref] = useDrag({
@@ -121,12 +148,14 @@ const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX
         <ImageStyledShapeObject
           ref={ref}
           image={boardObject.image}
+          label={boardObject.label}
           canDrag={canDrag}
           feedbackSwitches={feedbackSwitches}
           shapeObjectId={boardObject.id}
           debugInfo={debugMode ? debugInfo : undefined}
           isPicked={pickedItems.includes(boardObject.id)}
           isImmovable={immovableItems.includes(boardObject.id)}
+          is2PG={is2PG}
         />
       ) : (
         <StyledShapeObject

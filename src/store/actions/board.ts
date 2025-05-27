@@ -71,6 +71,7 @@ export const setBoard = createAction(
     x4After,
     x2Likelihood,
     x4Likelihood,
+    botAssistance,
     isPaused = false,
     isPlayerTurn,
     twoPGCoop,
@@ -120,6 +121,7 @@ export const setBoard = createAction(
     x4After?: number;
     x2Likelihood?: number;
     x4Likelihood?: number;
+    botAssistance?: string;
     isPaused?: boolean;
     isPlayerTurn: boolean;
     twoPGCoop: boolean;
@@ -166,6 +168,7 @@ export const setBoard = createAction(
     x4After,
     x2Likelihood,
     x4Likelihood,
+    botAssistance,
     isPaused,
     isPlayerTurn,
     twoPGCoop,
@@ -181,6 +184,13 @@ export const setHoveredItem = createAction(
   'board/SET_HOVERED_ITEM',
   (hoveredItem?: BoardObject) => ({
     hoveredItem,
+  }),
+)();
+
+export const setIsBotAssisted = createAction(
+  'board/SET_IS_BOT_ASSISTED',
+  (botAssistance: string) => ({
+    botAssistance,
   }),
 )();
 

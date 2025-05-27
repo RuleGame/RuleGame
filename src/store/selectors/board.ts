@@ -211,6 +211,7 @@ export const x2AfterSelector = (state: RootState) => state.board.x2After;
 export const x4AfterSelector = (state: RootState) => state.board.x4After;
 export const x2LikelihoodSelector = (state: RootState) => state.board.x2Likelihood;
 export const x4LikelihoodSelector = (state: RootState) => state.board.x4Likelihood;
+export const botAssistanceSelector = (state: RootState) => state.board.botAssistance;
 
 export const facesSelector = (state: RootState) => state.board.faces;
 

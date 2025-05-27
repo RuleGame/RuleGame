@@ -13,6 +13,9 @@ import {
   isPausedSelector,
   disallowedBucketSelector,
   hoveredItemSelector,
+  is2PGAdveGameSelector,
+  is2PGCoopGameSelector,
+  botAssistanceSelector,
 } from '../store/selectors/board';
 import { Shape } from '../constants/Shape';
 import { move } from '../store/actions/board';
@@ -28,10 +31,29 @@ const StyledBucket = styled(ShapeObject)<{
   isOver: boolean;
   showInvalidDropX?: boolean;
   children?: React.ReactNode;
+  isBotAssisted?: string;
+  shapeObjectId: string;
 }>`
   filter: grayscale(${(props) => (props.isOver ? 0.5 : 0)});
   transform: scale(${(props) => (props.isOver ? 2 : 1)});
   position: relative;
+
+  ${({ shapeObjectId }) =>
+    shapeObjectId
+      ? `
+        &::before {
+          content: '${shapeObjectId.slice(-1)}';
+          position: absolute;
+          top: 3px;
+          left: 2px;
+          color: black;
+          font-weight: bold;
+          font-size: 20px;
+          z-index: 2;
+          pointer-events: none;
+        }
+      `
+      : ''}
 `;
 
 const Bucket = ({ className, shape, bucket }: BucketProps): JSX.Element => {
@@ -40,6 +62,8 @@ const Bucket = ({ className, shape, bucket }: BucketProps): JSX.Element => {
   const isGameCompleted = useSelector(isGameCompletedSelector);
   const disallowedBuckets = useSelector(disallowedBucketSelector);
   const hoveredItem = useSelector(hoveredItemSelector);
+  const is2PG = useSelector(is2PGAdveGameSelector) || useSelector(is2PGCoopGameSelector);
+  const isBotAssisted = useSelector(botAssistanceSelector);
 
   const [{ isOver, item }, ref] = useDrop({
     canDrop: () => !isPaused,
@@ -56,7 +80,8 @@ const Bucket = ({ className, shape, bucket }: BucketProps): JSX.Element => {
   const showInvalidDropX =
     hoveredItem &&
     disallowedBuckets[hoveredItem.id] &&
-    disallowedBuckets[hoveredItem.id].includes(bucket.pos);
+    disallowedBuckets[hoveredItem.id].includes(bucket.pos) &&
+    is2PG;
 
   return (
     <StyledBucket
@@ -65,6 +90,7 @@ const Bucket = ({ className, shape, bucket }: BucketProps): JSX.Element => {
       isOver={isOver}
       shape={shape}
       shapeObjectId={bucket.id}
+      isBotAssisted={isBotAssisted}
       showInvalidDropX={showInvalidDropX}
       opacity={(isGameCompleted || isPaused) && shape === SpecialShape.BUCKET ? 0.5 : 1}
     />

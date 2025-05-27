@@ -32,6 +32,7 @@ import {
   is2PGCoopGameSelector,
   episodeIdSelector,
   workerIdSelector,
+  botAssistanceSelector,
 } from '../store/selectors/board';
 import { socketSelector } from '../store/selectors/socket';
 import { messageSelector } from '../store/selectors/message';
@@ -67,7 +68,7 @@ const ChatArea: React.FC = () => {
   const socket = useSelector(socketSelector);
   const dispatch = useDispatch();
   const messageList = useSelector(messageSelector);
-
+  const isBotAssisted = useSelector(botAssistanceSelector);
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messageList]);
@@ -89,7 +90,7 @@ const ChatArea: React.FC = () => {
     }
   };
 
-  if (!isCurrentGameCoop) {
+  if (!isCurrentGameCoop && !isBotAssisted) {
     return (
       <Box fill align="center" justify="center">
         <Text>Chat is only available in cooperative games.</Text>

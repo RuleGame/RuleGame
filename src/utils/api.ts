@@ -100,6 +100,7 @@ export type BoardObject =
     }
   // Image properties based
   | {
+      label?: string; // for bot assisted games
       image: string;
       buckets: BucketPosition[];
       color: undefined;
@@ -186,6 +187,7 @@ type Para = {
   x2_likelihood?: number;
   x4_likelihood?: number;
   init: number;
+  bot_assist: string;
 };
 
 export enum ErrorMsg {
@@ -272,6 +274,7 @@ export type Endpoints = {
         numMovesMade: number;
         totalRewardEarned: number;
         mustWait: boolean;
+        botAssistChat?: string;
       },
       {
         episode: string;
@@ -301,6 +304,7 @@ export type Endpoints = {
         numMovesMade: number;
         totalRewardEarned: number;
         mustWait: boolean;
+        botAssistChat?: string;
       },
       {
         episode: string;

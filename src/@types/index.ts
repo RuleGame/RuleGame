@@ -12,6 +12,7 @@ export type BoardObjectType = {
   shape: Shape;
   x: number;
   y: number;
+  label?: string;
 };
 
 export type BucketType = { pos: BucketPosition; x: number; y: number; id: string };
