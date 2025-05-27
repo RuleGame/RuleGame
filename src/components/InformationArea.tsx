@@ -285,7 +285,7 @@ const HistoryArea: React.FC = () => {
   );
 };
 
-const InformationArea: React.FunctionComponent = () => {
+const MovesArea: React.FC = () => {
   const dispatch = useDispatch();
   const board = useSelector(boardSelector); //-- everything else is in this structure --VM 2024-09-28
   const numGoodMoves = useSelector(numGoodMovesMadeSelector);
@@ -321,7 +321,6 @@ const InformationArea: React.FunctionComponent = () => {
   const infoBoxRef = useRef<HTMLDivElement | null>(null);
   const firstRender = useRef(true);
 
-  const [activeTab, setActiveTab] = useState<number>(1);
   const displaySerriesNo = useSelector(displaySeriesNoSelector);
   const workerId = useSelector(workerIdSelector);
   const id = displaySerriesNo + '-' + workerId;
@@ -378,7 +377,7 @@ const InformationArea: React.FunctionComponent = () => {
       firstRender.current = false;
       return;
     }
-    console.log('finishCode:', finishCode);
+
     if (finishCode === FinishCode.FINISH || finishCode === FinishCode.EARLY_WIN) {
       const rightSideElement = document.querySelector('[data-cy="game"]');
 
@@ -415,12 +414,6 @@ const InformationArea: React.FunctionComponent = () => {
   }, [finishCode]);
 
   useEffect(() => {
-    if (finishCode === FinishCode.FINISH || finishCode === FinishCode.EARLY_WIN) {
-      setActiveTab(0);
-    }
-  }, [finishCode]);
-
-  useEffect(() => {
     if (containerRef.current && isAchieved) {
       const container = containerRef.current;
       setTimeout(() => {
@@ -445,6 +438,205 @@ const InformationArea: React.FunctionComponent = () => {
   //-- current "factor achieved" (based on both previous and current episode)
   const cfa: number = Math.max(factorPromised, board.factorAchieved ?? 1);
 
+  return (
+    <Box fill={true} direction="column" overflow="hidden" height="100%">
+      <Box
+        background="darkseagreen"
+        pad="xxsmall"
+        border={{ color: 'black' }}
+        style={{
+          flex: justReachedX4 ? '0 0 auto' : '0 0 80%',
+          height:
+            justReachedX4 && containerRef.current
+              ? (() => {
+                  const containerWidth = containerRef.current.clientWidth;
+                  const moveWidth = 32; // 2em in pixels
+                  const movesPerRow = Math.floor(containerWidth / moveWidth);
+                  const totalMoves = goodBadMoves.length;
+                  // x is the number of rows/scrolls
+                  const x = totalMoves % movesPerRow;
+
+                  if (movesPerRow < 10) {
+                    const y = Math.ceil(10 / movesPerRow);
+                    return `${y * moveWidth + 32}px`;
+                  } else if (movesPerRow === 10) {
+                    return `64px`;
+                  } else {
+                    // movesPerRow > 10
+                    return `64px`;
+                  }
+                })()
+              : 'auto',
+          overflow: 'auto',
+          transition: 'all 0.2s ease-in-out',
+        }}
+      >
+        <Box direction="row" wrap overflow="auto" ref={containerRef}>
+          {goodBadMoves.map((move, index) => (
+            <Box
+              width="2em"
+              ref={index === goodBadMoves.length - 1 ? lastFaceRef : null}
+              key={`${displaySeriesNo}-${index}`}
+              style={{
+                padding: '1px',
+              }}
+            >
+              {move ? (
+                <ShapeObject shape={SpecialShape.HAPPY} size={myfaces[index] ? 1 : 0.6} />
+              ) : (
+                <ShapeObject
+                  shape={SpecialShape.UNHAPPY}
+                  size={myfaces[index] ? 1 : 0.6}
+                  backgroundColor="red"
+                  round="full"
+                />
+              )}
+            </Box>
+          ))}
+        </Box>
+      </Box>
+
+      <Box
+        background="beige"
+        pad="xxsmall"
+        border={{ color: 'black' }}
+        style={{
+          flex: justReachedX4 ? '1 1 auto' : '1 1 20%',
+          transition: 'all 0.2s ease-in-out',
+        }}
+        overflow={'auto'}
+        ref={infoBoxRef}
+      >
+        {incentive === Incentive.LIKELIHOOD ? (
+          justReachedX4 ? (
+            <Text>
+              Your play is{' '}
+              {x4Likelihood == 1000000
+                ? 'million'
+                : x4Likelihood == 100000
+                ? 'one hundred thousand'
+                : x4Likelihood == 10000
+                ? 'ten thousand'
+                : x4Likelihood == 1000
+                ? 'thousand'
+                : ''}{' '}
+              times better than chance. This has re-doubled your score. Please tell us what the rule
+              is, and how you found it.
+            </Text>
+          ) : justReachedX2 ? (
+            <Text>
+              Your golden string has doubled your score! Extend it to double again. Be careful.
+            </Text>
+          ) : cfa > 1 && lastR === 0 ? (
+            <Text>Your golden string must start over. No points are lost.</Text>
+          ) : numFaces == 0 ? (
+            <Text>Welcome!</Text>
+          ) : lastR > 1 && cfa <= 1 ? (
+            <Text>You are making progress!</Text>
+          ) : lastR > 1 && cfa > 1 ? (
+            <Text>You are making more progress!</Text>
+          ) : iLost && is2PGAdveGame ? (
+            <Text>Your adversary has won this game. Press NEXT to continue</Text>
+          ) : (
+            <Text>Please keep trying...</Text>
+          )
+        ) : factorPromised === 4 ? (
+          <Text>
+            Your {numGoodMovesInARow} good moves in a row has <Text weight="bold">re-doubled</Text>{' '}
+            your score. Please tell us what the hidden rule is.
+          </Text>
+        ) : isSecondOrMoreTimeDoubling ? (
+          <Text>
+            Great. You did make <Text weight="bold">{lastDoublingStreakCount}</Text> good moves in a
+            row before. Now that you&apos;ve got <Text weight="bold">{numGoodMovesInARow}</Text> in
+            a row again, see if you can extend it to <Text weight="bold">{x4After}</Text> this time.
+          </Text>
+        ) : lostStreak ? (
+          <Text>Too bad... please keep trying!</Text>
+        ) : x2After !== undefined && numGoodMovesInARow >= x2After ? (
+          <Text>
+            Your {numGoodMovesInARow} good moves in a row has <Text weight="bold">doubled</Text>{' '}
+            your score. Now add <Text weight="bold">{x4After - lastStretch} more</Text> good moves
+            to <Text weight="bold">double it again</Text>.
+          </Text>
+        ) : numFaces == 0 ? (
+          <Text>Welcome!</Text>
+        ) : iLost && is2PGAdveGame ? (
+          <Text>Your adversary has won this game. Press NEXT to continue</Text>
+        ) : (
+          <Text>Please keep trying...</Text>
+        )}
+        {isAchieved && (
+          <Box margin={{ top: 'small' }} overflow="auto">
+            <Form
+              onSubmit={() => {
+                dispatch(submitDetails(idea, how));
+              }}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4%',
+                height: '100%',
+              }}
+            >
+              <TextArea
+                placeholder="Explain your idea here"
+                value={idea}
+                onChange={(event) => setIdea(event.target.value)}
+                style={{
+                  flex: '48%',
+                  minHeight: 0,
+                  resize: 'none',
+                }}
+              />
+              <TextArea
+                placeholder="How did you figure it out?"
+                value={how}
+                onChange={(event) => setHow(event.target.value)}
+                style={{
+                  flex: '48%',
+                  minHeight: 0,
+                  resize: 'none',
+                }}
+              />
+              <Button type="submit" label="Submit" primary />
+            </Form>
+          </Box>
+        )}
+
+        {((iLost && is2PGAdveGame) || (finishCode === FinishCode.FINISH && !isAchieved)) && (
+          <Button label="Next" primary onClick={() => dispatch(skipGuess())} />
+        )}
+      </Box>
+    </Box>
+  );
+};
+
+const InformationArea: React.FunctionComponent = () => {
+  // const dispatch = useDispatch();
+  const board = useSelector(boardSelector); //-- everything else is in this structure --VM 2024-09-28
+  // const numGoodMoves = useSelector(numGoodMovesMadeSelector);
+  // const numFaces = useSelector(numFacesSelector);
+  // const goodBadMoves = useSelector(facesSelector)!;
+  // const myfaces = useSelector(myFacesSelector) ?? [];
+  const is2PGCoopGame = useSelector(is2PGCoopGameSelector);
+  const is2PGAdveGame = useSelector(is2PGAdveGameSelector);
+  const is2PG = is2PGCoopGame || is2PGAdveGame;
+  const lastStretch = useSelector(lastStretchSelector);
+  const isBotAssisted = useSelector(botAssistanceSelector);
+  const factorPromised: number = useSelector(factorPromisedSelector) ?? 1;
+  const finishCode = useSelector(finishCodeSelector);
+  const incentive = useSelector(incentiveSelector);
+  const [activeTab, setActiveTab] = useState<number>(1);
+
+  useEffect(() => {
+    if (finishCode === FinishCode.FINISH || finishCode === FinishCode.EARLY_WIN) {
+      setActiveTab(0);
+    }
+  }, [finishCode]);
+
+  const cfa: number = Math.max(factorPromised, board.factorAchieved ?? 1);
+  // TODO: Screenshots only for 2PG games
   return (
     <Box
       background="steelblue"
@@ -476,231 +668,62 @@ const InformationArea: React.FunctionComponent = () => {
           )}
         </Box>
       </Box>
-      <Tabs activeIndex={activeTab} onActive={(index: number) => setActiveTab(index)} flex>
-        <Tab
-          plain={true}
-          title={
-            <span
-              style={{
-                color: activeTab === 0 ? 'black' : 'white',
-                padding: '10px 20px',
-                display: 'inline-block',
-              }}
-            >
-              Info
-            </span>
-          }
-        >
-          <Box fill={true} direction="column" overflow="hidden" height="100%">
-            <Box
-              background="darkseagreen"
-              pad="xxsmall"
-              border={{ color: 'black' }}
-              style={{
-                flex: justReachedX4 ? '0 0 auto' : '0 0 80%',
-                height:
-                  justReachedX4 && containerRef.current
-                    ? (() => {
-                        const containerWidth = containerRef.current.clientWidth;
-                        const moveWidth = 32; // 2em in pixels
-                        const movesPerRow = Math.floor(containerWidth / moveWidth);
-                        const totalMoves = goodBadMoves.length;
-                        // x is the number of rows/scrolls
-                        const x = totalMoves % movesPerRow;
-
-                        if (movesPerRow < 10) {
-                          const y = Math.ceil(10 / movesPerRow);
-                          return `${y * moveWidth + 32}px`;
-                        } else if (movesPerRow === 10) {
-                          return `64px`;
-                        } else {
-                          // movesPerRow > 10
-                          return `64px`;
-                        }
-                      })()
-                    : 'auto',
-                overflow: 'auto',
-                transition: 'all 0.2s ease-in-out',
-              }}
-            >
-              <Box direction="row" wrap overflow="auto" ref={containerRef}>
-                {goodBadMoves.map((move, index) => (
-                  <Box
-                    width="2em"
-                    ref={index === goodBadMoves.length - 1 ? lastFaceRef : null}
-                    key={`${displaySeriesNo}-${index}`}
-                    style={{
-                      padding: '1px',
-                    }}
-                  >
-                    {move ? (
-                      <ShapeObject shape={SpecialShape.HAPPY} size={myfaces[index] ? 1 : 0.6} />
-                    ) : (
-                      <ShapeObject
-                        shape={SpecialShape.UNHAPPY}
-                        size={myfaces[index] ? 1 : 0.6}
-                        backgroundColor="red"
-                        round="full"
-                      />
-                    )}
-                  </Box>
-                ))}
-              </Box>
+      {is2PG || isBotAssisted ? (
+        <Tabs activeIndex={activeTab} onActive={(index: number) => setActiveTab(index)} flex>
+          <Tab
+            plain={true}
+            title={
+              <span
+                style={{
+                  color: activeTab === 0 ? 'black' : 'white',
+                  padding: '10px 20px',
+                  display: 'inline-block',
+                }}
+              >
+                Info
+              </span>
+            }
+          >
+            <MovesArea />
+          </Tab>
+          <Tab
+            plain={true}
+            title={
+              <span
+                style={{
+                  color: activeTab === 1 ? 'black' : 'white',
+                  padding: '10px 20px',
+                  display: 'inline-block',
+                }}
+              >
+                Chat
+              </span>
+            }
+          >
+            <Box fill height="100%">
+              <ChatArea />
             </Box>
-
-            <Box
-              background="beige"
-              pad="xxsmall"
-              border={{ color: 'black' }}
-              style={{
-                flex: justReachedX4 ? '1 1 auto' : '1 1 20%',
-                transition: 'all 0.2s ease-in-out',
-              }}
-              overflow={'auto'}
-              ref={infoBoxRef}
-            >
-              {incentive === Incentive.LIKELIHOOD ? (
-                justReachedX4 ? (
-                  <Text>
-                    Your play is{' '}
-                    {x4Likelihood == 1000000
-                      ? 'million'
-                      : x4Likelihood == 100000
-                      ? 'one hundred thousand'
-                      : x4Likelihood == 10000
-                      ? 'ten thousand'
-                      : x4Likelihood == 1000
-                      ? 'thousand'
-                      : ''}{' '}
-                    times better than chance. This has re-doubled your score. Please tell us what
-                    the rule is, and how you found it.
-                  </Text>
-                ) : justReachedX2 ? (
-                  <Text>
-                    Your golden string has doubled your score! Extend it to double again. Be
-                    careful.
-                  </Text>
-                ) : cfa > 1 && lastR === 0 ? (
-                  <Text>Your golden string must start over. No points are lost.</Text>
-                ) : numFaces == 0 ? (
-                  <Text>Welcome!</Text>
-                ) : lastR > 1 && cfa <= 1 ? (
-                  <Text>You are making progress!</Text>
-                ) : lastR > 1 && cfa > 1 ? (
-                  <Text>You are making more progress!</Text>
-                ) : iLost && is2PGAdveGame ? (
-                  <Text>Your adversary has won this game. Press NEXT to continue</Text>
-                ) : (
-                  <Text>Please keep trying...</Text>
-                )
-              ) : factorPromised === 4 ? (
-                <Text>
-                  Your {numGoodMovesInARow} good moves in a row has{' '}
-                  <Text weight="bold">re-doubled</Text> your score. Please tell us what the hidden
-                  rule is.
-                </Text>
-              ) : isSecondOrMoreTimeDoubling ? (
-                <Text>
-                  Great. You did make <Text weight="bold">{lastDoublingStreakCount}</Text> good
-                  moves in a row before. Now that you&apos;ve got{' '}
-                  <Text weight="bold">{numGoodMovesInARow}</Text> in a row again, see if you can
-                  extend it to <Text weight="bold">{x4After}</Text> this time.
-                </Text>
-              ) : lostStreak ? (
-                <Text>Too bad... please keep trying!</Text>
-              ) : x2After !== undefined && numGoodMovesInARow >= x2After ? (
-                <Text>
-                  Your {numGoodMovesInARow} good moves in a row has{' '}
-                  <Text weight="bold">doubled</Text> your score. Now add{' '}
-                  <Text weight="bold">{x4After - lastStretch} more</Text> good moves to{' '}
-                  <Text weight="bold">double it again</Text>.
-                </Text>
-              ) : numFaces == 0 ? (
-                <Text>Welcome!</Text>
-              ) : iLost && is2PGAdveGame ? (
-                <Text>Your adversary has won this game. Press NEXT to continue</Text>
-              ) : (
-                <Text>Please keep trying...</Text>
-              )}
-              {isAchieved && (
-                <Box margin={{ top: 'small' }} overflow="auto">
-                  <Form
-                    onSubmit={() => {
-                      dispatch(submitDetails(idea, how));
-                    }}
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '4%',
-                      height: '100%',
-                    }}
-                  >
-                    <TextArea
-                      placeholder="Explain your idea here"
-                      value={idea}
-                      onChange={(event) => setIdea(event.target.value)}
-                      style={{
-                        flex: '48%',
-                        minHeight: 0,
-                        resize: 'none',
-                      }}
-                    />
-                    <TextArea
-                      placeholder="How did you figure it out?"
-                      value={how}
-                      onChange={(event) => setHow(event.target.value)}
-                      style={{
-                        flex: '48%',
-                        minHeight: 0,
-                        resize: 'none',
-                      }}
-                    />
-                    <Button type="submit" label="Submit" primary />
-                  </Form>
-                </Box>
-              )}
-
-              {((iLost && is2PGAdveGame) || (finishCode === FinishCode.FINISH && !isAchieved)) && (
-                <Button label="Next" primary onClick={() => dispatch(skipGuess())} />
-              )}
-            </Box>
-          </Box>
-        </Tab>
-        <Tab
-          plain={true}
-          title={
-            <span
-              style={{
-                color: activeTab === 1 ? 'black' : 'white',
-                padding: '10px 20px',
-                display: 'inline-block',
-              }}
-            >
-              Chat
-            </span>
-          }
-        >
-          <Box fill height="100%">
-            <ChatArea />
-          </Box>
-        </Tab>
-        <Tab
-          plain={true}
-          title={
-            <span
-              style={{
-                color: activeTab === 2 ? 'black' : 'white',
-                padding: '10px 20px',
-                display: 'inline-block',
-              }}
-            >
-              History
-            </span>
-          }
-        >
-          <HistoryArea />
-        </Tab>
-      </Tabs>
+          </Tab>
+          <Tab
+            plain={true}
+            title={
+              <span
+                style={{
+                  color: activeTab === 2 ? 'black' : 'white',
+                  padding: '10px 20px',
+                  display: 'inline-block',
+                }}
+              >
+                History
+              </span>
+            }
+          >
+            <HistoryArea />
+          </Tab>
+        </Tabs>
+      ) : (
+        <MovesArea />
+      )}
     </Box>
   );
 };
