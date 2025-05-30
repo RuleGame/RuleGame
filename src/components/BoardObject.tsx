@@ -132,7 +132,7 @@ const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX
     canDrag,
     // Make a pick call whenever an object is dragged but not dropped
     end(item, monitor) {
-      if (!monitor.didDrop() && !isPaused && !gameCompleted) {
+      if (canDrag && !monitor.didDrop() && !isPaused && !gameCompleted) {
         dispatch(pick(boardObject.id));
       }
     },
@@ -161,7 +161,13 @@ const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX
       data-cy-checked={hasBeenDropped}
       // Make a pick call for nonmovable objects
       onMouseDown={() => {
-        return !canDrag && !isPaused && !gameCompleted && dispatch(pick(boardObject.id));
+        return (
+          !canDrag &&
+          !isPaused &&
+          !gameCompleted &&
+          boardObject.dropped === undefined &&
+          dispatch(pick(boardObject.id))
+        );
       }}
       onMouseEnter={() => dispatch(setHoveredItem(boardObject))}
       onMouseLeave={() => dispatch(resetHoveredItem())}
