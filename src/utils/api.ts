@@ -310,6 +310,7 @@ export type Endpoints = {
         episode: string;
         x: number;
         y: number;
+        id: number;
         cnt: number;
         playerId: string;
       }
