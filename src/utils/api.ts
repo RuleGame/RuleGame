@@ -97,6 +97,7 @@ export type BoardObject =
       shape: Shape;
       x: number;
       y: number;
+      label?: string;
     }
   // Image properties based
   | {

@@ -18,7 +18,7 @@ import {
   botAssistanceSelector,
 } from '../store/selectors/board';
 import { Shape } from '../constants/Shape';
-import { move } from '../store/actions/board';
+import { move, setIsBotAssisted } from '../store/actions/board';
 import { SpecialShape } from '../constants';
 
 export type BucketProps = {
@@ -33,26 +33,36 @@ const StyledBucket = styled(ShapeObject)<{
   children?: React.ReactNode;
   isBotAssisted?: string;
   shapeObjectId: string;
+  is2PG?: boolean;
 }>`
   filter: grayscale(${(props) => (props.isOver ? 0.5 : 0)});
   transform: scale(${(props) => (props.isOver ? 2 : 1)});
   position: relative;
 
-  ${({ shapeObjectId }) =>
-    shapeObjectId
+  ${({ shapeObjectId, isBotAssisted, is2PG }) =>
+    shapeObjectId && (isBotAssisted || is2PG)
       ? `
-        &::before {
-          content: '${shapeObjectId.slice(-1)}';
-          position: absolute;
-          top: 3px;
-          left: 2px;
-          color: black;
-          font-weight: bold;
-          font-size: 20px;
-          z-index: 2;
-          pointer-events: none;
-        }
-      `
+      &::before {
+        content: '${shapeObjectId.slice(-1)}';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        background: white;
+        color: black;
+        font-weight: bold;
+        font-size: 12px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 2px solid #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+        pointer-events: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+    `
       : ''}
 `;
 
@@ -91,6 +101,7 @@ const Bucket = ({ className, shape, bucket }: BucketProps): JSX.Element => {
       shape={shape}
       shapeObjectId={bucket.id}
       isBotAssisted={isBotAssisted}
+      is2PG={is2PG}
       showInvalidDropX={showInvalidDropX}
       opacity={(isGameCompleted || isPaused) && shape === SpecialShape.BUCKET ? 0.5 : 1}
     />

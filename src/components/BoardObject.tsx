@@ -59,15 +59,27 @@ const StyledShapeObject = styled(ShapeObject)<{
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          color: white;
+          color: black;
           font-weight: bold;
           font-size: 14px;
-          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
           pointer-events: none;
           z-index: 1;
         }
       `
       : ''}
+`;
+
+const LabelOverlay = styled.div<{ label: string }>`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: black; // or white for images
+  font-weight: bold;
+  font-size: 14px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  z-index: 1;
 `;
 
 const ImageStyledShapeObject = styled(ImageShapeObject)<{
@@ -102,7 +114,6 @@ const ImageStyledShapeObject = styled(ImageShapeObject)<{
           color: white;
           font-weight: bold;
           font-size: 14px;
-          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
           pointer-events: none;
           z-index: 1;
         }
@@ -199,6 +210,7 @@ const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX
           isPicked={pickedItems.includes(boardObject.id)}
           isImmovable={immovableItems.includes(boardObject.id)}
           is2PG={is2PG}
+          label={boardObject.label}
         />
       )}
       {hasBeenDropped && <FiCheck color="green" size="100%" />}
