@@ -93,7 +93,7 @@ const ChatArea: React.FC = () => {
   if (!isCurrentGameCoop && !isBotAssisted) {
     return (
       <Box fill align="center" justify="center">
-        <Text>Chat is only available in cooperative games.</Text>
+        <Text>Chat is only available in cooperative games and bot assisted games.</Text>
       </Box>
     );
   }
@@ -203,7 +203,7 @@ const HistoryArea: React.FC = () => {
     >
       {!hasScreenshots ? (
         <Box align="center" justify="center" fill>
-          <Text>No game history for current episode. Completed games will appear here.</Text>
+          <Text>No game history for current episode. Completed boards will appear here.</Text>
         </Box>
       ) : (
         <Box fill align="center" justify="between" overflow="hidden" pad="xsmall">
@@ -319,11 +319,10 @@ const MovesArea: React.FC = () => {
   const incentive = useSelector(incentiveSelector);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const infoBoxRef = useRef<HTMLDivElement | null>(null);
-  const firstRender = useRef(true);
 
   const displaySerriesNo = useSelector(displaySeriesNoSelector);
   const workerId = useSelector(workerIdSelector);
-  const id = displaySerriesNo + '-' + workerId;
+
   const isCurrentGameCoop = useSelector(is2PGCoopGameSelector);
   const socket = useSelector(socketSelector);
 
@@ -371,47 +370,6 @@ const MovesArea: React.FC = () => {
       }, 50);
     }
   }, [iLost, is2PGAdveGame, finishCode, isAchieved, numGoodMovesInARow, lastStretch, incentive]);
-
-  useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
-
-    if (finishCode === FinishCode.FINISH || finishCode === FinishCode.EARLY_WIN) {
-      const rightSideElement = document.querySelector('[data-cy="game"]');
-
-      if (rightSideElement) {
-        setTimeout(() => {
-          html2canvas(rightSideElement as HTMLElement).then((canvas) => {
-            const screenshotUrl = canvas.toDataURL('image/png');
-
-            // Get existing screenshots dictionary from localStorage
-            const existingData = localStorage.getItem('SCREENSHOTS');
-            let screenshotsDict: { [id: string]: string[] } = {};
-
-            if (existingData) {
-              const parsedData = JSON.parse(existingData);
-              if (parsedData.hasOwnProperty(id)) {
-                console.log('found existing screenshots data for current episode in localStorage');
-                parsedData[id].push(screenshotUrl);
-              } else {
-                console.log(
-                  'No existing screenshots data found for current episode in localStorage',
-                );
-                parsedData[id] = [screenshotUrl];
-              }
-              localStorage.setItem('SCREENSHOTS', JSON.stringify(parsedData));
-            } else {
-              console.log('No existing screenshots data found in localStorage');
-              screenshotsDict[id] = [screenshotUrl];
-              localStorage.setItem('SCREENSHOTS', JSON.stringify(screenshotsDict));
-            }
-          });
-        }, 1);
-      }
-    }
-  }, [finishCode]);
 
   useEffect(() => {
     if (containerRef.current && isAchieved) {
@@ -628,12 +586,57 @@ const InformationArea: React.FunctionComponent = () => {
   const finishCode = useSelector(finishCodeSelector);
   const incentive = useSelector(incentiveSelector);
   const [activeTab, setActiveTab] = useState<number>(1);
+  const firstRender = useRef(true);
+  const displaySeriesNo = useSelector(displaySeriesNoSelector);
+  const workerId = useSelector(workerIdSelector);
+  const id = displaySeriesNo + '-' + workerId;
 
   useEffect(() => {
     if (finishCode === FinishCode.FINISH || finishCode === FinishCode.EARLY_WIN) {
       setActiveTab(0);
     } else {
       setActiveTab(1);
+    }
+  }, [finishCode]);
+
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+
+    if (finishCode === FinishCode.FINISH || finishCode === FinishCode.EARLY_WIN) {
+      const rightSideElement = document.querySelector('[data-cy="game"]');
+
+      if (rightSideElement) {
+        setTimeout(() => {
+          html2canvas(rightSideElement as HTMLElement).then((canvas) => {
+            const screenshotUrl = canvas.toDataURL('image/png');
+
+            // Get existing screenshots dictionary from localStorage
+            const existingData = localStorage.getItem('SCREENSHOTS');
+            let screenshotsDict: { [id: string]: string[] } = {};
+
+            if (existingData) {
+              const parsedData = JSON.parse(existingData);
+              if (parsedData.hasOwnProperty(id)) {
+                console.log('found existing screenshots data for current episode in localStorage');
+                parsedData[id].push(screenshotUrl);
+              } else {
+                console.log(
+                  'No existing screenshots data found for current episode in localStorage',
+                );
+                parsedData[id] = [screenshotUrl];
+              }
+              localStorage.setItem('SCREENSHOTS', JSON.stringify(parsedData));
+            } else {
+              console.log('No existing screenshots data found in localStorage');
+              screenshotsDict[id] = [screenshotUrl];
+              localStorage.setItem('SCREENSHOTS', JSON.stringify(screenshotsDict));
+            }
+          });
+        }, 1);
+      }
     }
   }, [finishCode]);
 

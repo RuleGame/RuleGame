@@ -19,6 +19,7 @@ import {
   immovableItemsSelector,
   is2PGAdveGameSelector,
   is2PGCoopGameSelector,
+  botAssistanceSelector,
 } from '../store/selectors/board';
 import { debugModeSelector } from '../store/selectors/debug-mode';
 import { RootAction } from '../store/actions';
@@ -37,6 +38,7 @@ const StyledShapeObject = styled(ShapeObject)<{
   isPicked: boolean;
   isImmovable: boolean;
   is2PG: boolean;
+  isBotAssisted?: boolean;
   label?: string;
 }>`
   width: 100%;
@@ -50,8 +52,8 @@ const StyledShapeObject = styled(ShapeObject)<{
       ? 'border: 3px solid red; border-radius: 8px; box-sizing: border-box;'
       : ''}
 
-  ${({ label }) =>
-    label
+  ${({ label, is2PG, isBotAssisted }) =>
+    label && (is2PG || isBotAssisted)
       ? `
         &::after {
           content: '${label}';
@@ -88,6 +90,7 @@ const ImageStyledShapeObject = styled(ImageShapeObject)<{
   isPicked: boolean;
   isImmovable: boolean;
   is2PG: boolean;
+  isBotAssisted?: boolean;
   label?: string;
 }>`
   width: 100%;
@@ -102,8 +105,8 @@ const ImageStyledShapeObject = styled(ImageShapeObject)<{
       ? 'border: 3px solid red; border-radius: 8px; box-sizing: border-box;'
       : ''}
 
-  ${({ label }) =>
-    label
+  ${({ label, is2PG, isBotAssisted }) =>
+    label && (is2PG || isBotAssisted)
       ? `
         &::after {
           content: '${label}';
@@ -133,6 +136,7 @@ const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX
   const pickedItems = useSelector(pickedItemsSelector) ?? [];
   const immovableItems = useSelector(immovableItemsSelector) ?? [];
   const is2PG = useSelector(is2PGAdveGameSelector) || useSelector(is2PGCoopGameSelector);
+  const isBotAssisted = useSelector(botAssistanceSelector);
 
   const canDrag = boardObject.buckets.length > 0 && !gameCompleted && !isPaused;
   const [, ref] = useDrag({
@@ -196,6 +200,7 @@ const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX
           isPicked={pickedItems.includes(boardObject.id)}
           isImmovable={immovableItems.includes(boardObject.id)}
           is2PG={is2PG}
+          isBotAssisted={isBotAssisted}
         />
       ) : (
         <StyledShapeObject
@@ -210,6 +215,7 @@ const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX
           isPicked={pickedItems.includes(boardObject.id)}
           isImmovable={immovableItems.includes(boardObject.id)}
           is2PG={is2PG}
+          isBotAssisted={isBotAssisted}
           label={boardObject.label}
         />
       )}
