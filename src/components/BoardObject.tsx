@@ -38,7 +38,7 @@ const StyledShapeObject = styled(ShapeObject)<{
   isPicked: boolean;
   isImmovable: boolean;
   is2PG: boolean;
-  isBotAssisted?: boolean;
+  isBotAssisted?: string;
   label?: string;
 }>`
   width: 100%;
@@ -90,7 +90,7 @@ const ImageStyledShapeObject = styled(ImageShapeObject)<{
   isPicked: boolean;
   isImmovable: boolean;
   is2PG: boolean;
-  isBotAssisted?: boolean;
+  isBotAssisted?: string;
   label?: string;
 }>`
   width: 100%;

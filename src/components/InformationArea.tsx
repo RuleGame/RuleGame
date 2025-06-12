@@ -320,47 +320,6 @@ const MovesArea: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const infoBoxRef = useRef<HTMLDivElement | null>(null);
 
-  const displaySerriesNo = useSelector(displaySeriesNoSelector);
-  const workerId = useSelector(workerIdSelector);
-
-  const isCurrentGameCoop = useSelector(is2PGCoopGameSelector);
-  const socket = useSelector(socketSelector);
-
-  useEffect(() => {
-    const screenshotsData = localStorage.getItem('SCREENSHOTS');
-    // TODO: check where to implement this
-    // dispatch(removeAllMessages());
-    if (screenshotsData) {
-      try {
-        const prevSeries = displaySerriesNo - 1;
-        const idOld = prevSeries + '-' + workerId;
-        const parsedData = JSON.parse(screenshotsData);
-        if (parsedData.hasOwnProperty(idOld)) {
-          delete parsedData[idOld];
-          localStorage.setItem('SCREENSHOTS', JSON.stringify(parsedData));
-        } else {
-          console.log('No old ss');
-        }
-      } catch (e) {
-        console.error('Error parsing screenshots from localStorage:', e);
-      }
-    }
-  }, [displaySeriesNo]);
-
-  useEffect(() => {
-    if (isCurrentGameCoop && socket) {
-      socket.onmessage = (event: MessageEvent) => {
-        const parts = event.data.split(' ');
-
-        if (parts[0] === 'CHAT') {
-          const messageText = parts.slice(1).join(' ');
-
-          dispatch(addMessage('TEAMMATE', messageText));
-        }
-      };
-    }
-  }, [isCurrentGameCoop, socket]);
-
   useEffect(() => {
     if (infoBoxRef.current) {
       setTimeout(() => {
@@ -571,7 +530,7 @@ const MovesArea: React.FC = () => {
 };
 
 const InformationArea: React.FunctionComponent = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const board = useSelector(boardSelector); //-- everything else is in this structure --VM 2024-09-28
   // const numGoodMoves = useSelector(numGoodMovesMadeSelector);
   // const numFaces = useSelector(numFacesSelector);
@@ -590,6 +549,43 @@ const InformationArea: React.FunctionComponent = () => {
   const displaySeriesNo = useSelector(displaySeriesNoSelector);
   const workerId = useSelector(workerIdSelector);
   const id = displaySeriesNo + '-' + workerId;
+  const isCurrentGameCoop = useSelector(is2PGCoopGameSelector);
+  const socket = useSelector(socketSelector);
+
+  useEffect(() => {
+    const screenshotsData = localStorage.getItem('SCREENSHOTS');
+    // TODO: check where to implement this
+    // dispatch(removeAllMessages());
+    if (screenshotsData) {
+      try {
+        const prevSeries = displaySeriesNo - 1;
+        const idOld = prevSeries + '-' + workerId;
+        const parsedData = JSON.parse(screenshotsData);
+        if (parsedData.hasOwnProperty(idOld)) {
+          delete parsedData[idOld];
+          localStorage.setItem('SCREENSHOTS', JSON.stringify(parsedData));
+        } else {
+          console.log('No old ss');
+        }
+      } catch (e) {
+        console.error('Error parsing screenshots from localStorage:', e);
+      }
+    }
+  }, [displaySeriesNo]);
+
+  useEffect(() => {
+    if (isCurrentGameCoop && socket) {
+      socket.onmessage = (event: MessageEvent) => {
+        const parts = event.data.split(' ');
+
+        if (parts[0] === 'CHAT') {
+          const messageText = parts.slice(1).join(' ');
+
+          dispatch(addMessage('TEAMMATE', messageText));
+        }
+      };
+    }
+  }, [isCurrentGameCoop, socket]);
 
   useEffect(() => {
     if (finishCode === FinishCode.FINISH || finishCode === FinishCode.EARLY_WIN) {
