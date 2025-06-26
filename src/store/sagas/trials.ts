@@ -95,8 +95,6 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
       throw Error(`Error on /player: ${playerErrmsg}`);
     }
 
-    yield* put(setIsBotAssisted(trialList[0]?.bot_assist));
-
     playerId = playerIdResponse;
     yield* put(setWorkerId(playerId));
     // socket connect logic
@@ -158,7 +156,8 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
     }
 
     let { alreadyFinished, episodeId, para, mustWait, display } = data;
-
+    yield* put(setIsBotAssisted(para.bot_assist));
+    console.log('bot', para.bot_assist);
     // TODO: Check if socket connection error is getting handles
     if (mustWait) {
       yield* put(nextPage());
@@ -401,6 +400,7 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
         data: { alreadyFinished, episodeId, para, errmsg, error },
       } = yield* apiResolve('/game-data/GameService2/newEpisode', METHOD.POST, { playerId }, {}));
 
+      yield* put(setIsBotAssisted(para.bot_assist));
       if (alreadyFinished !== true && error) {
         throw Error(`Error on /newEpisode: ${errmsg}`);
       }
