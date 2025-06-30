@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useDrag } from 'react-dnd';
+import { useDrag, DragSourceMonitor } from 'react-dnd';
 import styled from 'styled-components';
 import { Box, Stack, Text } from 'grommet';
 import { Close } from 'grommet-icons';
@@ -146,9 +146,10 @@ const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX
     },
     canDrag,
     // Make a pick call whenever an object is dragged but not dropped
-    end(item, monitor) {
-      if (canDrag && !monitor.didDrop() && !isPaused && !gameCompleted) {
-        dispatch(pick(boardObject.id));
+    end(dropResult, monitor) {
+      if (canDrag && !monitor.didDrop() && !isPaused && !gameCompleted && dropResult) {
+        const typedDropResult = dropResult as typeof boardObject & { type: string };
+        dispatch(pick(typedDropResult.id)); // Using dropResult.id directly
       }
     },
   });
