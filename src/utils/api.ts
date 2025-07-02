@@ -188,7 +188,7 @@ type Para = {
   x2_likelihood?: number;
   x4_likelihood?: number;
   init: number;
-  bot_assist: string;
+  bot_assist?: string;
 };
 
 export enum ErrorMsg {
