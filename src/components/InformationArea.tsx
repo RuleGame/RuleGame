@@ -111,21 +111,23 @@ const ChatArea: React.FC = () => {
       </Box>
 
       {/* Input message box with a fixed height */}
-      <Box
-        direction="row"
-        align="center"
-        pad="small"
-        gap="small"
-        border={{ side: 'top', color: 'light-4' }}
-      >
-        <TextInput
-          placeholder="Type a message..."
-          value={messageInput}
-          onChange={(event) => setMessageInput(event.target.value)}
-          onKeyDown={handleKeyPress}
-        />
-        <Button icon={<Send />} onClick={sendMessage} primary disabled={!messageInput.trim()} />
-      </Box>
+      {!isBotAssisted && (
+        <Box
+          direction="row"
+          align="center"
+          pad="small"
+          gap="small"
+          border={{ side: 'top', color: 'light-4' }}
+        >
+          <TextInput
+            placeholder="Type a message..."
+            value={messageInput}
+            onChange={(event) => setMessageInput(event.target.value)}
+            onKeyDown={handleKeyPress}
+          />
+          <Button icon={<Send />} onClick={sendMessage} primary disabled={!messageInput.trim()} />
+        </Box>
+      )}
     </Box>
   );
 };
@@ -705,22 +707,24 @@ const InformationArea: React.FunctionComponent = () => {
               <ChatArea />
             </Box>
           </Tab>
-          <Tab
-            plain={true}
-            title={
-              <span
-                style={{
-                  color: activeTab === 2 ? 'black' : 'white',
-                  padding: '10px 20px',
-                  display: 'inline-block',
-                }}
-              >
-                History
-              </span>
-            }
-          >
-            <HistoryArea />
-          </Tab>
+          {is2PG && (
+            <Tab
+              plain={true}
+              title={
+                <span
+                  style={{
+                    color: activeTab === 2 ? 'black' : 'white',
+                    padding: '10px 20px',
+                    display: 'inline-block',
+                  }}
+                >
+                  History
+                </span>
+              }
+            >
+              <HistoryArea />
+            </Tab>
+          )}
         </Tabs>
       ) : (
         <MovesArea />
