@@ -648,10 +648,16 @@ const InformationArea: React.FunctionComponent = () => {
       border={{ color: 'black' }}
       height="100%"
     >
-      <Box style={{ height: '32px', alignItems: 'center' }}>
+      <Box
+        style={{
+          minHeight: '32px',
+          alignItems: 'center',
+          height: 'auto', // Allow height to grow with content
+        }}
+      >
         <Box margin={{ bottom: '3px' }}>
           {incentive === Incentive.LIKELIHOOD ? (
-            <Text>
+            <Text style={{ wordWrap: 'break-word', whiteSpace: 'normal' }}>
               Golden string={Number(golden()).toFixed(1)}.
               {cfa === 4 ? (
                 ''
@@ -662,7 +668,7 @@ const InformationArea: React.FunctionComponent = () => {
               )}
             </Text>
           ) : (
-            <Text>
+            <Text style={{ wordWrap: 'break-word', whiteSpace: 'normal' }}>
               Good in a row:{' '}
               <Text weight="bold" style={{ fontStyle: 'italic' }}>
                 {lastStretch}
