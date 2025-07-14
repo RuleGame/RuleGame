@@ -305,7 +305,7 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           //   continue;
           // }
         } else if (pickAction) {
-          const boardObject = display.board.value.find(
+          const boardObject = displayResult.board.value.find(
             // eslint-disable-next-line no-loop-func
             (boardObject) => boardObject.id === pickAction!.payload.boardObjectId,
           )!;
