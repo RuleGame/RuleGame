@@ -157,6 +157,7 @@ export type Display = {
   displaySeriesNo: number;
   displayEpisodeNo: number;
   mustWait: boolean;
+  botAssistChat?: string;
 };
 
 type Para = {

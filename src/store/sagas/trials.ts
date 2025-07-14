@@ -235,6 +235,10 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           );
         }
 
+        if (displayResult.botAssistChat) {
+          yield* put(addMessage('ASSISTANT: ', displayResult.botAssistChat));
+        }
+
         ({
           moveAction,
           giveUpAction,
