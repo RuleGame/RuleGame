@@ -566,8 +566,6 @@ const InformationArea: React.FunctionComponent = () => {
         if (parsedData.hasOwnProperty(idOld)) {
           delete parsedData[idOld];
           localStorage.setItem('SCREENSHOTS', JSON.stringify(parsedData));
-        } else {
-          console.log('No old ss');
         }
       } catch (e) {
         console.error('Error parsing screenshots from localStorage:', e);
@@ -618,17 +616,12 @@ const InformationArea: React.FunctionComponent = () => {
             if (existingData) {
               const parsedData = JSON.parse(existingData);
               if (parsedData.hasOwnProperty(id)) {
-                console.log('found existing screenshots data for current episode in localStorage');
                 parsedData[id].push(screenshotUrl);
               } else {
-                console.log(
-                  'No existing screenshots data found for current episode in localStorage',
-                );
                 parsedData[id] = [screenshotUrl];
               }
               localStorage.setItem('SCREENSHOTS', JSON.stringify(parsedData));
             } else {
-              console.log('No existing screenshots data found in localStorage');
               screenshotsDict[id] = [screenshotUrl];
               localStorage.setItem('SCREENSHOTS', JSON.stringify(screenshotsDict));
             }
