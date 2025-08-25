@@ -97,9 +97,11 @@ export type BoardObject =
       shape: Shape;
       x: number;
       y: number;
+      label?: string;
     }
   // Image properties based
   | {
+      label?: string; // for bot assisted games
       image: string;
       buckets: BucketPosition[];
       color: undefined;
@@ -130,6 +132,7 @@ export type Display = {
   seriesNo: number;
   totalBoardsPredicted: number;
   totalRewardEarned: number;
+  totalRewardEarnedPartner: number;
   transcript: Transcript;
   rulesSrc: {
     orders: number[];
@@ -149,9 +152,12 @@ export type Display = {
   justReachedX2?: boolean;
   justReachedX4?: boolean;
   faces: boolean[];
+  facesMine: boolean[];
   rewardRange?: [number, number];
   displaySeriesNo: number;
   displayEpisodeNo: number;
+  mustWait: boolean;
+  botAssistChat?: string;
 };
 
 type Para = {
@@ -183,6 +189,7 @@ type Para = {
   x2_likelihood?: number;
   x4_likelihood?: number;
   init: number;
+  bot_assist?: string;
 };
 
 export enum ErrorMsg {
@@ -204,6 +211,8 @@ export type Endpoints = {
         trialListId: string;
         trialList: Para[];
         completionCode?: string;
+        isCoopGame: boolean;
+        isAdveGame: boolean;
       },
       { playerId?: string; exp?: string; uid?: number }
     >;
@@ -219,6 +228,7 @@ export type Endpoints = {
         episodeId: string;
         para: Para;
         completionCode?: string;
+        mustWait: boolean;
       },
       {
         playerId: string;
@@ -238,6 +248,7 @@ export type Endpoints = {
         episodeId: string;
         para: Para;
         completionCode?: string;
+        mustWait: boolean;
       },
       {
         playerId: string;
@@ -246,7 +257,7 @@ export type Endpoints = {
   };
 
   '/game-data/GameService2/display': {
-    [METHOD.GET]: RequestHandler<Display, undefined, { episode: string }>;
+    [METHOD.GET]: RequestHandler<Display, undefined, { episode: string; playerId: string }>;
   };
 
   '/game-data/GameService2/move': {
@@ -264,6 +275,8 @@ export type Endpoints = {
         finishCode: FinishCode;
         numMovesMade: number;
         totalRewardEarned: number;
+        mustWait: boolean;
+        botAssistChat?: string;
       },
       {
         episode: string;
@@ -272,6 +285,7 @@ export type Endpoints = {
         bx: number;
         by: number;
         cnt: number;
+        playerId: string;
       }
     >;
   };
@@ -291,12 +305,16 @@ export type Endpoints = {
         finishCode: FinishCode;
         numMovesMade: number;
         totalRewardEarned: number;
+        mustWait: boolean;
+        botAssistChat?: string;
       },
       {
         episode: string;
         x: number;
         y: number;
+        id: number;
         cnt: number;
+        playerId: string;
       }
     >;
   };
@@ -329,7 +347,7 @@ export type Endpoints = {
         byteCnt: number;
         path: string;
       },
-      { episode: string; data: string; confidence: number }
+      { episode: string; data: string; confidence: number; playerId: string }
     >;
   };
 
@@ -425,6 +443,202 @@ export type ReqQuery<
   M extends keyof Endpoints[E]
   // @ts-ignore
 > = Endpoints[E][M]['query'];
+
+// Socket
+type SocketEventHandler<
+  ResponseType = undefined,
+  RequestType = undefined,
+  Query extends { [key: string]: string } = {}
+> = {
+  response: ResponseType;
+  request: RequestType;
+  query: Query;
+};
+
+// Event types matching the endpoint structure
+export type Events = {
+  writeFile: SocketEventHandler<undefined, { dir: string; file: string; data: string }>;
+
+  player: SocketEventHandler<
+    {
+      errmsg: ErrorMsg;
+      error: boolean;
+      newlyRegistered: boolean;
+      playerId: string;
+      trialListId: string;
+      trialList: Para[];
+      completionCode?: string;
+    },
+    { playerId?: string; exp?: string; uid?: number }
+  >;
+
+  mostRecentEpisode: SocketEventHandler<
+    {
+      errmsg?: ErrorMsg;
+      error: boolean;
+      alreadyFinished: boolean;
+      display: Display;
+      episodeId: string;
+      para: Para;
+      completionCode?: string;
+    },
+    {
+      playerId: string;
+    }
+  >;
+
+  newEpisode: SocketEventHandler<
+    {
+      errmsg?: ErrorMsg;
+      error: boolean;
+      alreadyFinished: boolean;
+      display: Display;
+      ruleSetName: string;
+      trialListId: string;
+      episodeId: string;
+      para: Para;
+      completionCode?: string;
+    },
+    {
+      playerId: string;
+    }
+  >;
+
+  display: SocketEventHandler<Display, undefined, { episode: string }>;
+
+  move: SocketEventHandler<
+    {
+      board: {
+        longId: number;
+        id: number;
+        value: Board;
+      };
+      bonus: boolean;
+      code: Code;
+      errmsg: ErrorMsg;
+      error?: boolean;
+      finishCode: FinishCode;
+      numMovesMade: number;
+      totalRewardEarned: number;
+    },
+    {
+      episode: string;
+      x: number;
+      y: number;
+      bx: number;
+      by: number;
+      cnt: number;
+    }
+  >;
+
+  pick: SocketEventHandler<
+    {
+      board: {
+        longId: number;
+        id: number;
+        value: Board;
+      };
+      bonus: boolean;
+      code: Code;
+      errmsg: ErrorMsg;
+      error?: boolean;
+      finishCode: FinishCode;
+      numMovesMade: number;
+      totalRewardEarned: number;
+    },
+    {
+      episode: string;
+      x: number;
+      y: number;
+      cnt: number;
+    }
+  >;
+
+  activateBonus: SocketEventHandler<
+    {
+      errmsg: ErrorMsg;
+      error: boolean;
+    },
+    { playerId: string }
+  >;
+
+  giveUp: SocketEventHandler<
+    {
+      errmsg: ErrorMsg;
+      error: boolean;
+    },
+    { playerId: string; seriesNo: number }
+  >;
+
+  guess: SocketEventHandler<
+    {
+      errmsg: ErrorMsg;
+      error: boolean;
+      byteCnt: number;
+      path: string;
+    },
+    { episode: string; data: string; confidence: number }
+  >;
+
+  colorMap: SocketEventHandler<
+    {
+      [color: string]: [number, number, number];
+    } & {
+      errmsg: ErrorMsg;
+      error?: boolean;
+    }
+  >;
+
+  getSvg: SocketEventHandler<string, undefined>;
+
+  getVersion: SocketEventHandler<number>;
+
+  registerUser: SocketEventHandler<
+    {
+      error: boolean;
+      newlyRegistered: boolean;
+      user: {
+        date: string;
+        email: string;
+        id: number;
+        idCode: string;
+        nickname: string;
+      };
+    },
+    {
+      email: string;
+      nickname: string;
+      anon?: boolean;
+    }
+  >;
+
+  getBookletSize: SocketEventHandler<
+    {
+      error: boolean;
+      bookletSize: number;
+      path: string;
+      errmsg: ErrorMsg;
+    },
+    { playerId: string }
+  >;
+
+  getPage: SocketEventHandler<
+    {
+      error: boolean;
+      bookletSize: number;
+      goodnessScore?: number;
+      path: string;
+      value: string;
+      errmsg: ErrorMsg;
+    },
+    { playerId: string; name: string }
+  >;
+};
+
+// Helper types for extracting request and response types
+export type EventResponse<E extends keyof Events> = Events[E]['response'];
+export type EventRequest<E extends keyof Events> = Events[E]['request'];
+export type EventQuery<E extends keyof Events> = Events[E]['query'];
 
 export function api<T extends keyof Endpoints, U extends keyof Endpoints[T]>(
   route: T,

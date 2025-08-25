@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useDrag } from 'react-dnd';
+import { useDrag, DragSourceMonitor } from 'react-dnd';
 import styled from 'styled-components';
 import { Box, Stack, Text } from 'grommet';
 import { Close } from 'grommet-icons';
@@ -14,10 +14,16 @@ import {
   isGameCompletedSelector,
   isPausedSelector,
   showGridMemoryOrderSelector,
+  lastMoveSelector,
+  pickedItemsSelector,
+  immovableItemsSelector,
+  is2PGAdveGameSelector,
+  is2PGCoopGameSelector,
+  botAssistanceSelector,
 } from '../store/selectors/board';
 import { debugModeSelector } from '../store/selectors/debug-mode';
 import { RootAction } from '../store/actions';
-import { pick } from '../store/actions/board';
+import { pick, setHoveredItem, resetHoveredItem } from '../store/actions/board';
 import ImageShapeObject from './ImageShapeObject';
 
 export type BoardObjectProps = {
@@ -29,21 +35,93 @@ export type BoardObjectProps = {
 const StyledShapeObject = styled(ShapeObject)<{
   canDrag: boolean;
   feedbackSwitches: FeedbackSwitches;
+  isPicked: boolean;
+  isImmovable: boolean;
+  is2PG: boolean;
+  isBotAssisted?: string;
+  label?: string;
 }>`
   width: 100%;
   height: 100%;
   cursor: ${({ canDrag, feedbackSwitches }) =>
     canDrag || feedbackSwitches === FeedbackSwitches.FREE ? 'grab' : 'unset'};
+  ${({ isPicked, is2PG }) =>
+    isPicked && is2PG ? 'border: 3px solid black; border-radius: 8px; box-sizing: border-box;' : ''}
+  ${({ isImmovable, is2PG }) =>
+    isImmovable && is2PG
+      ? 'border: 3px solid red; border-radius: 8px; box-sizing: border-box;'
+      : ''}
+
+  ${({ label, is2PG, isBotAssisted }) =>
+    label && (is2PG || isBotAssisted)
+      ? `
+        &::after {
+          content: '${label}';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: black;
+          font-weight: bold;
+          font-size: 14px;
+          pointer-events: none;
+          z-index: 1;
+        }
+      `
+      : ''}
+`;
+
+const LabelOverlay = styled.div<{ label: string }>`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: black; // or white for images
+  font-weight: bold;
+  font-size: 14px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  z-index: 1;
 `;
 
 const ImageStyledShapeObject = styled(ImageShapeObject)<{
   canDrag: boolean;
   feedbackSwitches: FeedbackSwitches;
+  isPicked: boolean;
+  isImmovable: boolean;
+  is2PG: boolean;
+  isBotAssisted?: string;
+  label?: string;
 }>`
   width: 100%;
   height: 100%;
+  position: relative;
   cursor: ${({ canDrag, feedbackSwitches }) =>
     canDrag || feedbackSwitches === FeedbackSwitches.FREE ? 'grab' : 'unset'};
+  ${({ isPicked, is2PG }) =>
+    isPicked && is2PG ? 'border: 3px solid black; border-radius: 8px; box-sizing: border-box;' : ''}
+  ${({ isImmovable, is2PG }) =>
+    isImmovable && is2PG
+      ? 'border: 3px solid red; border-radius: 8px; box-sizing: border-box;'
+      : ''}
+
+  ${({ label, is2PG, isBotAssisted }) =>
+    label && (is2PG || isBotAssisted)
+      ? `
+        &::after {
+          content: '${label}';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: white;
+          font-weight: bold;
+          font-size: 14px;
+          pointer-events: none;
+          z-index: 1;
+        }
+      `
+      : ''}
 `;
 
 const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX.Element => {
@@ -53,6 +131,12 @@ const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX
   const debugMode = useSelector(debugModeSelector);
   const isPaused = useSelector(isPausedSelector);
   const feedbackSwitches = useSelector(feedbackSwitchesSelector);
+  const lastMove = useSelector(lastMoveSelector);
+  const isLastMovedPiece = lastMove?.pieceId === boardObject.id;
+  const pickedItems = useSelector(pickedItemsSelector) ?? [];
+  const immovableItems = useSelector(immovableItemsSelector) ?? [];
+  const is2PG = useSelector(is2PGAdveGameSelector) || useSelector(is2PGCoopGameSelector);
+  const isBotAssisted = useSelector(botAssistanceSelector);
 
   const canDrag = boardObject.buckets.length > 0 && !gameCompleted && !isPaused;
   const [, ref] = useDrag({
@@ -62,9 +146,10 @@ const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX
     },
     canDrag,
     // Make a pick call whenever an object is dragged but not dropped
-    end(item, monitor) {
-      if (!monitor.didDrop() && !isPaused && !gameCompleted) {
-        dispatch(pick(boardObject.id));
+    end(dropResult, monitor) {
+      if (canDrag && !monitor.didDrop() && !isPaused && !gameCompleted && dropResult) {
+        const typedDropResult = dropResult as typeof boardObject & { type: string };
+        dispatch(pick(typedDropResult.id)); // Using dropResult.id directly
       }
     },
   });
@@ -92,18 +177,31 @@ const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX
       data-cy-checked={hasBeenDropped}
       // Make a pick call for nonmovable objects
       onMouseDown={() => {
-        return !canDrag && !isPaused && !gameCompleted && dispatch(pick(boardObject.id));
+        return (
+          !canDrag &&
+          !isPaused &&
+          !gameCompleted &&
+          boardObject.dropped === undefined &&
+          dispatch(pick(boardObject.id))
+        );
       }}
+      onMouseEnter={() => dispatch(setHoveredItem(boardObject))}
+      onMouseLeave={() => dispatch(resetHoveredItem())}
       fill
     >
       {boardObject.image !== undefined ? (
         <ImageStyledShapeObject
           ref={ref}
           image={boardObject.image}
+          label={boardObject.label}
           canDrag={canDrag}
           feedbackSwitches={feedbackSwitches}
           shapeObjectId={boardObject.id}
           debugInfo={debugMode ? debugInfo : undefined}
+          isPicked={pickedItems.includes(boardObject.id)}
+          isImmovable={immovableItems.includes(boardObject.id)}
+          is2PG={is2PG}
+          isBotAssisted={isBotAssisted}
         />
       ) : (
         <StyledShapeObject
@@ -115,9 +213,32 @@ const BoardObject = ({ className, boardObject, moveNum }: BoardObjectProps): JSX
           feedbackSwitches={feedbackSwitches}
           shapeObjectId={boardObject.id}
           debugInfo={debugMode ? debugInfo : undefined}
+          isPicked={pickedItems.includes(boardObject.id)}
+          isImmovable={immovableItems.includes(boardObject.id)}
+          is2PG={is2PG}
+          isBotAssisted={isBotAssisted}
+          label={boardObject.label}
         />
       )}
       {hasBeenDropped && <FiCheck color="green" size="100%" />}
+
+      {/* {hasBeenDropped && (
+        <Box fill>
+          <FiCheck color="green" size="100%" />
+          {moveNum !== undefined && (
+            <Box
+              fill
+              align="center"
+              justify="center"
+              style={{ position: 'absolute' }}
+            >
+              <Text weight="bold" size="medium" color="white">
+                {moveNum}
+              </Text>
+            </Box>
+          )}
+        </Box>
+      )} */}
       {!hasBeenDropped &&
         boardObject.buckets.length === 0 &&
         feedbackSwitches !== FeedbackSwitches.FREE && <Close size="100%" color="black" />}

@@ -54,23 +54,23 @@ const HUD: React.FunctionComponent = ({ children }) => {
           areas={[
             {
               name: GridArea.BOARD_COUNT,
-              start: [0, 2],
-              end: [0, 2],
+              start: [0, 3],
+              end: [1, 3],
             },
             {
               name: GridArea.POINTS,
-              start: [1, 2],
+              start: [0, 2],
               end: [1, 2],
-            },
-            {
-              name: GridArea.INFORMATION_AREA,
-              start: [0, 0],
-              end: [1, 0],
             },
             {
               name: GridArea.NUM_MOVES,
               start: [0, 1],
               end: [1, 1],
+            },
+            {
+              name: GridArea.INFORMATION_AREA,
+              start: [0, 0],
+              end: [1, 0],
             },
           ]}
         >

@@ -41,9 +41,30 @@ const StyledBucket = styled(Bucket)<BucketType>`
   grid-row: ${(bucketCoord) => rows - bucketCoord.y};
 `;
 
+const OverlayWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(128, 128, 128, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+`;
+
+const OverlayText = styled.div`
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+`;
+
 type BoardProps = {
   className?: string;
   paused: boolean;
+  isPlayerTurn: boolean;
 };
 
 enum GridAreaName {
@@ -54,7 +75,7 @@ enum GridAreaName {
   BOARD = 'BOARD',
 }
 
-const Board = ({ className }: BoardProps): JSX.Element => {
+const Board = ({ className, isPlayerTurn }: BoardProps): JSX.Element => {
   const moveNumByBoardObject = useSelector(moveNumByBoardObjectSelector);
   const bucketShapes = useSelector(bucketShapesSelector);
   const boardObjects = useSelector(boardObjectsSelector);
@@ -136,6 +157,11 @@ const Board = ({ className }: BoardProps): JSX.Element => {
                 bucket={bucket}
               />
             ))}
+            {!isPlayerTurn && (
+              <OverlayWrapper>
+                <OverlayText>Your adversary is thinking</OverlayText>
+              </OverlayWrapper>
+            )}
           </StyledBoard>
         </Box>
       </Grid>

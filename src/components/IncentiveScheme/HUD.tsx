@@ -60,28 +60,28 @@ const HUD: React.FunctionComponent = ({ children }) => {
         <Grid
           fill
           pad="small"
-          rows={['auto', 'min-content', 'min-content']}
+          rows={['auto', 'min-content', 'min-content', 'min-content']}
           columns={['1fr', '1fr']}
           areas={[
             {
               name: GridArea.BOARD_COUNT,
-              start: [0, 2],
-              end: [0, 2],
+              start: [0, 3],
+              end: [1, 3],
             },
             {
               name: GridArea.POINTS,
-              start: [1, 2],
+              start: [0, 2],
               end: [1, 2],
-            },
-            {
-              name: GridArea.INFORMATION_AREA,
-              start: [0, 0],
-              end: [1, 0],
             },
             {
               name: GridArea.NUM_MOVES,
               start: [0, 1],
               end: [1, 1],
+            },
+            {
+              name: GridArea.INFORMATION_AREA,
+              start: [0, 0],
+              end: [1, 0],
             },
           ]}
         >
@@ -124,36 +124,85 @@ const HUD: React.FunctionComponent = ({ children }) => {
             {rewardsAndFactorsPerSeries !== null &&
               rewardsAndFactorsPerSeries !== undefined &&
               rewardsAndFactorsPerSeries.filter(([reward]) => reward > 0).length > 0 && (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableCell scope="col" border="bottom" verticalAlign="bottom">
-                        Rule
-                      </TableCell>
-                      <TableCell scope="col" border="bottom">
-                        Reward <br />
-                        (Points x Factor)
-                      </TableCell>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {rewardsAndFactorsPerSeries
-                      ?.filter(([reward]) => reward > 0)
-                      .map(([reward, incentiveFactor], index) => (
-                        // eslint-disable-next-line react/no-array-index-key
-                        <TableRow key={index}>
+                <Box direction="row" gap="medium" wrap={false}>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableCell scope="col" border="bottom" verticalAlign="bottom">
+                          Rule
+                        </TableCell>
+                        <TableCell scope="col" border="bottom">
+                          Reward <br />
+                          (Points x Factor)
+                        </TableCell>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {rewardsAndFactorsPerSeries
+                        ?.filter(([reward]) => reward > 0)
+                        .filter((_, index) => index % 2 === 0)
+                        .map(([reward, incentiveFactor], index) => (
+                          // eslint-disable-next-line react/no-array-index-key
+                          <TableRow key={index * 2 + 1}>
+                            <TableCell scope="row">
+                              <strong>{index * 2 + 1}</strong>
+                            </TableCell>
+                            <TableCell>
+                              {reward} x {incentiveFactor} = {reward * incentiveFactor}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      {rewardsAndFactorsPerSeries?.filter(([reward]) => reward > 0).length % 2 ===
+                        0 && (
+                        <TableRow key={111}>
                           <TableCell scope="row">
-                            <strong>{index + 1}</strong>
+                            <strong>‎</strong>
                           </TableCell>
                           <TableCell>
-                            {reward} x {incentiveFactor} = {reward * incentiveFactor}
+                            <strong></strong>
                           </TableCell>
                         </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
+                      )}
+                    </TableBody>
+                  </Table>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableCell scope="col" border="bottom" verticalAlign="bottom">
+                          Rule
+                        </TableCell>
+                        <TableCell scope="col" border="bottom">
+                          Reward <br />
+                          (Points x Factor)
+                        </TableCell>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {rewardsAndFactorsPerSeries
+                        ?.filter(([reward]) => reward > 0)
+                        .filter((_, index) => index % 2 === 1)
+                        .map(([reward, incentiveFactor], index) => (
+                          // eslint-disable-next-line react/no-array-index-key
+                          <TableRow key={index * 2 + 2}>
+                            <TableCell scope="row">
+                              <strong>{index * 2 + 2}</strong>
+                            </TableCell>
+                            <TableCell>
+                              {reward} x {incentiveFactor} = {reward * incentiveFactor}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      <TableRow>
+                        <TableCell scope="row">
+                          <strong>Total Reward: </strong>
+                        </TableCell>
+                        <TableCell>{totalReward}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </Box>
               )}
-            <Box align="end" direction="row" gap="small">
+            {/* <Box align="end" direction="row" gap="small">
               <Heading level="3" margin="none">
                 <Box direction="row" align="baseline">
                   <Text weight="bold" size="inherit">
@@ -164,7 +213,7 @@ const HUD: React.FunctionComponent = ({ children }) => {
                   </Text>
                 </Box>
               </Heading>
-            </Box>
+            </Box> */}
           </Box>
           <Box gridArea={GridArea.INFORMATION_AREA} justify="center" height="max-content" fill>
             <InformationArea />

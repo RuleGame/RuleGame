@@ -12,6 +12,7 @@ export type BoardObjectType = {
   shape: Shape;
   x: number;
   y: number;
+  label?: string;
 };
 
 export type BucketType = { pos: BucketPosition; x: number; y: number; id: string };
@@ -63,6 +64,8 @@ export type Game = {
   numDisplaysLimit?: number;
   showStackMemoryOrder?: boolean;
   showGridMemoryOrder?: boolean;
+  twoPGAdve: boolean;
+  twoPGCoop: boolean;
 };
 
 export type HistoryLog = {
@@ -79,3 +82,11 @@ export type LocalStorageWorkerIdKey = {
   seriesNo?: number;
   savedRuleGuess?: string;
 };
+
+export type MessageType = {
+  who: string;
+  text: string;
+  timestamp: number;
+};
+
+export type SocketMessage = { type: 'READY_DIS' };

@@ -9,6 +9,12 @@ export const boardSelector = (state: RootState) => state.board;
 
 export const isPausedSelector = (state: RootState) => state.board.isPaused;
 
+export const isPlayerTurnSelector = (state: RootState) => state.board.isPlayerTurn;
+
+export const is2PGAdveGameSelector = (state: RootState) => state.board.twoPGAdve;
+
+export const is2PGCoopGameSelector = (state: RootState) => state.board.twoPGCoop;
+
 export const bucketShapesSelector = (state: RootState) => state.board.bucketShapes;
 
 export const seriesNoSelector = (state: RootState) => state.board.seriesNo;
@@ -36,6 +42,66 @@ export const bucketDropListSelector = (bucketPosition: BucketPosition) => (
     .map(({ pieceId }) => state.board.board[pieceId]);
   return bucketDropList.slice(Math.max(0, bucketDropList.length - state.board.stackMemoryDepth));
 };
+
+export const immovableItemsSelector = (state: RootState): number[] => {
+  const transcript = state.board.transcript;
+  let lastAcceptIndex = -1;
+  for (let i = transcript.length - 1; i >= 0; i--) {
+    const item = transcript[i];
+    if (item.code === Code.ACCEPT && item.bucketNo !== undefined) {
+      lastAcceptIndex = i;
+      break;
+    }
+  }
+
+  return transcript
+    .slice(lastAcceptIndex + 1)
+    .filter(({ code }) => code === Code.IMMOVABLE)
+    .map(({ pieceId }) => pieceId);
+};
+
+export const pickedItemsSelector = (state: RootState): number[] => {
+  const transcript = state.board.transcript;
+
+  // Find the last index where code is ACCEPT and bucketNo is not undefined
+  const lastAcceptIndex = transcript.reduce((lastIndex, item, currentIndex) => {
+    if (item.code === Code.ACCEPT && item.bucketNo !== undefined) {
+      return currentIndex;
+    }
+    return lastIndex;
+  }, -1);
+
+  return transcript
+    .slice(lastAcceptIndex + 1)
+    .filter(
+      ({ bucketNo, code }) =>
+        (bucketNo === undefined && code === Code.ACCEPT) || code === Code.DENY,
+    )
+    .map(({ pieceId }) => pieceId);
+};
+
+export const lastMoveSelector = (state: RootState) =>
+  state.board.transcript[state.board.transcript.length - 1];
+
+export const hoveredItemSelector = (state: RootState) => state.board.hoveredItem;
+
+export const disallowedBucketSelector = (state: RootState): { [pieceId: number]: number[] } => {
+  const transcript = state.board.transcript;
+  const lastAcceptIndex = transcript.map(({ code }) => code).lastIndexOf(Code.ACCEPT);
+
+  return transcript
+    .slice(lastAcceptIndex + 1)
+    .filter(({ code }) => code === Code.DENY)
+    .reduce((acc, { pieceId, bucketNo }) => {
+      if (bucketNo === undefined) return acc;
+      return {
+        ...acc,
+        [pieceId]: [...(acc[pieceId] || []), bucketNo],
+      };
+    }, {} as { [pieceId: number]: number[] });
+};
+
+export const myFacesSelector = (state: RootState) => state.board.facesMine;
 
 export const moveNumByBoardObjectSelector = (
   state: RootState,
@@ -72,8 +138,8 @@ export const historyInfoSelector = (state: RootState) =>
       bucketNo,
     }));
 
-export const numMovesMadeSelector = (state: RootState) => state.board.numMovesMade;
-
+export const numMovesMadeSelector = (state: RootState) =>
+  (state.board.facesMine ?? []).filter((val) => val === true).length;
 export const numFacesSelector = (state: RootState) => state.board.faces?.length;
 
 export const numGoodMovesMadeSelector = (state: RootState) =>
@@ -84,6 +150,8 @@ export const episodeNoSelector = (state: RootState) => state.board.episodeNo;
 export const displayEpisodeNoSelector = (state: RootState) => state.board.displayEpisodeNo;
 
 export const totalRewardEarnedSelector = (state: RootState) => state.board.totalRewardEarned;
+export const totalRewardEarnedPartnerSelector = (state: RootState) =>
+  state.board.totalRewardEarnedPartner;
 
 export const totalRewardsAndFactorsPerSeriesSelector = (state: RootState) => {
   return state.board.rewardsAndFactorsPerSeries
@@ -102,7 +170,7 @@ export const movesLeftToStayInBonusSelector = (state: RootState) =>
 
 // The transitionMap will contain a BONUS -> DEFAULT if there are still bonus rounds
 export const hasMoreBonusRoundsSelector = (state: RootState): boolean =>
-  isInBonusSelector(state) && (state.board.transitionMap?.BONUS === 'DEFAULT' ?? false);
+  isInBonusSelector(state) && state.board.transitionMap?.BONUS === 'DEFAULT';
 
 export const finishCodeSelector = (state: RootState) => state.board.finishCode;
 
@@ -143,6 +211,7 @@ export const x2AfterSelector = (state: RootState) => state.board.x2After;
 export const x4AfterSelector = (state: RootState) => state.board.x4After;
 export const x2LikelihoodSelector = (state: RootState) => state.board.x2Likelihood;
 export const x4LikelihoodSelector = (state: RootState) => state.board.x4Likelihood;
+export const botAssistanceSelector = (state: RootState) => state.board.botAssistance;
 
 export const facesSelector = (state: RootState) => state.board.faces;
 

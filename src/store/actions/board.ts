@@ -7,12 +7,23 @@ import {
   Incentive,
   Transcript,
   TransitionMap,
+  BoardObject,
 } from '../../utils/api';
 // eslint-disable-next-line import/no-cycle
 import { BucketPosition } from '../../constants/BucketPosition';
 
 export const startTrials = createAction(
   'board/START_TRIALS',
+  ({ uid, playerId, exp }: { uid?: number; playerId?: string; exp?: string }) => ({
+    uid,
+    playerId,
+    exp,
+  }),
+)();
+
+// TODO:  Check if both player ids are required
+export const start2PTrials = createAction(
+  'board/START_2P_TRIALS',
   ({ uid, playerId, exp }: { uid?: number; playerId?: string; exp?: string }) => ({
     uid,
     playerId,
@@ -29,6 +40,7 @@ export const setBoard = createAction(
     canActivateBonus,
     finishCode,
     totalRewardEarned,
+    totalRewardEarnedPartner,
     totalBoardsPredicted,
     showGridMemoryOrder,
     showStackMemoryOrder,
@@ -59,8 +71,13 @@ export const setBoard = createAction(
     x4After,
     x2Likelihood,
     x4Likelihood,
+    botAssistance,
     isPaused = false,
+    isPlayerTurn,
+    twoPGCoop,
+    twoPGAdve,
     faces,
+    facesMine,
     displaySeriesNo,
     displayEpisodeNo,
   }: {
@@ -70,6 +87,7 @@ export const setBoard = createAction(
     canActivateBonus: boolean;
     finishCode: FinishCode;
     totalRewardEarned: number;
+    totalRewardEarnedPartner: number;
     totalBoardsPredicted: number;
     showGridMemoryOrder: boolean;
     showStackMemoryOrder: boolean;
@@ -103,8 +121,13 @@ export const setBoard = createAction(
     x4After?: number;
     x2Likelihood?: number;
     x4Likelihood?: number;
+    botAssistance?: string;
     isPaused?: boolean;
+    isPlayerTurn: boolean;
+    twoPGCoop: boolean;
+    twoPGAdve: boolean;
     faces?: boolean[];
+    facesMine?: boolean[];
     displaySeriesNo: number;
     displayEpisodeNo: number;
   }) => ({
@@ -114,6 +137,7 @@ export const setBoard = createAction(
     canActivateBonus,
     finishCode,
     totalRewardEarned,
+    totalRewardEarnedPartner,
     totalBoardsPredicted,
     showGridMemoryOrder,
     showStackMemoryOrder,
@@ -144,12 +168,33 @@ export const setBoard = createAction(
     x4After,
     x2Likelihood,
     x4Likelihood,
+    botAssistance,
     isPaused,
+    isPlayerTurn,
+    twoPGCoop,
+    twoPGAdve,
     faces,
+    facesMine,
     displaySeriesNo,
     displayEpisodeNo,
   }),
 )();
+
+export const setHoveredItem = createAction(
+  'board/SET_HOVERED_ITEM',
+  (hoveredItem?: BoardObject) => ({
+    hoveredItem,
+  }),
+)();
+
+export const setIsBotAssisted = createAction(
+  'board/SET_IS_BOT_ASSISTED',
+  (botAssistance: string) => ({
+    botAssistance,
+  }),
+)();
+
+export const resetHoveredItem = createAction('board/RESET_HOVERED_ITEM')();
 
 export const pause = createAction('board/PAUSE')();
 
