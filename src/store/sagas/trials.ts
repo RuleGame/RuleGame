@@ -55,7 +55,6 @@ function createSocketChannel(socket: WebSocket): EventChannel<SocketMessage> {
 
     socket.addEventListener('message', handler);
 
-    // Return unsubscribe function
     return () => {
       socket.removeEventListener('message', handler);
     };
@@ -158,11 +157,9 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
     let { alreadyFinished, episodeId, para, mustWait, display } = data;
     if (para) yield* put(setIsBotAssisted(para.bot_assist ?? ''));
 
-    // TODO: Check if socket connection error is getting handles
     if (mustWait) {
       yield* put(nextPage());
       yield call(ws.waitForReadyEpi);
-      //yield* put(addMessage('READY EPI'));
       let {
         // eslint-disable-next-line prefer-const
         data: { errmsg, error, ...data },
@@ -220,7 +217,6 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
         while (displayResult.mustWait) {
           // Listen for messages and process them:
           if (socketChannel) {
-            // Listen for messages and process them:
             yield* processMessages(socketChannel);
           }
 
@@ -298,12 +294,6 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
             yield* put(addMessage('ASSISTANT: ', botAssistChat));
           }
           yield* delay(FEEDBACK_DURATION);
-          // if (mustWait) {
-          //   yield call(ws.waitForReadyDis);
-          //   yield* put(addMessage('READY DIS'));
-          //   // displayResult = yield* call(handleDisplayUpdate, episodeId, playerId, para);
-          //   continue;
-          // }
         } else if (pickAction) {
           const boardObject = displayResult.board.value.find(
             // eslint-disable-next-line no-loop-func
@@ -335,13 +325,6 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           if (botAssistChat) {
             yield* put(addMessage('ASSISTANT: ', botAssistChat));
           }
-
-          // if (mustWait) {
-          //   yield call(ws.waitForReadyDis);
-          //   yield* put(addMessage('READY DIS'));
-          //   // displayResult = yield* call(handleDisplayUpdate, episodeId, playerId, para);
-          //   continue;
-          // }
         } else if (giveUpAction) {
           const {
             data: { error, errmsg },

@@ -231,7 +231,6 @@ const HistoryArea: React.FC = () => {
             )}
           </Box>
 
-          {/* Fixed-height navigation bar */}
           {currentEpisodeScreenshots.length > 1 && (
             <Box
               direction="row"
@@ -556,7 +555,7 @@ const InformationArea: React.FunctionComponent = () => {
 
   useEffect(() => {
     const screenshotsData = localStorage.getItem('SCREENSHOTS');
-    // TODO: check where to implement this
+    // TODO: check when to remove old messages
     // dispatch(removeAllMessages());
     if (screenshotsData) {
       try {
@@ -632,7 +631,6 @@ const InformationArea: React.FunctionComponent = () => {
   }, [finishCode]);
 
   const cfa: number = Math.max(factorPromised, board.factorAchieved ?? 1);
-  // TODO: Screenshots only for 2PG games
   return (
     <Box
       background="steelblue"

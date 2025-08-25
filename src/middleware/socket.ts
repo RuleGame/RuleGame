@@ -1,4 +1,3 @@
-// websocketService.ts
 export class WebSocketService {
   private socket: WebSocket | null = null;
   private readonly serverUrl: string;
@@ -91,34 +90,3 @@ export class WebSocketService {
     }
   };
 }
-
-// // Optional Console utility class if you want to keep the logging functionality
-// export class Console {
-//   static log(message: string): void {
-//     const console = document.getElementById('console');
-//     if (!console) return;
-
-//     const p = document.createElement('p');
-//     p.style.wordWrap = 'break-word';
-//     p.innerHTML = `At ${new Date()}, ${message}`;
-//     console.appendChild(p);
-
-//     // Limit console to 25 messages
-//     while (console.childNodes.length > 25) {
-//       console.removeChild(console.firstChild);
-//     }
-
-//     console.scrollTop = console.scrollHeight;
-//     sessionStorage.setItem('console', console.innerHTML);
-//   }
-
-//   static restore(): void {
-//     const console = document.getElementById('console');
-//     if (!console) return;
-
-//     const old = sessionStorage.getItem('console');
-//     if (old) {
-//       console.innerHTML = old;
-//     }
-//   }
-// }
