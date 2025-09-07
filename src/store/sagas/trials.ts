@@ -262,7 +262,7 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           yield* put(pause());
 
           const {
-            data: { code, error, errmsg, mustWait, botAssistChat },
+            data: { code, error, errmsg, mustWait, botAssistChat, finishCode },
           } = yield* apiResolve(
             '/game-data/GameService2/move',
             METHOD.POST,
@@ -280,14 +280,16 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
 
           // Cannot tell if errmsg is a real error or just debug info
           // Would be easy to know whether there is an error flag in the /move response.
-          if (error) {
-            throw Error(`Error on /move: ${errmsg}`);
-          }
+          // if (error) {
+          //   throw Error(`Error on /move: ${errmsg}`);
+          // }
 
           if (code === Code.ACCEPT) {
             yield* put(validMove(moveAction.payload.boardObjectId, moveAction.payload.bucket));
           } else if (code === Code.DENY || code === Code.IMMOVABLE) {
             yield* put(invalidMove(moveAction.payload.boardObjectId, moveAction.payload.bucket));
+          } else if (finishCode === FinishCode.WALKED_AWAY && code === Code.NO_GAME) {
+            window.alert('Sorry, your session has timed out due to inactivity');
           }
 
           if (botAssistChat) {
@@ -301,7 +303,7 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           )!;
 
           const {
-            data: { errmsg, error, mustWait, botAssistChat },
+            data: { errmsg, error, mustWait, botAssistChat, code, finishCode },
           } = yield* apiResolve(
             '/game-data/GameService2/pick',
             METHOD.POST,
@@ -318,12 +320,16 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
 
           // Cannot tell if errmsg is a real error or just debug info
           // Would be easy to know whether there is an error flag in the /pick response.
-          if (error) {
-            throw Error(`Error on /pick: ${errmsg}`);
-          }
+          // if (error) {
+          //   throw Error(`Error on /pick: ${errmsg}`);
+          // }
 
           if (botAssistChat) {
             yield* put(addMessage('ASSISTANT: ', botAssistChat));
+          }
+
+          if (finishCode === FinishCode.WALKED_AWAY && code === Code.NO_GAME) {
+            window.alert('Sorry, your session has timed out due to inactivity.');
           }
         } else if (giveUpAction) {
           const {

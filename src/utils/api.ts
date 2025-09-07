@@ -12,6 +12,7 @@ export enum FinishCode {
   NO = 0,
   STALEMATE = 2,
   EARLY_WIN = 5,
+  WALKED_AWAY = 6,
 }
 
 export enum Code {
@@ -122,6 +123,7 @@ export type Display = {
     id: number;
     value: Board;
   };
+  code: Code;
   finishCode: FinishCode;
   numMovesMade: number;
   bonus: boolean;
