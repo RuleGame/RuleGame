@@ -71,6 +71,7 @@ export const setBoard = createAction(
     x4After,
     x2Likelihood,
     x4Likelihood,
+    showPartnerActions,
     botAssistance,
     isPaused = false,
     isPlayerTurn,
@@ -121,6 +122,7 @@ export const setBoard = createAction(
     x4After?: number;
     x2Likelihood?: number;
     x4Likelihood?: number;
+    showPartnerActions?: boolean;
     botAssistance?: string;
     isPaused?: boolean;
     isPlayerTurn: boolean;
@@ -168,6 +170,7 @@ export const setBoard = createAction(
     x4After,
     x2Likelihood,
     x4Likelihood,
+    showPartnerActions,
     botAssistance,
     isPaused,
     isPlayerTurn,
@@ -256,4 +259,8 @@ export const setWorkerId = createAction('board/SET_WORKER_ID', (workerId?: strin
 export const submitDetails = createAction('board/SUBMIT_DETAILS', (idea: string, how: string) => ({
   idea,
   how,
+}))();
+
+export const setMover = createAction('board/SET_MOVER', (mover: Number) => ({
+  mover,
 }))();

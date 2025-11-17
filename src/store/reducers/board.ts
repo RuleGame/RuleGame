@@ -22,6 +22,7 @@ import {
   setHoveredItem,
   resetHoveredItem,
   setIsBotAssisted,
+  setMover,
 } from '../actions/board';
 
 export type State = {
@@ -77,6 +78,8 @@ export type State = {
   displaySeriesNo: number;
   displayEpisodeNo: number;
   hoveredItem?: BoardObject;
+  mover?: Number;
+  showPartnerActions?: boolean;
 };
 
 export const initialState: State = {
@@ -136,6 +139,8 @@ export const initialState: State = {
   displaySeriesNo: 0,
   displayEpisodeNo: 0,
   hoveredItem: undefined,
+  mover: undefined,
+  showPartnerActions: undefined,
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -199,6 +204,7 @@ const reducer = (state: State = initialState, action: RootAction): State => {
         x4After: action.payload.x4After,
         x2Likelihood: action.payload.x2Likelihood,
         x4Likelihood: action.payload.x4Likelihood,
+        showPartnerActions: action.payload.showPartnerActions,
         faces: action.payload.faces,
         facesMine: action.payload.facesMine,
         displaySeriesNo: action.payload.displaySeriesNo,
@@ -265,6 +271,12 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       return {
         ...state,
         botAssistance: action.payload.botAssistance,
+      };
+
+    case getType(setMover):
+      return {
+        ...state,
+        mover: action.payload.mover,
       };
 
     default:

@@ -34,10 +34,16 @@ export const showStackMemoryOrderSelector = (state: RootState) => state.board.sh
 export const bucketDropListSelector = (bucketPosition: BucketPosition) => (
   state: RootState,
 ): BoardObject[] => {
+  const isadve = state.board.twoPGAdve;
+  const showPartnerActions = state.board.showPartnerActions ?? false;
+  const thisMover = state.board.mover;
   const bucketDropList = state.board.transcript
     .filter(
-      ({ bucketNo, code }) =>
-        bucketNo !== undefined && code === Code.ACCEPT && bucketNo === bucketPosition,
+      ({ bucketNo, code, mover }) =>
+        bucketNo !== undefined &&
+        code === Code.ACCEPT &&
+        bucketNo === bucketPosition &&
+        (isadve && !showPartnerActions ? mover === thisMover : true),
     )
     .map(({ pieceId }) => state.board.board[pieceId]);
   return bucketDropList.slice(Math.max(0, bucketDropList.length - state.board.stackMemoryDepth));
@@ -45,6 +51,9 @@ export const bucketDropListSelector = (bucketPosition: BucketPosition) => (
 
 export const immovableItemsSelector = (state: RootState): number[] => {
   const transcript = state.board.transcript;
+  const isadve = state.board.twoPGAdve;
+  const showPartnerActions = state.board.showPartnerActions ?? false;
+  const thisMover = state.board.mover;
   let lastAcceptIndex = -1;
   for (let i = transcript.length - 1; i >= 0; i--) {
     const item = transcript[i];
@@ -56,14 +65,19 @@ export const immovableItemsSelector = (state: RootState): number[] => {
 
   return transcript
     .slice(lastAcceptIndex + 1)
-    .filter(({ code }) => code === Code.IMMOVABLE)
+    .filter(
+      ({ code, mover }) =>
+        code === Code.IMMOVABLE && (isadve && !showPartnerActions ? mover === thisMover : true),
+    )
     .map(({ pieceId }) => pieceId);
 };
 
 export const pickedItemsSelector = (state: RootState): number[] => {
   const transcript = state.board.transcript;
+  const isadve = state.board.twoPGAdve;
+  const showPartnerActions = state.board.showPartnerActions ?? false;
+  const thisMover = state.board.mover;
 
-  // Find the last index where code is ACCEPT and bucketNo is not undefined
   const lastAcceptIndex = transcript.reduce((lastIndex, item, currentIndex) => {
     if (item.code === Code.ACCEPT && item.bucketNo !== undefined) {
       return currentIndex;
@@ -74,8 +88,9 @@ export const pickedItemsSelector = (state: RootState): number[] => {
   return transcript
     .slice(lastAcceptIndex + 1)
     .filter(
-      ({ bucketNo, code }) =>
-        (bucketNo === undefined && code === Code.ACCEPT) || code === Code.DENY,
+      ({ bucketNo, code, mover }) =>
+        ((bucketNo === undefined && code === Code.ACCEPT) || code === Code.DENY) &&
+        (isadve && !showPartnerActions ? mover === thisMover : true),
     )
     .map(({ pieceId }) => pieceId);
 };
@@ -88,10 +103,16 @@ export const hoveredItemSelector = (state: RootState) => state.board.hoveredItem
 export const disallowedBucketSelector = (state: RootState): { [pieceId: number]: number[] } => {
   const transcript = state.board.transcript;
   const lastAcceptIndex = transcript.map(({ code }) => code).lastIndexOf(Code.ACCEPT);
+  const isadve = state.board.twoPGAdve;
+  const showPartnerActions = state.board.showPartnerActions ?? false;
+  const thisMover = state.board.mover;
 
   return transcript
     .slice(lastAcceptIndex + 1)
-    .filter(({ code }) => code === Code.DENY)
+    .filter(
+      ({ code, mover }) =>
+        code === Code.DENY && (isadve && !showPartnerActions ? mover === thisMover : true),
+    )
     .reduce((acc, { pieceId, bucketNo }) => {
       if (bucketNo === undefined) return acc;
       return {
