@@ -21,6 +21,7 @@ import {
   unpause,
   validMove,
   setIsBotAssisted,
+  setMover,
 } from '../actions/board';
 import { addMessage } from '../actions/message';
 import { nextPage } from '../actions/page';
@@ -33,6 +34,7 @@ import { workerIdSelector } from '../selectors/board';
 import { WebSocketService } from '../../middleware/socket';
 import { eventChannel, EventChannel } from 'redux-saga';
 import { SocketMessage } from '../../@types/index';
+import { show } from 'react-tooltip';
 // import { dispatch } from 'rxjs/internal/observable/pairs';
 // import { useDispatch, useSelector } from 'react-redux';
 // import { goToPage } from '../../store/actions/page';
@@ -174,7 +176,9 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
     } else {
       yield* put(nextPage());
     }
-
+    if (display?.mover !== undefined) {
+      yield* put(setMover(display.mover));
+    }
     yield* put(nextPage());
 
     while (!alreadyFinished) {
@@ -188,6 +192,7 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
         x4_after: x4After,
         x2_likelihood: x2Likelihood,
         x4_likelihood: x4Likelihood,
+        show_partner_actions: showPartnerActions,
       } = para;
 
       let moveAction: ReturnType<typeof move> | undefined;
@@ -501,6 +506,7 @@ function* handleDisplayUpdate(
     x4After: para.x4_after,
     x2Likelihood: para.x2_likelihood,
     x4Likelihood: para.x4_likelihood,
+    showPartnerActions: para.show_partner_actions,
     // TODO: Temporarily allow the player to clear the board after the factorPromised is at 4.
     // Eventually, disallow it to continue once the API can auto complete the board.
     // if (display.factorPromised !== 4) {

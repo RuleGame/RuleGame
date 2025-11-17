@@ -115,7 +115,13 @@ export type BoardObject =
 
 export type Board = BoardObject[];
 
-export type Transcript = { pos: number; bucketNo?: BucketPosition; code: Code; pieceId: number }[];
+export type Transcript = {
+  pos: number;
+  bucketNo?: BucketPosition;
+  code: Code;
+  pieceId: number;
+  mover: number;
+}[];
 
 export type Display = {
   board: {
@@ -151,6 +157,7 @@ export type Display = {
   rewardsAndFactorsPerSeries: [number, number][];
   factorAchieved?: number;
   factorPromised?: number;
+  mover?: number;
   justReachedX2?: boolean;
   justReachedX4?: boolean;
   faces: boolean[];
@@ -192,6 +199,7 @@ type Para = {
   x4_likelihood?: number;
   init: number;
   bot_assist?: string;
+  show_partner_actions: boolean;
 };
 
 export enum ErrorMsg {
