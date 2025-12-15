@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Previous, Next } from 'grommet-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { SpecialShape } from '../constants';
-import { pause, skipGuess, submitDetails } from '../store/actions/board';
+import { pause, skipGuess, submitDetails, toggleChat } from '../store/actions/board';
 import { addMessage, removeAllMessages } from '../store/actions/message';
 import {
   boardSelector,
@@ -33,6 +33,8 @@ import {
   episodeIdSelector,
   workerIdSelector,
   botAssistanceSelector,
+  toggleChatSelector,
+  getIsBotAssistedPlayerSelector,
 } from '../store/selectors/board';
 import { socketSelector } from '../store/selectors/socket';
 import { messageSelector } from '../store/selectors/message';
@@ -69,9 +71,12 @@ const ChatArea: React.FC = () => {
   const dispatch = useDispatch();
   const messageList = useSelector(messageSelector);
   const isBotAssisted = useSelector(botAssistanceSelector);
+  const isBotAssistedPlayer = useSelector(getIsBotAssistedPlayerSelector);
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messageList]);
+
+  useEffect(() => {}, [isBotAssisted]);
 
   const sendMessage = () => {
     if (messageInput.trim() && socket && socket.readyState === WebSocket.OPEN) {
@@ -90,10 +95,16 @@ const ChatArea: React.FC = () => {
     }
   };
 
-  if (!isCurrentGameCoop && !isBotAssisted) {
+  if (!isCurrentGameCoop && !isBotAssistedPlayer) {
     return (
       <Box fill align="center" justify="center">
         <Text>Chat is only available in cooperative games and bot assisted games.</Text>
+      </Box>
+    );
+  } else if (isBotAssistedPlayer && !isBotAssisted) {
+    return (
+      <Box fill align="center" justify="center">
+        <Text>If a bot is helping you, its messages will appear here.</Text>
       </Box>
     );
   }
@@ -552,6 +563,7 @@ const InformationArea: React.FunctionComponent = () => {
   const id = displaySeriesNo + '-' + workerId;
   const isCurrentGameCoop = useSelector(is2PGCoopGameSelector);
   const socket = useSelector(socketSelector);
+  const toggleChat_ = useSelector(toggleChatSelector);
 
   useEffect(() => {
     const screenshotsData = localStorage.getItem('SCREENSHOTS');
@@ -593,6 +605,23 @@ const InformationArea: React.FunctionComponent = () => {
       setActiveTab(1);
     }
   }, [finishCode]);
+
+  useEffect(() => {
+    if (toggleChat_ && !(finishCode === FinishCode.FINISH || finishCode === FinishCode.EARLY_WIN)) {
+      setActiveTab(1);
+    } else {
+      setActiveTab(0);
+    }
+  }, [toggleChat_]);
+
+  // need to set the value of toggleChat to false when someone switches tab manually to 0 or 2
+  useEffect(() => {
+    if (activeTab === 0 || activeTab === 2) {
+      if (toggleChat_) {
+        dispatch(toggleChat(false));
+      }
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     if (firstRender.current) {

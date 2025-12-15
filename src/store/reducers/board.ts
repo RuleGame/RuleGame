@@ -23,6 +23,8 @@ import {
   resetHoveredItem,
   setIsBotAssisted,
   setMover,
+  toggleChat,
+  setIsBotAssistedPlayer,
 } from '../actions/board';
 
 export type State = {
@@ -80,6 +82,8 @@ export type State = {
   hoveredItem?: BoardObject;
   mover?: Number;
   showPartnerActions?: boolean;
+  showChat?: boolean;
+  isBotAssistedPlayer?: boolean;
 };
 
 export const initialState: State = {
@@ -141,6 +145,8 @@ export const initialState: State = {
   hoveredItem: undefined,
   mover: undefined,
   showPartnerActions: undefined,
+  showChat: undefined,
+  isBotAssistedPlayer: undefined,
 };
 
 const reducer = (state: State = initialState, action: RootAction): State => {
@@ -277,6 +283,18 @@ const reducer = (state: State = initialState, action: RootAction): State => {
       return {
         ...state,
         mover: action.payload.mover,
+      };
+
+    case getType(toggleChat):
+      return {
+        ...state,
+        showChat: action.payload.showChat,
+      };
+
+    case getType(setIsBotAssistedPlayer):
+      return {
+        ...state,
+        isBotAssistedPlayer: action.payload.isBotAssistedPlayer,
       };
 
     default:

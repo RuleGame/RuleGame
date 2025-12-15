@@ -13,6 +13,7 @@ export enum FinishCode {
   STALEMATE = 2,
   EARLY_WIN = 5,
   WALKED_AWAY = 6,
+  ABANDONED = 7,
 }
 
 export enum Code {
@@ -167,6 +168,7 @@ export type Display = {
   displayEpisodeNo: number;
   mustWait: boolean;
   botAssistChat?: string;
+  clearBotAssistChat?: boolean;
 };
 
 type Para = {
@@ -199,6 +201,7 @@ type Para = {
   x4_likelihood?: number;
   init: number;
   bot_assist?: string;
+  bot_assist1?: string;
   show_partner_actions: boolean;
 };
 
@@ -287,6 +290,7 @@ export type Endpoints = {
         totalRewardEarned: number;
         mustWait: boolean;
         botAssistChat?: string;
+        clearBotAssistChat?: boolean;
       },
       {
         episode: string;
@@ -317,6 +321,7 @@ export type Endpoints = {
         totalRewardEarned: number;
         mustWait: boolean;
         botAssistChat?: string;
+        clearBotAssistChat?: boolean;
       },
       {
         episode: string;

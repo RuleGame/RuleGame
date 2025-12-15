@@ -236,6 +236,8 @@ export const botAssistanceSelector = (state: RootState) => state.board.botAssist
 
 export const facesSelector = (state: RootState) => state.board.faces;
 
+export const toggleChatSelector = (state: RootState) => state.board.showChat;
+export const getIsBotAssistedPlayerSelector = (state: RootState) => state.board.isBotAssistedPlayer;
 export const numGoodMovesSelector = createSelector([facesSelector], (faces) =>
   faces?.reduce((acc, curr) => (curr ? acc + 1 : acc), 0),
 );
