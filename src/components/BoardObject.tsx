@@ -46,10 +46,10 @@ const StyledShapeObject = styled(ShapeObject)<{
   cursor: ${({ canDrag, feedbackSwitches }) =>
     canDrag || feedbackSwitches === FeedbackSwitches.FREE ? 'grab' : 'unset'};
   ${({ isPicked, is2PG }) =>
-    isPicked && is2PG ? 'border: 3px solid black; border-radius: 8px; box-sizing: border-box;' : ''}
+    isPicked && is2PG ? 'border: 1px solid black; border-radius: 0; box-sizing: border-box;' : ''}
   ${({ isImmovable, is2PG }) =>
     isImmovable && is2PG
-      ? 'border: 3px solid red; border-radius: 8px; box-sizing: border-box;'
+      ? 'border: 1px solid red; border-radius: 0; box-sizing: border-box;'
       : ''}
 
   ${({ label, is2PG, isBotAssisted }) =>
@@ -99,10 +99,10 @@ const ImageStyledShapeObject = styled(ImageShapeObject)<{
   cursor: ${({ canDrag, feedbackSwitches }) =>
     canDrag || feedbackSwitches === FeedbackSwitches.FREE ? 'grab' : 'unset'};
   ${({ isPicked, is2PG }) =>
-    isPicked && is2PG ? 'border: 3px solid black; border-radius: 8px; box-sizing: border-box;' : ''}
+    isPicked && is2PG ? 'border: 1px solid black; border-radius: 0; box-sizing: border-box;' : ''}
   ${({ isImmovable, is2PG }) =>
     isImmovable && is2PG
-      ? 'border: 3px solid red; border-radius: 8px; box-sizing: border-box;'
+      ? 'border: 1px solid red; border-radius: 0; box-sizing: border-box;'
       : ''}
 
   ${({ label, is2PG, isBotAssisted }) =>

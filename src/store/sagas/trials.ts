@@ -226,6 +226,7 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
       let submitDetailsAction: ReturnType<typeof submitDetails> | undefined;
 
       let abandoned = false;
+      let timedOut = false;
 
       // Encompasses a single episode. Exiting from the loop will result in a new episode if any.
       do {
@@ -238,13 +239,26 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           isCurrentGameAdve,
         );
 
+        if (displayResult.finishCode === FinishCode.WALKED_AWAY) {
+          window.alert('Sorry, your session has timed out due to inactivity');
+          timedOut = true;
+          break;
+        }
+
         if (displayResult.finishCode === FinishCode.GIVEN_UP) {
           break;
         }
-        // if (displayResult.finishCode === FinishCode.ABANDONED) {
-        //   window.alert('Unfortunately, your partner has left, and the game cannot be continued. Please press OK below to proceed to the final form');
-        //   break;
-        // }
+
+        if (displayResult.finishCode === FinishCode.ABANDONED) {
+          if (
+            window.confirm(
+              'Unfortunately, your partner has left, and the game cannot be continued. Please press OK below to proceed to the final form',
+            )
+          ) {
+            abandoned = true;
+            break;
+          }
+        }
         if (displayResult.clearBotAssistChat) {
           yield* put(removeAllMessages());
         }
@@ -272,6 +286,12 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
             isCurrentGameCoop,
             isCurrentGameAdve,
           );
+
+          if (displayResult.finishCode === FinishCode.WALKED_AWAY) {
+            window.alert('Sorry, your session has timed out due to inactivity');
+            timedOut = true;
+            break;
+          }
           //console.log("displayResult", displayResult);
           //console.log(displayResult.finishCode);
           if (displayResult.finishCode === FinishCode.ABANDONED) {
@@ -295,19 +315,13 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
             yield* put(toggleChat(false));
           }
         }
-        if (abandoned) {
+        // Just replace your race section with this:
+        if (abandoned || timedOut) {
           break;
         }
 
-        ({
-          moveAction,
-          giveUpAction,
-          guessAction,
-          skipGuessAction,
-          loadNextBonusAction,
-          pickAction,
-          submitDetailsAction,
-        } = yield* race({
+        // Race between user actions and READY DIS socket message
+        const result = yield* race({
           moveAction: takeAction(move),
           giveUpAction: takeAction(giveUp),
           guessAction: takeAction(guess),
@@ -315,8 +329,43 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           loadNextBonusAction: takeAction(loadNextBonus),
           pickAction: takeAction(pick),
           submitDetailsAction: takeAction(submitDetails),
-        }));
+          readyDis: socketChannel ? call(processMessages, socketChannel) : undefined,
+        });
 
+        // If READY DIS received, check display for walk-away/abandoned status
+        if (result.readyDis !== undefined) {
+          const { data: display } = yield* apiResolve(
+            '/game-data/GameService2/display',
+            METHOD.GET,
+            undefined,
+            { episode: episodeId, playerId: playerId },
+          );
+
+          if (display.finishCode === FinishCode.WALKED_AWAY) {
+            window.alert('Sorry, your session has timed out due to inactivity');
+            timedOut = true;
+            break;
+          }
+
+          if (display.finishCode === FinishCode.ABANDONED) {
+            window.confirm(
+              'Unfortunately, your partner has left, and the game cannot be continued. Please press OK below to proceed to the final form',
+            );
+            abandoned = true;
+            break;
+          }
+
+          // If neither walked away nor abandoned, continue loop (it was a normal READY DIS)
+          continue;
+        }
+
+        moveAction = result.moveAction;
+        giveUpAction = result.giveUpAction;
+        guessAction = result.guessAction;
+        skipGuessAction = result.skipGuessAction;
+        loadNextBonusAction = result.loadNextBonusAction;
+        pickAction = result.pickAction;
+        submitDetailsAction = result.submitDetailsAction;
         if (moveAction) {
           const boardObject = displayResult.board.value.find(
             // eslint-disable-next-line no-loop-func

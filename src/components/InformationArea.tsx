@@ -556,7 +556,7 @@ const InformationArea: React.FunctionComponent = () => {
   const factorPromised: number = useSelector(factorPromisedSelector) ?? 1;
   const finishCode = useSelector(finishCodeSelector);
   const incentive = useSelector(incentiveSelector);
-  const [activeTab, setActiveTab] = useState<number>(1);
+  const [activeTab, setActiveTab] = useState<number>(0);
   const firstRender = useRef(true);
   const displaySeriesNo = useSelector(displaySeriesNoSelector);
   const workerId = useSelector(workerIdSelector);
