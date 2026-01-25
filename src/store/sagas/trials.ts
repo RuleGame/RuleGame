@@ -329,7 +329,7 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           loadNextBonusAction: takeAction(loadNextBonus),
           pickAction: takeAction(pick),
           submitDetailsAction: takeAction(submitDetails),
-          readyDis: socketChannel ? call(processMessages, socketChannel) : undefined,
+          ...(socketChannel && { readyDis: call(processMessages, socketChannel) }),
         });
 
         // If READY DIS received, check display for walk-away/abandoned status

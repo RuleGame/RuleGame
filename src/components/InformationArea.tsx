@@ -601,8 +601,6 @@ const InformationArea: React.FunctionComponent = () => {
   useEffect(() => {
     if (finishCode === FinishCode.FINISH || finishCode === FinishCode.EARLY_WIN) {
       setActiveTab(0);
-    } else {
-      setActiveTab(1);
     }
   }, [finishCode]);
 
