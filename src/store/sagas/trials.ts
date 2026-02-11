@@ -26,8 +26,9 @@ import {
   setIsBotAssistedPlayer,
 } from '../actions/board';
 import { addMessage, removeAllMessages } from '../actions/message';
-import { nextPage } from '../actions/page';
+import { nextPage, goToPage } from '../actions/page';
 import { socketConnection } from '../actions/socket';
+import { Page } from '../../constants/Page';
 import { TakeEffect } from 'redux-saga/effects';
 import { boardPositionToBxBy, FEEDBACK_DURATION } from '../../constants';
 import { apiResolve, takeAction } from './utils/helpers';
@@ -75,6 +76,41 @@ function* processMessages(
       break;
     }
   }
+}
+
+// Add this new function before the trials function
+function* handleDemographics(playerId: string): Generator<any, void, any> {
+  yield* put(nextPage()); // Navigate to demographics page
+
+  const {
+    payload: { data: demographics },
+  } = yield* takeAction(recordDemographics);
+
+  // Process matrix-game specially
+  const demographicsProcessedData = merge(demographics, demographics['matrix-games']);
+  delete demographicsProcessedData['matrix-games'];
+
+  const csvString = Papa.unparse({
+    fields: ['key', 'value'],
+    data: Object.entries(demographics),
+  });
+
+  yield* apiResolve(
+    '/game-data/GameService/writeFile',
+    METHOD.POST,
+    {
+      data: csvString,
+      dir: 'demographics',
+      file: `${playerId}.csv`,
+    },
+    {},
+  );
+
+  yield* put(nextPage());
+}
+
+function* handleAlreadyFilledSurvey(): Generator<any, void, any> {
+  yield* put(goToPage(Page.DEBRIEFING));
 }
 
 function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, void, any> {
@@ -156,6 +192,35 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
       }
     } else if (data.alreadyFinished !== true && error) {
       throw Error(`Error on /mostRecentEpisode ${errmsg}`);
+    }
+    let skip_to_demographics = false;
+    // Check if player has already finished all episodes
+    if (data.alreadyFinished === true) {
+      let finishedMessage = 'You have already completed all the episodes. ';
+
+      if (data.completionMode === 1) {
+        // ABANDONED - partner walked away
+        finishedMessage =
+          "Unfortunately, your partner has stopped playing. Let's fill this survey form now, and you will be done";
+      } else if (data.completionMode === 2) {
+        // WALKED_AWAY - timed out due to inactivity
+        finishedMessage =
+          'Sorry, your session has timed out due to inactivity; we have let your partner go. Please fill this survey form';
+      }
+
+      window.alert(finishedMessage);
+      if (data.completionMode === 1 || data.completionMode === 2) {
+        skip_to_demographics = true;
+      }
+    }
+    if (skip_to_demographics) {
+      yield* put(nextPage());
+      yield* put(nextPage());
+      yield* call(handleDemographics, playerId);
+      return;
+    } else if (data.completionMode === 0) {
+      yield* call(handleAlreadyFilledSurvey);
+      return;
     }
 
     let { alreadyFinished, episodeId, para, mustWait, display } = data;
@@ -535,33 +600,7 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
       }
     }
 
-    yield* put(nextPage());
-
-    const {
-      payload: { data: demographics },
-    } = yield* takeAction(recordDemographics);
-
-    // Process matrix-game specially
-    const demographicsProcessedData = merge(demographics, demographics['matrix-games']);
-    delete demographicsProcessedData['matrix-games'];
-
-    const csvString = Papa.unparse({
-      fields: ['key', 'value'],
-      data: Object.entries(demographics),
-    });
-
-    yield* apiResolve(
-      '/game-data/GameService/writeFile',
-      METHOD.POST,
-      {
-        data: csvString,
-        dir: 'demographics',
-        file: `${playerId}.csv`,
-      },
-      {},
-    );
-
-    yield* put(nextPage());
+    yield* call(handleDemographics, playerId);
   } catch (e) {
     if (e instanceof Error) {
       yield* put(addLayer('An Error Ocurred', e.message, []));

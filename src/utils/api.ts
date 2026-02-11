@@ -241,6 +241,7 @@ export type Endpoints = {
         episodeId: string;
         para: Para;
         completionCode?: string;
+        completionMode?: number;
         mustWait: boolean;
       },
       {
@@ -261,6 +262,7 @@ export type Endpoints = {
         episodeId: string;
         para: Para;
         completionCode?: string;
+        completionMode?: number;
         mustWait: boolean;
       },
       {
@@ -496,6 +498,7 @@ export type Events = {
       episodeId: string;
       para: Para;
       completionCode?: string;
+      completionMode?: number;
     },
     {
       playerId: string;
@@ -513,6 +516,7 @@ export type Events = {
       episodeId: string;
       para: Para;
       completionCode?: string;
+      completionMode?: number;
     },
     {
       playerId: string;
