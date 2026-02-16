@@ -218,7 +218,7 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
       yield* put(nextPage());
       yield* call(handleDemographics, playerId);
       return;
-    } else if (data.completionMode === 0) {
+    } else if (data.alreadyFinished === true && data.completionMode === 0) {
       yield* call(handleAlreadyFilledSurvey);
       return;
     }
