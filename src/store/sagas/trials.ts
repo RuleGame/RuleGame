@@ -22,10 +22,13 @@ import {
   validMove,
   setIsBotAssisted,
   setMover,
+  toggleChat,
+  setIsBotAssistedPlayer,
 } from '../actions/board';
-import { addMessage } from '../actions/message';
-import { nextPage } from '../actions/page';
+import { addMessage, removeAllMessages } from '../actions/message';
+import { nextPage, goToPage } from '../actions/page';
 import { socketConnection } from '../actions/socket';
+import { Page } from '../../constants/Page';
 import { TakeEffect } from 'redux-saga/effects';
 import { boardPositionToBxBy, FEEDBACK_DURATION } from '../../constants';
 import { apiResolve, takeAction } from './utils/helpers';
@@ -73,6 +76,41 @@ function* processMessages(
       break;
     }
   }
+}
+
+// Add this new function before the trials function
+function* handleDemographics(playerId: string): Generator<any, void, any> {
+  yield* put(nextPage()); // Navigate to demographics page
+
+  const {
+    payload: { data: demographics },
+  } = yield* takeAction(recordDemographics);
+
+  // Process matrix-game specially
+  const demographicsProcessedData = merge(demographics, demographics['matrix-games']);
+  delete demographicsProcessedData['matrix-games'];
+
+  const csvString = Papa.unparse({
+    fields: ['key', 'value'],
+    data: Object.entries(demographics),
+  });
+
+  yield* apiResolve(
+    '/game-data/GameService/writeFile',
+    METHOD.POST,
+    {
+      data: csvString,
+      dir: 'demographics',
+      file: `${playerId}.csv`,
+    },
+    {},
+  );
+
+  yield* put(nextPage());
+}
+
+function* handleAlreadyFilledSurvey(): Generator<any, void, any> {
+  yield* put(goToPage(Page.DEBRIEFING));
 }
 
 function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, void, any> {
@@ -155,9 +193,37 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
     } else if (data.alreadyFinished !== true && error) {
       throw Error(`Error on /mostRecentEpisode ${errmsg}`);
     }
+    let skip_to_demographics = false;
+    // Check if player has already finished all episodes
+    if (data.alreadyFinished === true) {
+      let finishedMessage = 'You have already completed all the episodes. ';
+
+      if (data.completionMode === 1) {
+        // ABANDONED - partner walked away
+        finishedMessage =
+          "Unfortunately, your partner has stopped playing. Let's fill this survey form now, and you will be done";
+      } else if (data.completionMode === 2) {
+        // WALKED_AWAY - timed out due to inactivity
+        finishedMessage =
+          'Sorry, your session has timed out due to inactivity; we have let your partner go. Please fill this survey form';
+      }
+
+      window.alert(finishedMessage);
+      if (data.completionMode === 1 || data.completionMode === 2) {
+        skip_to_demographics = true;
+      }
+    }
+    if (skip_to_demographics) {
+      yield* put(nextPage());
+      yield* put(nextPage());
+      yield* call(handleDemographics, playerId);
+      return;
+    } else if (data.alreadyFinished === true && data.completionMode === 0) {
+      yield* call(handleAlreadyFilledSurvey);
+      return;
+    }
 
     let { alreadyFinished, episodeId, para, mustWait, display } = data;
-    if (para) yield* put(setIsBotAssisted(para.bot_assist ?? ''));
 
     if (mustWait) {
       yield* put(nextPage());
@@ -178,6 +244,27 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
     }
     if (display?.mover !== undefined) {
       yield* put(setMover(display.mover));
+    }
+
+    const isBotAssistedPlayer = trialList.some((trial: any) => {
+      if (display.mover === 0) {
+        return trial.bot_assist && trial.bot_assist !== '';
+      } else if (display.mover === 1) {
+        return trial.bot_assist1 && trial.bot_assist1 !== '';
+      }
+      return false;
+    });
+    yield* put(setIsBotAssistedPlayer(isBotAssistedPlayer));
+    if (para) {
+      if (display?.mover !== undefined) {
+        if (display.mover === 0) {
+          console.log('for mover 0', para.bot_assist);
+          yield* put(setIsBotAssisted(para.bot_assist ?? ''));
+        } else if (display.mover === 1) {
+          console.log('for mover 1', para.bot_assist1);
+          yield* put(setIsBotAssisted(para.bot_assist1 ?? ''));
+        }
+      }
     }
     yield* put(nextPage());
 
@@ -203,6 +290,9 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
       let pickAction: ReturnType<typeof pick> | undefined;
       let submitDetailsAction: ReturnType<typeof submitDetails> | undefined;
 
+      let abandoned = false;
+      let timedOut = false;
+
       // Encompasses a single episode. Exiting from the loop will result in a new episode if any.
       do {
         let displayResult = yield* call(
@@ -214,8 +304,35 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           isCurrentGameAdve,
         );
 
+        if (displayResult.finishCode === FinishCode.WALKED_AWAY) {
+          window.alert('Sorry, your session has timed out due to inactivity');
+          timedOut = true;
+          break;
+        }
+
         if (displayResult.finishCode === FinishCode.GIVEN_UP) {
           break;
+        }
+
+        if (displayResult.finishCode === FinishCode.ABANDONED) {
+          if (
+            window.confirm(
+              'Unfortunately, your partner has left, and the game cannot be continued. Please press OK below to proceed to the final form',
+            )
+          ) {
+            abandoned = true;
+            break;
+          }
+        }
+        if (displayResult.clearBotAssistChat) {
+          yield* put(removeAllMessages());
+        }
+
+        if (displayResult.botAssistChat) {
+          yield* put(addMessage('ASSISTANT: ', displayResult.botAssistChat));
+          yield* put(toggleChat(true));
+        } else if (displayResult.clearBotAssistChat) {
+          yield* put(toggleChat(false));
         }
 
         // This will help the other client wait for the current client to finish their win streak
@@ -226,7 +343,7 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           }
 
           // Once READY DIS is received, update the display
-          displayResult = yield call(
+          displayResult = yield* call(
             handleDisplayUpdate,
             episodeId,
             playerId,
@@ -234,21 +351,42 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
             isCurrentGameCoop,
             isCurrentGameAdve,
           );
+
+          if (displayResult.finishCode === FinishCode.WALKED_AWAY) {
+            window.alert('Sorry, your session has timed out due to inactivity');
+            timedOut = true;
+            break;
+          }
+          //console.log("displayResult", displayResult);
+          //console.log(displayResult.finishCode);
+          if (displayResult.finishCode === FinishCode.ABANDONED) {
+            if (
+              window.confirm(
+                'Unfortunately, your partner has left, and the game cannot be continued. Please press OK below to proceed to the final form',
+              )
+            ) {
+              abandoned = true;
+              break;
+            }
+          }
+          if (displayResult.clearBotAssistChat) {
+            yield* put(removeAllMessages());
+          }
+
+          if (displayResult.botAssistChat) {
+            yield* put(addMessage('ASSISTANT: ', displayResult.botAssistChat));
+            yield* put(toggleChat(true));
+          } else if (displayResult.clearBotAssistChat) {
+            yield* put(toggleChat(false));
+          }
+        }
+        // Just replace your race section with this:
+        if (abandoned || timedOut) {
+          break;
         }
 
-        if (displayResult.botAssistChat) {
-          yield* put(addMessage('ASSISTANT: ', displayResult.botAssistChat));
-        }
-
-        ({
-          moveAction,
-          giveUpAction,
-          guessAction,
-          skipGuessAction,
-          loadNextBonusAction,
-          pickAction,
-          submitDetailsAction,
-        } = yield* race({
+        // Race between user actions and READY DIS socket message
+        const result = yield* race({
           moveAction: takeAction(move),
           giveUpAction: takeAction(giveUp),
           guessAction: takeAction(guess),
@@ -256,8 +394,43 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           loadNextBonusAction: takeAction(loadNextBonus),
           pickAction: takeAction(pick),
           submitDetailsAction: takeAction(submitDetails),
-        }));
+          ...(socketChannel && { readyDis: call(processMessages, socketChannel) }),
+        });
 
+        // If READY DIS received, check display for walk-away/abandoned status
+        if (result.readyDis !== undefined) {
+          const { data: display } = yield* apiResolve(
+            '/game-data/GameService2/display',
+            METHOD.GET,
+            undefined,
+            { episode: episodeId, playerId: playerId },
+          );
+
+          if (display.finishCode === FinishCode.WALKED_AWAY) {
+            window.alert('Sorry, your session has timed out due to inactivity');
+            timedOut = true;
+            break;
+          }
+
+          if (display.finishCode === FinishCode.ABANDONED) {
+            window.confirm(
+              'Unfortunately, your partner has left, and the game cannot be continued. Please press OK below to proceed to the final form',
+            );
+            abandoned = true;
+            break;
+          }
+
+          // If neither walked away nor abandoned, continue loop (it was a normal READY DIS)
+          continue;
+        }
+
+        moveAction = result.moveAction;
+        giveUpAction = result.giveUpAction;
+        guessAction = result.guessAction;
+        skipGuessAction = result.skipGuessAction;
+        loadNextBonusAction = result.loadNextBonusAction;
+        pickAction = result.pickAction;
+        submitDetailsAction = result.submitDetailsAction;
         if (moveAction) {
           const boardObject = displayResult.board.value.find(
             // eslint-disable-next-line no-loop-func
@@ -267,7 +440,7 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           yield* put(pause());
 
           const {
-            data: { code, error, errmsg, mustWait, botAssistChat, finishCode },
+            data: { code, error, errmsg, mustWait, botAssistChat, finishCode, clearBotAssistChat },
           } = yield* apiResolve(
             '/game-data/GameService2/move',
             METHOD.POST,
@@ -295,10 +468,16 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
             yield* put(invalidMove(moveAction.payload.boardObjectId, moveAction.payload.bucket));
           } else if (finishCode === FinishCode.WALKED_AWAY && code === Code.NO_GAME) {
             window.alert('Sorry, your session has timed out due to inactivity');
+            break;
           }
-
+          if (clearBotAssistChat) {
+            yield* put(removeAllMessages());
+          }
           if (botAssistChat) {
             yield* put(addMessage('ASSISTANT: ', botAssistChat));
+            yield* put(toggleChat(true));
+          } else if (clearBotAssistChat) {
+            yield* put(toggleChat(false));
           }
           yield* delay(FEEDBACK_DURATION);
         } else if (pickAction) {
@@ -308,7 +487,7 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           )!;
 
           const {
-            data: { errmsg, error, mustWait, botAssistChat, code, finishCode },
+            data: { errmsg, error, mustWait, botAssistChat, code, finishCode, clearBotAssistChat },
           } = yield* apiResolve(
             '/game-data/GameService2/pick',
             METHOD.POST,
@@ -329,8 +508,14 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
           //   throw Error(`Error on /pick: ${errmsg}`);
           // }
 
+          if (clearBotAssistChat) {
+            yield* put(removeAllMessages());
+          }
           if (botAssistChat) {
             yield* put(addMessage('ASSISTANT: ', botAssistChat));
+            yield* put(toggleChat(true));
+          } else if (clearBotAssistChat) {
+            yield* put(toggleChat(false));
           }
 
           if (finishCode === FinishCode.WALKED_AWAY && code === Code.NO_GAME) {
@@ -393,44 +578,29 @@ function* trials(playerId?: string, exp?: string, uid?: number): Generator<any, 
         !skipGuessAction &&
         !loadNextBonusAction
       );
-
+      if (abandoned) {
+        break;
+      }
       ({
         data: { alreadyFinished, episodeId, para, errmsg, error },
       } = yield* apiResolve('/game-data/GameService2/newEpisode', METHOD.POST, { playerId }, {}));
 
       if (para) yield* put(setIsBotAssisted(para.bot_assist ?? ''));
+      if (para) {
+        if (display?.mover !== undefined) {
+          if (display.mover === 0) {
+            yield* put(setIsBotAssisted(para.bot_assist ?? ''));
+          } else if (display.mover === 1) {
+            yield* put(setIsBotAssisted(para.bot_assist1 ?? ''));
+          }
+        }
+      }
       if (alreadyFinished !== true && error) {
         throw Error(`Error on /newEpisode: ${errmsg}`);
       }
     }
 
-    yield* put(nextPage());
-
-    const {
-      payload: { data: demographics },
-    } = yield* takeAction(recordDemographics);
-
-    // Process matrix-game specially
-    const demographicsProcessedData = merge(demographics, demographics['matrix-games']);
-    delete demographicsProcessedData['matrix-games'];
-
-    const csvString = Papa.unparse({
-      fields: ['key', 'value'],
-      data: Object.entries(demographics),
-    });
-
-    yield* apiResolve(
-      '/game-data/GameService/writeFile',
-      METHOD.POST,
-      {
-        data: csvString,
-        dir: 'demographics',
-        file: `${playerId}.csv`,
-      },
-      {},
-    );
-
-    yield* put(nextPage());
+    yield* call(handleDemographics, playerId);
   } catch (e) {
     if (e instanceof Error) {
       yield* put(addLayer('An Error Ocurred', e.message, []));
@@ -507,6 +677,8 @@ function* handleDisplayUpdate(
     x2Likelihood: para.x2_likelihood,
     x4Likelihood: para.x4_likelihood,
     showPartnerActions: para.show_partner_actions,
+    clearBotAssistChat: display.clearBotAssistChat,
+    botAssistChat: display.botAssistChat,
     // TODO: Temporarily allow the player to clear the board after the factorPromised is at 4.
     // Eventually, disallow it to continue once the API can auto complete the board.
     // if (display.factorPromised !== 4) {

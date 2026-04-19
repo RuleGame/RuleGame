@@ -81,6 +81,8 @@ export const setBoard = createAction(
     facesMine,
     displaySeriesNo,
     displayEpisodeNo,
+    clearBotAssistChat,
+    botAssistChat,
   }: {
     board: Board;
     bonus: boolean;
@@ -132,6 +134,8 @@ export const setBoard = createAction(
     facesMine?: boolean[];
     displaySeriesNo: number;
     displayEpisodeNo: number;
+    clearBotAssistChat?: boolean;
+    botAssistChat?: string;
   }) => ({
     board,
     bonus,
@@ -180,6 +184,8 @@ export const setBoard = createAction(
     facesMine,
     displaySeriesNo,
     displayEpisodeNo,
+    clearBotAssistChat,
+    botAssistChat,
   }),
 )();
 
@@ -264,3 +270,14 @@ export const submitDetails = createAction('board/SUBMIT_DETAILS', (idea: string,
 export const setMover = createAction('board/SET_MOVER', (mover: Number) => ({
   mover,
 }))();
+
+export const toggleChat = createAction('board/TOGGLE_CHAT', (showChat: boolean) => ({
+  showChat,
+}))();
+
+export const setIsBotAssistedPlayer = createAction(
+  'board/SET_IS_BOT_ASSISTED_PLAYER',
+  (isBotAssistedPlayer: boolean) => ({
+    isBotAssistedPlayer,
+  }),
+)();
