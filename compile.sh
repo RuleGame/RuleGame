@@ -2,6 +2,7 @@
 
 # npm install
 
+setenv NODE_OPTIONS "--openssl-legacy-provider"
 setenv REACT_APP_APP_API_HOST_ORIGIN /w2020
 
 rm -rf rule-game 
@@ -23,3 +24,4 @@ mv build rule-game/prod
 
 rm -f rule-game.war
 (cd rule-game; jar -cvf ../rule-game.war .)
+
